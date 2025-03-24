@@ -47,10 +47,6 @@ class DataManager:
     def getCustomerOrders(self):
         return self.CustomerOrders
 
-    def setCustomerOrders(self,mydict):
-        self.CustomerOrders = mydict
-        return
-
     def getVisualManager(self):
         return self.VisualManager
     def setVisualManager(self,myvm):
@@ -254,42 +250,34 @@ class DataManager:
     
         prodopmatch_df = pd.DataFrame()
         precmatch_df = pd.DataFrame()
-        oprsresources_df = pd.DataFrame()
         
         for root, dirs, files in os.walk(abs_file_path):
             for file in files:
                 self.getVisualManager().getCaseInfo().value += ">>> file."+file+"\n" 
-                
                 if file == "Products.csv": 
+                     
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
                         self.Products[r["Name"]]= newprod
-                    self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
                 if file == "Operations.csv": 
                     opr_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in opr_df.iterrows():
                         newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
                         self.Operations[r["Name"]]= newopr
-                    self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
-       
                     
                 if file == "Resources.csv": 
                     res_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
                         newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
                         self.Resources[r["Name"]]= newres
-
-                    self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
                     
                 if file == "CustomerOrders.csv": 
                     orders_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in orders_df.iterrows():
-                        #def __init__(self,myid,myname,myprodid,myprodname,myqnty,myddline):
                         neworder = CustomerOrder(r["OrderID"],r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
                         self.CustomerOrders[r["Name"]] = neworder
-                    self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
     
     
                 if file == "ProductsOperations.csv": 
@@ -297,9 +285,6 @@ class DataManager:
     
                 if file == "Precedences.csv": 
                     precmatch_df = pd.read_csv(abs_file_path+'/'+file)
-
-                if file == "ResourcesOperations.csv": 
-                    oprsresources_df = pd.read_csv(abs_file_path+'/'+file)
 
        
         self.getVisualManager().getCaseInfo().value += ">>> CustomerOrders.. "+str(len(self.CustomerOrders))+"\n" 
@@ -315,7 +300,6 @@ class DataManager:
     
             predecessor.setSuccessor(successor)
             successor.getPredecessors().append(predecessor)
-            successor.getMPredecessors()[predecessor] = r["Multiplier"]
             self.getVisualManager().getCaseInfo().value += "successor: "+str(successor.getName())+" has "+str(len(successor.getPredecessors()))+"\n" 
                 
         for i,r in prodopmatch_df.iterrows():
@@ -323,17 +307,12 @@ class DataManager:
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
     
             prod.getOperations().insert(r["OperationIndex"],opr)
-            self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n" 
-
-        for i,r in oprsresources_df.iterrows():
-            opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
-            res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
-
-            opr.getRequiredResources().append(res)
+            self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n"  
     
-        
-                   
-     
+        self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
+        self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
+        self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n"            
+        self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
     
         self.getVisualManager().RefreshViews()
                 

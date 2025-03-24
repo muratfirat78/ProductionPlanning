@@ -4,7 +4,7 @@
 from IPython.display import clear_output
 from IPython import display
 from ipywidgets import *
-from datetime import timedelta,date,datetime
+from datetime import timedelta,date
 import matplotlib.pyplot as plt
 import warnings
 import seaborn as sns
@@ -25,19 +25,14 @@ class Product():
         self.Successor = None
         self.Operations = []
         self.Predecessors = []
-        self.MPredecessors = dict()
         # PlANNING
         self.StockLevels = dict() #key: date, val: stocklevel value on the date / for raw materials
         self.TargetLevels = dict() #key: date, val: required stock value on the date /for products
-        self.ReservedStockLevels = dict() #key: date, val: required stock value on the date /for products
         self.PurchaseLevels = dict() #key: first day of week, val: purchase amount / for raw materials
         
 
     def getTargetLevels(self):
         return self.TargetLevels
-
-    def getReservedStockLevels(self):
-        return self.ReservedStockLevels
         
     def getID(self):
         return self.ID
@@ -49,8 +44,6 @@ class Product():
         return self.StockLevel
     def getPredecessors(self):
         return self.Predecessors
-    def getMPredecessors(self):
-        return self.MPredecessors
     def getOperations(self):
         return self.Operations
     def setSuccessor(self,succ):
@@ -65,21 +58,17 @@ class Resource():
         self.ID = myid
         self.Name = myname
         self.Type = mytype
-        self.DayCapacity= int(mydaycp)
+        self.DayCapacity= mydaycp
         self.Operations = []
         # PlANNING
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
         # PlANNING
 
-        self.CapacityReserved = dict() 
-
 
     # PlANNING
     def getCapacityLevels(self):
         return self.CapacityLevels
-    def getCapacityReserved(self):
-        return self.CapacityReserved
 
     def getCapacityUsePlan(self):
         return self.CapacityUsePlan
@@ -125,13 +114,11 @@ class CustomerOrder():
         self.ProductID = myprodid
         self.ProductName = myprodname
         self.Quantity = myqnty
-        self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
+        self.DeadLine = myddline
 
         # PlANNING
         self.PlannedDelivery = None
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
-
-    
 
     def getPlannedDelivery(self):
         return self.PlannedDelivery

@@ -29,7 +29,7 @@ class VisualManager():
 
 
 
-        self.EditMode = True
+        self.EditMode = False
         self.DataManager = None
         self.PlanningManager = None
         self.ProdSystemTab = None
