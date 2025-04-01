@@ -33,7 +33,7 @@ class DataManager:
         self.Products = dict() # key: Productname, val: ProductObject
         self.CustomerOrders  = dict() # key: Ordername, val: OrderObject
         self.Operations = dict()  # key: OperationName, val: OperationObject
-        self.VisualManager = 
+        self.VisualManager = None
         self.colabpath = '/content/ProductionPlanning'
         self.onlineversion = True
         
@@ -249,7 +249,6 @@ class DataManager:
        
         rel_path = self.getVisualManager().getFolderNameTxt().value+'\\'+self.getVisualManager().getCasesDrop().value
 
-        self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
 
         if self.onlineversion:
             abs_file_path = self.colabpath+'/'+rel_path
@@ -257,7 +256,7 @@ class DataManager:
             abs_file_path = os.path.join(Path.cwd(), rel_path)
             abs_file_path = os.path.join(Path.cwd(), rel_path)
 
-        
+        self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
         
         
 
