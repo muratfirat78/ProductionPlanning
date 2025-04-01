@@ -144,8 +144,8 @@ class PlanningManager:
         self.getDataManager().setCustomerOrders(mydict)
 
         # determine planning horizon
-        self.setPHStart(date.today()-timedelta(days=14))  # 10 March 2025
-        self.setPHEnd(sortedtuples[-1][1].getDeadLine()+timedelta(days=14))  
+        self.setPHStart(date.today()-timedelta(days=18))  # 10 March 2025
+        self.setPHEnd(sortedtuples[-1][1].getDeadLine()+timedelta(days=21))  
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
 

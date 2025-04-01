@@ -308,10 +308,13 @@ class DataManager:
             myord.setProduct(self.Products[myord.getProductName()])
             
                     
-    
+        self.getVisualManager().getCaseInfo().value += ">>> Precedences.. "+str(len(precmatch_df))+"\n" 
         for i,r in precmatch_df.iterrows():
-            predecessor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["PredecessorID"]][0]
+    
+            predecessor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["PredecessorID"]] [0]
             successor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["SuccessorID"]][0]
+
+            self.getVisualManager().getCaseInfo().value += "->"+predecessor.getName()+">>> "+successor.getName()+"\n" 
     
             predecessor.setSuccessor(successor)
             successor.getPredecessors().append(predecessor)

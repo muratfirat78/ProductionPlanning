@@ -1,0 +1,815 @@
+OperationID,Name,ProcessTime
+0,Material prep _ bracket_[BD50-5075-011-E],0
+1,Milling _ bracket_[BD50-5075-011-E],0
+2,BW - Benchwork _ bracket_[BD50-5075-011-E],0
+3,Packaging _ bracket_[BD50-5075-011-E],0
+4,Chromisin_ bracket_[BD50-5075-011-E],0
+5,Material prep _ bracket_[BD50-5075-013F],0
+6,Milling _ bracket_[BD50-5075-013F],0
+7,BW - Benchwork _ bracket_[BD50-5075-013F],0
+8,Packaging _ bracket_[BD50-5075-013F],0
+9,Chromisin_ bracket_[BD50-5075-013F],0
+10,Material prep _ bracket_[BD50-5075-015F],0
+11,Milling _ bracket_[BD50-5075-015F],0
+12,BW - Benchwork _ bracket_[BD50-5075-015F],0
+13,Packaging _ bracket_[BD50-5075-015F],0
+14,Chromisin_ bracket_[BD50-5075-015F],0
+15,Material prep _ bracket_[BD50-5085-007-C],0
+16,Milling _ bracket_[BD50-5085-007-C],0
+17,BW - Benchwork _ bracket_[BD50-5085-007-C],0
+18,Packaging _ bracket_[BD50-5085-007-C],0
+19,Chromisin_ bracket_[BD50-5085-007-C],0
+20,Material prep _ bracket_[BD50-5085-009-C],0
+21,Milling _ bracket_[BD50-5085-009-C],0
+22,BW - Benchwork _ bracket_[BD50-5085-009-C],0
+23,Packaging _ bracket_[BD50-5085-009-C],0
+24,Chromisin_ bracket_[BD50-5085-009-C],0
+25,Material prep _ bracket_[BD50-5085-011-C],0
+26,Milling _ bracket_[BD50-5085-011-C],0
+27,BW - Benchwork _ bracket_[BD50-5085-011-C],0
+28,Packaging _ bracket_[BD50-5085-011-C],0
+29,Chromisin_ bracket_[BD50-5085-011-C],0
+30,Material prep _ Block cooling water tmp_[1078121B],0
+31,Milling _ Block cooling water tmp_[1078121B],0
+32,BW - Benchwork _ Block cooling water tmp_[1078121B],0
+33,Packaging _ Block cooling water tmp_[1078121B],0
+34,Material prep _ Filterhouder Ni 0.02mm_[4022-335-19371],0
+35,Milling _ Filterhouder Ni 0.02mm_[4022-335-19371],0
+36,BW - Benchwork _ Filterhouder Ni 0.02mm_[4022-335-19371],0
+37,Packaging _ Filterhouder Ni 0.02mm_[4022-335-19371],0
+38,Zage_ Stroke Limiter Plate RX-L / 26223907_[7005-2580-0004],0
+39,Millin_ Stroke Limiter Plate RX-L / 26223907_[7005-2580-0004],0
+40,Material prep _ geleideblok spanrol_[00236-05-103-C],0
+41,Milling _ geleideblok spanrol_[00236-05-103-C],0
+42,Anodisin_ geleideblok spanrol_[00236-05-103-C],0
+43,Packaging _ geleideblok spanrol_[00236-05-103-C],0
+44,Material prep _ Height bearing clamp plate_[00385-00-102-C],0
+45,Milling _ Height bearing clamp plate_[00385-00-102-C],0
+46,Paintin_ Height bearing clamp plate_[00385-00-102-C],0
+47,Packaging _ Height bearing clamp plate_[00385-00-102-C],0
+48,"Pre-cutted, picking onl_ Tensioner plate_[00385-00-113A]",0
+49,Milling _ Tensioner plate_[00385-00-113A],0
+50,BW - Benchwork _ Tensioner plate_[00385-00-113A],0
+51,Packaging _ Tensioner plate_[00385-00-113A],0
+52,Material prep _ Filling block_[00385-00-274-D],0
+53,Milling _ Filling block_[00385-00-274-D],0
+54,BW - Benchwork _ Filling block_[00385-00-274-D],0
+55,Packaging _ Filling block_[00385-00-274-D],0
+56,Material prep _ Plint adjust strip_[00385-00-320-A],0
+57,Milling _ Plint adjust strip_[00385-00-320-A],0
+58,BW - Benchwork _ Plint adjust strip_[00385-00-320-A],0
+59,Passivatin_ Plint adjust strip_[00385-00-320-A],0
+60,Packaging _ Plint adjust strip_[00385-00-320-A],0
+61,Material prep _ Plint fixing strip left_[00385-00-321-A],0
+62,Milling _ Plint fixing strip left_[00385-00-321-A],0
+63,BW - Benchwork _ Plint fixing strip left_[00385-00-321-A],0
+64,Passivatin_ Plint fixing strip left_[00385-00-321-A],0
+65,Packaging _ Plint fixing strip left_[00385-00-321-A],0
+66,Material prep _ End plate finger safety hinge_[00385-00-329-A],0
+67,Milling _ End plate finger safety hinge_[00385-00-329-A],0
+68,BW - Benchwork _ End plate finger safety hinge_[00385-00-329-A],0
+69,Passivatin_ End plate finger safety hinge_[00385-00-329-A],0
+70,Packaging _ End plate finger safety hinge_[00385-00-329-A],0
+71,Automatic Sawing _ Plint fixing strip right_[00385-00-346-A],0
+72,Milling _ Plint fixing strip right_[00385-00-346-A],0
+73,BW - Benchwork _ Plint fixing strip right_[00385-00-346-A],0
+74,Passivatin_ Plint fixing strip right_[00385-00-346-A],0
+75,Packaging _ Plint fixing strip right_[00385-00-346-A],0
+76,Picking _ C//[Q] cradle block_[00429-00-166 C],0
+77,Milling _ C//[Q] cradle block_[00429-00-166 C],0
+78,Packaging _ C//[Q] cradle block_[00429-00-166 C],0
+79,Material prep _ Plint adjust strip_[00429-00-249-A],0
+80,Milling _ Plint adjust strip_[00429-00-249-A],0
+81,BW - Benchwork _ Plint adjust strip_[00429-00-249-A],0
+82,Passivatin_ Plint adjust strip_[00429-00-249-A],0
+83,Packaging _ Plint adjust strip_[00429-00-249-A],0
+84,Material prep _ Arret lever_[00429-00-662-B],0
+85,Milling _ Arret lever_[00429-00-662-B],0
+86,BW - Benchwork _ Arret lever_[00429-00-662-B],0
+87,Packaging _ Arret lever_[00429-00-662-B],0
+88,Material prep _ XD F&T plate plug_[00522-01564-A],0
+89,Milling _ XD F&T plate plug_[00522-01564-A],0
+90,BW - Benchwork _ XD F&T plate plug_[00522-01564-A],0
+91,Cleanin_ XD F&T plate plug_[00522-01564-A],0
+92,Packaging _ XD F&T plate plug_[00522-01564-A],0
+93,Material prep _ bma plug 2_[00522-01696-A],0
+94,Milling _ bma plug 2_[00522-01696-A],0
+95,BW - Benchwork _ bma plug 2_[00522-01696-A],0
+96,Cleanin_ bma plug 2_[00522-01696-A],0
+97,Packaging _ bma plug 2_[00522-01696-A],0
+98,Material prep _ F&T Y-D plug 1_[00522-01698-A],0
+99,Milling _ F&T Y-D plug 1_[00522-01698-A],0
+100,BW - Benchwork _ F&T Y-D plug 1_[00522-01698-A],0
+101,Cleanin_ F&T Y-D plug 1_[00522-01698-A],0
+102,Packaging _ F&T Y-D plug 1_[00522-01698-A],0
+103,Material prep _ RCW plug 1_[00522-01717-A],0
+104,Milling _ RCW plug 1_[00522-01717-A],0
+105,BW - Benchwork _ RCW plug 1_[00522-01717-A],0
+106,Cleanin_ RCW plug 1_[00522-01717-A],0
+107,Packaging _ RCW plug 1_[00522-01717-A],0
+108,Material prep _ RCW plug 2_[00522-01718-A],0
+109,Milling _ RCW plug 2_[00522-01718-A],0
+110,BW - Benchwork _ RCW plug 2_[00522-01718-A],0
+111,Cleanin_ RCW plug 2_[00522-01718-A],0
+112,Packaging _ RCW plug 2_[00522-01718-A],0
+113,Material prep _ Valve body 3-way 2 sensors_[080-810005-A2],0
+114,Milling _ Valve body 3-way 2 sensors_[080-810005-A2],0
+115,BW - Benchwork _ Valve body 3-way 2 sensors_[080-810005-A2],0
+116,Anodisin_ Valve body 3-way 2 sensors_[080-810005-A2],0
+117,Packaging _ Valve body 3-way 2 sensors_[080-810005-A2],0
+118,Material prep _ Manifold coolant banjo M14_[082-000020-A1],0
+119,Milling _ Manifold coolant banjo M14_[082-000020-A1],0
+120,BW - Benchwork _ Manifold coolant banjo M14_[082-000020-A1],0
+121,Anodisin_ Manifold coolant banjo M14_[082-000020-A1],0
+122,Packaging _ Manifold coolant banjo M14_[082-000020-A1],0
+123,Material prep _ Filler block CNG_[095-500029-A 1],0
+124,Milling _ Filler block CNG_[095-500029-A 1],0
+125,BW - Benchwork _ Filler block CNG_[095-500029-A 1],0
+126,Anodisin_ Filler block CNG_[095-500029-A 1],0
+127,Packaging _ Filler block CNG_[095-500029-A 1],0
+128,Material prep _ ADJ.PLATE 2 OBJ._[1001823A],0
+129,Milling _ ADJ.PLATE 2 OBJ._[1001823A],0
+130,BW - Benchwork _ ADJ.PLATE 2 OBJ._[1001823A],0
+131,Packaging _ ADJ.PLATE 2 OBJ._[1001823A],0
+132,Material prep _ Cord Bracket_[1011113A],0
+133,Milling _ Cord Bracket_[1011113A],0
+134,BW - Benchwork _ Cord Bracket_[1011113A],0
+135,Packaging _ Cord Bracket_[1011113A],0
+136,"Material prep _ CLAMP,PIPE,NIC_[1012609B]",0
+137,"Milling _ CLAMP,PIPE,NIC_[1012609B]",0
+138,"BW - Benchwork _ CLAMP,PIPE,NIC_[1012609B]",0
+139,"Packaging _ CLAMP,PIPE,NIC_[1012609B]",0
+140,Material prep _ Block cooling water TMP_[1082700B],0
+141,Milling _ Block cooling water TMP_[1082700B],0
+142,BW - Benchwork _ Block cooling water TMP_[1082700B],0
+143,Packaging _ Block cooling water TMP_[1082700B],0
+144,Picking _ base wet stem quatro_[1200745A],0
+145,Milling _ base wet stem quatro_[1200745A],0
+146,BW - Benchwork _ base wet stem quatro_[1200745A],0
+147,Sandblastin_ base wet stem quatro_[1200745A],0
+148,Nickel platin_ base wet stem quatro_[1200745A],0
+149,Packaging _ base wet stem quatro_[1200745A],0
+150,"Material prep - automatic sawing _ shackle, height adjust_[1202210A]",0
+151,"Milling _ shackle, height adjust_[1202210A]",0
+152,"Packaging _ shackle, height adjust_[1202210A]",0
+153,"Sawin_ fixing block, actuator_[1202211B]",0
+154,"Milling _ fixing block, actuator_[1202211B]",0
+155,"Packaging _ fixing block, actuator_[1202211B]",0
+156,"Millin_ intercon.panel,R-STEM_[1202461A]",0
+157,"Packaging _ intercon.panel,R-STEM_[1202461A]",0
+158,Milling - OP_ Cable clamp_[1207568A],0
+159,Packaging _ Cable clamp_[1207568A],0
+160,Material prep _ BYPASS (BLOK)_[349520-8007-000-0107],0
+161,Milling _ BYPASS (BLOK)_[349520-8007-000-0107],0
+162,BW - Benchwork _ BYPASS (BLOK)_[349520-8007-000-0107],0
+163,Packaging _ BYPASS (BLOK)_[349520-8007-000-0107],0
+164,Material prep _ Excenter housing z_[4022-290-63221-D],0
+165,Milling _ Excenter housing z_[4022-290-63221-D],0
+166,BW - Benchwork _ Excenter housing z_[4022-290-63221-D],0
+167,Packaging _ Excenter housing z_[4022-290-63221-D],0
+168,Material prep _ Bearing housing spindle (rev F)_[4022-290-63321F],0
+169,Milling _ Bearing housing spindle (rev F)_[4022-290-63321F],0
+170,BW - Benchwork _ Bearing housing spindle (rev F)_[4022-290-63321F],0
+171,Packaging _ Bearing housing spindle (rev F)_[4022-290-63321F],0
+172,Material prep _ lagerblok_[4022-333-11506],0
+173,Milling _ lagerblok_[4022-333-11506],0
+174,BW - Benchwork _ lagerblok_[4022-333-11506],0
+175,Packaging _ lagerblok_[4022-333-11506],0
+176,Material prep _ dr pnt cilinder_[4022-333-13805],0
+177,Milling _ dr pnt cilinder_[4022-333-13805],0
+178,Passivatin_ dr pnt cilinder_[4022-333-13805],0
+179,BW - Benchwork _ dr pnt cilinder_[4022-333-13805],0
+180,Packaging _ dr pnt cilinder_[4022-333-13805],0
+181,Picking _ BRIL_[4022-333-19505],0
+182,Milling _ BRIL_[4022-333-19505],0
+183,BW - Benchwork _ BRIL_[4022-333-19505],0
+184,Packaging _ BRIL_[4022-333-19505],0
+185,Material prep _ DUMMY KRISTAL_[4022-333-40501],0
+186,Milling _ DUMMY KRISTAL_[4022-333-40501],0
+187,BW - Benchwork _ DUMMY KRISTAL_[4022-333-40501],0
+188,Packaging _ DUMMY KRISTAL_[4022-333-40501],0
+189,Material prep _ KIJKERHOUDER_[4022-333-58172],0
+190,Milling _ KIJKERHOUDER_[4022-333-58172],0
+191,BW - Benchwork _ KIJKERHOUDER_[4022-333-58172],0
+192,Anodisin_ KIJKERHOUDER_[4022-333-58172],0
+193,Packaging _ KIJKERHOUDER_[4022-333-58172],0
+194,Material prep _ Filterhouder Cu 0.1_[4022-333-58791],0
+195,Milling _ Filterhouder Cu 0.1_[4022-333-58791],0
+196,BW - Benchwork _ Filterhouder Cu 0.1_[4022-333-58791],0
+197,Packaging _ Filterhouder Cu 0.1_[4022-333-58791],0
+198,Material prep _ Filterh. Cu0.2 Ni0.02_[4022-335-17991],0
+199,Milling _ Filterh. Cu0.2 Ni0.02_[4022-335-17991],0
+200,BW - Benchwork _ Filterh. Cu0.2 Ni0.02_[4022-335-17991],0
+201,Packaging _ Filterh. Cu0.2 Ni0.02_[4022-335-17991],0
+202,Material prep _ filter holder_[4022-335-71012],0
+203,Milling _ filter holder_[4022-335-71012],0
+204,BW - Benchwork _ filter holder_[4022-335-71012],0
+205,Packaging _ filter holder_[4022-335-71012],0
+206,Material prep _ HOLDER FOR SHUTTER_[4022-337-30992],0
+207,Milling _ HOLDER FOR SHUTTER_[4022-337-30992],0
+208,BW - Benchwork _ HOLDER FOR SHUTTER_[4022-337-30992],0
+209,Packaging _ HOLDER FOR SHUTTER_[4022-337-30992],0
+210,Material prep _ arret holder_[4022-337-33842],0
+211,Milling _ arret holder_[4022-337-33842],0
+212,BW - Benchwork _ arret holder_[4022-337-33842],0
+213,Packaging _ arret holder_[4022-337-33842],0
+214,Picking _ RING_[4022-454-25012],0
+215,Milling _ RING_[4022-454-25012],0
+216,BW - Benchwork _ RING_[4022-454-25012],0
+217,Nickel platin_ RING_[4022-454-25012],0
+218,Packaging _ RING_[4022-454-25012],0
+219,Material prep _ Sensorblock_[4022-455-01702],0
+220,Milling _ Sensorblock_[4022-455-01702],0
+221,BW - Benchwork _ Sensorblock_[4022-455-01702],0
+222,Packaging _ Sensorblock_[4022-455-01702],0
+223,Material prep _ POST 2_[4022-455-09992],0
+224,Milling _ POST 2_[4022-455-09992],0
+225,BW - Benchwork _ POST 2_[4022-455-09992],0
+226,Packaging _ POST 2_[4022-455-09992],0
+227,Material prep _ post 4_[4022-455-099943],0
+228,Milling _ post 4_[4022-455-099943],0
+229,BW - Benchwork _ post 4_[4022-455-099943],0
+230,Packaging _ post 4_[4022-455-099943],0
+231,Material prep _ post 5_[4022-455-099953],0
+232,Milling _ post 5_[4022-455-099953],0
+233,BW - Benchwork _ post 5_[4022-455-099953],0
+234,Packaging _ post 5_[4022-455-099953],0
+235,Material prep _ post 7_[4022-455-09997-3],0
+236,Milling _ post 7_[4022-455-09997-3],0
+237,Packaging _ post 7_[4022-455-09997-3],0
+238,Material prep _ LENSGAS INTERFACE BLOCK_[4022-456-08803],0
+239,Milling _ LENSGAS INTERFACE BLOCK_[4022-456-08803],0
+240,BW - Benchwork _ LENSGAS INTERFACE BLOCK_[4022-456-08803],0
+241,Packaging _ LENSGAS INTERFACE BLOCK_[4022-456-08803],0
+242,Material prep _ 1/2TE Compens Guide 160mm_[4022-470-85441],0
+243,Milling _ 1/2TE Compens Guide 160mm_[4022-470-85441],0
+244,BW - Benchwork _ 1/2TE Compens Guide 160mm_[4022-470-85441],0
+245,Packaging _ 1/2TE Compens Guide 160mm_[4022-470-85441],0
+246,Material prep _ Temp Sensor Block_[4022-481-55761],0
+247,Milling _ Temp Sensor Block_[4022-481-55761],0
+248,BW - Benchwork _ Temp Sensor Block_[4022-481-55761],0
+249,Anodisin_ Temp Sensor Block_[4022-481-55761],0
+250,Packaging _ Temp Sensor Block_[4022-481-55761],0
+251,Material prep _ UPPER CABLE CLAMP_[4022-481-65971/20],0
+252,Milling _ UPPER CABLE CLAMP_[4022-481-65971/20],0
+253,BW - Benchwork _ UPPER CABLE CLAMP_[4022-481-65971/20],0
+254,Anodisin_ UPPER CABLE CLAMP_[4022-481-65971/20],0
+255,Packaging _ UPPER CABLE CLAMP_[4022-481-65971/20],0
+256,Material prep _ Al fcp switch holder_[4022-484-40921],0
+257,Milling _ Al fcp switch holder_[4022-484-40921],0
+258,BW - Benchwork _ Al fcp switch holder_[4022-484-40921],0
+259,Anodisin_ Al fcp switch holder_[4022-484-40921],0
+260,Packaging _ Al fcp switch holder_[4022-484-40921],0
+261,Material prep _ Connector Block_[4022-486-33041],0
+262,Milling _ Connector Block_[4022-486-33041],0
+263,BW - Benchwork _ Connector Block_[4022-486-33041],0
+264,Packaging _ Connector Block_[4022-486-33041],0
+265,Material prep _ Cable Clamp Base (M5)_[4022-486-73851/40],0
+266,Milling _ Cable Clamp Base (M5)_[4022-486-73851/40],0
+267,BW - Benchwork _ Cable Clamp Base (M5)_[4022-486-73851/40],0
+268,Anodisin_ Cable Clamp Base (M5)_[4022-486-73851/40],0
+269,Packaging _ Cable Clamp Base (M5)_[4022-486-73851/40],0
+270,Material prep _ Block POS. 19_[4022-510-76650P19],0
+271,Milling _ Block POS. 19_[4022-510-76650P19],0
+272,Packaging _ Block POS. 19_[4022-510-76650P19],0
+273,Material prep _ Ynozzle Ducting V2 Cover_[4022-621-9185],0
+274,Milling _ Ynozzle Ducting V2 Cover_[4022-621-9185],0
+275,BW - Benchwork _ Ynozzle Ducting V2 Cover_[4022-621-9185],0
+276,Packaging _ Ynozzle Ducting V2 Cover_[4022-621-9185],0
+277,Material prep _ HINGE BLOCK BACK_[4022-630-67632],0
+278,Milling _ HINGE BLOCK BACK_[4022-630-67632],0
+279,BW - Benchwork _ HINGE BLOCK BACK_[4022-630-67632],0
+280,Packaging _ HINGE BLOCK BACK_[4022-630-67632],0
+281,Material prep _ Pos 4_[4022-631-2166-Pos4],0
+282,Milling _ Pos 4_[4022-631-2166-Pos4],0
+283,BW - Benchwork _ Pos 4_[4022-631-2166-Pos4],0
+284,Packaging _ Pos 4_[4022-631-2166-Pos4],0
+285,Material prep _ Interface y-equilizer 2_[4022-631-42881],0
+286,Milling _ Interface y-equilizer 2_[4022-631-42881],0
+287,BW - Benchwork _ Interface y-equilizer 2_[4022-631-42881],0
+288,Packaging _ Interface y-equilizer 2_[4022-631-42881],0
+289,Material prep _ Interface (FIXED)_[4022-631-47801],0
+290,Milling _ Interface (FIXED)_[4022-631-47801],0
+291,BW - Benchwork _ Interface (FIXED)_[4022-631-47801],0
+292,Packaging _ Interface (FIXED)_[4022-631-47801],0
+293,Material prep _ INTERFACE (ADJUSTABLE)_[4022-631-54801],0
+294,Milling _ INTERFACE (ADJUSTABLE)_[4022-631-54801],0
+295,BW - Benchwork _ INTERFACE (ADJUSTABLE)_[4022-631-54801],0
+296,Packaging _ INTERFACE (ADJUSTABLE)_[4022-631-54801],0
+297,Material prep _ Hinge block back lm2_[4022-631-75141],0
+298,Milling _ Hinge block back lm2_[4022-631-75141],0
+299,BW - Benchwork _ Hinge block back lm2_[4022-631-75141],0
+300,Packaging _ Hinge block back lm2_[4022-631-75141],0
+301,Material prep _ Hinge block LR_[4022-631-80291],0
+302,Milling _ Hinge block LR_[4022-631-80291],0
+303,BW - Benchwork _ Hinge block LR_[4022-631-80291],0
+304,Packaging _ Hinge block LR_[4022-631-80291],0
+305,Material prep _ Hinge Block LR2 (fixed)_[4022-631-80301],0
+306,Milling _ Hinge Block LR2 (fixed)_[4022-631-80301],0
+307,BW - Benchwork _ Hinge Block LR2 (fixed)_[4022-631-80301],0
+308,Packaging _ Hinge Block LR2 (fixed)_[4022-631-80301],0
+309,Material prep _ Hinge block (fixed) rm2_[4022-631-80961],0
+310,Milling _ Hinge block (fixed) rm2_[4022-631-80961],0
+311,BW - Benchwork _ Hinge block (fixed) rm2_[4022-631-80961],0
+312,Packaging _ Hinge block (fixed) rm2_[4022-631-80961],0
+313,Material prep _ Hinge Block LM2_[4022-631-89301],0
+314,Milling _ Hinge Block LM2_[4022-631-89301],0
+315,BW - Benchwork _ Hinge Block LM2_[4022-631-89301],0
+316,Packaging _ Hinge Block LM2_[4022-631-89301],0
+317,Material prep _ HINGE BLOCK (FIXED) LM2_[4022-631-89311],0
+318,Milling _ HINGE BLOCK (FIXED) LM2_[4022-631-89311],0
+319,BW - Benchwork _ HINGE BLOCK (FIXED) LM2_[4022-631-89311],0
+320,Packaging _ HINGE BLOCK (FIXED) LM2_[4022-631-89311],0
+321,Material prep _ Hinge Block Back LM2_[4022-631-97451],0
+322,Milling _ Hinge Block Back LM2_[4022-631-97451],0
+323,BW - Benchwork _ Hinge Block Back LM2_[4022-631-97451],0
+324,Packaging _ Hinge Block Back LM2_[4022-631-97451],0
+325,Material prep _ LCW ABS PRES SENS CONN BLOCK_[4022-631-99701],0
+326,Milling _ LCW ABS PRES SENS CONN BLOCK_[4022-631-99701],0
+327,BW - Benchwork _ LCW ABS PRES SENS CONN BLOCK_[4022-631-99701],0
+328,Packaging _ LCW ABS PRES SENS CONN BLOCK_[4022-631-99701],0
+329,Material prep _ CA MOUNTING BLOCK_[4022-635-17942],0
+330,Milling _ CA MOUNTING BLOCK_[4022-635-17942],0
+331,BW - Benchwork _ CA MOUNTING BLOCK_[4022-635-17942],0
+332,Packaging _ CA MOUNTING BLOCK_[4022-635-17942],0
+333,Material prep _ IH serv mech hinge bracket low_[4022-635-68104],0
+334,Milling _ IH serv mech hinge bracket low_[4022-635-68104],0
+335,BW - Benchwork _ IH serv mech hinge bracket low_[4022-635-68104],0
+336,Packaging _ IH serv mech hinge bracket low_[4022-635-68104],0
+337,Material prep _ LOCKING PLATE_[4022-635-87282],0
+338,Milling _ LOCKING PLATE_[4022-635-87282],0
+339,BW - Benchwork _ LOCKING PLATE_[4022-635-87282],0
+340,Nickel platin_ LOCKING PLATE_[4022-635-87282],0
+341,Cleanin_ LOCKING PLATE_[4022-635-87282],0
+342,Packaging _ LOCKING PLATE_[4022-635-87282],0
+343,Material prep _ HANDLE_[4022-635-87291],0
+344,Milling _ HANDLE_[4022-635-87291],0
+345,BW - Benchwork _ HANDLE_[4022-635-87291],0
+346,Packaging _ HANDLE_[4022-635-87291],0
+347,Material prep _ Hinge block fixed 7c-e rr_[4022-635-99171],0
+348,Milling _ Hinge block fixed 7c-e rr_[4022-635-99171],0
+349,BW - Benchwork _ Hinge block fixed 7c-e rr_[4022-635-99171],0
+350,Packaging _ Hinge block fixed 7c-e rr_[4022-635-99171],0
+351,Material prep _ HINGE BLOCK LF_[4022-637-11821],0
+352,Milling _ HINGE BLOCK LF_[4022-637-11821],0
+353,BW - Benchwork _ HINGE BLOCK LF_[4022-637-11821],0
+354,Packaging _ HINGE BLOCK LF_[4022-637-11821],0
+355,Material prep _ HINGE BLOCK FIXED RF_[4022-637-24142],0
+356,Milling _ HINGE BLOCK FIXED RF_[4022-637-24142],0
+357,BW - Benchwork _ HINGE BLOCK FIXED RF_[4022-637-24142],0
+358,Packaging _ HINGE BLOCK FIXED RF_[4022-637-24142],0
+359,Material prep _ HINGE BLOCK RF_[4022-637-24191],0
+360,Milling _ HINGE BLOCK RF_[4022-637-24191],0
+361,BW - Benchwork _ HINGE BLOCK RF_[4022-637-24191],0
+362,Packaging _ HINGE BLOCK RF_[4022-637-24191],0
+363,Material prep _ Hinge Block rm_[4022-637-29291],0
+364,Milling _ Hinge Block rm_[4022-637-29291],0
+365,BW - Benchwork _ Hinge Block rm_[4022-637-29291],0
+366,Packaging _ Hinge Block rm_[4022-637-29291],0
+367,Material prep _ Hinge Block Fixed RM_[4022-637-29301],0
+368,Milling _ Hinge Block Fixed RM_[4022-637-29301],0
+369,BW - Benchwork _ Hinge Block Fixed RM_[4022-637-29301],0
+370,Packaging _ Hinge Block Fixed RM_[4022-637-29301],0
+371,Material prep _ Hinge Block LM_[4022-637-29381],0
+372,Milling _ Hinge Block LM_[4022-637-29381],0
+373,BW - Benchwork _ Hinge Block LM_[4022-637-29381],0
+374,Packaging _ Hinge Block LM_[4022-637-29381],0
+375,Material prep _ Hinge block fixed LM_[4022-637-29391],0
+376,Milling _ Hinge block fixed LM_[4022-637-29391],0
+377,BW - Benchwork _ Hinge block fixed LM_[4022-637-29391],0
+378,Packaging _ Hinge block fixed LM_[4022-637-29391],0
+379,Picking _ Interface hinge block fixed RF_[4022-637-45782],0
+380,Milling _ Interface hinge block fixed RF_[4022-637-45782],0
+381,BW - Benchwork _ Interface hinge block fixed RF_[4022-637-45782],0
+382,Nickel platin_ Interface hinge block fixed RF_[4022-637-45782],0
+383,Packaging _ Interface hinge block fixed RF_[4022-637-45782],0
+384,Material prep _ IH HINGE BRACKET TOP HINGE_[4022-637-68442],0
+385,Milling _ IH HINGE BRACKET TOP HINGE_[4022-637-68442],0
+386,BW - Benchwork _ IH HINGE BRACKET TOP HINGE_[4022-637-68442],0
+387,Packaging _ IH HINGE BRACKET TOP HINGE_[4022-637-68442],0
+388,Material prep _ YS gripper detect mirro block_[4022-639-54042],0
+389,Milling _ YS gripper detect mirro block_[4022-639-54042],0
+390,BW - Benchwork _ YS gripper detect mirro block_[4022-639-54042],0
+391,Packaging _ YS gripper detect mirro block_[4022-639-54042],0
+392,Picking _ Support beam LM_[4022-642-33571],0
+393,Milling _ Support beam LM_[4022-642-33571],0
+394,BW - Benchwork _ Support beam LM_[4022-642-33571],0
+395,Nickel platin_ Support beam LM_[4022-642-33571],0
+396,Packaging _ Support beam LM_[4022-642-33571],0
+397,Material prep _ NXE wsmr 2 Fan guide rail_[4022-646-17071],0
+398,Milling _ NXE wsmr 2 Fan guide rail_[4022-646-17071],0
+399,BW - Benchwork _ NXE wsmr 2 Fan guide rail_[4022-646-17071],0
+400,Packaging _ NXE wsmr 2 Fan guide rail_[4022-646-17071],0
+401,Material prep _ Divider plate 6HE Special_[4022-646-17131],0
+402,Milling _ Divider plate 6HE Special_[4022-646-17131],0
+403,BW - Benchwork _ Divider plate 6HE Special_[4022-646-17131],0
+404,Packaging _ Divider plate 6HE Special_[4022-646-17131],0
+405,Material prep _ NXT WS MK41 DC TEMP CONN PLATE_[4022-651-14271],0
+406,Milling _ NXT WS MK41 DC TEMP CONN PLATE_[4022-651-14271],0
+407,BW - Benchwork _ NXT WS MK41 DC TEMP CONN PLATE_[4022-651-14271],0
+408,Packaging _ NXT WS MK41 DC TEMP CONN PLATE_[4022-651-14271],0
+409,Cleanin_ NXT WS MK41 DC TEMP CONN PLATE_[4022-651-14271],0
+410,Material prep _ Gpas preamp CB Box + cover assy_[4022-651-55002A],0
+411,Milling _ Gpas preamp CB Box + cover assy_[4022-651-55002A],0
+412,BW - Benchwork _ Gpas preamp CB Box + cover assy_[4022-651-55002A],0
+413,Packaging _ Gpas preamp CB Box + cover assy_[4022-651-55002A],0
+414,Material prep _ Pipe clamp exhaust FW 1980_[4022-656-73531],0
+415,Milling _ Pipe clamp exhaust FW 1980_[4022-656-73531],0
+416,BW - Benchwork _ Pipe clamp exhaust FW 1980_[4022-656-73531],0
+417,Packaging _ Pipe clamp exhaust FW 1980_[4022-656-73531],0
+418,Material prep _ Non loosable block M4_[4022-656-75183],0
+419,Milling _ Non loosable block M4_[4022-656-75183],0
+420,BW - Benchwork _ Non loosable block M4_[4022-656-75183],0
+421,Packaging _ Non loosable block M4_[4022-656-75183],0
+422,Material prep _ Non loosable block M5_[4022-656-75212],0
+423,Milling _ Non loosable block M5_[4022-656-75212],0
+424,BW - Benchwork _ Non loosable block M5_[4022-656-75212],0
+425,Packaging _ Non loosable block M5_[4022-656-75212],0
+426,Material prep _ Exhaust fw bridge 1980_[4022-656-92231],0
+427,Milling _ Exhaust fw bridge 1980_[4022-656-92231],0
+428,Anodisin_ Exhaust fw bridge 1980_[4022-656-92231],0
+429,Packaging _ Exhaust fw bridge 1980_[4022-656-92231],0
+430,Material prep _ NXE HP SL SLEC EOM CP ARM BACK_[4022-664-3390-1],0
+431,Milling _ NXE HP SL SLEC EOM CP ARM BACK_[4022-664-3390-1],0
+432,BW - Benchwork _ NXE HP SL SLEC EOM CP ARM BACK_[4022-664-3390-1],0
+433,Packaging _ NXE HP SL SLEC EOM CP ARM BACK_[4022-664-3390-1],0
+434,Material prep _ Distance Bush 1_[4022-666-18121],0
+435,Milling _ Distance Bush 1_[4022-666-18121],0
+436,BW - Benchwork _ Distance Bush 1_[4022-666-18121],0
+437,Packaging _ Distance Bush 1_[4022-666-18121],0
+438,Milling _ LSPH Bellow Clamp_[4022-666-3837-1],0
+439,BW - Benchwork _ LSPH Bellow Clamp_[4022-666-3837-1],0
+440,Packaging _ LSPH Bellow Clamp_[4022-666-3837-1],0
+441,Material prep _ LSPH coverplate stud block_[4022-666-65702(R1)],0
+442,Milling _ LSPH coverplate stud block_[4022-666-65702(R1)],0
+443,BW - Benchwork _ LSPH coverplate stud block_[4022-666-65702(R1)],0
+444,Anodisin_ LSPH coverplate stud block_[4022-666-65702(R1)],0
+445,Packaging _ LSPH coverplate stud block_[4022-666-65702(R1)],0
+446,Material prep _ Bpam cover_[4022-671-49051],0
+447,BW - Benchwork _ Bpam cover_[4022-671-49051],0
+448,Milling _ Bpam cover_[4022-671-49051],0
+449,Packaging _ Bpam cover_[4022-671-49051],0
+450,Material prep _ Bpam front 1_[4022-671-49061],0
+451,Milling _ Bpam front 1_[4022-671-49061],0
+452,Packaging _ Bpam front 1_[4022-671-49061],0
+453,Material prep _ Bpam front 2_[4022-671-49073],0
+454,Milling _ Bpam front 2_[4022-671-49073],0
+455,Packaging _ Bpam front 2_[4022-671-49073],0
+456,Material prep _ Serv Mech Hinge Bracket Low_[4022-673-67281],0
+457,Milling _ Serv Mech Hinge Bracket Low_[4022-673-67281],0
+458,BW - Benchwork _ Serv Mech Hinge Bracket Low_[4022-673-67281],0
+459,Nickel platin_ Serv Mech Hinge Bracket Low_[4022-673-67281],0
+460,Packaging _ Serv Mech Hinge Bracket Low_[4022-673-67281],0
+461,Material prep _ AR Hinge Bracket Bottom Hinge_[4022-673-68701],0
+462,Milling _ AR Hinge Bracket Bottom Hinge_[4022-673-68701],0
+463,BW - Benchwork _ AR Hinge Bracket Bottom Hinge_[4022-673-68701],0
+464,Packaging _ AR Hinge Bracket Bottom Hinge_[4022-673-68701],0
+465,Material prep _ MBI WS LTT SSXY MAN PLUG_[4022-674-35671],0
+466,Milling _ MBI WS LTT SSXY MAN PLUG_[4022-674-35671],0
+467,BW - Benchwork _ MBI WS LTT SSXY MAN PLUG_[4022-674-35671],0
+468,Anodisin_ MBI WS LTT SSXY MAN PLUG_[4022-674-35671],0
+469,Packaging _ MBI WS LTT SSXY MAN PLUG_[4022-674-35671],0
+470,Material prep _ MBI WS LTT HS MAN PLUG_[4022-674-3569],0
+471,Milling _ MBI WS LTT HS MAN PLUG_[4022-674-3569],0
+472,BW - Benchwork _ MBI WS LTT HS MAN PLUG_[4022-674-3569],0
+473,Anodisin_ MBI WS LTT HS MAN PLUG_[4022-674-3569],0
+474,Packaging _ MBI WS LTT HS MAN PLUG_[4022-674-3569],0
+475,Material prep _ MBI WS MK2 F&T BMA CONNECT 1_[4022-680-5023],0
+476,Milling _ MBI WS MK2 F&T BMA CONNECT 1_[4022-680-5023],0
+477,Passivatin_ MBI WS MK2 F&T BMA CONNECT 1_[4022-680-5023],0
+478,Material prep _ MBI WS MK2 F&T BMA CONNECT_[4022-680-5025],0
+479,Milling _ MBI WS MK2 F&T BMA CONNECT_[4022-680-5025],0
+480,Passivatin_ MBI WS MK2 F&T BMA CONNECT_[4022-680-5025],0
+481,Picking _ SR ML SF EXTENSION PLATE_[4022-680-78322],0
+482,Milling _ SR ML SF EXTENSION PLATE_[4022-680-78322],0
+483,BW - Benchwork _ SR ML SF EXTENSION PLATE_[4022-680-78322],0
+484,Packaging _ SR ML SF EXTENSION PLATE_[4022-680-78322],0
+485,Anodisin_ SR ML SF EXTENSION PLATE_[4022-680-78322],0
+486,Material prep _ Block_[4022-680-9064-119],0
+487,Milling _ Block_[4022-680-9064-119],0
+488,BW - Benchwork _ Block_[4022-680-9064-119],0
+489,Packaging _ Block_[4022-680-9064-119],0
+490,Material prep _ Brace_[4022-683-10451],0
+491,Milling _ Brace_[4022-683-10451],0
+492,BW - Benchwork _ Brace_[4022-683-10451],0
+493,Packaging _ Brace_[4022-683-10451],0
+494,Material prep _ DC Brace_[4022-683-92261],0
+495,Milling _ DC Brace_[4022-683-92261],0
+496,BW - Benchwork _ DC Brace_[4022-683-92261],0
+497,Packaging _ DC Brace_[4022-683-92261],0
+498,Material prep _ MBI WS CARRIER SSZ CAP_[4022-689-46621],0
+499,Milling _ MBI WS CARRIER SSZ CAP_[4022-689-46621],0
+500,Anodisin_ MBI WS CARRIER SSZ CAP_[4022-689-46621],0
+501,BW - Benchwork _ MBI WS CARRIER SSZ CAP_[4022-689-46621],0
+502,Packaging _ MBI WS CARRIER SSZ CAP_[4022-689-46621],0
+503,Material prep _ MBI WS CARRIER EPIN CAP_[4022-689-4666],0
+504,Milling _ MBI WS CARRIER EPIN CAP_[4022-689-4666],0
+505,Anodisin_ MBI WS CARRIER EPIN CAP_[4022-689-4666],0
+506,BW - Benchwork _ MBI WS CARRIER EPIN CAP_[4022-689-4666],0
+507,Packaging _ MBI WS CARRIER EPIN CAP_[4022-689-4666],0
+508,Material prep _ CAM IF ROT ADJUST SSM_[4023-000-32142A],0
+509,Milling _ CAM IF ROT ADJUST SSM_[4023-000-32142A],0
+510,BW - Benchwork _ CAM IF ROT ADJUST SSM_[4023-000-32142A],0
+511,Anodisin_ CAM IF ROT ADJUST SSM_[4023-000-32142A],0
+512,Packaging _ CAM IF ROT ADJUST SSM_[4023-000-32142A],0
+513,Material prep _ SIDE ROTATIONADJUST SSM_[4023-000-34941B],0
+514,Milling _ SIDE ROTATIONADJUST SSM_[4023-000-34941B],0
+515,BW - Benchwork _ SIDE ROTATIONADJUST SSM_[4023-000-34941B],0
+516,Anodisin_ SIDE ROTATIONADJUST SSM_[4023-000-34941B],0
+517,Packaging _ SIDE ROTATIONADJUST SSM_[4023-000-34941B],0
+518,Material prep _ DUST KEEPER RING_[4023-000-35711A],0
+519,Milling _ DUST KEEPER RING_[4023-000-35711A],0
+520,BW - Benchwork _ DUST KEEPER RING_[4023-000-35711A],0
+521,Anodisin_ DUST KEEPER RING_[4023-000-35711A],0
+522,Packaging _ DUST KEEPER RING_[4023-000-35711A],0
+523,Milling _ Cover Cupdetect dual L_[4023-001-14761B],0
+524,Paintin_ Cover Cupdetect dual L_[4023-001-14761B],0
+525,Packaging _ Cover Cupdetect dual L_[4023-001-14761B],0
+526,Material prep _ Cover Cupdetect dual R_[4023-001-14841C],0
+527,Milling _ Cover Cupdetect dual R_[4023-001-14841C],0
+528,Paintin_ Cover Cupdetect dual R_[4023-001-14841C],0
+529,Packaging _ Cover Cupdetect dual R_[4023-001-14841C],0
+530,Material prep _ filter plate Cu0.2-Zr0.08_[4023-002-15671],0
+531,Milling _ filter plate Cu0.2-Zr0.08_[4023-002-15671],0
+532,BW - Benchwork _ filter plate Cu0.2-Zr0.08_[4023-002-15671],0
+533,Packaging _ filter plate Cu0.2-Zr0.08_[4023-002-15671],0
+534,Material prep _ filter plate wide Cu0.2_[4023-002-36531],0
+535,Milling _ filter plate wide Cu0.2_[4023-002-36531],0
+536,BW - Benchwork _ filter plate wide Cu0.2_[4023-002-36531],0
+537,Packaging _ filter plate wide Cu0.2_[4023-002-36531],0
+538,Material prep _ filter plate wide Cu0.4 Rh0.06_[4023-002-36551],0
+539,Milling _ filter plate wide Cu0.4 Rh0.06_[4023-002-36551],0
+540,BW - Benchwork _ filter plate wide Cu0.4 Rh0.06_[4023-002-36551],0
+541,Packaging _ filter plate wide Cu0.4 Rh0.06_[4023-002-36551],0
+542,Material prep _ filter plate wide Rh0.06_[4023-002-36601],0
+543,Milling _ filter plate wide Rh0.06_[4023-002-36601],0
+544,BW - Benchwork _ filter plate wide Rh0.06_[4023-002-36601],0
+545,Packaging _ filter plate wide Rh0.06_[4023-002-36601],0
+546,Material prep _ filter plate Cu0.2-Zr0.16_[4023-003-94951-A],0
+547,Milling _ filter plate Cu0.2-Zr0.16_[4023-003-94951-A],0
+548,BW - Benchwork _ filter plate Cu0.2-Zr0.16_[4023-003-94951-A],0
+549,Packaging _ filter plate Cu0.2-Zr0.16_[4023-003-94951-A],0
+550,Material prep _ Anschlag_[4512-127-05186B],0
+551,Milling _ Anschlag_[4512-127-05186B],0
+552,BW - Benchwork _ Anschlag_[4512-127-05186B],0
+553,Packaging _ Anschlag_[4512-127-05186B],0
+554,Material prep _ CEILING INLET*_[4522-128-81532A POS 2],0
+555,Milling _ CEILING INLET*_[4522-128-81532A POS 2],0
+556,BW - Benchwork _ CEILING INLET*_[4522-128-81532A POS 2],0
+557,Paintin_ CEILING INLET*_[4522-128-81532A POS 2],0
+558,Packaging _ CEILING INLET*_[4522-128-81532A POS 2],0
+559,Picking _ Filterplate al.20_[4522-980-37881],0
+560,Milling _ Filterplate al.20_[4522-980-37881],0
+561,BW - Benchwork _ Filterplate al.20_[4522-980-37881],0
+562,Packaging _ Filterplate al.20_[4522-980-37881],0
+563,Picking _ Filterplate al 5_[4522-980-37891],0
+564,Milling _ Filterplate al 5_[4522-980-37891],0
+565,BW - Benchwork _ Filterplate al 5_[4522-980-37891],0
+566,Packaging _ Filterplate al 5_[4522-980-37891],0
+567,Material prep _ CEILING INLET*_[4598-008-08901B POS 1],0
+568,Milling _ CEILING INLET*_[4598-008-08901B POS 1],0
+569,BW - Benchwork _ CEILING INLET*_[4598-008-08901B POS 1],0
+570,Paintin_ CEILING INLET*_[4598-008-08901B POS 1],0
+571,Packaging _ CEILING INLET*_[4598-008-08901B POS 1],0
+572,Material prep _ ENDPLATE_[4598-011-70891B],0
+573,BW - Benchwork _ ENDPLATE_[4598-011-70891B],0
+574,Milling _ ENDPLATE_[4598-011-70891B],0
+575,Passivatin_ ENDPLATE_[4598-011-70891B],0
+576,Picking _ Clamping Lever_[6001-1315-5405],0
+577,Milling _ Clamping Lever_[6001-1315-5405],0
+578,Packaging _ Clamping Lever_[6001-1315-5405],0
+579,Material prep _ Vingerhouder_[9091469-3-00],0
+580,Milling _ Vingerhouder_[9091469-3-00],0
+581,BW - Benchwork _ Vingerhouder_[9091469-3-00],0
+582,Packaging _ Vingerhouder_[9091469-3-00],0
+583,Picking _ COOLING HOUSE_[B620261-5],0
+584,Milling _ COOLING HOUSE_[B620261-5],0
+585,BW - Benchwork _ COOLING HOUSE_[B620261-5],0
+586,Cleanin_ COOLING HOUSE_[B620261-5],0
+587,Packaging _ COOLING HOUSE_[B620261-5],0
+588,Material prep _ bracket_[BD50-5075-009-E],0
+589,Milling _ bracket_[BD50-5075-009-E],0
+590,BW - Benchwork _ bracket_[BD50-5075-009-E],0
+591,Packaging _ bracket_[BD50-5075-009-E],0
+592,Chromisin_ bracket_[BD50-5075-009-E],0
+593,Milling _ Carriage_[GF3116T006L],0
+594,Nickel platin_ Carriage_[GF3116T006L],0
+595,BW - Benchwork _ Carriage_[GF3116T006L],0
+596,Picking _ CID Ventilblock (ASCO)_[GO3181T051C],0
+597,Milling _ CID Ventilblock (ASCO)_[GO3181T051C],0
+598,BW - Benchwork _ CID Ventilblock (ASCO)_[GO3181T051C],0
+599,Packaging _ CID Ventilblock (ASCO)_[GO3181T051C],0
+600,Picking _ [V] frontdeckel (1841462)_[GO3213T056C],0
+601,Milling _ [V] frontdeckel (1841462)_[GO3213T056C],0
+602,BW - Benchwork _ [V] frontdeckel (1841462)_[GO3213T056C],0
+603,Nickel platin_ [V] frontdeckel (1841462)_[GO3213T056C],0
+604,Packaging _ [V] frontdeckel (1841462)_[GO3213T056C],0
+605,Material prep _ Ventillblock vxe 1834191_[GO3220T101B],0
+606,Milling _ Ventillblock vxe 1834191_[GO3220T101B],0
+607,BW - Benchwork _ Ventillblock vxe 1834191_[GO3220T101B],0
+608,Packaging _ Ventillblock vxe 1834191_[GO3220T101B],0
+609,Material prep _ Klemmaufnahme_[GO4910T001B],0
+610,Milling _ Klemmaufnahme_[GO4910T001B],0
+611,BW - Benchwork _ Klemmaufnahme_[GO4910T001B],0
+612,Anodisin_ Klemmaufnahme_[GO4910T001B],0
+613,Packaging _ Klemmaufnahme_[GO4910T001B],0
+614,Material prep _ Bev. Klitteband_[M0216-01-091A],0
+615,Milling _ Bev. Klitteband_[M0216-01-091A],0
+616,BW - Benchwork _ Bev. Klitteband_[M0216-01-091A],0
+617,Packaging _ Bev. Klitteband_[M0216-01-091A],0
+618,Material prep _ nul-graden arretsegment_[M0216-01-363-B],0
+619,Milling _ nul-graden arretsegment_[M0216-01-363-B],0
+620,BW - Benchwork _ nul-graden arretsegment_[M0216-01-363-B],0
+621,Passivatin_ nul-graden arretsegment_[M0216-01-363-B],0
+622,Packaging _ nul-graden arretsegment_[M0216-01-363-B],0
+623,Picking _ Bracket_[S325F3116200B],0
+624,Milling _ Bracket_[S325F3116200B],0
+625,Packaging _ Bracket_[S325F3116200B],0
+626,Material prep _ HINGE BLOCK FIXED LF_[4022-637-11831],0
+627,Machining _ HINGE BLOCK FIXED LF_[4022-637-11831],0
+628,Benchwork _ HINGE BLOCK FIXED LF_[4022-637-11831],0
+629,Packaging _ HINGE BLOCK FIXED LF_[4022-637-11831],0
+630,Material prep _ EXE REMA TT Hinge  Block 1_[4022-706-47551],0
+631,Milling _ EXE REMA TT Hinge  Block 1_[4022-706-47551],0
+632,Anodising + Cleanin_ EXE REMA TT Hinge  Block 1_[4022-706-47551],0
+633,Packaging _ EXE REMA TT Hinge  Block 1_[4022-706-47551],0
+634,Material prep _ EXE REMA TT Hinge Block 2_[4022-706-4756],0
+635,Milling _ EXE REMA TT Hinge Block 2_[4022-706-4756],0
+636,Anodising + Cleanin_ EXE REMA TT Hinge Block 2_[4022-706-4756],0
+637,Packaging _ EXE REMA TT Hinge Block 2_[4022-706-4756],0
+638,Material prep _ EXE REMA TT Clamp Block 3_[4022-706-4757],0
+639,Milling _ EXE REMA TT Clamp Block 3_[4022-706-4757],0
+640,Anodising + Cleanin_ EXE REMA TT Clamp Block 3_[4022-706-4757],0
+641,Packaging _ EXE REMA TT Clamp Block 3_[4022-706-4757],0
+642,Picking _ RS Lock MF-X Spring Block_[4022-451-22761B],0
+643,Milling _ RS Lock MF-X Spring Block_[4022-451-22761B],0
+644,Anodisin_ RS Lock MF-X Spring Block_[4022-451-22761B],0
+645,Packaging _ RS Lock MF-X Spring Block_[4022-451-22761B],0
+646,Picking _ BOTTOM PLATER RESERVOIR_[BSIM-00000978 Rev. AC],0
+647,Milling _ BOTTOM PLATER RESERVOIR_[BSIM-00000978 Rev. AC],0
+648,Packaging _ BOTTOM PLATER RESERVOIR_[BSIM-00000978 Rev. AC],0
+649,Picking _ KM Heatsink SR5 70X10X25 rev C_[1034719 C],0
+650,Milling _ KM Heatsink SR5 70X10X25 rev C_[1034719 C],0
+651,Cleanin_ KM Heatsink SR5 70X10X25 rev C_[1034719 C],0
+652,Packaging _ KM Heatsink SR5 70X10X25 rev C_[1034719 C],0
+653,Automatic Sawing _ RS Lock MF-X Preload Housing_[4022-451-22801B],0
+654,Milling _ RS Lock MF-X Preload Housing_[4022-451-22801B],0
+655,Anodiz_ RS Lock MF-X Preload Housing_[4022-451-22801B],0
+656,Packing _ RS Lock MF-X Preload Housing_[4022-451-22801B],0
+657,MP2 - Material preparation - manual sawing _ bracket_[BD50-5085-013-C],0
+658,M3-01 - Accuwell - 3axis - Manual _ bracket_[BD50-5085-013-C],0
+659,BW - Benchwork _ bracket_[BD50-5085-013-C],0
+660,PACK - Packaging _ bracket_[BD50-5085-013-C],0
+661,Chromatiz_ bracket_[BD50-5085-013-C],0
+662,MP1 - Material preparation - automatic sawing _ Hinge Block Back_[4022-630-65212],0
+663,M5-01 - Accuwell - 5axis - Pallet automaton _ Hinge Block Back_[4022-630-65212],0
+664,BW - Benchwork _ Hinge Block Back_[4022-630-65212],0
+665,PACK - Packaging _ Hinge Block Back_[4022-630-65212],0
+666,material prep _ Lagerhuis_[Mal-130 wz 04],0
+667,Milling _ Lagerhuis_[Mal-130 wz 04],0
+668,Nickel platin_ Lagerhuis_[Mal-130 wz 04],0
+669,PACK - Packaging _ Lagerhuis_[Mal-130 wz 04],0
+670,Material prep _ BLOCK FOR LOCKING SCREW _[4022-637-39621],0
+671,Milling _ BLOCK FOR LOCKING SCREW _[4022-637-39621],0
+672,BW - Benchwor_ BLOCK FOR LOCKING SCREW _[4022-637-39621],0
+673,Packaging _ BLOCK FOR LOCKING SCREW _[4022-637-39621],0
+674,Material prep - Pickin_ Koppelstrip bovenligger iGate_[M.P04743],0
+675,Milling - FR3_0_ Koppelstrip bovenligger iGate_[M.P04743],0
+676,BW - Bnchwor_ Koppelstrip bovenligger iGate_[M.P04743],0
+677,Packaging _ Koppelstrip bovenligger iGate_[M.P04743],0
+678,Material prep - customer delivere_ SERV FLR MKII BM IF HOOK_[4022-669-93452],0
+679,Milling - FR5_0_ SERV FLR MKII BM IF HOOK_[4022-669-93452],0
+680,BW - Benchwork _ SERV FLR MKII BM IF HOOK_[4022-669-93452],0
+681,PACK - Packaging _ SERV FLR MKII BM IF HOOK_[4022-669-93452],0
+682,Milling - OP1+_ METROFRAME BODY V02-00-B / 0119073001 _[7005-2480-0090],0
+683,Milling - OP3/_ METROFRAME BODY V02-00-B / 0119073001 _[7005-2480-0090],0
+684,Millin_ MOTOR MOUNT / PROTO_[7201703],0
+685,CA_ MOTOR MOUNT / PROTO_[7201703],0
+686,Zage_ PRINTBED / PROTO_[7202812],0
+687,Millin_ PRINTBED / PROTO_[7202812],0
+688,CA_  BASE SHUTTLE / PROTO_[7199932],0
+689,Millin_  BASE SHUTTLE / PROTO_[7199932],0
+690,Pickin_ RH RED TURRET ELEC COVER C_[4022.684.31572],0
+691,Millin_ RH RED TURRET ELEC COVER C_[4022.684.31572],0
+692,CA_ MAGNET HOLDER / PROTO_[7200759],0
+693,Millin_ MAGNET HOLDER / PROTO_[7200759],0
+694,CA_ ENCODERPLATE / PROTO_[7204469],0
+695,Millin_ ENCODERPLATE / PROTO_[7204469],0
+696,CA_ BOTTOM PLATE / PROTO_[7206913],0
+697,Millin_ BOTTOM PLATE / PROTO_[7206913],0
+698,CA_ RH RED FRAME -X COVER_[4022.622.61941],0
+699,Millin_ RH RED FRAME -X COVER_[4022.622.61941],0
+700,CA_ RH RED EBOX MONO_[4022.622.61761],0
+701,Millin_ RH RED EBOX MONO_[4022.622.61761],0
+702,CA_ STIFFENER / PROTO_[7205666],0
+703,Millin_ STIFFENER / PROTO_[7205666],0
+704,CA_Dummy encoder block / P1350-M1100-02 _[Dummy encoder block / P1350-M1100-02],0
+705,Millin_Dummy encoder block / P1350-M1100-02 _[Dummy encoder block / P1350-M1100-02],0
+706,Zage_ SPINDLE TO RAILS / PROTO_[7123100],0
+707,CA_ SPINDLE TO RAILS / PROTO_[7123100],0
+708,Millin_ SPINDLE TO RAILS / PROTO_[7123100],0
+709,Zage_ Stroke Limiter Plate ZY-L / 26223910_[7005-2580-0001],0
+710,Millin_ Stroke Limiter Plate ZY-L / 26223910_[7005-2580-0001],0
+711,Zage_ Stroke Limiter Plate RX-R / 26223908_[7005-2580-0003],0
+712,Millin_ Stroke Limiter Plate RX-R / 26223908_[7005-2580-0003],0
+713,Zage_ TORSION RELIEF RING / 0119073007_[7005-2480-0180],0
+714,Millin_ TORSION RELIEF RING / 0119073007_[7005-2480-0180],0
+715,Zage_ CABLE COVER 1 / 0119073003_[7005-2480-0130],0
+716,Millin_ CABLE COVER 1 / 0119073003_[7005-2480-0130],0
+717,Sawin_ Single Rail / IGUS / WSQ-06S_[7005-2580-0005],0
+718,Millin_ Single Rail / IGUS / WSQ-06S_[7005-2580-0005],0
+719,Knippe_ CABLE COVER 2 / 0119073004_[7005-2480-0140],0
+720,Millin_ CABLE COVER 2 / 0119073004_[7005-2480-0140],0
+721,OP1/OP_ CABLE GUIDE / 0119073006_[7005-2480-0170],0
+722,millin_ P1517-M4006-00.stp_[7247694],0
+723,Millin_ P1517-M4001-00.stp_[7248956],0
+724,Millin_ P1517-M4002-00.stp_[7249674],0
+725,Millin_ P1517-M4003-00.stp_[7250207],0
+726,Millin_ P1517-M4004-00.stp_[7251860],0
+727,CA_ TL 1 – Feet B / IAH _[7007-2500-0001],0
+728,OP_ TL 1 – Feet B / IAH _[7007-2500-0001],0
+729,Sawin_ RH NXE RED RZ ENC PLATE SPPRT_[4022.683.44771],0
+730,Millin_ RH NXE RED RZ ENC PLATE SPPRT_[4022.683.44771],0
+731,Milling OP_ 26243902 Mounting Base V02-00.STEP_[7305419],0
+732,Sawin_ P1464-M1011-00.stp_[7261698],0
+733,Millin_ P1464-M1011-00.stp_[7261698],0
+734,Sawin_ P1464-M1027-00.stp_[7263714],0
+735,Millin_ P1464-M1027-00.stp_[7263714],0
+736,Sawin_ P1464-M2001-00.stp_[7264118],0
+737,Millin_ P1464-M2001-00.stp_[7264118],0
+738,Sawin_ P1464-M2003-00.stp_[7265172],0
+739,Millin_ P1464-M2003-00.stp_[7265172],0
+740,Pickin_ P1464-M2010-00.stp_[7266236],0
+741,Milling - OP_ P1464-M2010-00.stp_[7266236],0
+742,Sawin_ P1464-M2015-00.stp_[7267848],0
+743,Sawin_ P1464-M2016-00.stp_[7268468],0
+744,Millin_ P1464-M2016-00.stp_[7268468],0
+745,Sawin_ P1464-M2017-00.stp_[7269980],0
+746,Sawin_ P1464-M2018-00.stp_[7270733],0
+747,Sawin_ P1464-M2020-00.stp_[7271654],0
+748,Millin_ P1464-M2020-00.stp_[7271654],0
+749,Sawin_ P1464-M2025-00.stp_[7272248],0
+750,Sawin_ P1464-M2031-00.stp_[7274976],0
+751,"Picking, pre--cutte_ P1464-M2045-00.stp_[7275100]",0
+752,Pickin_ P1464-M2054-00.stp_[7276589],0
+753,"Picking, pre-cutte_ P1464-M2055-00.stp_[7277682]",0
+754,Milling - OP_ P1464-M2055-00.stp_[7277682],0
+755,Sawin_ P1464-M2057-00.stp_[7278476],0
+756,Millin_ P1464-M2057-00.stp_[7278476],0
+757,Sawin_ P1464-M2059-00.stp_[7279297],0
+758,Sawin_ P1464-M2066-00.stp_[7282747],0
+759,Sawin_ P1464-M3103-00.stp_[7283800],0
+760,Sawin_ P1464-M3105-00.stp_[7284774],0
+761,Sawin_ P1464-M3203-00.stp_[7285159],0
+762,Sawin_ P1464-M3204-00.stp_[7286825],0
+763,Sawin_ P1464-M4001-00.stp_[7287806],0
+764,Sawin_ P1464-M4011-00.stp_[7288826],0
+765,Sawin_ P1464-M2068-00.stp_[7289337],0
+766,Millin_ P1464-M2068-00.stp_[7289337],0
+767,Sawin_ P1464-M3030-00.stp_[7290605],0
+768,Milling - OP_ P1464-M3030-00.stp_[7290605],0
+769,Sawin_ P1464-M3055-00.stp_[7291692],0
+770,Millin_ P1464-M3055-00.stp_[7291692],0
+771,Sawin_ P1464-M3201-00.stp_[7292240],0
+772,Sawin_ P1464-M1012-00.stp_[7302598],0
+773,Millin_ P1464-M1012-00.stp_[7302598],0
+774,Sawin_ P1464-M1022-00.stp_[7308680],0
+775,Millin_ Prototype2-fixture-Main-top.STEP_[7259858],0
+776,Sawin_ P1464-M5006-00.stp_[7313890],0
+777,Sawin_ P1464-M2060-01.stp_[7314593],0
+778,Millin_ ENCODER MOUNT PLATE / 0119073002_[7005-2480-0120],0
+779,Sawin_ GP Z-Adjustment Lever / 26241001_[7005-2580-0006],0
+780,Millin_ GP Z-Adjustment Lever / 26241001_[7005-2580-0006],0
+781,Sawin_ Support block / 07201506_[7005-2580-0007],0
+782,Sawing _ PEU Quick Release RIGHT_[26251090 PEU Filter Holder R V],0
+783,Milling - OP_ PEU Quick Release RIGHT_[26251090 PEU Filter Holder R V],0
+784,Sawing _ PEU Quick Release LEFT_[26251091 PEU Filter Holder L V],0
+785,Milling - OP_ PEU Quick Release LEFT_[26251091 PEU Filter Holder L V],0
+786,Sawin_ 02200903 encoder scale mount bracket V01-01 electropolished / 02200903 V01-01_[7005-2400-0100],0
+787,Sawin_ RM BM MOT PCA INT MID_[00528-11400-A],0
+788,Millin_ RM BM MOT PCA INT MID_[00528-11400-A],0
+789,Sawin_ KR71001001977.stp_[7262799],0
+790,Millin_ KR71001001977.stp_[7262799],0
+791,Sawin_ coil clamp body pin side_[10007434A],0
+792,Millin_ coil clamp body pin side_[10007434A],0
+793,Sawin_ coil clamp body threaded side_[10007432A],0
+794,Millin_ coil clamp body threaded side_[10007432A],0
+795,Picking _ gearbox side cover_[10005158B],0
+796,Millin_ gearbox side cover_[10005158B],0
+797,Sawin_ bearing block small_[10007537A],0
+798,Millin_ bearing block small_[10007537A],0
+799,"Picking, pre-cutte_ HALFFAB_M_BLOCK_RH_LEFT_[104009586]",0
+800,"Picking, pre-cutte_ HALFFAB_M_BLOCK_RH_RIGHT_[104009581]",0
+801,"Picking, pre-cutte_ HALFFAB_M_MOUNTING_BLCK_FRNT_R_[104009583]",0
+802,"Picking, pre-cutte_ HALFFAB_M_MOUNTING_BLCK_FRNT_L_[104009584]",0
+803,Pickin_ C beam v01-03 / 07201507_[7005-2540-0001],0
+804,"Picking, pre-cutte_ NXE RH Gripper LVL Tool Base_[4022.644.3272]",0
+805,"Picking, pre-cutte_ NXE NH Gripper LVL Tool Cover_[4022.644.9779]",0
+806,Sawin_ RMFT Y-actuator power plug_[10007433A],0
+807,Sawin_P1464-M5004-01_[P1464-M5004-0],0
+808,Sawin_P1464-M5024-00_[P1464-M5024-0],0
+809,Sawin_P1464-M5025-00_[P1464-M5025-0],0
+810,Material prep _ [Q] excenter housing z_[1508130 B],0
+811,Milling _ [Q] excenter housing z_[1508130 B],0
+812,BW - Benchwork _ [Q] excenter housing z_[1508130 B],0
+813,Packaging _ [Q] excenter housing z_[1508130 B],0

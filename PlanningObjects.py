@@ -126,6 +126,7 @@ class CustomerOrder():
         self.ProductName = myprodname
         self.Quantity = myqnty
         self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
+        self.ReferenceNumber = 0
 
         # PlANNING
         self.PlannedDelivery = None
@@ -140,6 +141,11 @@ class CustomerOrder():
         return 
     def getRequiredCapacity(self):
         return self.RequiredCapacity
+    def getReferenceNumber(self):
+        return self.ReferenceNumber 
+    def setReferenceNumber(self,refno):
+        self.ReferenceNumber = refno
+        return 
     
         # PlANNING
 
