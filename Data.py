@@ -33,7 +33,10 @@ class DataManager:
         self.Products = dict() # key: Productname, val: ProductObject
         self.CustomerOrders  = dict() # key: Ordername, val: OrderObject
         self.Operations = dict()  # key: OperationName, val: OperationObject
-        self.VisualManager = None
+        self.VisualManager = 
+        self.colabpath = '/content/ProductionPlanning'
+        self.onlineversion = False
+        
         return
 
     
@@ -242,13 +245,20 @@ class DataManager:
         return
 
     def read_dataset(self,b):  
-    
-      
+
+       
         rel_path = self.getVisualManager().getFolderNameTxt().value+'\\'+self.getVisualManager().getCasesDrop().value
 
-        #self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
+
+        if self.onlineversion:
+            abs_file_path = self.colabpath+'/'+rel_path
+        else:
+            abs_file_path = os.path.join(Path.cwd(), rel_path)
+            abs_file_path = os.path.join(Path.cwd(), rel_path)
+
+        self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
         
-        abs_file_path = os.path.join(Path.cwd(), rel_path)
+        
 
         #self.getVisualManager().getCaseInfo().value += ">>> "+abs_file_path+"\n" 
     
