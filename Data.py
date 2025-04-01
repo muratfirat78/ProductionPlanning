@@ -35,7 +35,7 @@ class DataManager:
         self.Operations = dict()  # key: OperationName, val: OperationObject
         self.VisualManager = 
         self.colabpath = '/content/ProductionPlanning'
-        self.onlineversion = False
+        self.onlineversion = True
         
         return
 
