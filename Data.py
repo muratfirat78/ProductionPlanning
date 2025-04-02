@@ -39,7 +39,10 @@ class DataManager:
         
         return
 
-    
+    def setOnlineVersion(self,ver):
+        self.onlineversion = ver
+        return
+        
     def getProducts(self):
         return self.Products
 

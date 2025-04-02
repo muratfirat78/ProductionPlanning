@@ -29,7 +29,7 @@ class VisualManager():
 
 
 
-        self.EditMode = False
+        self.EditMode = True
         self.DataManager = None
         self.PlanningManager = None
         self.ProdSystemTab = None
@@ -92,7 +92,7 @@ class VisualManager():
         self.PLTBStockLevels = None
         self.PLTBCheckRaw = None
         self.PLTBCheckCapacity = None
-        self.PLTBOrders =None
+      
        
         self.CaseInfo = None
 
@@ -105,6 +105,10 @@ class VisualManager():
         return
 
 
+    def setEditMode(self,edit):
+        self.EditMode = edit
+        return
+        
     def getPLTBOrders(self):
         return self.PLTBOrders
 
@@ -570,7 +574,7 @@ class VisualManager():
                 plandays = rawmat.getTargetLevels().keys()
                 values = rawmat.getTargetLevels().values()
     
-                fig = plt.figure(figsize=(7, 4))
+                fig = plt.figure(figsize=(6, 4))
                 ax = plt.subplot(111)
                 ax.plot(plandays,values,  color='blue')
                 ax.set_title('Target Stock Levels '+rawname) 
@@ -597,7 +601,7 @@ class VisualManager():
                 plandays = my_res.getCapacityUsePlan().keys()
                 values = my_res.getCapacityUsePlan().values()
             
-                fig = plt.figure(figsize=(7, 4))
+                fig = plt.figure(figsize=(6, 4))
                 ax = plt.subplot(111)
                 ax.plot(plandays,values,  color='blue')
                 ax.set_title('Capacity Use Plan '+res_name) 
@@ -624,12 +628,11 @@ class VisualManager():
                     if len(myprod.getPredecessors()) == 0:
                         rawlist.append(prodname)
 
-                self.getPLTBrawlist().layout.display = 'block'
-                self.getPLTBrawlist().layout.visibility = 'visible'
+              
                 self.getPLTBrawlist().options = rawlist
                 self.getPLTBrawlist().description = 'Raw Materials'
                 self.getPLTBCheckCapacity().value = False
-                self.getPLTBOrders().value =  False
+       
                 
             
            
@@ -646,36 +649,16 @@ class VisualManager():
                 for resame,myres in sorteddict.items():
                     reslist.append(resame)
 
-                self.getPLTBrawlist().layout.display = 'block'
-                self.getPLTBrawlist().layout.visibility = 'visible'
+              
                 self.getPLTBrawlist().options = reslist
                 self.getPLTBrawlist().description = 'Resources'
                 self.getPLTBCheckRaw().value = False
-                self.getPLTBOrders().value =  False
+              
                 
        
         return
 
-    def DelayCheck(self,event):
-
-        if self.getPLTBOrders().value:
-            if (self.getPLTBCheckRaw().value) or (self.getPLTBCheckCapacity().value):
-                orderlist = [] 
-
-                self.getPLTBrawlist().layout.visibility = 'hidden'
-                self.getPLTBrawlist().layout.display = 'none'
-
-                with self.getPLTBStockLevels():
-                    clear_output()
-
-            
-                self.getPLTBrawlist().options = orderlist
-                self.getPLTBrawlist().description = 'Delays'
-                self.getPLTBCheckRaw().value = False
-                self.getPLTBCheckCapacity().value = False
-                
-       
-        return
+  
 
         
     def generatePLTAB(self):
@@ -701,10 +684,9 @@ class VisualManager():
 
         self.getPLTBCheckCapacity().observe(self.CapCheck)
         self.getPLTBCheckRaw().observe(self.RawCheck)
-        self.getPLTBOrders().observe(self.DelayCheck)
-            
+    
         tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp()
-                                 ,HBox(children=[VBox(children = [HBox(children=[self.getPLTBCheckRaw(),self.getPLTBCheckCapacity(),self.getPLTBOrders()])])
+                                 ,HBox(children=[VBox(children = [HBox(children=[self.getPLTBCheckRaw(),self.getPLTBCheckCapacity()])])
                                                 ]),HBox(children=[ self.getPLTBrawlist(),self.getPLTBStockLevels()])])
 
         tab_3.layout.height = '600px'
