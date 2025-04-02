@@ -255,8 +255,8 @@ class DataManager:
         else:
             abs_file_path = os.path.join(Path.cwd(), rel_path)
           
-        self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
-        self.getVisualManager().getCaseInfo().value += "***** "+abs_file_path+"\n" 
+        #self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
+        #self.getVisualManager().getCaseInfo().value += "***** "+abs_file_path+"\n" 
     
         prodopmatch_df = pd.DataFrame()
         precmatch_df = pd.DataFrame()
@@ -311,7 +311,7 @@ class DataManager:
        
         self.getVisualManager().getCaseInfo().value += ">>> CustomerOrders.. "+str(len(self.CustomerOrders))+"\n" 
         for ordname,myord in self.CustomerOrders.items():
-            self.getVisualManager().getCaseInfo().value += ">>> Product"+myord.getProductName()+" in "+str(myord.getProductName() in self.Products)+"\n" 
+            #self.getVisualManager().getCaseInfo().value += ">>> Product"+myord.getProductName()+" in "+str(myord.getProductName() in self.Products)+"\n" 
             myord.setProduct(self.Products[myord.getProductName()])
             
                     
@@ -331,11 +331,19 @@ class DataManager:
         self.getVisualManager().getCaseInfo().value += ">>> Product-Operations... "+str(len(prodopmatch_df))+"\n" 
                 
         for i,r in prodopmatch_df.iterrows():
-            prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]][0]
-            opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
-    
-            prod.getOperations().insert(r["OperationIndex"],opr)
-            #self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n" 
+            prodlst = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]]
+
+            if len(prodlst) > 0: 
+                prod = prodlst[0]
+                oprlst = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]]
+                if len(oprlst) > 0:
+                    opr = oprlst[0]
+                    prod.getOperations().insert(r["OperationIndex"],opr)
+                else:
+                    self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 
+                    self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+"\n" 
+            else:
+                self.getVisualManager().getCaseInfo().value += "XXXX: Product not found: "+str(r["ProductID"])+"\n" 
 
         self.getVisualManager().getCaseInfo().value += ">>> Operation-Resources... "+str(len(oprsresources_df))+"\n" 
 
@@ -343,7 +351,7 @@ class DataManager:
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
-            self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
+            #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
             
             opr.getRequiredResources().append(res)
     

@@ -92,6 +92,7 @@ class VisualManager():
         self.PLTBStockLevels = None
         self.PLTBCheckRaw = None
         self.PLTBCheckCapacity = None
+        self.PLTBOrders =None
        
         self.CaseInfo = None
 
@@ -99,9 +100,17 @@ class VisualManager():
         self.CasesDrop = None
         self.ReadFileBtn = None
         
+        
   
         return
 
+
+    def getPLTBOrders(self):
+        return self.PLTBOrders
+
+    def setPLTBOrders(self,myitm):
+        self.PLTBOrders= myitm
+        return
 
     def getPLTBCheckCapacity(self):
         return self.PLTBCheckCapacity
@@ -614,10 +623,13 @@ class VisualManager():
                     
                     if len(myprod.getPredecessors()) == 0:
                         rawlist.append(prodname)
-                    
+
+                self.getPLTBrawlist().layout.display = 'block'
+                self.getPLTBrawlist().layout.visibility = 'visible'
                 self.getPLTBrawlist().options = rawlist
                 self.getPLTBrawlist().description = 'Raw Materials'
                 self.getPLTBCheckCapacity().value = False
+                self.getPLTBOrders().value =  False
                 
             
            
@@ -633,10 +645,34 @@ class VisualManager():
                 
                 for resame,myres in sorteddict.items():
                     reslist.append(resame)
-                
+
+                self.getPLTBrawlist().layout.display = 'block'
+                self.getPLTBrawlist().layout.visibility = 'visible'
                 self.getPLTBrawlist().options = reslist
                 self.getPLTBrawlist().description = 'Resources'
                 self.getPLTBCheckRaw().value = False
+                self.getPLTBOrders().value =  False
+                
+       
+        return
+
+    def DelayCheck(self,event):
+
+        if self.getPLTBOrders().value:
+            if (self.getPLTBCheckRaw().value) or (self.getPLTBCheckCapacity().value):
+                orderlist = [] 
+
+                self.getPLTBrawlist().layout.visibility = 'hidden'
+                self.getPLTBrawlist().layout.display = 'none'
+
+                with self.getPLTBStockLevels():
+                    clear_output()
+
+            
+                self.getPLTBrawlist().options = orderlist
+                self.getPLTBrawlist().description = 'Delays'
+                self.getPLTBCheckRaw().value = False
+                self.getPLTBCheckCapacity().value = False
                 
        
         return
@@ -660,15 +696,16 @@ class VisualManager():
 
         self.setPLTBCheckRaw(widgets.Checkbox(False, description='Raw Material'))
         self.setPLTBCheckCapacity(widgets.Checkbox(False, description='Resource Capacity'))
+        self.setPLTBOrders(widgets.Checkbox(False, description='Delays'))
+        
 
         self.getPLTBCheckCapacity().observe(self.CapCheck)
         self.getPLTBCheckRaw().observe(self.RawCheck)
-       
-     
+        self.getPLTBOrders().observe(self.DelayCheck)
             
         tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp()
-                                 ,HBox(children=[VBox(children = [self.getPLTBCheckRaw(),self.getPLTBCheckCapacity(),self.getPLTBrawlist()])
-                                                 ,self.getPLTBStockLevels()])])
+                                 ,HBox(children=[VBox(children = [HBox(children=[self.getPLTBCheckRaw(),self.getPLTBCheckCapacity(),self.getPLTBOrders()])])
+                                                ]),HBox(children=[ self.getPLTBrawlist(),self.getPLTBStockLevels()])])
 
         tab_3.layout.height = '600px'
 
