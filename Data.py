@@ -332,7 +332,7 @@ class DataManager:
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
     
             prod.getOperations().insert(r["OperationIndex"],opr)
-            self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n" 
+            #self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n" 
 
         for i,r in oprsresources_df.iterrows():
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
