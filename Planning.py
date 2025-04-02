@@ -232,7 +232,8 @@ class PlanningManager:
 
         self.getVisualManager().getPLTBresult2exp().value+=">> CapacityUsePlans"+"\n"
         for resame,myres in self.getDataManager().getResources().items():
-            self.getVisualManager().getPLTBresult2exp().value+="   -> "+resame+": "+str([x for x in myres.getCapacityUsePlan().values()])+"\n"
+            if myres.getCapacityUsePlan().values()[len(myres.getCapacityUsePlan().values())-1] > 0:
+                self.getVisualManager().getPLTBresult2exp().value+="   -> "+resame+": "+str([x for x in myres.getCapacityUsePlan().values()])+"\n"
 
         rawlist = []
         #self.getVisualManager().getPLTBresult2exp().value+=">> Required Stock levels"+"\n"
