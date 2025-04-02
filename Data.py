@@ -256,7 +256,7 @@ class DataManager:
             abs_file_path = os.path.join(Path.cwd(), rel_path)
           
         self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
-        self.getVisualManager().getCaseInfo().value += "***** "+abs_file_path+"\n" 
+        self.getVisualManager().getCaseInfo().value += +"***** "+abs_file_path+"\n" 
     
         prodopmatch_df = pd.DataFrame()
         precmatch_df = pd.DataFrame()
@@ -354,7 +354,9 @@ class DataManager:
           
         rel_path = self.getVisualManager().getFolderNameTxt().value
        
-        abs_file_path = os.path.join(Path.cwd(),rel_path)
+        abs_file_path = os.path.join(Path.cwd(),rel_path
+
+        self.getVisualManager().getCaseInfo().value += "->"+abs_file_path+"\n"                            
         
         for root, dirs, files in os.walk(abs_file_path):
             for mydir in dirs:
