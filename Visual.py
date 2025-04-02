@@ -511,7 +511,7 @@ class VisualManager():
     def Rawclick(self,event):  
         rawname = self.getPLTBrawlist().value
         rawmat = None
-        self.getPLTBresult2exp().value+="raw..."+str(rawname)+"\n"
+        #self.getPLTBresult2exp().value+="raw..."+str(rawname)+"\n"
 
         for prodname,myprod in self.DataManager.getProducts().items():
             if len(myprod.getPredecessors()) == 0:
@@ -522,7 +522,7 @@ class VisualManager():
         if rawmat == None:
             return
             
-        self.getPLTBresult2exp().value+="raw..found.."+str(len(rawmat.getTargetLevels()))+"\n"
+        #self.getPLTBresult2exp().value+="raw..found.."+str(len(rawmat.getTargetLevels()))+"\n"
         
         with self.getPLTBStockLevels():
             clear_output()
