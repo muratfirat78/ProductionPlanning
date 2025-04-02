@@ -42,6 +42,9 @@ class DataManager:
     def setOnlineVersion(self,ver):
         self.onlineversion = ver
         return
+
+    def isOnlineVersion(self):
+        return self.onlineversion 
         
     def getProducts(self):
         return self.Products
