@@ -86,7 +86,10 @@ class VisualManager():
 
 
         self.PLTBres2lay = None
+        self.PLTBmakeplan_btn = None
+        self.PLTBrawlist = None
         self.PLTBresult2exp = None
+        self.PLTBStockLevels = None
 
        
         self.CaseInfo = None
@@ -94,10 +97,23 @@ class VisualManager():
         self.FolderNameTxt = None
         self.CasesDrop = None
         self.ReadFileBtn = None
-        self.PLTBmakeplan_btn = None
+        
   
         return
 
+    def getPLTBStockLevels(self):
+        return self.PLTBStockLevels
+
+    def setPLTBStockLevels(self,myitm):
+        self.PLTBStockLevels = myitm
+        return 
+
+    def getPLTBrawlist(self):
+        return self.PLTBrawlist
+
+    def setPLTBrawlist(self,myitm):
+        self.PLTBrawlist = myitm
+        return 
     def getPlanningManager(self):
         return self.PlanningManager
 
@@ -492,6 +508,34 @@ class VisualManager():
         return
 
 
+    def Rawclick(self,event):  
+        rawname = self.getPLTBrawlist().value
+        rawmat = None
+        self.getPLTBresult2exp().value+="raw..."+str(rawname)+"\n"
+
+        for prodname,myprod in self.DataManager.getProducts().items():
+            if len(myprod.getPredecessors()) == 0:
+                if rawname == prodname:
+                    rawmat = myprod
+                    break
+
+        if rawmat == None:
+            return
+            
+        self.getPLTBresult2exp().value+="raw..found.."+str(len(rawmat.getTargetLevels()))+"\n"
+        
+        with self.getPLTBStockLevels():
+            clear_output()
+            plandays = rawmat.getTargetLevels().keys()
+            values = rawmat.getTargetLevels().values()
+
+            fig = plt.figure(figsize=(10, 4))
+            ax = plt.subplot(111)
+            ax.plot(plandays,values,  color='blue')
+            plt.xticks(rotation=-45)
+            plt.tight_layout()
+            plt.show()
+
         
     def generatePLTAB(self):
 
@@ -502,8 +546,17 @@ class VisualManager():
 
         self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan"))
         self.getPLTBmakeplan_btn().on_click(self.getPlanningManager().MakeDeliveryPlan)
-        
-        tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp()])
+
+        self.setPLTBrawlist(widgets.Select(options=[],description = 'Raw Materials'))
+        self.getPLTBrawlist().layout.height = '200px'
+        self.getPLTBrawlist().observe(self.Rawclick)
+
+        self.setPLTBStockLevels(widgets.Output())
+     
+            
+        tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp(),HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()])])
+
+        tab_3.layout.height = '500px'
 
         itemstohide = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBres_lbl(),
         self.getPSTBaddres_btn(),self.getPSTBcanclres_btn(),self.getPSTBtyp_lbl(),

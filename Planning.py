@@ -180,9 +180,9 @@ class PlanningManager:
         #self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
 
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
-         
-            deadline = datetime(myord.getDeadLine().year,myord.getDeadLine().month,myord.getDeadLine().day)
-            for curr_deliverydate in pd.date_range(max(deadline,self.getPHStart()),self.getPHEnd()):
+
+            
+            for curr_deliverydate in pd.date_range(max(myord.getDeadLine().date(),self.getPHStart()),self.getPHEnd()):
            
                 #self.getVisualManager().getPLTBresult2exp().value+=".... "+myord.getName()+", "+myord.getProduct().getName()+"\n"
                 if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
@@ -234,10 +234,15 @@ class PlanningManager:
         for resame,myres in self.getDataManager().getResources().items():
             self.getVisualManager().getPLTBresult2exp().value+="   -> "+resame+": "+str([x for x in myres.getCapacityUsePlan().values()])+"\n"
 
+        rawlist = []
         self.getVisualManager().getPLTBresult2exp().value+=">> Required Stock levels"+"\n"
         for prodname,myprod in self.getDataManager().getProducts().items():
+            
             if len(myprod.getPredecessors()) == 0:
+                rawlist.append(prodname)
                 self.getVisualManager().getPLTBresult2exp().value+="   -> Raw: "+prodname+", "+str([y for x,y in myprod.getTargetLevels().items()])+"\n"
+
+        self.getVisualManager().getPLTBrawlist().options = rawlist
 
         return 
 
