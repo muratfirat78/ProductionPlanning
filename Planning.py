@@ -148,6 +148,7 @@ class PlanningManager:
         self.setPHEnd(sortedtuples[-1][1].getDeadLine()+timedelta(days=21))  
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
+ 
 
         # Create time-dependant lists: Capacity levels of resources, stock levels of raw materials
 
@@ -180,8 +181,8 @@ class PlanningManager:
 
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
          
-
-            for curr_deliverydate in pd.date_range(max(myord.getDeadLine(),self.getPHStart()),self.getPHEnd()):
+            deadline = datetime(myord.getDeadLine().year,myord.getDeadLine().month,myord.getDeadLine().day)
+            for curr_deliverydate in pd.date_range(max(deadline,self.getPHStart()),self.getPHEnd()):
            
                 #self.getVisualManager().getPLTBresult2exp().value+=".... "+myord.getName()+", "+myord.getProduct().getName()+"\n"
                 if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
