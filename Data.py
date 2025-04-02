@@ -247,7 +247,7 @@ class DataManager:
     def read_dataset(self,b):  
 
        
-        rel_path = self.getVisualManager().getFolderNameTxt().value+'\\'+self.getVisualManager().getCasesDrop().value
+        rel_path = self.getVisualManager().getFolderNameTxt().value+'/'+self.getVisualManager().getCasesDrop().value
 
 
         if self.onlineversion:
