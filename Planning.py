@@ -235,12 +235,12 @@ class PlanningManager:
             self.getVisualManager().getPLTBresult2exp().value+="   -> "+resame+": "+str([x for x in myres.getCapacityUsePlan().values()])+"\n"
 
         rawlist = []
-        self.getVisualManager().getPLTBresult2exp().value+=">> Required Stock levels"+"\n"
+        #self.getVisualManager().getPLTBresult2exp().value+=">> Required Stock levels"+"\n"
         for prodname,myprod in self.getDataManager().getProducts().items():
             
             if len(myprod.getPredecessors()) == 0:
                 rawlist.append(prodname)
-                self.getVisualManager().getPLTBresult2exp().value+="   -> Raw: "+prodname+", "+str([y for x,y in myprod.getTargetLevels().items()])+"\n"
+                #self.getVisualManager().getPLTBresult2exp().value+="   -> Raw: "+prodname+", "+str([y for x,y in myprod.getTargetLevels().items()])+"\n"
 
         self.getVisualManager().getPLTBrawlist().options = rawlist
 
