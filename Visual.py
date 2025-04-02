@@ -532,6 +532,7 @@ class VisualManager():
             fig = plt.figure(figsize=(10, 4))
             ax = plt.subplot(111)
             ax.plot(plandays,values,  color='blue')
+            ax.set_title('Target Stock Levels '+rawname) 
             plt.xticks(rotation=-45)
             plt.tight_layout()
             plt.show()
@@ -556,7 +557,7 @@ class VisualManager():
             
         tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp(),HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()])])
 
-        tab_3.layout.height = '500px'
+        tab_3.layout.height = '550px'
 
         itemstohide = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBres_lbl(),
         self.getPSTBaddres_btn(),self.getPSTBcanclres_btn(),self.getPSTBtyp_lbl(),
