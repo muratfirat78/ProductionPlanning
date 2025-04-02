@@ -1,7 +1,0 @@
-ResourceID,ResourceType,Name,DailyCapacity
-0,machine,Resource1,16
-1,machine,Resource2,18
-2,machine,Resource3,12
-3,machine,Resource4,18
-4,machine,Resource5,12
-5,machine,Resource6,24
