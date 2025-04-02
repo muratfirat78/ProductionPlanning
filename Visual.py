@@ -90,7 +90,8 @@ class VisualManager():
         self.PLTBrawlist = None
         self.PLTBresult2exp = None
         self.PLTBStockLevels = None
-
+        self.PLTBCheckRaw = None
+        self.PLTBCheckCapacity = None
        
         self.CaseInfo = None
 
@@ -101,6 +102,19 @@ class VisualManager():
   
         return
 
+
+    def getPLTBCheckCapacity(self):
+        return self.PLTBCheckCapacity
+
+    def setPLTBCheckCapacity(self,myitm):
+        self.PLTBCheckCapacity= myitm
+        return
+    def getPLTBCheckRaw(self):
+        return self.PLTBCheckRaw
+
+    def setPLTBCheckRaw(self,myitm):
+        self.PLTBCheckRaw = myitm
+        return 
     def getPLTBStockLevels(self):
         return self.PLTBStockLevels
 
@@ -509,33 +523,123 @@ class VisualManager():
 
 
     def Rawclick(self,event):  
-        rawname = self.getPLTBrawlist().value
-        rawmat = None
+ 
         #self.getPLTBresult2exp().value+="raw..."+str(rawname)+"\n"
-
-        for prodname,myprod in self.DataManager.getProducts().items():
-            if len(myprod.getPredecessors()) == 0:
-                if rawname == prodname:
-                    rawmat = myprod
-                    break
-
-        if rawmat == None:
-            return
-            
-        #self.getPLTBresult2exp().value+="raw..found.."+str(len(rawmat.getTargetLevels()))+"\n"
         
-        with self.getPLTBStockLevels():
-            clear_output()
-            plandays = rawmat.getTargetLevels().keys()
-            values = rawmat.getTargetLevels().values()
+        if (event['name']  == "_options_labels") or (event['name']  == "options"):
+            return
 
-            fig = plt.figure(figsize=(10, 4))
-            ax = plt.subplot(111)
-            ax.plot(plandays,values,  color='blue')
-            ax.set_title('Target Stock Levels '+rawname) 
-            plt.xticks(rotation=-45)
-            plt.tight_layout()
-            plt.show()
+       
+        if not "new" in event:
+            return
+
+        if not "index" in event['new']:
+            return
+
+        
+        selected = self.getPLTBrawlist().options[event["new"]["index"]]
+
+       
+
+        if self.getPLTBCheckRaw().value: 
+            rawname = selected
+           
+            rawmat = None
+            for prodname,myprod in self.DataManager.getProducts().items():
+                if len(myprod.getPredecessors()) == 0:
+                    if rawname == prodname:
+                        rawmat = myprod
+                        break
+    
+            if rawmat == None:
+                return
+            
+            
+            
+            with self.getPLTBStockLevels():
+                clear_output()
+                plandays = rawmat.getTargetLevels().keys()
+                values = rawmat.getTargetLevels().values()
+    
+                fig = plt.figure(figsize=(7, 4))
+                ax = plt.subplot(111)
+                ax.plot(plandays,values,  color='blue')
+                ax.set_title('Target Stock Levels '+rawname) 
+                plt.xticks(rotation=-45)
+                plt.tight_layout()
+                plt.show()
+                
+        if self.getPLTBCheckCapacity().value:
+            res_name = selected
+           
+            my_res = None
+            
+            for resame,myres in self.DataManager.getResources().items():
+                if resame == res_name:
+                    my_res = myres
+                    break
+    
+            if my_res == None:
+                return
+
+
+            with self.getPLTBStockLevels():
+                clear_output()
+                plandays = my_res.getCapacityUsePlan().keys()
+                values = my_res.getCapacityUsePlan().values()
+            
+                fig = plt.figure(figsize=(7, 4))
+                ax = plt.subplot(111)
+                ax.plot(plandays,values,  color='blue')
+                ax.set_title('Capacity Use Plan '+res_name) 
+                plt.xticks(rotation=-45)
+                plt.tight_layout()
+                plt.show()
+                
+            
+
+
+    
+    def RawCheck(self,event):
+
+        with self.getPLTBStockLevels():
+                clear_output()
+
+        if self.getPLTBCheckRaw().value:
+            if self.getPLTBCheckCapacity().value:
+                rawlist = []
+             
+                sorteddict = dict(sorted(self.DataManager.getProducts().items(), key=lambda item: -sum([x for x in item[1].getTargetLevels().values()])))
+                for prodname,myprod in sorteddict.items():
+                    
+                    if len(myprod.getPredecessors()) == 0:
+                        rawlist.append(prodname)
+                    
+                self.getPLTBrawlist().options = rawlist
+                self.getPLTBrawlist().description = 'Raw Materials'
+                self.getPLTBCheckCapacity().value = False
+                
+            
+           
+        return
+        
+    def CapCheck(self,event):
+
+        if self.getPLTBCheckCapacity().value:
+            if self.getPLTBCheckRaw().value:
+                reslist = [] 
+
+                sorteddict = dict(sorted(self.DataManager.getResources().items(), key=lambda item: -sum([x for x in item[1].getCapacityUsePlan().values()])))
+                
+                for resame,myres in sorteddict.items():
+                    reslist.append(resame)
+                
+                self.getPLTBrawlist().options = reslist
+                self.getPLTBrawlist().description = 'Resources'
+                self.getPLTBCheckRaw().value = False
+                
+       
+        return
 
         
     def generatePLTAB(self):
@@ -548,16 +652,25 @@ class VisualManager():
         self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan"))
         self.getPLTBmakeplan_btn().on_click(self.getPlanningManager().MakeDeliveryPlan)
 
-        self.setPLTBrawlist(widgets.Select(options=[],description = 'Raw Materials'))
+        self.setPLTBrawlist(widgets.Select(options=[],description = ''))
         self.getPLTBrawlist().layout.height = '200px'
         self.getPLTBrawlist().observe(self.Rawclick)
 
         self.setPLTBStockLevels(widgets.Output())
+
+        self.setPLTBCheckRaw(widgets.Checkbox(False, description='Raw Material'))
+        self.setPLTBCheckCapacity(widgets.Checkbox(False, description='Resource Capacity'))
+
+        self.getPLTBCheckCapacity().observe(self.CapCheck)
+        self.getPLTBCheckRaw().observe(self.RawCheck)
+       
      
             
-        tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp(),HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()])])
+        tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp()
+                                 ,HBox(children=[VBox(children = [self.getPLTBCheckRaw(),self.getPLTBCheckCapacity(),self.getPLTBrawlist()])
+                                                 ,self.getPLTBStockLevels()])])
 
-        tab_3.layout.height = '575px'
+        tab_3.layout.height = '600px'
 
         itemstohide = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBres_lbl(),
         self.getPSTBaddres_btn(),self.getPSTBcanclres_btn(),self.getPSTBtyp_lbl(),

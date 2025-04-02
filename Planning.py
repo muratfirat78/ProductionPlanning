@@ -88,18 +88,19 @@ class PlanningManager:
     
                 
                 totaltime+=resource_use
+                self.getVisualManager().getPLTBresult2exp().value+=str(operation.getName())+">> "+str(len(operation.getRequiredResources()))+"\n"
                 for resource in operation.getRequiredResources():
                     #self.getVisualManager().getPLTBresult2exp().value+="Resurce.. "+resource.getName()+"  "+str(mydate in resource.getCapacityLevels())+"\n"
     
                     if mydate in resource.getCapacityLevels():
                         #self.getVisualManager().getPLTBresult2exp().value+="date in capacitylevels.."+"\n"
-                        
+
                         if mydate in resource.getCapacityReserved():
                             resource.getCapacityReserved()[mydate]+=resource_use
                         else:
                             resource.getCapacityReserved()[mydate] =resource_use
 
-                        #self.getVisualManager().getPLTBresult2exp().value+="cap reserved..."+str(resource.getCapacityReserved()[mydate])+"\n"
+                        self.getVisualManager().getPLTBresult2exp().value+="cap reserved..."+str(resource.getName())+"-"+str(mydate)+str(resource.getCapacityReserved()[mydate])+":: "+str(resource_use)+"\n"
 
                         usedcapacity = 0
                         if mydate in resource.getCapacityUsePlan():
@@ -193,7 +194,7 @@ class PlanningManager:
     
                     # apply resource use plan
                     for resname,res in self.getDataManager().getResources().items():
-                        #self.getVisualManager().getPLTBresult2exp().value+="res "+res.getName()+": "+str( res.getCapacityReserved().values())+"\n"
+                        self.getVisualManager().getPLTBresult2exp().value+="res "+res.getName()+": "+str( res.getCapacityReserved().values())+"\n"
                         for mydate,val in res.getCapacityReserved().items():
                             #self.getVisualManager().getPLTBresult2exp().value+=str(mydate)+">>>"+str(self.getPHEnd())+"\n"
                             for curr_date in pd.date_range(mydate,self.getPHEnd()):
@@ -232,18 +233,21 @@ class PlanningManager:
 
         self.getVisualManager().getPLTBresult2exp().value+=">> CapacityUsePlans"+"\n"
         for resame,myres in self.getDataManager().getResources().items():
-            if sum([x for x in myres.getCapacityUsePlan().values()]) > 0:
-                self.getVisualManager().getPLTBresult2exp().value+="   -> "+resame+": "+str([x for x in myres.getCapacityUsePlan().values()])+"\n"
+            #if sum([x for x in myres.getCapacityUsePlan().values()]) > 0:
+            self.getVisualManager().getPLTBresult2exp().value+="   -> "+resame+": "+str([x for x in myres.getCapacityUsePlan().values()])+"\n"
 
         rawlist = []
         #self.getVisualManager().getPLTBresult2exp().value+=">> Required Stock levels"+"\n"
-        for prodname,myprod in self.getDataManager().getProducts().items():
+        sorteddict = dict(sorted(self.getDataManager().getProducts().items(), key=lambda item: -sum([x for x in item[1].getTargetLevels().values()])))
+        for prodname,myprod in sorteddict.items():
             
             if len(myprod.getPredecessors()) == 0:
                 rawlist.append(prodname)
                 #self.getVisualManager().getPLTBresult2exp().value+="   -> Raw: "+prodname+", "+str([y for x,y in myprod.getTargetLevels().items()])+"\n"
 
         self.getVisualManager().getPLTBrawlist().options = rawlist
+
+        self.getVisualManager().getPLTBCheckRaw().value = True
 
         return 
 

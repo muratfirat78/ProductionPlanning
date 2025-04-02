@@ -306,6 +306,7 @@ class DataManager:
 
                 if file == "ResourcesOperations.csv": 
                     oprsresources_df = pd.read_csv(abs_file_path+'/'+file)
+                    self.getVisualManager().getCaseInfo().value += "ResourcesOperations: "+str(len(oprsresources_df))+"\n"  
 
        
         self.getVisualManager().getCaseInfo().value += ">>> CustomerOrders.. "+str(len(self.CustomerOrders))+"\n" 
@@ -325,7 +326,9 @@ class DataManager:
             predecessor.setSuccessor(successor)
             successor.getPredecessors().append(predecessor)
             successor.getMPredecessors()[predecessor] = r["Multiplier"]
-            self.getVisualManager().getCaseInfo().value += "successor: "+str(successor.getName())+" has "+str(len(successor.getPredecessors()))+"\n" 
+            #self.getVisualManager().getCaseInfo().value += "successor: "+str(successor.getName())+" has "+str(len(successor.getPredecessors()))+"\n" 
+
+        self.getVisualManager().getCaseInfo().value += ">>> Product-Operations... "+str(len(prodopmatch_df))+"\n" 
                 
         for i,r in prodopmatch_df.iterrows():
             prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]][0]
@@ -334,10 +337,14 @@ class DataManager:
             prod.getOperations().insert(r["OperationIndex"],opr)
             #self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n" 
 
+        self.getVisualManager().getCaseInfo().value += ">>> Operation-Resources... "+str(len(oprsresources_df))+"\n" 
+
         for i,r in oprsresources_df.iterrows():
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
+            self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
+            
             opr.getRequiredResources().append(res)
     
         
