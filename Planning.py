@@ -181,7 +181,7 @@ class PlanningManager:
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
          
 
-            for curr_deliverydate in pd.date_range(myord.getDeadLine(),self.getPHEnd()):
+            for curr_deliverydate in pd.date_range(max(myord.getDeadLine(),self.getPHStart()),self.getPHEnd()):
            
                 #self.getVisualManager().getPLTBresult2exp().value+=".... "+myord.getName()+", "+myord.getProduct().getName()+"\n"
                 if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
