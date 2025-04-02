@@ -557,7 +557,7 @@ class VisualManager():
             
         tab_3 = VBox(children = [self.getPLTBmakeplan_btn(),self.getPLTBresult2exp(),HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()])])
 
-        tab_3.layout.height = '550px'
+        tab_3.layout.height = '575px'
 
         itemstohide = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBres_lbl(),
         self.getPSTBaddres_btn(),self.getPSTBcanclres_btn(),self.getPSTBtyp_lbl(),
