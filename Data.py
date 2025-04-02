@@ -354,7 +354,7 @@ class DataManager:
           
         rel_path = self.getVisualManager().getFolderNameTxt().value
        
-        abs_file_path = os.path.join(Path.cwd(),rel_path
+        abs_file_path = os.path.join(Path.cwd(),rel_path)
 
         self.getVisualManager().getCaseInfo().value += "->"+abs_file_path+"\n"                            
         
