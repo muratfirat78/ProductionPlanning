@@ -542,13 +542,6 @@ class VisualManager():
         if (event['name']  == "_options_labels") or (event['name']  == "options"):
             return
 
-       
-        if not "new" in event:
-            return
-
-        if not "index" in event['new']:
-            return
-
         
         selected = self.getPLTBrawlist().options[event["new"]["index"]]
 
