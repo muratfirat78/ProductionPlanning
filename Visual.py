@@ -107,7 +107,6 @@ class VisualManager():
 
     def setEditMode(self,edit):
         self.EditMode = edit
-        return
         
     def getPLTBOrders(self):
         return self.PLTBOrders
@@ -542,9 +541,18 @@ class VisualManager():
         if (event['name']  == "_options_labels") or (event['name']  == "options"):
             return
 
-        
-        selected = self.getPLTBrawlist().options[event["new"]["index"]]
 
+        if not self.DataManager.isOnlineVersion():
+            if not "new" in event:
+                return
+    
+            if not "index" in event['new']:
+                return
+
+            selected = self.getPLTBrawlist().options[event["new"]["index"]]
+        else:
+            
+            selected = self.getPLTBrawlist().value
        
 
         if self.getPLTBCheckRaw().value: 
