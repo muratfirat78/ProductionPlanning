@@ -89,6 +89,11 @@ class PlanningManager:
             else:
                 product.getReservedStockLevels()[mydate]=quantity
         else:
+            
+            if mydate in product.getReservedStockLevels():
+                product.getReservedStockLevels()[mydate]+=quantity
+            else:
+                product.getReservedStockLevels()[mydate]=quantity
             totaltime = 0 
             for operation in product.getOperations():
                 
@@ -144,6 +149,7 @@ class PlanningManager:
         return True
         
 
+    
 
     def MakeDeliveryPlan(self,b):
         ''' This function construct a delivery plan for every customer orders as follows: 
@@ -182,8 +188,7 @@ class PlanningManager:
                 res.getCapacityUsePlan()[curr_date] = 0
 
         for prname,prod in self.getDataManager().getProducts().items():
-            if len(prod.getMPredecessors()) > 0: 
-                continue
+          
             prod.getTargetLevels().clear()
             prod.getReservedStockLevels().clear()
             for curr_date in daterange:
@@ -225,10 +230,7 @@ class PlanningManager:
                     # update target stock levels
                     #self.getVisualManager().getPLTBresult2exp().value+="stock levels... "+"\n"
                     for prname,prod in self.getDataManager().getProducts().items():
-                        if len(prod.getMPredecessors()) > 0: 
-                            continue
-
-                        
+                    
                         for mydate,lvl in prod.getReservedStockLevels().items():
                             for curr_date in pd.date_range(mydate,self.getPHEnd()):
                                 if not curr_date in prod.getTargetLevels():
@@ -275,9 +277,69 @@ class PlanningManager:
         self.getVisualManager().getPLTBrawlist().description = 'Raw Materials'
         self.getVisualManager().getPLTBrawlist().options = rawlist
 
+        
+        self.getVisualManager().getPSchResources().options = [resname for resname in self.getDataManager().getResources().keys()] 
+
+        self.getVisualManager().getPLTBresult2exp().value+=" Job creation starts.."+"\n"
+        
+        for prname,prod in self.getDataManager().getProducts().items():
+          
+            produced_level = 0
+            timeiter = 0
+            jobdict = dict() # key: operation, #val: number of produced
+            for operation in prod.getOperations():
+                jobdict[operation] = 0
+            
+            self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+"Trglvls"+str(len(prod.getTargetLevels()))+"Ops"+str(len(prod.getOperations()))+".."+"\n"
+            for mydate,val in prod.getTargetLevels().items():
+
+                if val == 0:
+                    continue
+                for operation in prod.getOperations():
+                    #self.getVisualManager().getPLTBresult2exp().value+=" REs "+str(len(operation.getRequiredResources()))+".."+"\n"
+                    #self.getVisualManager().getPLTBresult2exp().value+=" Opr "+operation.getName()+", "+str(val)+":"+str(jobdict[operation])+"\n"   
+                    for res in operation.getRequiredResources():
+                        #self.getVisualManager().getPLTBresult2exp().value+=" Res "+res.getName()+" batch"+str(res.getBatchSize())+str(val - jobdict[operation] >= res.getBatchSize())+"\n"
+                        if (val - jobdict[operation] >= res.getBatchSize()):
+                            self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(jobdict[operation])+"\n"   
+                            jobsize =res.getBatchSize()*( (val - jobdict[operation])//res.getBatchSize())+res.getBatchSize()*int((val - jobdict[operation])%res.getBatchSize() > 0)    
+                                
+                            myjob =  Job(len(res.getJobs()),"Job_"+str(len(res.getJobs())),prod,operation,res,jobsize,mydate)
+                            self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+','+str(res.getName())+", Q:"+str(jobsize)+"\n"
+                            jobdict[operation]+=jobsize
+                            if not prod in res.getJobs():
+                                res.getJobs()[prod] = []
+                                    
+                            res.getJobs()[prod].append(myjob)
+                            break # only for the simple case: One resource per operation. 
+
+                   
+
+                timeiter+=1
+            
+                
+                    
+
+           
+                    
+
+                            
+
+        
+                        
+            
+
+        
+        
+
         self.getVisualManager().getPLTBCheckRaw().value = True
 
         return 
 
+    def MakeSchedule(self,b):   
+
+
         
+
+        return
 

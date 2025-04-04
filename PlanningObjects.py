@@ -70,12 +70,19 @@ class Resource():
         # PlANNING
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
+        self.CapacityReserved = dict() 
         # PlANNING
 
-        self.CapacityReserved = dict() 
+        # SCHEDULING 
+
+        self.batchsize = 50 # to be changed..
+        self.Jobs = dict() # key: product, #val: list of job objects
+
+        # SCHEDULING 
 
 
-    # PlANNING
+    def getBatchSize(self):
+        return self.batchsize 
     def getCapacityLevels(self):
         return self.CapacityLevels
     def getCapacityReserved(self):
@@ -96,6 +103,9 @@ class Resource():
         return self.DayCapacity
     def getOperations(self):
         return self.Operations
+
+    def getJobs(self):
+        return self.Jobs 
     
 class Operation():
     # Operation(r["OperationID"],r["Name"],r["ProcessTime"])
@@ -104,6 +114,7 @@ class Operation():
         self.Name = myname
         self.ProcessTime = myproctime
         self.RequiredResources = []
+        self.Jobs = []
     
     def getID(self):
         return self.ID
@@ -114,8 +125,33 @@ class Operation():
     def getRequiredResources(self):
         return self.RequiredResources
 
+class Job():
+    # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
+    def __init__(self,myid,myname,myprod,myopr,myres,myqnty,myddline):
+        self.ID = myid
+        self.Name = myname
+        self.Operation = myopr
+        self.Resource = myres
+        self.Product = myprod
+        self.Quantity = myqnty
+        self.DeadLine = myddline
 
-        
+    def getID(self):
+        return self.ID
+    def getName(self):
+        return self.Name
+    def getResource(self):
+        return self.Resource
+    def getProduct(self):
+        return self.Product
+    def getOperation(self):
+        return self.Operation
+    def getQuantity(self):
+        return self.Quantity
+    def getDeadLine(self):
+        return self.DeadLine
+    
+    
 class CustomerOrder():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
     def __init__(self,myid,myname,myprodid,myprodname,myqnty,myddline):
@@ -167,5 +203,6 @@ class CustomerOrder():
         return self.DeadLine
     def getProductName(self):
         return self.ProductName
+
 
 

@@ -92,7 +92,12 @@ class VisualManager():
         self.PLTBStockLevels = None
         self.PLTBCheckRaw = None
         self.PLTBCheckCapacity = None
-      
+
+        self.PSchTBmakesch_btn = None
+        self.PSchJoblist = None
+        self.PSchResources = None
+        self.PSchScheRes = None
+        
        
         self.CaseInfo = None
 
@@ -103,6 +108,36 @@ class VisualManager():
         
   
         return
+        
+    def setPSchScheRes(self,myitm):
+        self.PSchScheRes = myitm
+        return
+        
+    def getPSchScheRes(self):
+        return self.PSchScheRes
+
+
+    def setPSchResources(self,myitm):
+        self.PSchResources = myitm
+        return
+        
+    def getPSchResources(self):
+        return self.PSchResources
+
+    def setPSchJoblist(self,myitm):
+        self.PSchJoblist = myitm
+        return
+        
+    def getPSchJoblist(self):
+        return self.PSchJoblist
+
+
+    def setPSchTBmakesch_btn(self,myitm):
+        self.PSchTBmakesch_btn = myitm
+        return
+        
+    def getPSchTBmakesch_btn(self):
+        return self.PSchTBmakesch_btn
 
 
     def setEditMode(self,edit):
@@ -659,7 +694,59 @@ class VisualManager():
        
         return
 
-  
+    def ShowJobs(self,event):
+
+
+        selectedres = self.getPSchResources().value
+
+        if selectedres == None:
+            return
+
+        if selectedres == '':
+            return
+
+        joblist = [] 
+        for resname,res in self.DataManager.getResources().items():
+            if selectedres == resname:
+                for prod,jobs in res.getJobs().items():
+                    for job in jobs:
+                        joblist.append(prod.getName()+job.getName())
+
+        
+             
+        self.getPSchJoblist().options = joblist      
+       
+        return
+
+
+
+    def generatePSschTAB(self):
+    
+
+        self.setPSchScheRes(widgets.Textarea(value='', placeholder='',description='Schedule',disabled=True))
+     
+        self.getPSchScheRes().layout.height = '150px'
+        self.getPSchScheRes().layout.width = "90%"
+
+        self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
+        self.getPSchTBmakesch_btn().on_click(self.getPlanningManager().MakeSchedule)
+
+        self.setPSchJoblist(widgets.Select(options=[],description = 'Jobs'))
+        self.getPSchJoblist().layout.height = '250px'
+        #self.getPSchJoblist().observe(self.Rawclick)
+
+        #self.setPLTBStockLevels(widgets.Output())
+
+
+        self.setPSchResources(widgets.Dropdown(options=[], description='Resources:'))
+        self.getPSchResources().observe(self.ShowJobs)
+    
+        tab_sch = VBox(children = [HBox(children=[self.getPSchTBmakesch_btn(),self.getPSchResources(),self.getPSchJoblist()]),self.getPSchScheRes()])
+
+        tab_sch.layout.height = '600px'
+          
+        return tab_sch
+
 
         
     def generatePLTAB(self):
