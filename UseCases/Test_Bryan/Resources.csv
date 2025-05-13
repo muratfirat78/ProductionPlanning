@@ -1,0 +1,16 @@
+ResourceID,ResourceType,Name,DailyCapacity
+0,Manual,MP2 - Material preparation - manual sawing (ZGN_02),16
+1,Machine,M3-01 - Accuwell - 3axis - Manual (FR3_01),16
+2,Machine,BW - Benchwork (BKW_01),16
+3,Machine,PACK - Packaging (VERP_P),16
+4,Machine,OUT - Outsourced activity,16
+5,Machine,MP1 - Material preparation - automatic sawing (ZGN_01),16
+6,Machine,M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),16
+7,Machine,M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),16
+8,Machine,M5-03 - Haas - 5axis - Manual (UMC750),16
+9,Machine,M3-02 - Accuwell - 3axis - Manual (FR3_02),16
+10,Machine,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",16
+11,Machine,M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),16
+12,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),16
+13,Machine,M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),16
+14,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),16
