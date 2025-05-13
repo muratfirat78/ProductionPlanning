@@ -69,8 +69,16 @@ class DataManager:
 
     
         return
-    
-     
+
+    def getJobID(self):
+
+        jobid = 0
+
+        for resname,res in self.Resources.items():
+             for prod,jobs in res.getJobs().items():
+                 jobid+=len(jobs)
+
+        return jobid
     def CreateOperation(self,info,oprlist):
 
         name, processtime = info

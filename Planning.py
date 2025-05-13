@@ -19,6 +19,8 @@ from Data import *
 
 
 #######################################################################################################################
+
+
         
 class PlanningManager:
     def __init__(self): 
@@ -28,11 +30,18 @@ class PlanningManager:
         self.logdata = dict()
         self.PHStart = None
         self.PHEnd = None
+    
+    
    
     def setDataManager(self,DataMgr):
         self.DataManager = DataMgr 
         return
 
+    def getJobs(self):
+        return 
+
+    
+        
     def getPHStart(self):
         return self.PHStart 
         
@@ -303,8 +312,10 @@ class PlanningManager:
                         if (val - jobdict[operation] >= res.getBatchSize()):
                             self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(jobdict[operation])+"\n"   
                             jobsize =res.getBatchSize()*( (val - jobdict[operation])//res.getBatchSize())+res.getBatchSize()*int((val - jobdict[operation])%res.getBatchSize() > 0)    
-                                
-                            myjob =  Job(len(res.getJobs()),"Job_"+str(len(res.getJobs())),prod,operation,res,jobsize,mydate)
+
+                            jobid = self.getDataManager().getJobID()
+                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,res,jobsize,mydate)
+                            
                             self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+','+str(res.getName())+", Q:"+str(jobsize)+"\n"
                             jobdict[operation]+=jobsize
                             if not prod in res.getJobs():
