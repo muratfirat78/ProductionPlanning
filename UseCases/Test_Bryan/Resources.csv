@@ -1,0 +1,30 @@
+ResourceID,ResourceType,Name,DailyCapacity
+0,Manual,MP2 - Material preparation - manual sawing (ZGN_02),15
+1,Machine,M3-01 - Accuwell - 3axis - Manual (FR3_01),15
+2,Machine,BW - Benchwork (BKW_01),15
+3,Machine,PACK - Packaging (VERP_P),15
+4,Outsourced,OUT - Outsourced activity_Chromising,10000
+5,Machine,MP1 - Material preparation - automatic sawing (ZGN_01),15
+6,Machine,M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),15
+7,Machine,M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),15
+8,Machine,M5-03 - Haas - 5axis - Manual (UMC750),15
+9,Machine,M3-02 - Accuwell - 3axis - Manual (FR3_02),15
+10,Outsourced,OUT - Outsourced activity_Anodising,10000
+11,Outsourced,OUT - Outsourced activity_Painting,10000
+12,Machine,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",15
+13,Machine,M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),15
+14,Outsourced,OUT - Outsourced activity_Passivating,10000
+15,Outsourced,OUT - Outsourced activity_Cleaning,10000
+16,Outsourced,OUT - Outsourced activity_Sandblasting,10000
+17,Outsourced,OUT - Outsourced activity_Nickel plating,10000
+18,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),15
+19,Machine,M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),15
+20,Outsourced,OUT - Outsourced activity_Anodising + Cleaning,10000
+21,Outsourced,OUT - Outsourced activity_Anodize,10000
+22,Outsourced,OUT - Outsourced activity_Chromatize,10000
+23,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),15
+24,Outsourced,OUT - Outsourced activity_CAM,10000
+25,Outsourced,OUT - Outsourced activity_Nickel Plating,10000
+26,Outsourced,OUT - Outsourced activity_External Milling Tungsten,10000
+27,Outsourced,OUT - Outsourced activity_External Cleaning + RGA,10000
+28,Outsourced,OUT - Outsourced activity_Anodize (clear),10000
