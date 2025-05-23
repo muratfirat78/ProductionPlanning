@@ -17,6 +17,7 @@ from pathlib import Path
 from Visual import *
 from Data import *
 from Planning import *
+from Scheduling import *
 
 DataMgr = DataManager()
 VisMgr = VisualManager()
@@ -26,3 +27,9 @@ PlanningMgr = PlanningManager()
 PlanningMgr.setDataManager(DataMgr)
 PlanningMgr.setVisualManager(VisMgr)
 VisMgr.setPlanningManager(PlanningMgr)
+SchedulingMgr = SchedulingManager()
+SchedulingMgr.setDataManager(DataMgr)
+SchedulingMgr.setVisualManager(VisMgr)
+SchedulingMgr.setPlanningManager(PlanningMgr)
+VisMgr.setSchedulingManager(SchedulingMgr)
+

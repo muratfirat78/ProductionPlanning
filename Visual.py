@@ -32,6 +32,7 @@ class VisualManager():
         self.EditMode = True
         self.DataManager = None
         self.PlanningManager = None
+        self.SchedulingManager = None
         self.ProdSystemTab = None
         
         self.PSTBResList = None
@@ -181,6 +182,14 @@ class VisualManager():
     def setPlanningManager(self,myitm):
         self.PlanningManager = myitm
         return 
+
+    def getSchedulingManager(self):
+        return self.SchedulingManager
+
+    def setSchedulingManager(self,myitm):
+        self.SchedulingManager = myitm
+        return 
+
 
     def getReadFileBtn(self):
         return self.ReadFileBtn
@@ -697,24 +706,28 @@ class VisualManager():
     def ShowJobs(self,event):
 
 
-        selectedres = self.getPSchResources().value
+        selectedopr = self.getPSchResources().value
 
-        if selectedres == None:
+        if selectedopr == None:
             return
 
-        if selectedres == '':
+        if selectedopr == '':
             return
-
-        joblist = [] 
-        for resname,res in self.DataManager.getResources().items():
-            if selectedres == resname:
-                for prod,jobs in res.getJobs().items():
-                    for job in jobs:
-                        joblist.append(prod.getName()+job.getName())
 
         
-             
-        self.getPSchJoblist().options = joblist      
+        self.getPLTBresult2exp().value+=" Selected Prod->"+str(selectedopr)+"\n"
+
+        joblist = [selectedopr]
+        for prname,prod in self.DataManager.getProducts().items():
+            if prod.getName() == selectedopr:
+                for opr in prod.getOperations():
+                    joblist.append("> Opr: "+opr.getName())
+                    for job in opr.getJobs():
+                        joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
+                break
+    
+        
+        self.getPSchJoblist().options = [j for j in joblist]   
        
         return
 
@@ -729,7 +742,7 @@ class VisualManager():
         self.getPSchScheRes().layout.width = "90%"
 
         self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
-        self.getPSchTBmakesch_btn().on_click(self.getPlanningManager().MakeSchedule)
+        self.getPSchTBmakesch_btn().on_click(self.getSchedulingManager().MakeSchedule)
 
         self.setPSchJoblist(widgets.Select(options=[],description = 'Jobs'))
         self.getPSchJoblist().layout.height = '250px'
@@ -738,10 +751,10 @@ class VisualManager():
         #self.setPLTBStockLevels(widgets.Output())
 
 
-        self.setPSchResources(widgets.Dropdown(options=[], description='Resources:'))
+        self.setPSchResources(widgets.Dropdown(options=[], description='Operations:'))
         self.getPSchResources().observe(self.ShowJobs)
     
-        tab_sch = VBox(children = [HBox(children=[self.getPSchTBmakesch_btn(),self.getPSchResources(),self.getPSchJoblist()]),self.getPSchScheRes()])
+        tab_sch = VBox(children = [self.getPSchTBmakesch_btn(),HBox(children=[self.getPSchResources(),self.getPSchJoblist()]),self.getPSchScheRes()])
 
         tab_sch.layout.height = '600px'
           
