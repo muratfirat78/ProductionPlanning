@@ -4,7 +4,7 @@
 from IPython.display import clear_output
 from IPython import display
 from ipywidgets import *
-from datetime import timedelta,date
+from datetime import timedelta,date,datetime,time
 import matplotlib.pyplot as plt
 import warnings
 import seaborn as sns
@@ -175,8 +175,11 @@ class PlanningManager:
         self.getDataManager().setCustomerOrders(mydict)
 
         # determine planning horizon
-        self.setPHStart(date.today()-timedelta(days=18))  # 10 March 2025
-        self.setPHEnd(sortedtuples[-1][1].getDeadLine()+timedelta(days=21))  
+        self.setPHStart(date.today()+timedelta(days=1)) 
+        self.setPHEnd((sortedtuples[-1][1].getDeadLine()+timedelta(days=21)).date())  
+
+        self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(type(self.getPHStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
+ 
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
  
@@ -260,9 +263,7 @@ class PlanningManager:
                             continue
                         prod.getReservedStockLevels().clear()
                 
-                
-            
-            
+     
     
         # END: here is your code to make planning 
         self.getVisualManager().getPLTBresult2exp().value+=">> Deliveries"+"\n"
@@ -287,67 +288,120 @@ class PlanningManager:
         self.getVisualManager().getPLTBrawlist().options = rawlist
 
         
-        self.getVisualManager().getPSchResources().options = [resname for resname in self.getDataManager().getResources().keys()] 
+        
 
         self.getVisualManager().getPLTBresult2exp().value+=" Job creation starts.."+"\n"
+
+        opslist = []
         
         for prname,prod in self.getDataManager().getProducts().items():
           
             produced_level = 0
-            timeiter = 0
-            jobdict = dict() # key: operation, #val: number of produced
-            for operation in prod.getOperations():
-                jobdict[operation] = 0
             
-            self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+"Trglvls"+str(len(prod.getTargetLevels()))+"Ops"+str(len(prod.getOperations()))+".."+"\n"
-            for mydate,val in prod.getTargetLevels().items():
+        
+            orginalList = prod.getOperations()
 
-                if val == 0:
-                    continue
-                for operation in prod.getOperations():
-                    #self.getVisualManager().getPLTBresult2exp().value+=" REs "+str(len(operation.getRequiredResources()))+".."+"\n"
-                    #self.getVisualManager().getPLTBresult2exp().value+=" Opr "+operation.getName()+", "+str(val)+":"+str(jobdict[operation])+"\n"   
-                    for res in operation.getRequiredResources():
-                        #self.getVisualManager().getPLTBresult2exp().value+=" Res "+res.getName()+" batch"+str(res.getBatchSize())+str(val - jobdict[operation] >= res.getBatchSize())+"\n"
-                        if (val - jobdict[operation] >= res.getBatchSize()):
-                            self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(jobdict[operation])+"\n"   
-                            jobsize =res.getBatchSize()*( (val - jobdict[operation])//res.getBatchSize())+res.getBatchSize()*int((val - jobdict[operation])%res.getBatchSize() > 0)    
+            if len(orginalList) == 0:
+                continue
 
-                            jobid = self.getDataManager().getJobID()
-                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,res,jobsize,mydate)
-                            
-                            self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+','+str(res.getName())+", Q:"+str(jobsize)+"\n"
-                            jobdict[operation]+=jobsize
-                            if not prod in res.getJobs():
-                                res.getJobs()[prod] = []
-                                    
-                            res.getJobs()[prod].append(myjob)
-                            break # only for the simple case: One resource per operation. 
+            reversed_ops = orginalList[::-1]  
+
+            demandcurve = list(prod.getTargetLevels().items())
+
+            totaldmd = 0
+            if len(demandcurve) > 0:
+                totaldmd=[val for dt,val in demandcurve][-1]
+
+            if totaldmd == 0:
+                continue
+
+            opslist.append(prod.getName()) 
+            self.getVisualManager().getPLTBresult2exp().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
+            #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
+
+            #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
+
+            prev_opr = None
+            for operation in reversed_ops:
+
+                oprbtchsize = operation.getBatchSize()
+                prev_job = None
+                self.getVisualManager().getPLTBresult2exp().value+="> Opr: "+str(operation.getName())+"\n"
+          
+                if not prev_opr is None:
+                    orgjoblist = prev_opr.getJobs()
+                    reversed_jobs = orgjoblist[::-1]  
+
+                    totaljobsize = 0
+                    cum_jobneed = 0
+                    valiter = 0
+                    for job in reversed_jobs:
+                        valiter+=1
+                        cum_jobneed+=job.getQuantity()
+
+                        #self.getVisualManager().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
+                        if (cum_jobneed - totaljobsize >= oprbtchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
+                            jobsize =oprbtchsize*((cum_jobneed - totaljobsize)//oprbtchsize)+oprbtchsize*int((cum_jobneed - totaljobsize)%oprbtchsize > 0)   
+
+                            deadline = job.getLatestStart()
+                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(oprbtchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
 
                    
+                            jobid = self.getDataManager().getJobID()
+                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
+                            myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+                            self.getVisualManager().getPLTBresult2exp().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
 
-                timeiter+=1
-            
-                
-                    
-
-           
-                    
-
-                            
-
-        
+                            totaljobsize+=jobsize
+                            operation.getJobs().insert(0,myjob)
+                         
+         
+                else:
+                    valiter = 0
+                    newdmdcurve = []
+                    newval = 0
+                    for mydate,val in demandcurve:
+                        valiter+=1
+                        totaljobsize = 0
                         
-            
+                        if len(operation.getJobs()) > 0:
+                            totaljobsize = sum([jb.getQuantity() for jb in operation.getJobs()])
+                            
+    
+                        if (val - totaljobsize >= oprbtchsize) or ((demandcurve[-1][1] == val) and (val - totaljobsize > 0 ) ):
+    
+                           
+                            jobsize =oprbtchsize*((val - totaljobsize)//oprbtchsize)+oprbtchsize*int((val - totaljobsize)%oprbtchsize > 0)  
+                            deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0)) #hr/min/sec
+    
+                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(oprbtchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
+                            jobid = self.getDataManager().getJobID()
+                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
+                            myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+                            self.getVisualManager().getPLTBresult2exp().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
+                            newval+=jobsize
+    
+                            #self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+", Q:"+str(jobsize)+"\n"
+                            operation.getJobs().append(myjob)
+                            prev_job = myjob
 
-        
-        
+                        
+                    newdmdcurve.append((mydate,newval))
 
-        self.getVisualManager().getPLTBCheckRaw().value = True
+                
+                demandcurve = newdmdcurve
+                prev_opr = operation
+                
+
+        #self.getVisualManager().getPLTBCheckRaw().value = 
+        self.getVisualManager().getPLTBresult2exp().value+="-> Products"+str(len(opslist))+"\n"
+        self.getVisualManager().getPSchResources().options = [op for op in opslist] 
 
         return 
 
-    def MakeSchedule(self,b):   
+    def MakeSchedule(self,b):  
+
+        
 
 
         

@@ -372,7 +372,7 @@ class PlanningManager:
     
                            
                             jobsize =oprbtchsize*((val - totaljobsize)//oprbtchsize)+oprbtchsize*int((val - totaljobsize)%oprbtchsize > 0)  
-                            deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0) ) #hr/min/sec
+                            deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0)) #hr/min/sec
     
                             #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(oprbtchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
                             jobid = self.getDataManager().getJobID()

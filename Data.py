@@ -74,9 +74,8 @@ class DataManager:
 
         jobid = 0
 
-        for resname,res in self.Resources.items():
-             for prod,jobs in res.getJobs().items():
-                 jobid+=len(jobs)
+        for opname,opr in self.Operations.items():
+            jobid+=len(opr.getJobs())
 
         return jobid
     def CreateOperation(self,info,oprlist):

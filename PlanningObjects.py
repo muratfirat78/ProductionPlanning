@@ -77,6 +77,7 @@ class Resource():
 
         self.batchsize = 50 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
+        self.Schedule = dict()  #key: day, val: list of jobs
 
         # SCHEDULING 
 
@@ -87,6 +88,9 @@ class Resource():
         return self.CapacityLevels
     def getCapacityReserved(self):
         return self.CapacityReserved
+
+    def getSchedule(self):
+        return self.Schedule
 
     def getCapacityUsePlan(self):
         return self.CapacityUsePlan
@@ -115,9 +119,17 @@ class Operation():
         self.ProcessTime = myproctime
         self.RequiredResources = []
         self.Jobs = []
+        self.batchsize = 50 # to be changed..
+
+        
     
     def getID(self):
         return self.ID
+    def getBatchSize(self):
+        return self.batchsize
+    def getJobs(self):
+        return self.Jobs
+        
     def getName(self):
         return self.Name
     def getProcessTime(self):
@@ -127,14 +139,35 @@ class Operation():
 
 class Job():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
-    def __init__(self,myid,myname,myprod,myopr,myres,myqnty,myddline):
+    def __init__(self,myid,myname,myprod,myopr,myqnty,myddline):
         self.ID = myid
         self.Name = myname
         self.Operation = myopr
-        self.Resource = myres
         self.Product = myprod
         self.Quantity = myqnty
+        # PLANNING
         self.DeadLine = myddline
+        self.Predecessors = []
+        self.Successor = None
+        self.LatestStart=  None
+
+
+    # SCHEDULING
+        self.StartTime = None
+
+    def getLatestStart(self):
+        return self.LatestStart
+
+    def setLatestStart(self,myst):
+        self.LatestStart = myst
+        return
+
+    def getStartTime(self):
+        return self.StartTime
+
+    def setStartTime(self,myst):
+        self.StartTime = myst
+        return
 
     def getID(self):
         return self.ID
@@ -150,6 +183,10 @@ class Job():
         return self.Quantity
     def getDeadLine(self):
         return self.DeadLine
+    def getPredecessors(self):
+        return self.Predecessors
+    def getSuccessor(self):
+        return self.Successor 
     
     
 class CustomerOrder():
