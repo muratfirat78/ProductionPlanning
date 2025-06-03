@@ -67,6 +67,7 @@ class Resource():
         self.Type = mytype
         self.DayCapacity= int(mydaycp)
         self.Operations = []
+        self.Automated = None #Boolean Yes or No if Type is Machine, None if Type is Manual
         # PlANNING
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
@@ -74,7 +75,7 @@ class Resource():
         # PlANNING
 
         # SCHEDULING 
-
+        
         self.batchsize = 50 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
         self.Schedule = dict()  #key: day, val: list of jobs
@@ -107,6 +108,8 @@ class Resource():
         return self.DayCapacity
     def getOperations(self):
         return self.Operations
+    def getAutomated(self):
+        return self.Automated
 
     def getJobs(self):
         return self.Jobs 
