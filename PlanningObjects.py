@@ -151,7 +151,7 @@ class Job():
         # PLANNING
         self.DeadLine = myddline
         self.Predecessors = []
-        self.Successor = None
+        self.Successor = []
         self.LatestStart=  None
 
 
