@@ -101,7 +101,34 @@ class SchedulingManager:
                             else:
                                 Predjobs = Predjobs[k:];
                                 break
-                        
+        ## Initialize shifts (example 30 days?)
+        shiftnum = 30;
+        i=1;
+        day=1;
+        shiftlist=[]
+        while i <= 30:
+            if i % 2 == 1:
+                shift = Shift(i,1,8)
+                shiftlist.append(shift)
+                i+=1;
+            else:
+                shift=Shift(i,2,7)
+                shiftlist.append(shift)
+                i+=1
+
+        #Initialize Schedulable Jobs
+        SchedulableJobs=[]
+        for opr, jobs in oprdict.items():
+            for job in jobs:
+                if job.getPredecessor == []:
+                    SchedulableJobs.append(job)
+        
+        #Initialize schedule for each Resource:
+        for resname, res in self.getDataManager.getResources.items():
+            for i in shiftlist:
+                res.getSchedule[i]=[]
+
+        #Create Schedule
         return
 
         

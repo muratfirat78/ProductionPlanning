@@ -77,29 +77,58 @@ class SchedulingManager:
         
 
         for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
-            CurJobs = revopdict[k1].reverse();
-            Predjobs = revopdict[k2].reverse();
-            
-            for i in range(0,len(CurJobs)):
-                CapCurJob = CurJobs[i].getQuantity();
-                numPredjobs = len(Predjobs)
-                k = 0;
-                while k < numPredjobs:
-                    if Predjob[k].getQuantity() < CapCurJob:
-                        CapCurJob = CapCurJob - Predjob[k].getQuantity();
-                        CurJobs[i].getPredecessors().append(Predjob[k]);
-                        PredJob[k].getSuccessor().append(CurJobs[i]);
-                        k += 1;
-                    else:
-                        CurJobs[i].getPredecessors.append(Predjob[k]);
-                        PredJob[k].getSuccessor().append(CurJobs[i]);
-                        k +=1;
-                        if k == num Predjobs:
-                            break
+            if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
+                CurJobs = revopdict[k1][::-1];
+                Predjobs = revopdict[k2][::-1];
+                for i in range(0,len(CurJobs)):
+                    CapCurJob = CurJobs[i].getQuantity();
+                    
+                    numPredjobs = len(Predjobs)
+                    k = 0;
+                    while k < numPredjobs:
+                        if Predjobs[k].getQuantity() < CapCurJob:
+                            CapCurJob = CapCurJob - Predjobs[k].getQuantity();
+                            CurJobs[i].getPredecessors().append(Predjobs[k]);
+                            Predjobs[k].getSuccessor().append(CurJobs[i]);
+                            k += 1;
                         else:
-                            Predjobs = Predjobs[k:];
-                            break
-                        
+                            CurJobs[i].getPredecessors().append(Predjobs[k]);
+                            Predjobs[k].getSuccessor().append(CurJobs[i]);
+                            k +=1;
+                            print(k);
+                            if k == numPredjobs:
+                                break
+                            else:
+                                Predjobs = Predjobs[k:];
+                                break
+        ## Initialize shifts (example 30 days?)
+        shiftnum = 30;
+        i=1;
+        day=1;
+        shiftlist=[]
+        while i <= 30:
+            if i % 2 == 1:
+                shift = Shift(i,1,8)
+                shiftlist.append(shift)
+                i+=1;
+            else:
+                shift=Shift(i,2,7)
+                shiftlist.append(shift)
+                i+=1
+
+        #Initialize Schedulable Jobs
+        SchedulableJobs=[]
+        for opr, jobs in oprdict.items():
+            for job in jobs:
+                if job.getPredecessor == []:
+                    SchedulableJobs.append(job)
+        
+        #Initialize schedule for each Resource:
+        for resname, res in self.getDataManager.getResources.items():
+            for i in shiftlist:
+                res.getSchedule[i]=[]
+
+        #Create Schedule
         return
 
         

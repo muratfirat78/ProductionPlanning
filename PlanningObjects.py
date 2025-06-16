@@ -76,9 +76,11 @@ class Resource():
 
         # SCHEDULING 
         
-        self.batchsize = 50 # to be changed..
+        self.batchsize = 12 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
-        self.Schedule = dict()  #key: day, val: list of jobs
+        self.Schedule = dict()  #key: day, val: list of (jobs, starttimes)
+        self.OperatingEffort = 0
+        self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
 
         # SCHEDULING 
 
@@ -110,9 +112,22 @@ class Resource():
         return self.Operations
     def getAutomated(self):
         return self.Automated
-
+    def getOperatingEffort(self):
+        return self.OperatingEffort
+    def getAvailableShift(self):
+        return self.AvailableShift
     def getJobs(self):
-        return self.Jobs 
+        return self.Jobs
+
+    def setAutomated(self,aut):
+        self.Automated = aut
+        return 
+    def setOperatingEffort(self,opef):
+        self.OperatingEffort = opef
+        return 
+    def setAvailableShift(self,shift):
+        self.AvailableShift = shift
+        return 
     
 class Operation():
     # Operation(r["OperationID"],r["Name"],r["ProcessTime"])
@@ -244,5 +259,20 @@ class CustomerOrder():
     def getProductName(self):
         return self.ProductName
 
+class Shift():
+    def __init__(self,myday,number,shiftcap):
+        self.Day = myday
+        self.Number = number
+        self.Capacity = shiftcap
+        
+
+    def getDay(self):
+        return self.Day
+
+    def getNumber(self):
+        return self.Number
+
+    def getCapacity(self):
+        return self.Capacity
 
 
