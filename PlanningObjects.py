@@ -137,7 +137,7 @@ class Operation():
         self.ProcessTime = myproctime
         self.RequiredResources = []
         self.Jobs = []
-        self.batchsize = 50 # to be changed..
+        self.batchsize = 12 # to be changed..
 
         
     

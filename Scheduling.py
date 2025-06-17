@@ -117,18 +117,45 @@ class SchedulingManager:
                 i+=1
 
         #Initialize Schedulable Jobs
+        AllJobs = dict()
         SchedulableJobs=[]
+        ScheduledJobs=[]
         for opr, jobs in oprdict.items():
             for job in jobs:
                 if job.getPredecessor == []:
                     SchedulableJobs.append(job)
-        
+                AllJobs[job.getName()]=job;
         #Initialize schedule for each Resource:
         for resname, res in self.getDataManager.getResources.items():
             for i in shiftlist:
                 res.getSchedule[i]=[]
 
         #Create Schedule
+        while len(SchedulableJobs) >0:
+            for j in SchedulableJobs:
+                predecessorjobs = j.getPredecessors():
+                if not (predecessorjobs ==[]):
+                #Determine Earliest starttime
+                    maxpredecessor = None:
+                    for i in predecessorjobs:
+                        completiontime = i.getStartTime + (i.getQuantity() * self.getDataManager.getOperations()[i.getOperation()].getProcessTime())
+                        if maxpredecessor == None or completiontime >= maxpredecessor:
+                            maxpredecessor = completiontime
+                    EarliestStart = maxpredecessor;
+                else:
+                    EarliestStart = 0
+                #Determine earliest available resource
+                processtime = (j.getQuantity * self.getDataManager.getOperations()[j.getOperation()].getProcessTime())
+                resources = j.getOperation().getRequiredResources()
+                for r in resources:
+                    for shift, jobtime in r.getSchedule.items():
+                        completiontimeLatestJob = jobtime[::-1][1] + (jobtime[::-1][0].getQuantity * self.getDataManager.getOperations()[jobtime[::-1][0].getOperation()].getProcessTime())
+
+                    ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
+                    ## Also check operator availability.
+                    
+                        
+                
         return
 
         
