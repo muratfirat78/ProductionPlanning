@@ -172,19 +172,17 @@ class SchedulingManager:
                             SchedOp1 = self.getDataManager().getResources()['Operator 1'].getSchedule();
                             CurOpeffOp2 = 0;
                             SchedOp2 = self.getDataManager().getResources()['Operator 2'].getSchedule();
-                            for jobs in SchedOp1[shift]:
-                                for resOpJob in jobs[0].getOperation().getRequiredResources():
-                                    CurOpeffOp1 += resOpJob.getOperatingEffort()
-                            for jobs in SchedOp2[shift]:
-                                for resOpJob in jobs[0].getRequiredResources():
-                                    CurOpeffOp2 += resOpJob.getOperatingEffort()
+                            for mach in SchedOp1[shift]:                                
+                                CurOpeffOp1 += self.getDataManager().getResources()[mach].getOperatingEffort()
+                            for mach in SchedOp2[shift]:                                
+                                CurOpeffOp2 += self.getDataManager().getResources()[mach].getOperatingEffort()
         
                             if shiftcap > (completiontimeLatestJob + processtime) and (CurOpeffOp1 + opef <= 1 or CurOpeffOp2 + opef <=1): #This means we can schedule in first shift
                                 j.setStartTime(completiontimeLatestJob)
                                 if (CurOpeffOp1 +opef <= 1):
-                                   SchedOp1[shift].append((j,completiontimeLatestJob))
+                                   SchedOp1[shift].append(r.getName())
                                 else:
-                                    SchedOp2[shift].append((j,completiontimeLatestJob))
+                                    SchedOp2[shift].append(r.getName())
                                 r.getSchedule()[shift].append((j,completiontimeLatestJob))                                
                                 ScheduledJobs.append(j)
                                 ## check if successor can be scheduled.
@@ -207,13 +205,12 @@ class SchedulingManager:
                             CurOpeffOp3 = 0; ## Also check operator availability.
                             SchedOp3 = self.getDataManager().getResources()['Operator 3'].getSchedule();
                             
-                            for jobs in SchedOp3[shift]:
-                                for resOpJob in jobs[0].getOperation().getRequiredResources():
-                                    CurOpeffOp3 += resOpJob.getOperatingEffort()
+                            for mach in SchedOp3[shift]:                                
+                                CurOpeffOp3 += self.getDataManager().getResources()[mach].getOperatingEffort()
                             if  ((Automated is None) and processtime < 8) or Automated == False:
                                 if shiftcap > (completiontimeLatestJob + processtime) and (CurOpeffOp3 + opef<=1): #This means we can schedule in second shift
                                     j.setStartTime(completiontimeLatestJob)
-                                    SchedOp3[shift].append((j,completiontimeLatestJob))
+                                    SchedOp3[shift].append(r.getName())
                                     
                                     r.getSchedule()[shift].append((j,completiontimeLatestJob))                                
                                     ScheduledJobs.append(j)
@@ -236,7 +233,7 @@ class SchedulingManager:
                             elif (Automated == True) or (Automated is None and processtime > 8):                        
                                 if shiftcap >= (completiontimeLatestJob) and (CurOpeffOp3 + opef<=1): #This means we can schedule in second shift
                                     j.setStartTime(completiontimeLatestJob)
-                                    SchedOp3[shift].append((j,completiontimeLatestJob))
+                                    SchedOp3[shift].append(r.getName())
                                     
                                     r.getSchedule()[shift].append((j,completiontimeLatestJob))                                
                                     ScheduledJobs.append(j)
@@ -256,7 +253,7 @@ class SchedulingManager:
                                 else:
                                     continue                        
                     break             
-        self.getVisualManager().getPSchScheRes().value+=" All jobs are schedules: "+str(nrjobs)+"\n"                     
+        self.getVisualManager().getPSchScheRes().value+=" All jobs are scheduled: "+str(nrjobs)+"\n"                     
                             
         
 
