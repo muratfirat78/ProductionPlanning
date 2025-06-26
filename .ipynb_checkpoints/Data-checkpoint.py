@@ -32,11 +32,20 @@ class DataManager:
         self.Resources = dict()  # key: ResourceName, val: ResourceObject
         self.Products = dict() # key: Productname, val: ProductObject
         self.CustomerOrders  = dict() # key: Ordername, val: OrderObject
-        self.Operations = dict()  # key: OperationName, val: OperationObject
+        self.Operations = dict()  # key: OperationName, val: OperationObjec
         self.VisualManager = None
+        self.colabpath = '/content/ProductionPlanning'
+        self.onlineversion = False       
+        
         return
 
-    
+    def setOnlineVersion(self,ver):
+        self.onlineversion = ver
+        return
+
+    def isOnlineVersion(self):
+        return self.onlineversion 
+        
     def getProducts(self):
         return self.Products
 
@@ -47,6 +56,10 @@ class DataManager:
     def getCustomerOrders(self):
         return self.CustomerOrders
 
+    def setCustomerOrders(self,mydict):
+        self.CustomerOrders = mydict
+        return
+
     def getVisualManager(self):
         return self.VisualManager
     def setVisualManager(self,myvm):
@@ -54,10 +67,14 @@ class DataManager:
         return
 
 
-    
-        return
-    
-     
+    def getJobID(self):
+
+        jobid = 0
+
+        for opname,opr in self.Operations.items():
+            jobid+=len(opr.getJobs())
+
+        return jobid
     def CreateOperation(self,info,oprlist):
 
         name, processtime = info
@@ -238,46 +255,57 @@ class DataManager:
         return
 
     def read_dataset(self,b):  
-    
-      
-        rel_path = self.getVisualManager().getFolderNameTxt().value+'\\'+self.getVisualManager().getCasesDrop().value
 
+       
+        rel_path = self.getVisualManager().getFolderNameTxt().value+'/'+self.getVisualManager().getCasesDrop().value
+
+
+        if self.onlineversion:
+            abs_file_path = self.colabpath+'/'+rel_path
+        else:
+            abs_file_path = os.path.join(Path.cwd(), rel_path)
+          
         #self.getVisualManager().getCaseInfo().value += ">>> "+rel_path+"\n" 
-        
-        abs_file_path = os.path.join(Path.cwd(), rel_path)
-
-        #self.getVisualManager().getCaseInfo().value += ">>> "+abs_file_path+"\n" 
+        #self.getVisualManager().getCaseInfo().value += "***** "+abs_file_path+"\n" 
     
         prodopmatch_df = pd.DataFrame()
         precmatch_df = pd.DataFrame()
+        oprsresources_df = pd.DataFrame()
         
         for root, dirs, files in os.walk(abs_file_path):
             for file in files:
                 self.getVisualManager().getCaseInfo().value += ">>> file."+file+"\n" 
+                
                 if file == "Products.csv": 
-                     
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
                         self.Products[r["Name"]]= newprod
+                    self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
                 if file == "Operations.csv": 
                     opr_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in opr_df.iterrows():
                         newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
                         self.Operations[r["Name"]]= newopr
+                    self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
+       
                     
                 if file == "Resources.csv": 
                     res_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
                         newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
                         self.Resources[r["Name"]]= newres
+
+                    self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
                     
                 if file == "CustomerOrders.csv": 
                     orders_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in orders_df.iterrows():
+                        #def __init__(self,myid,myname,myprodid,myprodname,myqnty,myddline):
                         neworder = CustomerOrder(r["OrderID"],r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
                         self.CustomerOrders[r["Name"]] = neworder
+                    self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
     
     
                 if file == "ProductsOperations.csv": 
@@ -286,33 +314,60 @@ class DataManager:
                 if file == "Precedences.csv": 
                     precmatch_df = pd.read_csv(abs_file_path+'/'+file)
 
+                if file == "ResourcesOperations.csv": 
+                    oprsresources_df = pd.read_csv(abs_file_path+'/'+file)
+                    self.getVisualManager().getCaseInfo().value += "ResourcesOperations: "+str(len(oprsresources_df))+"\n"  
+
        
         self.getVisualManager().getCaseInfo().value += ">>> CustomerOrders.. "+str(len(self.CustomerOrders))+"\n" 
         for ordname,myord in self.CustomerOrders.items():
-            self.getVisualManager().getCaseInfo().value += ">>> Product"+myord.getProductName()+" in "+str(myord.getProductName() in self.Products)+"\n" 
+            #self.getVisualManager().getCaseInfo().value += ">>> Product"+myord.getProductName()+" in "+str(myord.getProductName() in self.Products)+"\n" 
             myord.setProduct(self.Products[myord.getProductName()])
             
                     
-    
+        self.getVisualManager().getCaseInfo().value += ">>> Precedences.. "+str(len(precmatch_df))+"\n" 
         for i,r in precmatch_df.iterrows():
-            predecessor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["PredecessorID"]][0]
+    
+            predecessor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["PredecessorID"]] [0]
             successor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["SuccessorID"]][0]
+
+            #self.getVisualManager().getCaseInfo().value += "->"+predecessor.getName()+">>> "+successor.getName()+"\n" 
     
             predecessor.setSuccessor(successor)
             successor.getPredecessors().append(predecessor)
-            self.getVisualManager().getCaseInfo().value += "successor: "+str(successor.getName())+" has "+str(len(successor.getPredecessors()))+"\n" 
+            successor.getMPredecessors()[predecessor] = r["Multiplier"]
+            #self.getVisualManager().getCaseInfo().value += "successor: "+str(successor.getName())+" has "+str(len(successor.getPredecessors()))+"\n" 
+
+        self.getVisualManager().getCaseInfo().value += ">>> Product-Operations... "+str(len(prodopmatch_df))+"\n" 
                 
         for i,r in prodopmatch_df.iterrows():
-            prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]][0]
+            prodlst = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]]
+
+            if len(prodlst) > 0: 
+                prod = prodlst[0]
+                oprlst = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]]
+                if len(oprlst) > 0:
+                    opr = oprlst[0]
+                    prod.getOperations().insert(r["OperationIndex"],opr)
+                else:
+                    self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 
+                    self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+"\n" 
+            else:
+                self.getVisualManager().getCaseInfo().value += "XXXX: Product not found: "+str(r["ProductID"])+"\n" 
+
+        self.getVisualManager().getCaseInfo().value += ">>> Operation-Resources... "+str(len(oprsresources_df))+"\n" 
+
+        for i,r in oprsresources_df.iterrows():
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
+            res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
+
+            #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
+            
+            opr.getRequiredResources().append(res)
     
-            prod.getOperations().insert(r["OperationIndex"],opr)
-            self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+" has "+str(len(prod.getOperations()))+"\n"  
-    
-        self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
-        self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
-        self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n"            
-        self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
+        
+                   
+     
     
         self.getVisualManager().RefreshViews()
                 
@@ -325,6 +380,8 @@ class DataManager:
         rel_path = self.getVisualManager().getFolderNameTxt().value
        
         abs_file_path = os.path.join(Path.cwd(),rel_path)
+
+        self.getVisualManager().getCaseInfo().value += "->"+abs_file_path+"\n"                            
         
         for root, dirs, files in os.walk(abs_file_path):
             for mydir in dirs:
@@ -335,6 +392,8 @@ class DataManager:
         if len(dtsetnames) > 0:
             self.getVisualManager().getCasesDrop().value = dtsetnames[0]
         return
-    
+
+
+            
 
    

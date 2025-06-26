@@ -32,10 +32,10 @@ class DataManager:
         self.Resources = dict()  # key: ResourceName, val: ResourceObject
         self.Products = dict() # key: Productname, val: ProductObject
         self.CustomerOrders  = dict() # key: Ordername, val: OrderObject
-        self.Operations = dict()  # key: OperationName, val: OperationObject
+        self.Operations = dict()  # key: OperationName, val: OperationObjec
         self.VisualManager = None
         self.colabpath = '/content/ProductionPlanning'
-        self.onlineversion = False
+        self.onlineversion = False       
         
         return
 
@@ -66,9 +66,6 @@ class DataManager:
         self.VisualManager = myvm
         return
 
-
-    
-        return
 
     def getJobID(self):
 
@@ -395,6 +392,8 @@ class DataManager:
         if len(dtsetnames) > 0:
             self.getVisualManager().getCasesDrop().value = dtsetnames[0]
         return
-    
+
+
+            
 
    

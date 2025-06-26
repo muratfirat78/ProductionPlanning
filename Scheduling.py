@@ -59,8 +59,7 @@ class SchedulingManager:
         self.getVisualManager().getPSchScheRes().value+="Scheduling starts..."+"\n"
 
         oprdict = dict() # key: operation, #val: set of jobs
-      
-
+        
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
         
@@ -197,6 +196,8 @@ class SchedulingManager:
                                         SchedulableJobs.append(sucjob)
                                 
                                 SchedulableJobs.remove(j) #Remove scheduled job
+                                
+                                
                                 break
                             else:
                                 continue
@@ -226,6 +227,7 @@ class SchedulingManager:
                                             SchedulableJobs.append(sucjob)
                                     
                                     SchedulableJobs.remove(j) #Remove scheduled job
+                                    
                                     break
                                 else:
                                     continue
@@ -249,12 +251,14 @@ class SchedulingManager:
                                             SchedulableJobs.append(sucjob)
                                     
                                     SchedulableJobs.remove(j) #Remove scheduled job
+                                    
                                     break
                                 else:
                                     continue                        
+                    
                     break             
-        self.getVisualManager().getPSchScheRes().value+=" All jobs are scheduled: "+str(nrjobs)+"\n"                     
-                            
+        self.getVisualManager().getPSchScheRes().value+=" All jobs are scheduled: "+str(nrjobs)+"\n"       
+                        
         
 
                     
@@ -263,7 +267,7 @@ class SchedulingManager:
                 
                         
                 
-        return
+        return 
 
         
        
