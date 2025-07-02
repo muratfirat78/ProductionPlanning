@@ -102,20 +102,27 @@ class SchedulingManager:
                             Predjobs.remove(k)                       
                             break
         ## Initialize shifts (example 30 days?)
-        shiftnum = 1000;
+        day = 10;
         
         i=1;
-        day=1;
-        shiftlist=[]
-        while i <= shiftnum:
-            if i % 2 == 1:
-                shift = Shift(i,1,8)
-                shiftlist.append(shift)
-                i+=1;
-            else:
-                shift=Shift(i,2,7)
-                shiftlist.append(shift)
-                i+=1
+        shiftlistman=[]
+        shiftlistaut=[]
+        while i <= day:
+            shift1 = Shift(i,1,8)
+            shiftlistman.append(shift1)
+            shift2=Shift(i,2,7)
+            shiftlistman.append(shift2)
+            i+=1
+
+        i=1
+        while i <= day:
+            shift1 = Shift(i,1,8)
+            shiftlistaut.append(shift1)
+            shift2=Shift(i,2,7)
+            shiftlistaut.append(shift2)
+            shift3=Shift(i,3,8)
+            shiftlistaut.append(shift3)
+            i+=1
         
         #Initialize Schedulable Jobs
         AllJobs = dict()
@@ -130,8 +137,12 @@ class SchedulingManager:
         counter = 0       
         #Initialize schedule for each Resource:
         for resname, res in self.getDataManager().getResources().items():
-            for i in shiftlist:
-                res.getSchedule()[i]=[]
+            if (res.getAutomated() is None) or (res.getAutomated()=False):
+                for i in shiftlistman:
+                    res.getSchedule()[i]=[]
+            else:
+                for i in shiftlistaut:
+                    res.getSchedule()[i]=[]
         
         #Create Schedule
         while len(SchedulableJobs) >0:
