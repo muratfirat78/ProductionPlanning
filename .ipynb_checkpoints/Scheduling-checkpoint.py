@@ -137,7 +137,7 @@ class SchedulingManager:
         counter = 0       
         #Initialize schedule for each Resource:
         for resname, res in self.getDataManager().getResources().items():
-            if (res.getAutomated() is None) or (res.getAutomated()=False):
+            if (res.getAutomated() is None) or (res.getAutomated()==False):
                 for i in shiftlistman:
                     res.getSchedule()[i]=[]
             else:

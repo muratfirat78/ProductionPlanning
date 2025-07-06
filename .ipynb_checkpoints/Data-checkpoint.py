@@ -280,6 +280,8 @@ class DataManager:
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
+                        newprod.setPrescribedBatchsize(r["PrescribedBatchsize"])
+                        newprod.setChosenBatchsize(r["ChosenBatchsize"])
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
@@ -295,6 +297,11 @@ class DataManager:
                     res_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
                         newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
+                        if r["Automated"] is not None:
+                            newres.setAutomated(r["Automated"])
+                        newres.setOperatingEffort(r["OperatingEffort"])
+                        if r["Shift"] is not None:
+                            newres.setAvailableShift(r["Shift"])
                         self.Resources[r["Name"]]= newres
 
                     self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 

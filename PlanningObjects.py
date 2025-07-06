@@ -31,6 +31,10 @@ class Product():
         self.TargetLevels = dict() #key: date, val: required stock value on the date /for products
         self.ReservedStockLevels = dict() #key: date, val: required stock value on the date /for products
         self.PurchaseLevels = dict() #key: first day of week, val: purchase amount / for raw materials
+        self.PrescribedBatchsize=None #If None then it is order dependent.
+        self.ChosenBatchsize=None #This will be the prescribed batchsize or the order size if no prescribedBatch is available.
+        
+        
         
 
     def getTargetLevels(self):
@@ -58,6 +62,16 @@ class Product():
         return
     def getSuccessor(self):
         return self.Successor
+    def getPrescribedBatchsize(self):
+        return self.PrescribedBatchsize
+    def setPrescribedBatchsize(self,size):
+        self.PrescribedBatchsize = size
+        return
+    def getChosenBatchsize(self):
+        return self.ChosenBatchsize
+    def setChosenBatchsize(self,size):
+        self.ChosenBatchsize = size
+        return
 
 class Resource():
     # Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])

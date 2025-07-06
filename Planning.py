@@ -322,6 +322,8 @@ class PlanningManager:
             #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
 
             prev_opr = None
+            prodbatchsize = prod.getChosenBatchsize()
+            self.getVisualManager().getPLTBresult2exp().value+="HOI "+str(prod)+"\n"
             for operation in reversed_ops:
 
                 oprbtchsize = operation.getBatchSize()
@@ -340,11 +342,11 @@ class PlanningManager:
                         cum_jobneed+=job.getQuantity()
 
                         #self.getVisualManager().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
-                        if (cum_jobneed - totaljobsize >= oprbtchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
-                            jobsize =oprbtchsize*((cum_jobneed - totaljobsize)//oprbtchsize)+oprbtchsize*int((cum_jobneed - totaljobsize)%oprbtchsize > 0)   
+                        if (cum_jobneed - totaljobsize >= prodbatchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
+                            jobsize =prodbatchsize*((cum_jobneed - totaljobsize)//prodbatchsize)+prodbatchsize*int((cum_jobneed - totaljobsize)%prodbatchsize > 0)   
 
                             deadline = job.getLatestStart()
-                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(oprbtchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
+                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
 
                    
                             jobid = self.getDataManager().getJobID()
@@ -368,13 +370,13 @@ class PlanningManager:
                             totaljobsize = sum([jb.getQuantity() for jb in operation.getJobs()])
                             
     
-                        if (val - totaljobsize >= oprbtchsize) or ((demandcurve[-1][1] == val) and (val - totaljobsize > 0 ) ):
+                        if (val - totaljobsize >= prodbatchsize) or ((demandcurve[-1][1] == val) and (val - totaljobsize > 0 ) ):
     
                            
-                            jobsize =oprbtchsize*((val - totaljobsize)//oprbtchsize)+oprbtchsize*int((val - totaljobsize)%oprbtchsize > 0)  
+                            jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
                             deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0)) #hr/min/sec
     
-                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(oprbtchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
+                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
                             jobid = self.getDataManager().getJobID()
                             myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
                             myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))

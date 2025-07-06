@@ -31,6 +31,10 @@ class Product():
         self.TargetLevels = dict() #key: date, val: required stock value on the date /for products
         self.ReservedStockLevels = dict() #key: date, val: required stock value on the date /for products
         self.PurchaseLevels = dict() #key: first day of week, val: purchase amount / for raw materials
+        self.PrescribedBatchsize=None #If None then it is order dependent.
+        self.ChosenBatchsize=None #This will be the prescribed batchsize or the order size if no prescribedBatch is available.
+        
+        
         
 
     def getTargetLevels(self):
@@ -58,6 +62,16 @@ class Product():
         return
     def getSuccessor(self):
         return self.Successor
+    def getPrescribedBatchsize(self):
+        return self.PrescribedBatchsize
+    def setPrescribedBatchsize(self,size):
+        self.PrescribedBatchsize = size
+        return
+    def getChosenBatchsize(self):
+        return self.ChosenBatchsize
+    def setChosenBatchsize(self,size):
+        self.ChosenBatchsize = size
+        return
 
 class Resource():
     # Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
@@ -137,7 +151,7 @@ class Operation():
         self.ProcessTime = myproctime
         self.RequiredResources = []
         self.Jobs = []
-        self.batchsize = 50 # to be changed..
+        self.batchsize = 12 # to be changed..
 
         
     
@@ -264,8 +278,7 @@ class Shift():
         self.Day = myday
         self.Number = number
         self.Capacity = shiftcap
-        self.Successor = ""
-        self.Predecessor = ""
+        
 
     def getDay(self):
         return self.Day
@@ -276,17 +289,4 @@ class Shift():
     def getCapacity(self):
         return self.Capacity
 
-    def getSuccessor(self):
-        return self.Successor
-
-    def getPredecessor(self):
-        return self.Predecessor
-
-    def setSuccessor(self, suc):
-        self.Successor = suc
-        return
-
-    def setPredecessor(self, pred):
-        self.Predecessor = pred
-        return
 
