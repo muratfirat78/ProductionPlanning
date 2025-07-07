@@ -13,6 +13,7 @@ import pandas as pd
 import warnings
 import sys
 import numpy as np
+import math as mth
 from PlanningObjects import *
 from Visual import *
 from Data import *
@@ -102,7 +103,7 @@ class SchedulingManager:
                             Predjobs.remove(k)                       
                             break
         ## Initialize shifts (example 30 days?)
-        day = 10;
+        day = 100;
         
         i=1;
         shiftlistman=[]
@@ -110,19 +111,15 @@ class SchedulingManager:
         while i <= day:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
-            shift2=Shift(i,2,7)
-            shiftlistman.append(shift2)
-            i+=1
-
-        i=1
-        while i <= day:
-            shift1 = Shift(i,1,8)
             shiftlistaut.append(shift1)
             shift2=Shift(i,2,7)
+            shiftlistman.append(shift2)
             shiftlistaut.append(shift2)
             shift3=Shift(i,3,8)
             shiftlistaut.append(shift3)
             i+=1
+
+        
         
         #Initialize Schedulable Jobs
         AllJobs = dict()
@@ -147,8 +144,12 @@ class SchedulingManager:
         #Create Schedule
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
+                self.getVisualManager().getPSchScheRes().value+=" test: "+str(len(ScheduledJobs))+"\n"
+                self.getVisualManager().getPSchScheRes().value+=" job: "+str(j.getOperation().getName())+" "+ str(j.getQuantity())+" "+ str(j.getOperation().getProcessTime())+"\n"
                 predecessorjobs = j.getPredecessors()
                 successorjobs = j.getSuccessor()
+                Quantity = j.getQuantity()
+                PartialJob = False
                 if not (predecessorjobs ==[]):
                 #Determine Earliest starttime
                     maxpredecessor = None;
@@ -166,36 +167,338 @@ class SchedulingManager:
                 for r in resources:
                     Automated = r.getAutomated()
                     opef = r.getOperatingEffort()
-                    for shift, jobtime in r.getSchedule().items():
-                        
-                        ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
-                        if jobtime ==[]:
-                            completiontimeLatestJob = 0;
-                        else:
-                            completiontimeLatestJob = jobtime[::-1][0][1] + (jobtime[::-1][0][0].getQuantity() * self.getDataManager().getOperations()[jobtime[::-1][0][0].getOperation().getName()].getProcessTime())
-                        
-                        shiftcap = shift.getCapacity()
-                        shiftnumber = shift.getNumber()
-                        
-                        if shiftnumber == 1:
-                            CurOpeffOp1 = 0; ## Also check operator availability.
-                            SchedOp1 = self.getDataManager().getResources()['Operator 1'].getSchedule();
-                            CurOpeffOp2 = 0;
-                            SchedOp2 = self.getDataManager().getResources()['Operator 2'].getSchedule();
-                            for mach in SchedOp1[shift]:                                
-                                CurOpeffOp1 += self.getDataManager().getResources()[mach].getOperatingEffort()
-                            for mach in SchedOp2[shift]:                                
-                                CurOpeffOp2 += self.getDataManager().getResources()[mach].getOperatingEffort()
-        
-                            if shiftcap > (completiontimeLatestJob + processtime) and (CurOpeffOp1 + opef <= 1 or CurOpeffOp2 + opef <=1): #This means we can schedule in first shift
-                                j.setStartTime(completiontimeLatestJob)
-                                if (CurOpeffOp1 +opef <= 1):
-                                   SchedOp1[shift].append(r.getName())
+                    
+                    restype = r.getType()
+                    
+                    if restype == 'Manual':
+                        for shift, jobtime in r.getSchedule().items():
+                            
+                            ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
+                            if jobtime ==[]:
+                                completiontimeLatestJob = 0;
+                            else:
+                                completiontimeLatestJob = jobtime[::-1][0][1] + (jobtime[::-1][0][0].getQuantity() * self.getDataManager().getOperations()[jobtime[::-1][0][0].getOperation().getName()].getProcessTime())
+                            
+                            shiftcap = shift.getCapacity()
+                            shiftnumber = shift.getNumber()
+                            
+                            if shiftnumber == 1:
+                                effort = 0                                                                   
+                                SchedWorker = self.getDataManager().getResources()['Manual workers'].getSchedule();
+                                for mach in SchedWorker[shift]:                                
+                                    effort += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])                                  
+                                
+                                if shiftcap > (completiontimeLatestJob) and (effort <24): #This means we can schedule (partially) in first shift
+                                    j.setStartTime(completiontimeLatestJob)
+                                    if (completiontimeLatestJob + processtime) > 8:
+                                        PartialJob = True
+                                        fraction = 8 - completiontimeLatestJob
+                                        ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        Quantity = Quantity - ProcessedQuantity
+                                        processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        continue
+                                    else:
+                                        ProcessedQuantity = Quantity
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        ScheduledJobs.append(j)
+                                        SchedulableJobs.remove(j) #Remove scheduled job
+                                    
+                                    
+                                    SchedWorker[shift].append([j,r,ProcessedQuantity])                                    
+                                                                    
+                                    
+                                    ## check if successor can be scheduled.
+                                    for sucjob in successorjobs:
+                                        Schedulable = True
+                                        for predjbs in sucjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            SchedulableJobs.append(sucjob)
+                                    
+                                    
+                                    
+                                    
+                                    break
                                 else:
-                                    SchedOp2[shift].append(r.getName())
-                                r.getSchedule()[shift].append((j,completiontimeLatestJob))                                
-                                ScheduledJobs.append(j)
-                                ## check if successor can be scheduled.
+                                    continue
+            
+                            if shiftnumber == 2:
+                                effort = 0                                                                   
+                                SchedWorker = self.getDataManager().getResources()['Manual workers'].getSchedule();
+                                for mach in SchedWorker[shift]:                                
+                                    effort += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])                                  
+            
+                                if shiftcap > (completiontimeLatestJob) and (effort <21): #This means we can schedule (partially) in first shift
+                                    j.setStartTime(completiontimeLatestJob)
+                                    if (completiontimeLatestJob + processtime) > 7:
+                                        PartialJob = True
+                                        fraction = 7 - completiontimeLatestJob
+                                        ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        Quantity = Quantity - ProcessedQuantity
+                                        processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        continue
+                                    else:
+                                        ProcessedQuantity = Quantity
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        ScheduledJobs.append(j)
+                                        SchedulableJobs.remove(j) #Remove scheduled job
+                                    
+                                    
+                                    SchedWorker[shift].append([j,r,ProcessedQuantity])                                    
+                                                                    
+                                    
+                                    ## check if successor can be scheduled.
+                                    for sucjob in successorjobs:
+                                        Schedulable = True
+                                        for predjbs in sucjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            SchedulableJobs.append(sucjob)
+                                                                                                            
+                                    
+                                    break
+                                else:
+                                    continue
+                                                                                                               
+                        
+                        break
+                    elif restype == 'Outsourced':
+                        for shift, jobtime in r.getSchedule().items():
+                            
+                            ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
+                            if jobtime ==[]:
+                                completiontimeLatestJob = 0;
+                            else:
+                                completiontimeLatestJob = jobtime[::-1][0][1] + (jobtime[::-1][0][0].getQuantity() * self.getDataManager().getOperations()[jobtime[::-1][0][0].getOperation().getName()].getProcessTime())
+                            
+                            shiftcap = shift.getCapacity()
+                            shiftnumber = shift.getNumber()
+                            
+                            if shiftnumber == 1:
+                                effort = 0                                                                   
+                                SchedWorker = self.getDataManager().getResources()['Manual workers'].getSchedule();
+                                for mach in SchedWorker[shift]:                                
+                                    effort += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])                                  
+                                
+                                if shiftcap > (completiontimeLatestJob) and (effort <24): #This means we can schedule (partially) in first shift
+                                    j.setStartTime(completiontimeLatestJob)
+                                    if (completiontimeLatestJob + processtime) > 8:
+                                        PartialJob = True
+                                        fraction = 8 - completiontimeLatestJob
+                                        ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        Quantity = Quantity - ProcessedQuantity
+                                        processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        continue
+                                    else:
+                                        ProcessedQuantity = Quantity
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        ScheduledJobs.append(j)
+                                        SchedulableJobs.remove(j) #Remove scheduled job
+                                    
+                                    
+                                    SchedWorker[shift].append([j,r,ProcessedQuantity])                                    
+                                                                    
+                                    
+                                    ## check if successor can be scheduled.
+                                    for sucjob in successorjobs:
+                                        Schedulable = True
+                                        for predjbs in sucjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            SchedulableJobs.append(sucjob)
+                                    
+                                    
+                                    
+                                    
+                                    break
+                                else:
+                                    continue
+            
+                            if shiftnumber == 2:
+                                effort = 0                                                                   
+                                SchedWorker = self.getDataManager().getResources()['Manual workers'].getSchedule();
+                                for mach in SchedWorker[shift]:                                
+                                    effort += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])                                  
+            
+                                if shiftcap > (completiontimeLatestJob) and (effort <21): #This means we can schedule (partially) in first shift
+                                    j.setStartTime(completiontimeLatestJob)
+                                    if (completiontimeLatestJob + processtime) > 7:
+                                        PartialJob = True
+                                        fraction = 7 - completiontimeLatestJob
+                                        ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        Quantity = Quantity - ProcessedQuantity
+                                        processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        continue
+                                    else:
+                                        ProcessedQuantity = Quantity
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        ScheduledJobs.append(j)
+                                        SchedulableJobs.remove(j) #Remove scheduled job
+                                    
+                                    
+                                    SchedWorker[shift].append([j,r,ProcessedQuantity])                                    
+                                                                    
+                                    
+                                    ## check if successor can be scheduled.
+                                    for sucjob in successorjobs:
+                                        Schedulable = True
+                                        for predjbs in sucjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            SchedulableJobs.append(sucjob)
+                                                                                                            
+                                    
+                                    break
+                                else:
+                                    continue
+                                                                                                               
+                        
+                        break
+                    else:
+                        for shift, jobtime in r.getSchedule().items():
+                            
+                            ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
+                            if jobtime ==[]:
+                                completiontimeLatestJob = 0;
+                            else:
+                                completiontimeLatestJob = jobtime[::-1][0][1] + (jobtime[::-1][0][0].getQuantity() * self.getDataManager().getOperations()[jobtime[::-1][0][0].getOperation().getName()].getProcessTime())
+                            
+                            shiftcap = shift.getCapacity()
+                            shiftnumber = shift.getNumber()
+                            
+                            if shiftnumber == 1:
+                                effort = 0                                                                                         
+                                CurOpeffOp1 = 0; ## Also check operator availability.
+                                SchedOp1 = self.getDataManager().getResources()['Operator 1'].getSchedule();
+                                CurOpeffOp2 = 0;
+                                SchedOp2 = self.getDataManager().getResources()['Operator 2'].getSchedule();
+                                for mach in SchedOp1[shift]:                                
+                                    CurOpeffOp1 += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])
+                                for mach in SchedOp2[shift]:                                
+                                    CurOpeffOp2 += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])
+                                effort = min(CurOpeffOp1,CurOpeffOp2)   
+            
+                                if shiftcap > (completiontimeLatestJob) and (effort <8): #This means we can schedule (partially) in first shift
+                                    j.setStartTime(completiontimeLatestJob)
+                                    if (completiontimeLatestJob + processtime) > 8:
+                                        PartialJob = True
+                                        fraction = 8 - completiontimeLatestJob
+                                        ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        
+                                        
+                                        Quantity = Quantity - ProcessedQuantity
+                                        
+                                        processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        continue
+                                    else:
+                                        ProcessedQuantity = Quantity
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        ScheduledJobs.append(j)
+                                        SchedulableJobs.remove(j) #Remove scheduled job
+                                    
+                                    if (CurOpeffOp1 +opef <= 1):
+                                       SchedOp1[shift].append([j,r,ProcessedQuantity])
+                                    else:
+                                        SchedOp2[shift].append([j,r,ProcessedQuantity])
+                                                                    
+                                    
+                                    ## check if successor can be scheduled.
+                                    for sucjob in successorjobs:
+                                        Schedulable = True
+                                        for predjbs in sucjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            SchedulableJobs.append(sucjob)
+                                    
+                                    
+                                    
+                                    
+                                    break
+                                else:
+                                    continue
+            
+                            if shiftnumber == 2:
+                                CurOpeffOp3 = 0; ## Also check operator availability.
+                                SchedOp3 = self.getDataManager().getResources()['Operator 3'].getSchedule();
+                                
+                                for mach in SchedOp3[shift]:                                
+                                    CurOpeffOp3 += mach[1].getOperatingEffort()*(mach[0].getOperation().getProcessTime()*mach[2])
+                                
+                                if shiftcap > (completiontimeLatestJob) and (CurOpeffOp3 + opef<7): #This means we can schedule in second shift
+                                    j.setStartTime(completiontimeLatestJob)
+                                    if (completiontimeLatestJob + processtime) > 7:
+                                        PartialJob = True
+                                        fraction = 7 - completiontimeLatestJob
+                                        ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        Quantity = Quantity - ProcessedQuantity
+                                        processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        continue
+                                    else:
+                                        ProcessedQuantity = Quantity
+                                        r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        ScheduledJobs.append(j)
+                                        SchedulableJobs.remove(j) #Remove scheduled job
+                                        
+                                    SchedOp3[shift].append([j,r,ProcessedQuantity])                                
+                                    
+                                    ## check if successors can be scheduled.
+                                    for sucjob in successorjobs:
+                                        Schedulable = True
+                                        for predjbs in sucjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            SchedulableJobs.append(sucjob)
+                                    
+                                    
+                                    
+                                    break
+                                else:
+                                    continue
+                            if shiftnumber == 3 and PartialJob == True:                          
+                                                           
+                                
+                                j.setStartTime(completiontimeLatestJob)
+                                if (completiontimeLatestJob + processtime) > 8:
+                                    PartialJob = True
+                                    fraction = 8 - completiontimeLatestJob
+                                    ProcessedQuantity = fraction//self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                    Quantity = Quantity - ProcessedQuantity
+                                    processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
+                                    r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                    
+                                else:
+                                    ProcessedQuantity = Quantity
+                                    r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                    ScheduledJobs.append(j)
+                                    SchedulableJobs.remove(j) #Remove scheduled job
+                                
+                                
+                                
+                                ## check if successors can be scheduled.
                                 for sucjob in successorjobs:
                                     Schedulable = True
                                     for predjbs in sucjob.getPredecessors():
@@ -204,70 +507,15 @@ class SchedulingManager:
                                         else:
                                             Schedulable = False;
                                     if Schedulable == True:
-                                        SchedulableJobs.append(sucjob)
-                                
-                                SchedulableJobs.remove(j) #Remove scheduled job
+                                        SchedulableJobs.append(sucjob)                           
                                 
                                 
                                 break
-                            else:
-                                continue
-        
-                        if shiftnumber == 2:
-                            CurOpeffOp3 = 0; ## Also check operator availability.
-                            SchedOp3 = self.getDataManager().getResources()['Operator 3'].getSchedule();
-                            
-                            for mach in SchedOp3[shift]:                                
-                                CurOpeffOp3 += self.getDataManager().getResources()[mach].getOperatingEffort()
-                            if  ((Automated is None) and processtime < 8) or Automated == False:
-                                if shiftcap > (completiontimeLatestJob + processtime) and (CurOpeffOp3 + opef<=1): #This means we can schedule in second shift
-                                    j.setStartTime(completiontimeLatestJob)
-                                    SchedOp3[shift].append(r.getName())
-                                    
-                                    r.getSchedule()[shift].append((j,completiontimeLatestJob))                                
-                                    ScheduledJobs.append(j)
-                                    ## check if successors can be scheduled.
-                                    for sucjob in successorjobs:
-                                        Schedulable = True
-                                        for predjbs in sucjob.getPredecessors():
-                                            if predjbs in ScheduledJobs:
-                                                continue
-                                            else:
-                                                Schedulable = False;
-                                        if Schedulable == True:
-                                            SchedulableJobs.append(sucjob)
-                                    
-                                    SchedulableJobs.remove(j) #Remove scheduled job
-                                    
-                                    break
-                                else:
-                                    continue
-        
-                            elif (Automated == True) or (Automated is None and processtime > 8):                        
-                                if shiftcap >= (completiontimeLatestJob) and (CurOpeffOp3 + opef<=1): #This means we can schedule in second shift
-                                    j.setStartTime(completiontimeLatestJob)
-                                    SchedOp3[shift].append(r.getName())
-                                    
-                                    r.getSchedule()[shift].append((j,completiontimeLatestJob))                                
-                                    ScheduledJobs.append(j)
-                                    ## check if successors can be scheduled.
-                                    for sucjob in successorjobs:
-                                        Schedulable = True
-                                        for predjbs in sucjob.getPredecessors():
-                                            if predjbs in ScheduledJobs:
-                                                continue
-                                            else:
-                                                Schedulable = False;
-                                        if Schedulable == True:
-                                            SchedulableJobs.append(sucjob)
-                                    
-                                    SchedulableJobs.remove(j) #Remove scheduled job
-                                    
-                                    break
-                                else:
-                                    continue                        
-                    
-                    break             
+                                
+                                                   
+                        
+                        break
+                break
         self.getVisualManager().getPSchScheRes().value+=" All jobs are scheduled: "+str(nrjobs)+"\n"       
                         
         
