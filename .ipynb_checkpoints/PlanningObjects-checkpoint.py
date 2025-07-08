@@ -182,11 +182,14 @@ class Job():
         self.Predecessors = []
         self.Successor = []
         self.LatestStart=  None
+        
 
 
     # SCHEDULING
         self.StartTime = None
-
+        self.ScheduledDay=None
+        self.ScheduledShift=None
+        
     def getLatestStart(self):
         return self.LatestStart
 
@@ -199,6 +202,20 @@ class Job():
 
     def setStartTime(self,myst):
         self.StartTime = myst
+        return
+
+    def getScheduledDay(self):
+        return self.ScheduledDay
+
+    def setScheduledDay(self,day):
+        self.ScheduledDay = day
+        return
+
+    def getScheduledShift(self):
+        return self.ScheduledShift
+
+    def setScheduledShift(self,shift):
+        self.ScheduledShift = shift
         return
 
     def getID(self):

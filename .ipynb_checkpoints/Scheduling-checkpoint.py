@@ -125,7 +125,7 @@ class SchedulingManager:
         AllJobs = dict()
         SchedulableJobs=[]
         
-        ScheduledJobs=[]
+        ScheduledJobs=dict()
         for opr, jobs in oprdict.items():
             for job in jobs:
                 if job.getPredecessors() == []:
@@ -150,16 +150,27 @@ class SchedulingManager:
                 successorjobs = j.getSuccessor()
                 Quantity = j.getQuantity()
                 PartialJob = False
+                EarliestDay = 1
+                EarliestShift = 1
+                EarliestStart = 0
                 if not (predecessorjobs ==[]):
                 #Determine Earliest starttime
-                    maxpredecessor = None;
+                    maxpredecessorday = None;
+                    maxpredecessorshift = None;
+                    maxpredecessortime = None;
                     for i in predecessorjobs:
-                        completiontime = i.getStartTime() + (i.getQuantity() * self.getDataManager().getOperations()[i.getOperation().getName()].getProcessTime())
-                        if maxpredecessor == None or completiontime >= maxpredecessor:
-                            maxpredecessor = completiontime
+                        predecessorday = ScheduledJobs[i.getName()].getScheduledDay()
+                        predecessorshift = ScheduledJobs[i.getName()].getScheduledShift()
+                        completiontime = ScheduledJobs[i.getName()].getStartTime() + (i.getQuantity() * self.getDataManager().getOperations()[i.getOperation().getName()].getProcessTime())
+                        if maxpredecessorday == None or predecessorday >= maxpredecessorday:
+                            maxpredecessorday = predecessorday
+                        if maxpredecessorshift == None or predecessorshift >= maxpredecessorshift:
+                            maxpredecessorshift = predecessorshift
+                        if maxpredecessortime == None or completiontime >= maxpredecessortime:
+                            maxpredecessortime = completiontime
                     EarliestStart = maxpredecessor;
-                else:
-                    EarliestStart = 0
+                    EarliestDay = maxpredecessorday;
+                    EarliestShift = maxpredecessorshift;
                     
                 #Determine earliest available resource
                 processtime = (j.getQuantity() * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
@@ -172,12 +183,18 @@ class SchedulingManager:
                     
                     if restype == 'Manual':
                         for shift, jobtime in r.getSchedule().items():
-                            
+                            #Check which is the earliest shift that we are allowed to schedule
+                            if (shift.getDay() < EarliestDay) or (shift.getDay() == EarliestDay and shift.getNumber() < EarliestShift):
+                                continue
                             ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
                             if jobtime ==[]:
                                 completiontimeLatestJob = 0;
                             else:
                                 completiontimeLatestJob = jobtime[::-1][0][1] + (jobtime[::-1][0][0].getQuantity() * self.getDataManager().getOperations()[jobtime[::-1][0][0].getOperation().getName()].getProcessTime())
+                            if (shift.getDay() == EarliestDay and shift.getNumber() == EarliestShift):
+                                completiontimeLatestJob = max(completiontimeLatestJob,EarliestStart); #if in earliest shift/day
+                            else:
+                                completiontimeLatestJob = completiontimeLatestJob;
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
@@ -201,7 +218,9 @@ class SchedulingManager:
                                     else:
                                         ProcessedQuantity = Quantity
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
-                                        ScheduledJobs.append(j)
+                                        j.setScheduledShift(shiftnumber)
+                                        j.setScheduledDay(shift.getDay())
+                                        ScheduledJobs[j.getName()] = j
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                     
                                     
@@ -272,12 +291,18 @@ class SchedulingManager:
                         break
                     elif restype == 'Outsourced':
                         for shift, jobtime in r.getSchedule().items():
-                            
+                            #Check which is the earliest shift that we are allowed to schedule
+                            if (shift.getDay() < EarliestDay) or (shift.getDay() == EarliestDay and shift.getNumber() < EarliestShift):
+                                continue
                             ##Here we now have the completion time of the last job in a shift. Check if the to job to schedule fits in the shift. Else check next shift.
                             if jobtime ==[]:
                                 completiontimeLatestJob = 0;
                             else:
                                 completiontimeLatestJob = jobtime[::-1][0][1] + (jobtime[::-1][0][0].getQuantity() * self.getDataManager().getOperations()[jobtime[::-1][0][0].getOperation().getName()].getProcessTime())
+                            if (shift.getDay() == EarliestDay and shift.getNumber() == EarliestShift):
+                                completiontimeLatestJob = max(completiontimeLatestJob,EarliestStart); #if in earliest shift/day
+                            else:
+                                completiontimeLatestJob = completiontimeLatestJob;
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
