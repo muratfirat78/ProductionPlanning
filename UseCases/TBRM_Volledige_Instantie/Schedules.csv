@@ -1,739 +1,561 @@
 ResourceID,ResourceName,Shift,JobID,Starttime,Day
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,113,0,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,112,1.3333333333333282,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,111,2.3999999999999906,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,110,3.466666666666653,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,109,4.5333333333333155,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,108,5.599999999999978,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,107,6.666666666666641,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,106,7.733333333333304,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,106,0,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,105,1.0666666666666624,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,104,2.3999999999999906,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,103,3.466666666666653,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,102,4.5333333333333155,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,101,5.599999999999978,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,100,6.666666666666641,1
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,100,0,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,99,1.0666666666666624,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,98,2.133333333333325,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,97,3.1999999999999873,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,96,4.5333333333333155,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,95,5.599999999999978,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,227,6.666666666666641,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,227,0,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,226,1.5999999999999936,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,225,2.799999999999989,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,224,3.9999999999999845,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,223,5.19999999999998,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,222,6.3999999999999755,2
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,222,0,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,221,1.1999999999999953,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,220,2.3999999999999906,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,219,3.599999999999986,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,218,4.799999999999981,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,217,5.999999999999977,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,216,7.199999999999973,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,216,0,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,215,1.1999999999999953,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,214,2.799999999999989,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,213,3.9999999999999845,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,212,5.19999999999998,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,211,6.3999999999999755,3
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,211,0,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,210,1.1999999999999953,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,209,2.3999999999999906,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,341,3.599999999999986,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,340,5.599999999999978,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,339,7.199999999999972,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,339,0,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,338,1.5999999999999936,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,337,3.1999999999999873,4
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,336,4.799999999999981,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,83,0,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,82,1.3333333333333282,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,81,2.3999999999999906,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,80,3.466666666666653,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,79,4.5333333333333155,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,78,5.599999999999978,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,77,6.666666666666641,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,76,7.733333333333304,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,76,0,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,75,1.0666666666666624,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,74,2.3999999999999906,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,73,3.466666666666653,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,72,4.5333333333333155,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,71,5.599999999999978,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,70,6.666666666666641,1
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,70,0,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,167,1.0666666666666624,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,166,2.6666666666666563,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,165,3.8666666666666516,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,164,5.066666666666647,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,163,6.266666666666643,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,162,7.466666666666638,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,162,0,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,161,1.1999999999999953,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,160,2.3999999999999906,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,159,3.599999999999986,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,158,4.799999999999981,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,157,5.999999999999977,2
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,157,0,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,156,1.1999999999999953,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,155,2.3999999999999906,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,154,3.999999999999984,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,251,5.19999999999998,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,250,7.199999999999972,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,250,0,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,249,1.5999999999999936,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,248,3.1999999999999873,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,247,4.799999999999981,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,246,6.399999999999975,3
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,246,0,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,245,1.5999999999999936,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,244,3.1999999999999873,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,243,4.799999999999981,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,242,6.399999999999975,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,241,7.999999999999968,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,241,0,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,240,1.5999999999999936,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,239,3.1999999999999873,4
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,238,4.799999999999981,4
 4,MP2 - Material preparation - manual sawing (ZGN_02),2,335,6.399999999999975,4
 4,MP2 - Material preparation - manual sawing (ZGN_02),1,335,0,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,334,1.5999999999999936,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,333,3.1999999999999873,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,332,4.799999999999981,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,331,6.399999999999975,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,330,7.999999999999968,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,330,0,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,329,1.5999999999999936,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,328,3.1999999999999873,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,327,4.799999999999981,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,326,6.399999999999975,5
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,326,0,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,325,1.5999999999999936,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,324,3.1999999999999873,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,323,4.799999999999981,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,455,6.399999999999975,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,455,0,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,454,1.999999999999992,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,453,3.5999999999999854,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,452,5.199999999999979,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,451,6.799999999999972,6
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,451,0,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,450,1.5999999999999936,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,449,3.1999999999999873,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,448,4.799999999999981,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,447,6.399999999999975,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,446,7.999999999999968,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,446,0,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,445,1.5999999999999936,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,444,3.1999999999999873,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,443,4.799999999999981,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,442,6.399999999999975,7
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,442,0,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,441,1.5999999999999936,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,440,3.1999999999999873,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,439,4.799999999999981,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,438,6.399999999999975,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,437,7.999999999999968,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,437,0,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,569,1.5999999999999936,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,568,2.433333333333324,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,567,3.2666666666666537,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,566,4.099999999999984,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,565,4.933333333333314,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,564,5.766666666666644,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,563,6.599999999999975,8
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,563,0,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,562,0.83333333333333,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,561,1.66666666666666,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,560,2.4999999999999902,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,559,3.33333333333332,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,558,4.16666666666665,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,557,4.9999999999999805,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,556,5.833333333333311,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,555,6.666666666666641,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,554,7.499999999999972,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,554,0,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,553,0.83333333333333,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,552,1.66666666666666,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,551,2.4999999999999902,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1617,3.33333333333332,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1616,3.7333333333333187,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1615,4.133333333333317,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1614,4.5333333333333155,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1613,4.933333333333314,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1612,5.333333333333313,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1611,5.733333333333311,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1610,6.13333333333331,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1609,6.533333333333308,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1608,6.933333333333307,9
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1608,0,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1607,0.3999999999999984,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1606,0.7999999999999968,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1605,1.1999999999999953,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1604,1.5999999999999936,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1603,1.999999999999992,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1602,2.3999999999999906,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1601,2.799999999999989,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1600,3.1999999999999877,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1599,3.5999999999999863,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1836,3.999999999999985,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1835,4.833333333333315,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1834,5.666666666666646,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1833,6.499999999999976,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1832,7.333333333333306,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1832,0,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1831,0.83333333333333,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1830,1.66666666666666,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1829,2.4999999999999902,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1828,3.33333333333332,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1827,4.16666666666665,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1826,4.9999999999999805,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1825,5.833333333333311,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1824,6.666666666666641,10
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1824,0,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1823,0.83333333333333,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1822,1.66666666666666,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1821,2.4999999999999902,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1820,3.33333333333332,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1819,4.16666666666665,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1818,4.9999999999999805,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1882,5.833333333333311,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1881,6.583333333333308,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),1,1880,7.3333333333333055,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1880,0,11
-4,MP2 - Material preparation - manual sawing (ZGN_02),2,1879,0.749999999999997,11
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1666,0,1
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1665,3.999999999999984,1
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1664,7.999999999999968,1
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1664,0,1
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1663,3.999999999999984,1
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1663,0,2
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1662,3.999999999999984,2
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1661,7.999999999999968,2
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1661,0,2
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1660,3.999999999999984,2
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1660,0,3
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1659,3.999999999999984,3
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1658,7.999999999999968,3
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1658,0,3
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1657,3.999999999999984,3
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1657,0,4
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1656,3.999999999999984,4
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1655,7.999999999999968,4
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1655,0,4
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1654,3.999999999999984,4
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1654,0,5
-5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1653,3.999999999999984,5
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,614,0,1
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,613,4.466666666666649,1
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,613,0,1
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,612,4.466666666666649,1
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,612,0,2
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,611,4.466666666666649,2
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,611,0,2
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,610,4.466666666666649,2
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,610,0,3
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,609,4.466666666666649,3
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,609,0,3
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,608,4.466666666666649,3
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,608,0,4
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,607,4.466666666666649,4
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,607,0,4
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,606,4.466666666666649,4
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,606,0,5
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,664,4.466666666666649,5
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,664,0,5
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,663,0,6
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,663,0,6
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,662,0,7
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,662,0,7
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,661,0,8
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,661,0,8
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,660,0,9
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,660,0,9
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,659,0,10
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,659,0,10
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,678,0,11
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,678,0,11
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,703,0,12
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,703,0,12
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,703,0,13
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,702,0,13
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,702,0,14
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,702,0,14
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,701,0,15
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,701,0,15
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,701,0,16
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,727,0,16
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,727,0,17
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,727,0,17
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,727,0,18
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,757,0,18
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,757,0,19
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,757,0,19
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,756,0,20
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,756,0,20
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,756,0,21
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,806,0,21
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,806,0,22
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,805,0,22
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,805,0,23
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,804,0,23
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,804,0,24
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,803,0,24
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,803,0,25
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,802,0,25
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,802,0,26
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,828,7.266666666666638,26
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,828,0,26
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,827,4.466666666666649,26
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,827,0,27
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,826,4.466666666666649,27
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,826,0,27
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,825,4.466666666666649,27
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,825,0,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,833,4.466666666666649,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,839,6.6999999999999735,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,838,6.86666666666664,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,849,7.033333333333306,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,849,0,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,848,5.799999999999977,28
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,848,0,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,879,5.799999999999977,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,878,5.966666666666643,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,892,6.133333333333309,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,891,6.299999999999975,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,899,6.466666666666641,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,898,6.883333333333306,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1131,7.299999999999971,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1131,0,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1130,0.7166666666666638,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1129,1.4333333333333276,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1128,2.1499999999999915,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1127,2.866666666666655,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1126,3.583333333333319,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1125,4.299999999999983,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1124,5.016666666666647,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1123,5.733333333333311,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1122,6.449999999999975,29
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1122,0,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1121,0.7166666666666638,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1120,1.4333333333333276,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1119,2.1499999999999915,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1118,2.866666666666655,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1117,3.583333333333319,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1116,4.299999999999983,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1115,5.016666666666647,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1114,5.733333333333311,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1113,6.449999999999975,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1112,7.166666666666639,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1111,7.8833333333333035,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1111,0,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1110,0.7166666666666638,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1109,1.4333333333333276,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1108,2.1499999999999915,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1107,2.866666666666655,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1106,3.583333333333319,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1105,4.299999999999983,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1104,5.016666666666647,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1103,5.733333333333311,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1102,6.449999999999975,30
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1102,0,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1101,0.7166666666666638,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1100,1.4333333333333276,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1099,2.1499999999999915,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1098,2.866666666666655,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1097,3.583333333333319,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1096,4.299999999999983,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1095,5.016666666666647,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1094,5.733333333333311,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1093,6.449999999999975,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1092,7.166666666666639,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1091,7.8833333333333035,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1091,0,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1090,0.7166666666666638,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1089,1.4333333333333276,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1088,2.1499999999999915,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1087,2.866666666666655,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1086,3.583333333333319,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1085,4.299999999999983,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1084,5.016666666666647,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1083,5.733333333333311,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1082,6.449999999999975,31
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1082,0,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1081,0.7166666666666638,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1080,1.4333333333333276,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1079,2.1499999999999915,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1078,2.866666666666655,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1077,3.583333333333319,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1076,4.299999999999983,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1075,5.016666666666647,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1074,5.733333333333311,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1073,6.449999999999975,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1072,7.166666666666639,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1071,7.8833333333333035,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1071,0,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1070,0.7166666666666638,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1069,1.4333333333333276,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1136,2.1499999999999915,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1151,5.749999999999977,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1150,6.633333333333307,32
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1150,0,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1149,0.8833333333333299,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1156,1.7666666666666597,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1221,4.749999999999981,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1220,5.616666666666645,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1219,6.4833333333333085,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1218,7.349999999999972,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1218,0,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1217,0.8666666666666633,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1216,1.7333333333333265,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1215,2.59999999999999,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1214,3.466666666666653,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1213,4.333333333333316,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1212,5.19999999999998,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1211,6.066666666666643,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1210,6.933333333333307,33
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1210,0,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1209,0.8666666666666633,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1208,1.7333333333333265,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1207,2.59999999999999,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1206,3.466666666666653,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1205,4.333333333333316,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1204,5.19999999999998,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1203,6.066666666666643,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1202,6.933333333333307,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1241,7.7999999999999705,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1241,0,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1293,1.083333333333329,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1292,1.6833333333333267,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1291,2.2833333333333243,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1290,2.883333333333322,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1289,3.48333333333332,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1288,4.083333333333318,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1287,4.683333333333316,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1286,5.283333333333314,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1285,5.8833333333333115,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1284,6.483333333333309,34
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1284,0,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1283,0.5999999999999976,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1282,1.1999999999999953,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1300,1.799999999999993,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1299,3.3499999999999868,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1307,4.899999999999981,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1343,6.633333333333307,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1343,0,35
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1343,0,36
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1342,0,36
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1342,0,37
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1341,0,37
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1341,0,38
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1340,0,38
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1340,0,39
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1339,0,39
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1339,0,40
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1338,0,40
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1338,0,41
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1463,0,41
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1463,0,42
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1463,0,42
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1462,0,43
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1462,0,43
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1462,0,44
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1461,0,44
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1461,0,45
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1461,0,45
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1460,0,46
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1460,0,46
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1460,0,47
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1459,0,47
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1459,0,48
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1459,0,48
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1458,0,49
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1458,0,49
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1458,0,50
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1457,0,50
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1457,0,51
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1457,0,51
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1456,0,52
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1456,0,52
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1456,0,53
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1455,0,53
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1455,0,54
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1455,0,54
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1454,0,55
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1454,0,55
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1454,0,56
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1453,0,56
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1453,0,57
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1453,0,57
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1452,0,58
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1452,0,58
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1452,0,59
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1451,0,59
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1451,0,60
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1451,0,60
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1450,0,61
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1450,0,61
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1450,0,62
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1449,0,62
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1449,0,63
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1449,0,63
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1448,0,64
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1448,0,64
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1448,0,65
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1447,0,65
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1447,0,66
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1447,0,66
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1446,0,67
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1446,0,67
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1446,0,68
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1445,0,68
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1445,0,69
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1445,0,69
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1444,0,70
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1444,0,70
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1444,0,71
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1443,0,71
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1443,0,72
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1443,0,72
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1442,0,73
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,334,1.999999999999992,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,333,3.5999999999999854,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,332,5.199999999999979,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,331,6.799999999999972,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,331,0,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,330,1.5999999999999936,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,329,3.1999999999999873,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,328,4.799999999999981,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,327,6.399999999999975,5
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,327,0,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,326,1.5999999999999936,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,325,3.1999999999999873,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,324,4.799999999999981,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,323,6.399999999999975,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,322,7.999999999999968,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,322,0,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,419,1.5999999999999936,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,418,2.433333333333324,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,417,3.2666666666666537,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,416,4.099999999999984,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,415,4.933333333333314,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,414,5.766666666666644,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,413,6.599999999999975,6
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,413,0,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,412,0.83333333333333,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,411,1.66666666666666,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,410,2.4999999999999902,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,409,3.33333333333332,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,408,4.16666666666665,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,407,4.9999999999999805,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,406,5.833333333333311,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1371,6.666666666666641,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1370,7.06666666666664,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1369,7.466666666666638,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1368,7.866666666666637,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1368,0,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1367,0.3999999999999984,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1366,0.7999999999999968,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1365,1.1999999999999953,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1364,1.5999999999999936,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1363,1.999999999999992,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1362,2.3999999999999906,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1361,2.799999999999989,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1360,3.1999999999999877,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1359,3.5999999999999863,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1358,3.999999999999985,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1530,4.3999999999999835,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1529,5.233333333333314,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1528,6.066666666666644,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1527,6.899999999999975,7
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1527,0,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1526,0.83333333333333,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1525,1.66666666666666,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1524,2.4999999999999902,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1523,3.33333333333332,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1522,4.16666666666665,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1521,4.9999999999999805,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1520,5.833333333333311,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1519,6.666666666666641,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),1,1518,7.499999999999972,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1518,0,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1517,0.83333333333333,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1576,1.66666666666666,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1575,2.416666666666657,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1574,3.166666666666654,8
+4,MP2 - Material preparation - manual sawing (ZGN_02),2,1573,3.916666666666651,8
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1406,0,1
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1405,3.999999999999984,1
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1404,7.999999999999968,1
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1404,0,1
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1403,3.999999999999984,1
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1403,0,2
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1402,3.999999999999984,2
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1401,7.999999999999968,2
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1401,0,2
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1400,3.999999999999984,2
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1400,0,3
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1399,3.999999999999984,3
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1398,7.999999999999968,3
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1398,0,3
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),2,1397,3.999999999999984,3
+5,M3-01 - Accuwell - 3axis - Manual (FR3_01),1,1397,0,4
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,454,0,1
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,453,4.466666666666649,1
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,453,0,1
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,452,4.466666666666649,1
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,452,0,2
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,451,4.466666666666649,2
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,451,0,2
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,450,4.466666666666649,2
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,450,0,3
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,449,4.466666666666649,3
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,449,0,3
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,448,4.466666666666649,3
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,448,0,4
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,489,4.466666666666649,4
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,489,0,4
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,488,0,5
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,488,0,5
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,487,0,6
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,487,0,6
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,503,0,7
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,503,0,7
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,523,0,8
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,523,0,8
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,523,0,9
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,522,0,9
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,522,0,10
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,522,0,10
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,566,0,11
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,566,0,11
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,566,0,12
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,565,0,12
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,565,0,13
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,565,0,13
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,604,0,14
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,604,0,14
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,603,0,15
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,603,0,15
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,602,0,16
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,602,0,16
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,601,0,17
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,626,7.266666666666638,17
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,626,0,17
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,625,4.466666666666649,17
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,625,0,18
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,624,4.466666666666649,18
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,624,0,18
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,623,4.466666666666649,18
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,623,0,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,631,4.466666666666649,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,637,6.6999999999999735,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,636,6.86666666666664,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,647,7.033333333333306,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,647,0,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,646,5.799999999999977,19
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,646,0,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,677,5.799999999999977,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,676,5.966666666666643,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,690,6.133333333333309,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,689,6.299999999999975,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,697,6.466666666666641,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,696,6.883333333333306,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,929,7.299999999999971,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,929,0,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,928,0.7166666666666638,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,927,1.4333333333333276,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,926,2.1499999999999915,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,925,2.866666666666655,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,924,3.583333333333319,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,923,4.299999999999983,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,922,5.016666666666647,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,921,5.733333333333311,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,920,6.449999999999975,20
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,920,0,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,919,0.7166666666666638,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,918,1.4333333333333276,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,917,2.1499999999999915,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,916,2.866666666666655,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,915,3.583333333333319,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,914,4.299999999999983,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,913,5.016666666666647,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,912,5.733333333333311,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,911,6.449999999999975,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,910,7.166666666666639,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,909,7.8833333333333035,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,909,0,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,908,0.7166666666666638,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,907,1.4333333333333276,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,906,2.1499999999999915,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,905,2.866666666666655,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,904,3.583333333333319,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,903,4.299999999999983,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,902,5.016666666666647,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,901,5.733333333333311,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,900,6.449999999999975,21
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,900,0,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,899,0.7166666666666638,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,898,1.4333333333333276,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,897,2.1499999999999915,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,896,2.866666666666655,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,895,3.583333333333319,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,894,4.299999999999983,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,893,5.016666666666647,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,892,5.733333333333311,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,891,6.449999999999975,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,890,7.166666666666639,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,889,7.8833333333333035,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,889,0,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,888,0.7166666666666638,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,887,1.4333333333333276,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,886,2.1499999999999915,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,885,2.866666666666655,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,884,3.583333333333319,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,883,4.299999999999983,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,882,5.016666666666647,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,881,5.733333333333311,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,880,6.449999999999975,22
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,880,0,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,879,0.7166666666666638,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,878,1.4333333333333276,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,877,2.1499999999999915,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,876,2.866666666666655,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,875,3.583333333333319,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,874,4.299999999999983,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,873,5.016666666666647,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,872,5.733333333333311,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,871,6.449999999999975,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,870,7.166666666666639,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,869,7.8833333333333035,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,869,0,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,868,0.7166666666666638,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,867,1.4333333333333276,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,934,2.1499999999999915,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,949,5.749999999999977,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,948,6.633333333333307,23
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,948,0,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,947,0.8833333333333299,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,954,1.7666666666666597,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1019,4.749999999999981,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1018,5.616666666666645,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1017,6.4833333333333085,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1016,7.349999999999972,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1016,0,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1015,0.8666666666666633,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1014,1.7333333333333265,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1013,2.59999999999999,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1012,3.466666666666653,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1011,4.333333333333316,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1010,5.19999999999998,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1009,6.066666666666643,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1008,6.933333333333307,24
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1008,0,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1007,0.8666666666666633,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1006,1.7333333333333265,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1005,2.59999999999999,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1004,3.466666666666653,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1003,4.333333333333316,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1002,5.19999999999998,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1001,6.066666666666643,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1000,6.933333333333307,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1039,7.7999999999999705,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1039,0,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1091,1.083333333333329,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1090,1.6833333333333267,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1089,2.2833333333333243,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1088,2.883333333333322,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1087,3.48333333333332,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1086,4.083333333333318,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1085,4.683333333333316,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1084,5.283333333333314,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1083,5.8833333333333115,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1082,6.483333333333309,25
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1082,0,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1081,0.5999999999999976,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1080,1.1999999999999953,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1098,1.799999999999993,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1097,3.3499999999999868,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1105,4.899999999999981,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1135,6.633333333333307,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1135,0,26
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1135,0,27
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1134,0,27
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1134,0,28
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1133,0,28
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1133,0,29
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1132,0,29
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1132,0,30
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1131,0,30
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1255,4.199999999999983,30
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1255,0,31
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1255,0,31
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1254,0,32
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1254,0,32
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1254,0,33
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1253,0,33
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1253,0,34
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1253,0,34
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1252,0,35
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1252,0,35
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1252,0,36
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1251,0,36
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1251,0,37
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1251,0,37
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1250,0,38
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1250,0,38
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1250,0,39
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1249,0,39
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1249,0,40
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1249,0,40
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1248,0,41
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1248,0,41
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1248,0,42
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1247,0,42
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1247,0,43
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1247,0,43
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1246,0,44
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1246,0,44
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1246,0,45
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1245,0,45
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1245,0,46
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1245,0,46
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1244,0,47
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1244,0,47
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1244,0,48
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1243,0,48
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1243,0,49
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1243,0,49
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1242,0,50
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1242,0,50
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1242,0,51
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1241,0,51
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1241,0,52
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1241,0,52
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1240,0,53
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1240,0,53
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1240,0,54
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1239,0,54
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1239,0,55
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1239,0,55
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1238,0,56
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1238,0,56
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1238,0,57
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1237,0,57
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1237,0,58
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1237,0,58
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1236,0,59
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1236,0,59
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1236,0,60
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1235,0,60
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1235,0,61
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1235,0,61
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1234,0,62
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1234,0,62
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1234,0,63
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1233,0,63
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1233,0,64
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1233,0,64
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1232,0,65
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1232,0,65
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1232,0,66
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1287,0,66
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1287,0,67
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1286,7.699999999999969,67
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1286,0,67
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1286,0,68
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1285,7.699999999999969,68
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1285,0,68
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1285,0,69
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1284,7.699999999999969,69
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1284,0,69
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1283,3.8499999999999845,69
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1283,0,70
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1282,7.699999999999969,70
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1282,0,70
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1282,0,71
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1281,7.699999999999969,71
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1281,0,71
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1281,0,72
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1280,7.699999999999969,72
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1280,0,72
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1446,3.8499999999999845,72
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1445,6.349999999999975,72
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1445,0,73
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1444,2.4999999999999902,73
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1443,4.9999999999999805,73
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1442,7.499999999999971,73
 9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1442,0,73
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1442,0,74
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1441,0,74
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1441,0,75
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1441,0,75
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1440,0,76
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1440,0,76
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1440,0,77
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1503,0,77
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1503,0,78
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1502,7.699999999999969,78
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1502,0,78
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1502,0,79
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1501,7.699999999999969,79
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1501,0,79
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1501,0,80
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1500,7.699999999999969,80
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1500,0,80
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1500,0,81
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1499,7.699999999999969,81
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1499,0,81
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1498,3.8499999999999845,81
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1498,0,82
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1497,7.699999999999969,82
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1497,0,82
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1497,0,83
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1496,7.699999999999969,83
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1496,0,83
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1496,0,84
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1495,7.699999999999969,84
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1495,0,84
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1495,0,85
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1494,7.699999999999969,85
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1494,0,85
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1722,3.8499999999999845,85
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1721,6.349999999999975,85
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1721,0,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1720,2.4999999999999902,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1719,4.9999999999999805,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1718,7.499999999999971,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1718,0,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1717,2.4999999999999902,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1716,4.9999999999999805,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1715,6.249999999999975,86
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1715,0,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1714,2.4999999999999902,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1713,4.9999999999999805,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1712,7.499999999999971,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1712,0,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1711,2.4999999999999902,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1710,4.9999999999999805,87
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1710,0,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1709,2.4999999999999902,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1894,3.7499999999999853,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1893,3.849999999999985,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1934,3.9499999999999846,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1940,3.983333333333318,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1988,4.049999999999984,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1998,6.049999999999984,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2024,6.11666666666665,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2023,6.249999999999983,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2022,6.383333333333316,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2021,6.516666666666649,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2034,6.649999999999982,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2047,6.766666666666648,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2067,6.9999999999999805,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2066,7.033333333333314,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2069,7.066666666666647,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2117,7.4666666666666455,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2116,7.999999999999977,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2116,0,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2115,0.5333333333333312,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2114,1.0666666666666624,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2113,1.5999999999999936,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2112,2.133333333333325,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2111,2.6666666666666563,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2110,3.1999999999999877,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2109,3.733333333333319,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2108,4.266666666666651,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2107,4.799999999999982,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2106,5.3333333333333135,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2105,5.866666666666645,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2104,6.399999999999976,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2103,6.933333333333308,88
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2103,0,89
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2162,0.5333333333333312,89
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2162,0,89
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2162,0,90
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2162,0,90
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2162,0,91
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2162,0,91
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2161,0,92
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2161,0,92
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2161,0,93
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2161,0,93
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2161,0,94
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2161,0,94
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2160,0,95
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2160,0,95
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2160,0,96
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2160,0,96
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2160,0,97
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2160,0,97
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2159,0,98
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2159,0,98
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2159,0,99
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2159,0,99
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2159,0,100
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2159,0,100
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2158,0,101
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2158,0,101
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2158,0,102
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2158,0,102
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2158,0,103
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2158,0,103
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2157,0,104
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2157,0,104
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2157,0,105
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2157,0,105
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2157,0,106
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2157,0,106
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2156,0,107
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2156,0,107
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2156,0,108
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2156,0,108
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2156,0,109
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2156,0,109
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2155,0,110
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2155,0,110
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2155,0,111
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2155,0,111
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2155,0,112
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2155,0,112
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2154,0,113
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2154,0,113
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2154,0,114
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2154,0,114
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2154,0,115
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2154,0,115
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2153,0,116
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2153,0,116
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2153,0,117
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2153,0,117
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2153,0,118
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2153,0,118
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2152,0,119
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2152,0,119
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2152,0,120
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2152,0,120
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2152,0,121
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2152,0,121
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2151,0,122
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2151,0,122
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2151,0,123
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2151,0,123
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2151,0,124
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2151,0,124
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2150,0,125
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2150,0,125
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2150,0,126
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2150,0,126
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2150,0,127
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2150,0,127
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2149,0,128
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2149,0,128
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2149,0,129
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2149,0,129
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2149,0,130
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2149,0,130
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2148,0,131
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2148,0,131
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2148,0,132
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2148,0,132
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2148,0,133
-9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2148,0,133
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2384,0,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2383,0.1499999999999994,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2382,0.2999999999999988,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2381,0.44999999999999823,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2380,0.5999999999999976,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2379,0.7499999999999971,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2414,0.8999999999999966,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2413,1.7333333333333267,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2412,2.5666666666666567,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2411,3.3999999999999866,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2410,4.2333333333333165,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2409,5.066666666666647,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2415,5.899999999999977,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2416,6.066666666666643,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2427,6.233333333333309,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2428,6.249999999999976,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2545,6.266666666666643,134
-9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2546,6.349999999999976,134
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1856,0,1
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1856,0,1
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1856,0,2
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1856,0,2
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1855,0,3
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1855,0,3
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1855,0,4
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1855,0,4
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1854,0,5
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1854,0,5
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1854,0,6
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1854,0,6
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1853,0,7
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1853,0,7
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1853,0,8
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1853,0,8
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1852,0,9
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1852,0,9
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1852,0,10
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1852,0,10
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1851,0,11
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1851,0,11
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1851,0,12
-13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1851,0,12
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,869,0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,868,0.0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,867,0.0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,866,0.0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,865,0.0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,1844,0.0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,1843,5.016666666666647,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1843,0,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1860,5.016666666666647,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1859,5.033333333333314,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1954,5.04999999999998,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1978,5.066666666666647,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1977,5.0833333333333135,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1976,5.09999999999998,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2192,5.116666666666647,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2191,5.133333333333313,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2190,5.14999999999998,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2189,5.1666666666666465,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2188,5.183333333333313,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2187,5.19999999999998,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2186,5.216666666666646,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2185,5.233333333333313,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2184,5.24999999999998,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2183,5.266666666666646,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2208,5.283333333333313,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2207,5.316666666666646,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2249,5.349999999999979,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2248,5.366666666666646,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2312,5.383333333333312,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2311,5.399999999999979,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2310,5.416666666666646,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2354,5.433333333333312,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2353,5.449999999999979,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2429,5.4666666666666455,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2430,5.599999999999978,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2487,5.733333333333311,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2486,5.866666666666644,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2485,5.999999999999977,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2484,6.13333333333331,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2483,6.266666666666643,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2482,6.3999999999999755,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2481,6.533333333333308,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2480,6.666666666666641,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2479,6.799999999999974,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2478,6.933333333333307,1
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2478,0,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2477,0.1333333333333328,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2476,0.2666666666666656,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2475,0.3999999999999984,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2474,0.5333333333333312,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2473,0.6666666666666641,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2472,0.7999999999999969,2
-16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2471,0.9333333333333298,2
-28,OUT - Outsourced activity_CAM,1,1868,0,1
-28,OUT - Outsourced activity_CAM,1,1867,0,1
-28,OUT - Outsourced activity_CAM,1,1866,0,1
-28,OUT - Outsourced activity_CAM,1,1865,0,1
-28,OUT - Outsourced activity_CAM,1,1886,0,1
-28,OUT - Outsourced activity_CAM,1,1885,0,1
-28,OUT - Outsourced activity_CAM,2,1868,0,1
-28,OUT - Outsourced activity_CAM,2,1867,0,1
-28,OUT - Outsourced activity_CAM,2,1866,0,1
-28,OUT - Outsourced activity_CAM,2,1865,0,1
-28,OUT - Outsourced activity_CAM,3,1868,0,1
-28,OUT - Outsourced activity_CAM,3,1867,0,1
-28,OUT - Outsourced activity_CAM,3,1866,0,1
-28,OUT - Outsourced activity_CAM,3,1865,0,1
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1441,2.4999999999999902,73
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1440,4.9999999999999805,73
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1440,0,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1439,2.4999999999999902,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1438,4.9999999999999805,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1437,7.499999999999971,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1437,0,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1588,2.4999999999999902,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1587,2.59999999999999,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1628,2.6999999999999895,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1634,2.7333333333333227,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1682,2.799999999999989,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1692,4.799999999999989,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1718,4.866666666666656,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1717,4.9999999999999885,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1716,5.133333333333321,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1715,5.266666666666654,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1728,5.399999999999987,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1741,5.516666666666653,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1761,5.749999999999986,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1760,5.783333333333319,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1763,5.816666666666652,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1805,6.216666666666651,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,1804,6.749999999999982,74
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1804,0,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1803,0.5333333333333312,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1802,1.0666666666666624,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1801,1.5999999999999936,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1800,2.133333333333325,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1799,2.6666666666666563,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1798,3.1999999999999877,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1797,3.733333333333319,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1796,4.266666666666651,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1795,4.799999999999982,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1794,5.3333333333333135,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,1793,5.866666666666645,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2027,6.399999999999976,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2026,6.549999999999976,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2025,6.699999999999975,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2024,6.849999999999975,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2023,6.999999999999974,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2022,7.149999999999974,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),1,2057,7.299999999999973,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2057,0,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2056,0.83333333333333,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2055,1.66666666666666,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2054,2.4999999999999902,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2053,3.33333333333332,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2052,4.16666666666665,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2058,4.9999999999999805,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2059,5.1666666666666465,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2070,5.333333333333313,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2071,5.349999999999979,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2158,5.366666666666646,75
+9,MP1 - Material preparation - automatic sawing (ZGN_01),2,2159,5.449999999999979,75
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1550,0,1
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1550,0,1
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1550,0,2
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1550,0,2
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1549,0,3
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1549,0,3
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1549,0,4
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1549,0,4
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1548,0,5
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1548,0,5
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1548,0,6
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1548,0,6
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1547,0,7
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1547,0,7
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1547,0,8
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1547,0,8
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1546,0,9
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1546,0,9
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1546,0,10
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1546,0,10
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1545,0,11
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1545,0,11
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),1,1545,0,12
+13,M3-02 - Accuwell - 3axis - Manual (FR3_02),2,1545,0,12
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,667,0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,666,0.0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,665,0.0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,664,0.0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,663,0.0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,1538,0.0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,1537,5.016666666666647,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1537,0,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1554,5.016666666666647,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1553,5.033333333333314,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1648,5.04999999999998,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1672,5.066666666666647,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1671,5.0833333333333135,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1670,5.09999999999998,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1835,5.116666666666647,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1834,5.133333333333313,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1833,5.14999999999998,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1832,5.1666666666666465,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1831,5.183333333333313,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1830,5.19999999999998,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1829,5.216666666666646,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1828,5.233333333333313,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1827,5.24999999999998,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1826,5.266666666666646,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1851,5.283333333333313,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1850,5.316666666666646,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1892,5.349999999999979,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1891,5.366666666666646,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1955,5.383333333333312,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1954,5.399999999999979,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1953,5.416666666666646,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1997,5.433333333333312,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,1996,5.449999999999979,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2072,5.4666666666666455,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2073,5.599999999999978,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2115,5.733333333333311,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2114,5.866666666666644,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2113,5.999999999999977,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2112,6.13333333333331,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2111,6.266666666666643,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2110,6.3999999999999755,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2109,6.533333333333308,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2108,6.666666666666641,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2107,6.799999999999974,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2,2106,6.933333333333307,1
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2106,0,2
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2105,0.1333333333333328,2
+16,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1,2104,0.2666666666666656,2
+28,OUT - Outsourced activity_CAM,1,1562,0,1
+28,OUT - Outsourced activity_CAM,1,1561,0,1
+28,OUT - Outsourced activity_CAM,1,1560,0,1
+28,OUT - Outsourced activity_CAM,1,1559,0,1
+28,OUT - Outsourced activity_CAM,1,1580,0,1
+28,OUT - Outsourced activity_CAM,1,1579,0,1
+28,OUT - Outsourced activity_CAM,2,1562,0,1
+28,OUT - Outsourced activity_CAM,2,1561,0,1
+28,OUT - Outsourced activity_CAM,2,1560,0,1
+28,OUT - Outsourced activity_CAM,2,1559,0,1
+28,OUT - Outsourced activity_CAM,3,1562,0,1
+28,OUT - Outsourced activity_CAM,3,1561,0,1
+28,OUT - Outsourced activity_CAM,3,1560,0,1
+28,OUT - Outsourced activity_CAM,3,1559,0,1

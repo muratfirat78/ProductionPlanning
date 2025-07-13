@@ -134,7 +134,7 @@ class SchedulingManager:
         counter = 0       
         #Initialize schedule for each Resource:
         for resname, res in self.getDataManager().getResources().items():
-            if (res.getAutomated() is None) or (res.getAutomated()==False):
+            if ((res.getAutomated() is None) or (res.getAutomated()==False)) and not res.getType()=='Outsourced':
                 for i in shiftlistman:
                     res.getSchedule()[i]=[]
             else:
@@ -239,7 +239,8 @@ class SchedulingManager:
                                             else:
                                                 Schedulable = False;
                                         if Schedulable == True:
-                                            SchedulableJobs.append(sucjob)
+                                            if sucjob not in ScheduledJobs:
+                                                SchedulableJobs.append(sucjob)
                                     
                                     
                                     
@@ -285,7 +286,8 @@ class SchedulingManager:
                                             else:
                                                 Schedulable = False;
                                         if Schedulable == True:
-                                            SchedulableJobs.append(sucjob)
+                                            if sucjob not in ScheduledJobs:
+                                                SchedulableJobs.append(sucjob)
                                                                                                             
                                     
                                     break
@@ -332,7 +334,7 @@ class SchedulingManager:
                                     SchedulableJobs.remove(j) #Remove scheduled job
                                 
                                 
-                                SchedWorker[shift].append([j,r,ProcessedQuantity])                                    
+                                                                  
                                                                 
                                 
                                 ## check if successor can be scheduled.
@@ -344,7 +346,8 @@ class SchedulingManager:
                                         else:
                                             Schedulable = False;
                                     if Schedulable == True:
-                                        SchedulableJobs.append(sucjob)
+                                        if sucjob not in ScheduledJobs:
+                                                SchedulableJobs.append(sucjob)
                                 
                                 
                                 
@@ -423,7 +426,8 @@ class SchedulingManager:
                                             else:
                                                 Schedulable = False;
                                         if Schedulable == True:
-                                            SchedulableJobs.append(sucjob)
+                                            if sucjob not in ScheduledJobs:
+                                                SchedulableJobs.append(sucjob)
                                     
                                     
                                     
@@ -468,7 +472,8 @@ class SchedulingManager:
                                             else:
                                                 Schedulable = False;
                                         if Schedulable == True:
-                                            SchedulableJobs.append(sucjob)
+                                            if sucjob not in ScheduledJobs:
+                                                SchedulableJobs.append(sucjob)
                                     
                                     
                                     
@@ -506,7 +511,8 @@ class SchedulingManager:
                                         else:
                                             Schedulable = False;
                                     if Schedulable == True:
-                                        SchedulableJobs.append(sucjob)                           
+                                        if sucjob not in ScheduledJobs:
+                                                SchedulableJobs.append(sucjob)                           
                                 
                                 
                                 break
