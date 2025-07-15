@@ -80,13 +80,13 @@ class PlanningManager:
         #assume: one workday includes 16 hours of two shifts. 
         #assume: all production is done sequential in operations, no batch concept 
 
-      
-
+     
         # self.getVisualManager().getPLTBresult2exp().value+="Planning production... for "+product.getName()+" -> Oprns "+str(len(product.getOperations()))+"\n"
        
         # self.getVisualManager().getPLTBresult2exp().value+=str(type(mydate))+"  "+str(type(self.getPHStart()))+"\n"
         if mydate.date() < self.getPHStart():
             self.getVisualManager().getPLTBresult2exp().value+="XXXXX <  "+str(self.getPHStart())+"\n"
+            order.getDelayReasons()[product] = ("lead time",mydate.date())
             return False
         
             
@@ -116,7 +116,7 @@ class PlanningManager:
                     #self.getVisualManager().getPLTBresult2exp().value+="Resurce.. "+resource.getName()+"  "+str(mydate in resource.getCapacityLevels())+"\n"
     
                     if mydate in resource.getCapacityLevels():
-                        self.getVisualManager().getPLTBresult2exp().value+="date in capacitylevels.."+"\n"
+                        #self.getVisualManager().getPLTBresult2exp().value+="date in capacitylevels.."+"\n"
 
                         if mydate in resource.getCapacityReserved():
                             resource.getCapacityReserved()[mydate]+=resource_use
@@ -135,6 +135,7 @@ class PlanningManager:
                             self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
                         else: 
                             self.getLogData()["Log_"+str(len(self.getLogData()))]="Insufficient capacity for "
+                            order.getDelayReasons()[product] = (resource.getName(),mydate.date())
                             return False
                     
             # calculate the change in date
@@ -145,6 +146,7 @@ class PlanningManager:
             # self.getVisualManager().getPLTBresult2exp().value+="new date.."+str(newdate)+"\n"
             # self.getVisualManager().getPLTBresult2exp().value+=">> "+str(newdate)+"--"+str(self.getPHStart())+"\n"
             if newdate.date()  < self.getPHStart():
+                order.getDelayReasons()[product] = (resource.getName(),str(mydate.date())+"->"+str(newdate.date()))
                 return False
                 
         
@@ -181,7 +183,7 @@ class PlanningManager:
         # self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(type(self.getPHStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
  
 
-        # self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
+        self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
  
 
         # Create time-dependant lists: Capacity levels of resources, stock levels of raw materials
@@ -254,7 +256,8 @@ class PlanningManager:
                 else:
                     #self.getLogData()["Log_"+str(len(self.getLogData()))]="Issue in production for "+myord.getName()
                     #self.getVisualManager().getPLTBresult2exp().value+="Issue in production for "+myord.getName()+"\n"
-                    #self.getVisualManager().getPLTBresult2exp().value+="Order "+myord.getName()+", not planned "+str(curr_deliverydate)+">>>> "+myord.getProduct().getName()+"\n"
+                    
+        
                     for resname,res in self.getDataManager().getResources().items():
                         res.getCapacityReserved().clear()
     
@@ -269,6 +272,10 @@ class PlanningManager:
         # self.getVisualManager().getPLTBresult2exp().value+=">> Deliveries"+"\n"
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
             self.getVisualManager().getPLTBresult2exp().value+="   ->"+ordname+": deadline "+str(myord.getDeadLine())+", planned delivery: "+str(myord.getPlannedDelivery())+"\n"
+            if myord.getPlannedDelivery() is None:
+                self.getVisualManager().getPLTBresult2exp().value+="Order "+myord.getName()+", not planned "+str(curr_deliverydate)+">>>> "+myord.getProduct().getName()+", reasons "+str(len(myord.getDelayReasons()))+"\n"
+                for myprd,reason in myord.getDelayReasons().items():
+                    self.getVisualManager().getPLTBresult2exp().value+="Prod "+myprd.getName()+", reason "+str(reason[0])+":"+str(reason[1])+"\n"
 
         #self.getVisualManager().getPLTBresult2exp().value+=">> CapacityUsePlans"+"\n"
         #for resame,myres in self.getDataManager().getResources().items():
@@ -292,114 +299,8 @@ class PlanningManager:
 
         # self.getVisualManager().getPLTBresult2exp().value+=" Job creation starts.."+"\n"
 
-        opslist = []
-        
-        for prname,prod in self.getDataManager().getProducts().items():
-          
-            produced_level = 0
-            
-        
-            orginalList = prod.getOperations()
+        return
 
-            if len(orginalList) == 0:
-                continue
-
-            reversed_ops = orginalList[::-1]  
-
-            demandcurve = list(prod.getTargetLevels().items())
-
-            totaldmd = 0
-            if len(demandcurve) > 0:
-                totaldmd=[val for dt,val in demandcurve][-1]
-
-            if totaldmd == 0:
-                continue
-
-            opslist.append(prod.getName()) 
-            # self.getVisualManager().getPLTBresult2exp().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
-            #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
-
-            #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
-
-            prev_opr = None
-            prodbatchsize = prod.getChosenBatchsize()
-            self.getVisualManager().getPLTBresult2exp().value+="HOI "+str(prod)+"\n"
-            for operation in reversed_ops:
-
-                oprbtchsize = operation.getBatchSize()
-                prev_job = None
-                # self.getVisualManager().getPLTBresult2exp().value+="> Opr: "+str(operation.getName())+"\n"
-          
-                if not prev_opr is None:
-                    orgjoblist = prev_opr.getJobs()
-                    reversed_jobs = orgjoblist[::-1]  
-
-                    totaljobsize = 0
-                    cum_jobneed = 0
-                    valiter = 0
-                    for job in reversed_jobs:
-                        valiter+=1
-                        cum_jobneed+=job.getQuantity()
-
-                        #self.getVisualManager().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
-                        if (cum_jobneed - totaljobsize >= prodbatchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
-                            jobsize =prodbatchsize*((cum_jobneed - totaljobsize)//prodbatchsize)+prodbatchsize*int((cum_jobneed - totaljobsize)%prodbatchsize > 0)   
-
-                            deadline = job.getLatestStart()
-                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
-
-                   
-                            jobid = self.getDataManager().getJobID()
-                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
-                            myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
-                            # self.getVisualManager().getPLTBresult2exp().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
-
-                            totaljobsize+=jobsize
-                            operation.getJobs().insert(0,myjob)
-                         
-         
-                else:
-                    valiter = 0
-                    newdmdcurve = []
-                    newval = 0
-                    for mydate,val in demandcurve:
-                        valiter+=1
-                        totaljobsize = 0
-                        
-                        if len(operation.getJobs()) > 0:
-                            totaljobsize = sum([jb.getQuantity() for jb in operation.getJobs()])
-                            
-    
-                        if (val - totaljobsize >= prodbatchsize) or ((demandcurve[-1][1] == val) and (val - totaljobsize > 0 ) ):
-    
-                           
-                            jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
-                            deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0)) #hr/min/sec
-    
-                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
-                            jobid = self.getDataManager().getJobID()
-                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
-                            myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
-                            # self.getVisualManager().getPLTBresult2exp().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
-                            newval+=jobsize
-    
-                            #self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+", Q:"+str(jobsize)+"\n"
-                            operation.getJobs().append(myjob)
-                            prev_job = myjob
-
-                        
-                    newdmdcurve.append((mydate,newval))
-
-                
-                demandcurve = newdmdcurve
-                prev_opr = operation
-                
-
-        #self.getVisualManager().getPLTBCheckRaw().value = 
-        # self.getVisualManager().getPLTBresult2exp().value+="-> Products"+str(len(opslist))+"\n"
-        self.getVisualManager().getPSchResources().options = [op for op in opslist] 
-
-        return 
 
     def MakeSchedule(self,b):  
 

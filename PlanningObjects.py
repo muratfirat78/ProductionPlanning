@@ -153,7 +153,6 @@ class Operation():
         self.Jobs = []
         self.batchsize = 12 # to be changed..
 
-        
     
     def getID(self):
         return self.ID
@@ -249,12 +248,14 @@ class CustomerOrder():
         self.Quantity = myqnty
         self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
         self.ReferenceNumber = 0
+        self.DelayReasons = dict() # key: prod, value: (resource/lead time,date)
 
         # PlANNING
         self.PlannedDelivery = None
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
 
-    
+    def getDelayReasons(self):
+        return self.DelayReasons
 
     def getPlannedDelivery(self):
         return self.PlannedDelivery
