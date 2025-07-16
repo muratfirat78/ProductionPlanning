@@ -28,7 +28,6 @@ class VisualManager():
     def __init__(self):  
 
 
-
         self.EditMode = True
         self.DataManager = None
         self.PlanningManager = None
@@ -38,6 +37,10 @@ class VisualManager():
         self.PSTBResList = None
         self.PSTBNewResName = None
         self.PSTBNewResType = None
+        self.PSTBResName = None
+        self.PSTBResType = None
+        self.PSTBResOprs = None
+        self.PSTBResCap = None
         self.PSTBNewResCap = None
         self.PSTBaddres_btn = None
         self.PSTBnewres_btn = None
@@ -56,6 +59,14 @@ class VisualManager():
         self.PSTBprd_lbl = None
         self.PSTBpn_lbl = None
 
+        self.PSTBProdName = None
+        self.PSTBProdPN = None
+        self.PSTBProdStocklvl = None
+        self.PSTBProdOprs = None
+
+        self.PSTBOprName = None
+        self.PSTBOprProcTime = None
+        
 
 
         self.COTBnewrdr_btn= None
@@ -109,6 +120,49 @@ class VisualManager():
         
   
         return
+
+    def getPSTBOprName(self):
+        return self.PSTBOprName
+
+    def getPSTBOprProcTime(self):
+        return self.PSTBOprProcTime
+
+    def setPSTBOprName(self,myit):
+        self.PSTBOprName = myit
+        return 
+
+    def setPSTBOprProcTime(self,myit):
+        self.PSTBOprProcTime = myit
+        return 
+        
+    def setPSTBProdName(self,myit):
+        self.PSTBProdName = myit
+        
+    def getPSTBProdName(self):
+        return self.PSTBProdName 
+     
+    def getPSTBProdPN(self):
+        return self.PSTBProdPN
+ 
+    def setPSTBProdPN(self,myit):
+        self.PSTBProdPN = myit
+        return
+        
+    def setPSTBProdStocklvl(self,myit):
+        self.PSTBProdStocklvl = myit
+        return
+
+    def getPSTBProdStocklvl(self):
+        return self.PSTBProdStocklvl
+
+
+    def setPSTBProdOprs(self,myit):
+        self.PSTBProdOprs = myit
+        return
+    def getPSTBProdOprs(self):
+        return self.PSTBProdOprs
+        
+        
         
     def setPSchScheRes(self,myitm):
         self.PSchScheRes = myitm
@@ -521,6 +575,37 @@ class VisualManager():
         self.PSTBaddres_btn = resbtn
         return 
 
+    def setPSTBResName(self,myit):
+        self.PSTBResName = myit
+        return
+    def setPSTBResCap(self,myit):
+        self.PSTBResCap = myit
+        return
+    def setPSTBResType(self,myit):
+        self.PSTBResType = myit
+        return
+        
+    def setPSTBResOprs(self,myit):
+        self.PSTBResOprs = myit
+        return   
+
+
+    def getPSTBResName(self):
+        return self.PSTBResName
+        
+    def getPSTBResCap(self):
+        return self.PSTBResCap
+        
+    def getPSTBResType(self):
+        return self.PSTBResType
+        
+        
+    def getPSTBResOprs(self):
+        return self.PSTBResOprs
+            
+        
+       
+
     def getPSTBNewResCap(self):
         return self.PSTBNewResCap
 
@@ -705,7 +790,6 @@ class VisualManager():
 
     def ShowJobs(self,event):
 
-
         selectedopr = self.getPSchResources().value
 
         if selectedopr == None:
@@ -731,7 +815,136 @@ class VisualManager():
        
         return
 
+    def ShowOperation(self,event):
 
+ 
+        if event['type'] == 'change' and event['name'] == 'value':
+            print("changed to %s" % event['new'])
+        else:
+            return
+        
+        selectedopr = self.getPSTBProdOprs().value
+        sel_opr = None
+        curr_prod = None
+    
+        self.getPLTBresult2exp().value+="* event->"+str(event)+"\n"
+
+
+        itemstoshow = [self.getPSTBOprName(),self.getPSTBOprProcTime()]
+        itemstohide = []; itemstoreset = []  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        itemstohide = [self.getPSTBNewOprName(),self.getPSTBNewOprProcTime(),self.getPSTBaddopr_btn(),self.getPSTBcanclopr_btn()]
+        itemstoshow = [self.getPSTBnewopr_btn()]; itemstoreset = itemstoshow[:1]  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        
+        self.getPLTBresult2exp().value+=" Selected Operation->"+str(selectedopr)+"\n"
+        self.getPLTBresult2exp().value+=" Current Product->"+str(self.getPSTBProdName().value)+"\n"
+
+        for prname,prod in self.DataManager.getProducts().items():
+            if prname == self.getPSTBProdName().value:
+                curr_prod = prod
+                break
+
+        if curr_prod!= None:
+            self.getPLTBresult2exp().value+=" Product->"+str(curr_prod.getName())+"\n"
+   
+        for operation in prod.getOperations():
+            if operation.getName() == selectedopr:
+                sel_opr = operation
+                break
+               
+
+        
+      
+
+        if sel_opr!= None:
+            self.getPSTBOprName().value = sel_opr.getName()
+            self.getPSTBOprProcTime().value = str(sel_opr.getProcessTime())
+       
+        
+        return
+
+    def ShowProduct(self,event):
+
+        if event['name'] !=  '_property_lock':
+            return
+
+        
+        selectedprd = self.getPSTBProdList().options[event['new']['index']]
+        sel_prod = None
+
+    
+        self.getPLTBresult2exp().value+="* event->"+str(event)+"\n"
+
+
+        itemstoshow = [self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getPSTBProdOprs()]
+        itemstohide = []; itemstoreset = []  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        itemstohide = [self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn()]
+        itemstoshow = [self.getPSTBnewprd_btn()]; itemstoreset = itemstoshow[:3]  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        self.getPLTBresult2exp().value+=" Selected Product->"+str(selectedprd)+"\n"
+
+
+        for prname,prod in self.DataManager.getProducts().items():
+            if prname == selectedprd:
+                sel_prod = prod
+                break
+
+        
+        self.getPLTBresult2exp().value+=" Product->"+str(sel_prod.getName())+"\n"
+
+        self.getPSTBProdName().value = sel_prod.getName()
+        self.getPSTBProdPN().value = sel_prod.getPN()
+        self.getPSTBProdStocklvl().value = str(sel_prod.getStockLevel())
+        self.getPSTBProdOprs().options = [opr.getName() for opr in sel_prod.getOperations()]
+        
+        return
+
+    def ShowResource(self,event):
+
+
+        if event['name'] !=  '_property_lock':
+            return
+
+        
+        selectedres = self.getPSTBResList().options[event['new']['index']]
+        sel_resource = None
+
+    
+        self.getPLTBresult2exp().value+=" event->"+str(event)+"\n"
+
+
+        itemstoshow = [self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap()]
+        itemstohide = []; itemstoreset = []  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        itemstohide  = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]
+        itemstoshow = [self.getPSTBnewres_btn()]; itemstoreset = itemstoshow[:3]  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        self.getPLTBresult2exp().value+=" Selected Resource->"+str(selectedres)+"\n"
+
+
+        for resname,res in self.DataManager.getResources().items():
+            if resname == selectedres:
+                sel_resource = res
+                break
+
+        
+        self.getPLTBresult2exp().value+=" Resource->"+str(sel_resource.getName())+"\n"
+
+        self.getPSTBResName().value = sel_resource.getName()
+        self.getPSTBResType().value = sel_resource.getType()
+        self.getPSTBResCap().value = str(sel_resource.getDailyCapacity())+" hrs/day"
+
+       
+
+        return
 
     def generatePSschTAB(self):
     
@@ -837,7 +1050,6 @@ class VisualManager():
             self.ApplyVisuals([],[self.getCOTBNewOrderName(),self.getCOTBNewOrderQ(),self.getCOTBNewOrderDeadLine(),self.getCOTBnewrdr_btn(),self.getCOTBaddord_btn(),self.getCOTBcnclord_btn(),self.getCOTBsave_bttn(),self.getCOTBcasename(),prd_box2],[])
            
         
-        
         tab_2 = HBox(children=[tb2_vbox])
      
         return tab_2
@@ -866,19 +1078,36 @@ class VisualManager():
         
         ressel_box = VBox(children=[self.getPSTBres_lbl(),self.getPSTBtyp_lbl()])
         
-        tb4_vbox1 = VBox(children = [HBox(children=[res_box]),self.getPSTBnewres_btn(),self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),HBox(children=[self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()])
-                                     ,ressel_box])
+      
+
+        self.setPSTBResName(widgets.Text(description ='Name:',value='',disabled = True))
+        self.setPSTBResType(widgets.Text(description ='Type:',value ='',disabled = True))
+        self.setPSTBResCap(widgets.Text(description ='Daily Capacity:',value ='',disabled = True))
+       
+
+        tb4_vbox1 = VBox(children = [
+                                     HBox(children=[res_box]),
+                                     self.getPSTBnewres_btn(),self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),
+                                     self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap(),
+                                     HBox(children=[self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]),ressel_box
+                                    ]
+                        )
+
+        self.getPSTBResList().observe(self.ShowResource)
 
         if not self.IsEditMode():
             self.ApplyVisuals([],[self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBaddres_btn(),self.getPSTBcanclres_btn(),self.getPSTBnewres_btn()],[])
-            
-
+             
+        self.ApplyVisuals([],[self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap()],[])
+ 
+        
         self.setPSTBProdList(widgets.Select(options=[],description = ''))
     
         self.setPSTBProdList2(widgets.Select(options=[],description = ''))
         p_box = VBox(children=[widgets.Label(value ='Product List'),self.getPSTBProdList()])
 
 
+        self.getPSTBProdList().observe(self.ShowProduct)
 
         
         
@@ -889,6 +1118,13 @@ class VisualManager():
         self.setPSTBNewProdStocklvl(widgets.Text(description ='Stock Level:',value =''))
         self.setPSTBaddprod_btn(widgets.Button(description="Add Product"))
         self.getPSTBaddprod_btn().on_click(self.AddProduct)
+
+        self.setPSTBProdName(widgets.Text(description ='Name:',value='',disabled = True))
+        self.setPSTBProdPN(widgets.Text(description ='PN:',value ='',disabled = True))
+        self.setPSTBProdStocklvl(widgets.Text(description ='Stock Level:',value ='',disabled = True))
+        self.setPSTBProdOprs(widgets.Dropdown(description ='Operations:',options =[]))
+
+        self.getPSTBProdOprs().observe(self.ShowOperation)
         
         self.setPSTBcnclprod_btn(widgets.Button(description="Cancel"))
         self.getPSTBcnclprod_btn().on_click(self.CancelProduct)
@@ -900,12 +1136,14 @@ class VisualManager():
         prdsel_box = VBox(children=[self.getPSTBprd_lbl(),self.getPSTBpn_lbl()])
         
         
-        tb4_vbox2 = VBox(children = [HBox(children=[p_box]),self.getPSTBnewprd_btn(),self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),HBox(children=[self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn()]),prdsel_box])
+        tb4_vbox2 = VBox(children = [HBox(children=[p_box]),self.getPSTBnewprd_btn(),self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),
+self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getPSTBProdOprs(),HBox(children = [self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn()]),prdsel_box])
 
         if not self.IsEditMode():
             self.ApplyVisuals([],[self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn(),self.getPSTBnewprd_btn()],[])
         
 
+        self.ApplyVisuals([],[self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getPSTBProdOprs()],[])
     
 
         self.setPSTBoperations(widgets.Select(options=[],description = ''))
@@ -920,6 +1158,10 @@ class VisualManager():
         self.getPSTBaddopr_btn().on_click(self.AddOperation)
         self.setPSTBcanclopr_btn(widgets.Button(description="Cancel"))
         self.getPSTBcanclopr_btn().on_click(self.CancelOperation)
+
+
+        self.setPSTBOprName(widgets.Text(description ='Name:',value='',disabled = True))
+        self.setPSTBOprProcTime(widgets.Text(description ='Process Time:',value='',disabled = True))
         
 
         
@@ -927,7 +1169,7 @@ class VisualManager():
         oprdsel_box = VBox(children=[self.getPSTBmyopr_lbl()])
         
         
-        tb4_vbox3 = VBox(children = [HBox(children=[op_box]),self.getPSTBnewopr_btn(),self.getPSTBNewOprName(),self.getPSTBNewOprProcTime(),HBox(children=[self.getPSTBaddopr_btn(),self.getPSTBcanclopr_btn()])
+        tb4_vbox3 = VBox(children = [HBox(children=[op_box]),self.getPSTBnewopr_btn(),self.getPSTBNewOprName(),self.getPSTBNewOprProcTime(),self.getPSTBOprName(),self.getPSTBOprProcTime(),HBox(children=[self.getPSTBaddopr_btn(),self.getPSTBcanclopr_btn()])
                                     ,oprdsel_box])
         
         
@@ -939,9 +1181,8 @@ class VisualManager():
 
         if not self.IsEditMode():
             self.ApplyVisuals([],[self.getPSTBnewopr_btn(),self.getPSTBNewOprName(),self.getPSTBNewOprProcTime(),self.getPSTBaddopr_btn(),self.getPSTBcanclopr_btn()],[])
-        
 
-    
+        self.ApplyVisuals([],[self.getPSTBOprName(),self.getPSTBOprProcTime()],[])
         
 
        
@@ -1019,6 +1260,10 @@ class VisualManager():
         itemstoshow = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]
         itemstohide = [self.getPSTBnewres_btn()]; itemstoreset = itemstoshow[:3]  
         self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+
+        itemstohide= [self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap(),self.getPSTBResOprs()]
+        itemstoshow= []; itemstoreset = []  
+        self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
         return 
         
     def AddResource(self,event):
@@ -1038,6 +1283,8 @@ class VisualManager():
         return
         
     def CreateProduct(self,event):
+
+        self.ApplyVisuals([],[self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getPSTBProdOprs()],[])
 
         #self.getCaseInfo().value += ">>>create prod... "+"\n"
         itemstoshow = [self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn()]
