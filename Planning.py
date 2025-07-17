@@ -302,12 +302,3 @@ class PlanningManager:
         return
 
 
-    def MakeSchedule(self,b):  
-
-        
-
-
-        
-
-        return
-

@@ -29,7 +29,15 @@ class SchedulingManager:
         self.DataManager = None
         self.VisualManager = None
         self.PlanningManager = None
-        
+        self.JobsCreated = False
+
+
+    def isJobCreated(self):
+        return self.JobsCreated
+
+    def setJobCreated(self):
+        self.JobsCreated = True
+        return  
 
     def setDataManager(self,DataMgr):
         self.DataManager = DataMgr 
@@ -57,6 +65,9 @@ class SchedulingManager:
     
     def CreateJobs(self):
 
+        if self.isJobCreated():
+            return
+
 
         self.getVisualManager().getPSchScheRes().value+="Creating jobs..."+"\n"
         opslist = []
@@ -81,7 +92,7 @@ class SchedulingManager:
                 continue
 
             opslist.append(prod.getName()) 
-            self.getVisualManager().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
+            #self.getVisualManager().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
             #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
 
             #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
@@ -163,15 +174,24 @@ class SchedulingManager:
         #self.getVisualManager().getPLTBCheckRaw().value = 
         # self.getVisualManager().getPLTBresult2exp().value+="-> Products"+str(len(opslist))+"\n"
         self.getVisualManager().getPSchScheRes().value+="Job creation completed.."+"\n"
-        #self.getVisualManager().getPSchResources().options = [op.getName() for op in opslist] 
+        #self.getVisualManager().getPSchResources().options = [op.getName() for op in opslist]
+
+        self.setJobCreated()             
         
         return
 
     def MakeSchedule(self,b):
 
+       
         self.CreateJobs()
 
+        psstart = self.getPlanningManager().getPHStart()
+        pssend = self.getPlanningManager().getPHEnd()
+
         self.getVisualManager().getPSchScheRes().value+="Scheduling starts..."+"\n"
+        self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"--"+str(pssend)+"\n"
+
+ 
 
         oprdict = dict() # key: operation, #val: set of jobs
         
@@ -222,6 +242,9 @@ class SchedulingManager:
         i=1;
         shiftlistman=[]
         shiftlistaut=[]
+
+        for scheduleday in pd.date_range(psstart,pssend):
+            print("Schedule day",scheduleday)
         while i <= day:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
@@ -660,7 +683,7 @@ class SchedulingManager:
 
                     
                         
-                        
+       
                 
                         
                 
