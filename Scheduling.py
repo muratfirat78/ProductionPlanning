@@ -281,7 +281,7 @@ class SchedulingManager:
         #Create Schedule
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
-                                
+                self.getVisualManager().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
                 predecessorjobs = j.getPredecessors()
                 successorjobs = j.getSuccessor()
                 Quantity = j.getQuantity()
@@ -354,6 +354,7 @@ class SchedulingManager:
                                         
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -361,6 +362,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
+                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                         
                                     
@@ -401,6 +403,7 @@ class SchedulingManager:
                                         Quantity = Quantity - ProcessedQuantity
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -408,6 +411,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
+                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                     
                                     
@@ -461,6 +465,7 @@ class SchedulingManager:
                                     fraction = 8 - completiontimeLatestJob
                                     processtime = processtime - time
                                     r.getSchedule()[shift].append((j,completiontimeLatestJob,'-'))
+                                    self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                     continue
                                 else:
                                     ProcessedQuantity = Quantity
@@ -468,6 +473,7 @@ class SchedulingManager:
                                     j.setScheduledShift(shiftnumber)
                                     j.setScheduledDay(shift.getDay())
                                     ScheduledJobs[j.getName()] = j
+                                    self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                     SchedulableJobs.remove(j) #Remove scheduled job
                                 
                                 
@@ -539,6 +545,7 @@ class SchedulingManager:
                                         
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -546,6 +553,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
+                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                     
                                     if (CurOpeffOp1 +opef <= 1):
@@ -589,6 +597,7 @@ class SchedulingManager:
                                         Quantity = Quantity - ProcessedQuantity
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -596,6 +605,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
+                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                         
                                     SchedOp3[shift].append([j,r,ProcessedQuantity])                                
@@ -628,6 +638,7 @@ class SchedulingManager:
                                     Quantity = Quantity - ProcessedQuantity
                                     processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                     r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                    self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                     
                                 else:
                                     ProcessedQuantity = Quantity
@@ -635,6 +646,7 @@ class SchedulingManager:
                                     j.setScheduledShift(shiftnumber)
                                     j.setScheduledDay(shift.getDay())
                                     ScheduledJobs[j.getName()] = j
+                                    self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                     SchedulableJobs.remove(j) #Remove scheduled job
                                 
                                 
