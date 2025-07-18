@@ -146,7 +146,13 @@ class PlanningManager:
     
             # calculate the change in date    
             workdays = totaltime//16 + int(totaltime%16 > 0)
-            newdate = mydate-  timedelta(days = workdays)
+
+
+            if mydate.weekday() - workdays < 0:
+                workdays+=2
+                
+            
+            newdate = mydate- timedelta(days = workdays)
 
             
             if newdate.date()  < self.getPHStart():
@@ -175,18 +181,27 @@ class PlanningManager:
             - Every raw material can be purchased at most certain amount in every week. The required raw material levels of planned customer orders should be feasible by possibly purchasing additional amount of raw materials for every week.  
         '''
 
+        PlanningWeeks = 24
         # START: here is your code to make planning 
+        self.getVisualManager().getPLTBresult2exp().value+=">Planning weeks: "+str(PlanningWeeks)+"\n"
+ 
         mydict = self.getDataManager().getCustomerOrders()
         sortedtuples = sorted(mydict.items(), key=lambda item: item[1].getDeadLine())
         mydict = {k: v for k, v in sortedtuples}
         self.getDataManager().setCustomerOrders(mydict)
 
         # determine planning horizon
-        self.setPHStart(date.today()+timedelta(days=1)) 
-        self.setPHEnd((sortedtuples[-1][1].getDeadLine()+timedelta(days=90)).date())  
+        phstart = date.today()+timedelta(days=1)
 
-        # self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(type(self.getPHStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
+        if phstart.weekday() > 0:
+            phstart = phstart+timedelta(days=7-phstart.weekday())
+
+        self.getVisualManager().getPLTBresult2exp().value+=">Planning start: "+str(phstart)+"\n"
  
+        self.setPHStart(phstart) 
+
+      
+        self.setPHEnd((phstart+timedelta(days=7*PlanningWeeks)))  
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
  
@@ -202,9 +217,12 @@ class PlanningManager:
           
             
             cumulative_capacity = 0
-          
+
+            
             for curr_date in daterange:
-                cumulative_capacity+= int(res.getDailyCapacity())
+                if curr_date.weekday() < 5:
+                   cumulative_capacity+= int(res.getDailyCapacity())
+                    
                 res.getCapacityLevels()[curr_date] = cumulative_capacity
                
 
@@ -223,7 +241,10 @@ class PlanningManager:
             myord.resetOrderPlan()
             
             for curr_deliverydate in pd.date_range(max(myord.getDeadLine().date(),self.getPHStart()),self.getPHEnd()):
-               
+                if curr_deliverydate.weekday() >= 5:
+                    continue
+                    
+      
                 if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
    
                     myord.setPlannedDelivery(curr_deliverydate)

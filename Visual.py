@@ -731,15 +731,17 @@ class VisualManager():
             with self.getPLTBStockLevels():
                 clear_output()
                 plandays = my_res.getCapacityLevels().keys()
+                capvalues = my_res.getCapacityLevels().values()
                 
                 usevalues = []
                 cumuseval = 0
+      
                 for mydate in my_res.getCapacityLevels().keys():
                     if mydate in my_res.getCapacityUsePlan():
                         cumuseval+=my_res.getCapacityUsePlan()[mydate]
                     usevalues.append(cumuseval)    
             
-                capvalues = my_res.getCapacityLevels().values()
+                
             
                 fig = plt.figure(figsize=(6, 4))
                 ax = plt.subplot(111)
