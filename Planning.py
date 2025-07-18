@@ -83,6 +83,8 @@ class PlanningManager:
         if not product in order.getOrderPlan()['Products']:
             order.getOrderPlan()['Products'].append(product)
 
+        quantity = quantity/product.getStockBatch()
+
         
         if mydate in product.getReservedStockLevels():
             product.getReservedStockLevels()[mydate]+=quantity
@@ -103,7 +105,8 @@ class PlanningManager:
             
           
             for operation in product.getOperations():
-                
+
+                # skip quantity when resource is outsourced.  
                 resource_use = quantity*operation.getProcessTime() 
                
                 
@@ -158,6 +161,8 @@ class PlanningManager:
             if newdate.date()  < self.getPHStart():
                 order.getDelayReasons()[product] = (product.getName(),str(mydate.date())+"->"+str(newdate.date()))
                 return False
+     
+                
                 
        
         if len(product.getMPredecessors()) > 0:

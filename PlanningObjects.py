@@ -26,6 +26,8 @@ class Product():
         self.Operations = []
         self.Predecessors = []
         self.MPredecessors = dict()
+        self.stockunit = "Pcs" # change to "mm" if in the data file so
+        self.stockbatch = 1 # in case stock unit is piece, otherwise the length of bar. 
         # PlANNING
         self.StockLevels = dict() #key: date, val: stocklevel value on the date / for raw materials
         self.TargetLevels = dict() #key: date, val: required stock value on the date /for products
@@ -36,6 +38,20 @@ class Product():
         self.DemandingOrders = dict() #key: order,  #val: quantity
         
 
+    def getStockUnit(self):
+        return self.stockunit
+    
+    def setStockUnit(self,myit):
+        self.stockunit = myit
+        return
+
+    def getStockBatch(self):
+        return self.stockbatch
+    
+    def setStockBatch(self,myit):
+        self.stockbatch = myit
+        return
+        
     def getDemandingOrders(self):
         return self.DemandingOrders
 

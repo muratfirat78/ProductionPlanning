@@ -63,6 +63,50 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
+    def DefineJobPrecedences(self):
+
+        oprdict = dict() # key: operation, #val: set of jobs
+
+     # Collect operations with jobs
+        nrjobs = 0
+        for prname,prod in self.getDataManager().getProducts().items():
+            for opr in prod.getOperations():
+                if not opr in oprdict:
+                    oprdict[opr] = opr.getJobs()
+                    nrjobs+= len(opr.getJobs())
+
+        revopdict = {k: oprdict[k] for k in sorted(oprdict, key=lambda x: list(oprdict.keys()).index(x), reverse=True)}
+        
+        
+        for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
+            if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
+                CurJobs = revopdict[k1][::-1];
+                Predjobs = revopdict[k2][::-1];
+                
+                for i in range(0,len(CurJobs)):
+                    CapCurJob = CurJobs[i].getQuantity();           
+                              
+                    
+                    for k in Predjobs:
+                        
+                        if k.getQuantity() < CapCurJob:
+                            CapCurJob = CapCurJob - k.getQuantity();
+                            if k not in CurJobs[i].getPredecessors():
+                                CurJobs[i].getPredecessors().append(k);
+                            if CurJobs[i] not in k.getSuccessor():
+                                k.getSuccessor().append(CurJobs[i]);
+                            Predjobs.remove(k)
+                        else:
+                            if k not in CurJobs[i].getPredecessors():
+                                CurJobs[i].getPredecessors().append(k);
+                            
+                            if CurJobs[i] not in k.getSuccessor():
+                                k.getSuccessor().append(CurJobs[i]);
+                            Predjobs.remove(k)                       
+                            break
+
+        return
+
     
     def CreateJobs(self,psstart,scheduleweeks):
 
@@ -86,7 +130,9 @@ class SchedulingManager:
 
             reversed_ops = orginalList[::-1]  
 
-            demandcurve = list([amount for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
+   
+            #demandcurve = list([(ddate,amount) for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
+            demandcurve = list(prod.getTargetLevels().items())
 
             totaldmd = 0
             if len(demandcurve) > 0:
@@ -186,11 +232,8 @@ class SchedulingManager:
 
     def MakeSchedule(self,b):
 
-       
-      
 
         psstart = self.getPlanningManager().getPHStart()
-
 
         self.getVisualManager().getPSchScheRes().value+="Scheduling starts..."+"\n"
         self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"\n"
@@ -200,49 +243,13 @@ class SchedulingManager:
 
         pssend= psstart+timedelta(days=7*ScheduleWeeks)
 
-        oprdict = dict() # key: operation, #val: set of jobs
-        
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
-        
-        # Collect operations with jobs
-        nrjobs = 0
-        for prname,prod in self.getDataManager().getProducts().items():
-            for opr in prod.getOperations():
-                if not opr in oprdict:
-                    oprdict[opr] = opr.getJobs()
-                    nrjobs+= len(opr.getJobs())
-                    
+
+        self.DefineJobPrecedences()
+       
         self.getVisualManager().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
-        revopdict = {k: oprdict[k] for k in sorted(oprdict, key=lambda x: list(oprdict.keys()).index(x), reverse=True)}
-        
-        
-        for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
-            if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
-                CurJobs = revopdict[k1][::-1];
-                Predjobs = revopdict[k2][::-1];
-                
-                for i in range(0,len(CurJobs)):
-                    CapCurJob = CurJobs[i].getQuantity();           
-                              
-                    
-                    for k in Predjobs:
-                        
-                        if k.getQuantity() < CapCurJob:
-                            CapCurJob = CapCurJob - k.getQuantity();
-                            if k not in CurJobs[i].getPredecessors():
-                                CurJobs[i].getPredecessors().append(k);
-                            if CurJobs[i] not in k.getSuccessor():
-                                k.getSuccessor().append(CurJobs[i]);
-                            Predjobs.remove(k)
-                        else:
-                            if k not in CurJobs[i].getPredecessors():
-                                CurJobs[i].getPredecessors().append(k);
-                            
-                            if CurJobs[i] not in k.getSuccessor():
-                                k.getSuccessor().append(CurJobs[i]);
-                            Predjobs.remove(k)                       
-                            break
+      
         ## Initialize shifts (example 30 days?)
         day = 1000;
         
