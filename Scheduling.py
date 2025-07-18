@@ -64,11 +64,14 @@ class SchedulingManager:
         return self.VisualManager
 
     
-    def CreateJobs(self):
+    def CreateJobs(self,psstart,scheduleweeks):
 
         if self.isJobCreated():
             return
 
+
+        pssend= psstart+timedelta(days=14*scheduleweeks)
+        
 
         self.getVisualManager().getPSchScheRes().value+="Creating jobs..."+"\n"
         opslist = []
@@ -83,7 +86,7 @@ class SchedulingManager:
 
             reversed_ops = orginalList[::-1]  
 
-            demandcurve = list(prod.getTargetLevels().items())
+            demandcurve = list([amount for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
 
             totaldmd = 0
             if len(demandcurve) > 0:
@@ -184,15 +187,18 @@ class SchedulingManager:
     def MakeSchedule(self,b):
 
        
-        self.CreateJobs()
+      
 
         psstart = self.getPlanningManager().getPHStart()
-        pssend = self.getPlanningManager().getPHEnd()
+
 
         self.getVisualManager().getPSchScheRes().value+="Scheduling starts..."+"\n"
-        self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"--"+str(pssend)+"\n"
+        self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"\n"
 
- 
+        ScheduleWeeks = 3 # weeks
+        self.CreateJobs(psstart,ScheduleWeeks)
+
+        pssend= psstart+timedelta(days=7*ScheduleWeeks)
 
         oprdict = dict() # key: operation, #val: set of jobs
         
