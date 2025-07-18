@@ -703,11 +703,13 @@ class VisualManager():
                 clear_output()
                 plandays = rawmat.getTargetLevels().keys()
                 values = rawmat.getTargetLevels().values()
+
+                total = sum([demand for myord,demand in rawmat.getDemandingOrders().items()])
     
                 fig = plt.figure(figsize=(6, 4))
                 ax = plt.subplot(111)
                 ax.plot(plandays,values,  color='blue')
-                ax.set_title('Target Stock Levels '+rawname) 
+                ax.set_title('Targets '+rawname+"("+str(total)+")") 
                 plt.xticks(rotation=-45)
                 plt.tight_layout()
                 plt.show()
@@ -728,12 +730,21 @@ class VisualManager():
 
             with self.getPLTBStockLevels():
                 clear_output()
-                plandays = my_res.getCapacityUsePlan().keys()
-                values = my_res.getCapacityUsePlan().values()
+                plandays = my_res.getCapacityLevels().keys()
+                
+                usevalues = []
+                cumuseval = 0
+                for mydate in my_res.getCapacityLevels().keys():
+                    if mydate in my_res.getCapacityUsePlan():
+                        cumuseval+=my_res.getCapacityUsePlan()[mydate]
+                    usevalues.append(cumuseval)    
+            
+                capvalues = my_res.getCapacityLevels().values()
             
                 fig = plt.figure(figsize=(6, 4))
                 ax = plt.subplot(111)
-                ax.plot(plandays,values,  color='blue')
+                ax.plot(plandays,usevalues,  color='blue')
+                ax.plot(plandays,capvalues,  color='red')
                 ax.set_title('Capacity Use Plan '+res_name) 
                 plt.xticks(rotation=-45)
                 plt.tight_layout()

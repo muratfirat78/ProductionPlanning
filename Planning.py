@@ -80,8 +80,17 @@ class PlanningManager:
         #assume: one workday includes 16 hours of two shifts. 
         #assume: all production is done sequential in operations, no batch concept 
 
-     
-        # self.getVisualManager().getPLTBresult2exp().value+="Planning production... for "+product.getName()+" -> Oprns "+str(len(product.getOperations()))+"\n"
+        if not product in order.getOrderPlan()['Products']:
+            order.getOrderPlan()['Products'].append(product)
+
+        
+        if mydate in product.getReservedStockLevels():
+            product.getReservedStockLevels()[mydate]+=quantity
+        else:
+            product.getReservedStockLevels()[mydate]=quantity
+
+        #if len(product.getOperations()) == 0:
+      
        
         # self.getVisualManager().getPLTBresult2exp().value+=str(type(mydate))+"  "+str(type(self.getPHStart()))+"\n"
         if mydate.date() < self.getPHStart():
@@ -89,73 +98,69 @@ class PlanningManager:
             order.getDelayReasons()[product] = ("lead time",mydate.date())
             return False
         
+        totaltime = 0   
+        if len(product.getMPredecessors()) > 0: # bom case
             
-        
-        if len(product.getMPredecessors()) == 0: # raw material case
-            # self.getVisualManager().getPLTBresult2exp().value+="Raw material... "+str(mydate in product.getTargetLevels())+"\n"        
-            if mydate in product.getReservedStockLevels():
-                product.getReservedStockLevels()[mydate]+=quantity
-            else:
-                product.getReservedStockLevels()[mydate]=quantity
-        else:
-            
-            if mydate in product.getReservedStockLevels():
-                product.getReservedStockLevels()[mydate]+=quantity
-            else:
-                product.getReservedStockLevels()[mydate]=quantity
-            totaltime = 0 
+          
             for operation in product.getOperations():
                 
                 resource_use = quantity*operation.getProcessTime() 
-                # self.getVisualManager().getPLTBresult2exp().value+="Oprn "+operation.getName()+" use " +str(resource_use)+"\n"
-    
+               
                 
                 totaltime+=resource_use
                 # self.getVisualManager().getPLTBresult2exp().value+=str(operation.getName())+">> "+str(len(operation.getRequiredResources()))+"\n"
                 for resource in operation.getRequiredResources():
-                    #self.getVisualManager().getPLTBresult2exp().value+="Resurce.. "+resource.getName()+"  "+str(mydate in resource.getCapacityLevels())+"\n"
-    
-                    if mydate in resource.getCapacityLevels():
-                        #self.getVisualManager().getPLTBresult2exp().value+="date in capacitylevels.."+"\n"
 
-                        if mydate in resource.getCapacityReserved():
-                            resource.getCapacityReserved()[mydate]+=resource_use
+                    myresource = resource
+                    if isinstance(resource, list):
+                        myresource = resource[0] # here first one among alternatives is selected, if there are some..
+                       
+                
+                    totuse = 0
+                    capsuff = True
+                    for checkdate,useval in myresource.getCapacityUsePlan().items():
+                        totuse+=useval
+                        if checkdate < mydate:
+                            continue   
+                        totres = sum([resval for chdate,resval in myresource.getCapacityReserved().items() if chdate <= checkdate])  
+                        if myresource.getCapacityLevels()[checkdate] < totuse+totres+resource_use:
+                            capsuff = False
+                            break
+                   
+                    if capsuff:
+                        if not myresource in order.getOrderPlan()['Resources']:
+                            order.getOrderPlan()['Resources'].append(myresource)
+                                
+                        if mydate in myresource.getCapacityReserved():
+                            myresource.getCapacityReserved()[mydate]+=resource_use
                         else:
-                            resource.getCapacityReserved()[mydate] =resource_use
-
-                        # self.getVisualManager().getPLTBresult2exp().value+="cap reserved..."+str(resource.getName())+"-"+str(mydate)+str(resource.getCapacityReserved()[mydate])+":: "+str(resource_use)+"\n"
-
-                        usedcapacity = 0
-                        if mydate in resource.getCapacityUsePlan():
-                            usedcapacity = resource.getCapacityUsePlan()[mydate]
+                            myresource.getCapacityReserved()[mydate] =resource_use
+                     
+                        #self.getVisualManager().getPLTBresult2exp().value+="capacitylevels ok.."+"\n"
+                        self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
+                    else: 
+                        self.getLogData()["Log_"+str(len(self.getLogData()))]="Insufficient capacity for "
+                        order.getDelayReasons()[product] = (myresource.getName(),mydate.date())
+                        return False
                             
-                            
-                        if resource.getCapacityReserved()[mydate]+usedcapacity<= resource.getCapacityLevels()[mydate]:
-                            #self.getVisualManager().getPLTBresult2exp().value+="capacitylevels ok.."+"\n"
-                            self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
-                        else: 
-                            self.getLogData()["Log_"+str(len(self.getLogData()))]="Insufficient capacity for "
-                            order.getDelayReasons()[product] = (resource.getName(),mydate.date())
-                            return False
-                    
-            # calculate the change in date
-           
+    
+            # calculate the change in date    
             workdays = totaltime//16 + int(totaltime%16 > 0)
-            # self.getVisualManager().getPLTBresult2exp().value+="workdays.."+str(workdays)+"\n"
             newdate = mydate-  timedelta(days = workdays)
-            # self.getVisualManager().getPLTBresult2exp().value+="new date.."+str(newdate)+"\n"
-            # self.getVisualManager().getPLTBresult2exp().value+=">> "+str(newdate)+"--"+str(self.getPHStart())+"\n"
+
+            
             if newdate.date()  < self.getPHStart():
-                order.getDelayReasons()[product] = (resource.getName(),str(mydate.date())+"->"+str(newdate.date()))
+                order.getDelayReasons()[product] = (product.getName(),str(mydate.date())+"->"+str(newdate.date()))
                 return False
                 
-        
-     
-        for predecessor,multiplier in product.getMPredecessors().items():
-            #self.getVisualManager().getPLTBresult2exp().value+="predecessor.."+str(predecessor.getName())+"\n"
-           
-            if not self.PlanProduction(order,predecessor,newdate,quantity*multiplier):
-                return False
+       
+        if len(product.getMPredecessors()) > 0:
+            for predecessor,multiplier in product.getMPredecessors().items():
+                #self.getVisualManager().getPLTBresult2exp().value+="predecessor.."+str(predecessor.getName())+"\n"
+    
+               
+                if not self.PlanProduction(order,predecessor,newdate,quantity*multiplier):
+                    return False
     
         return True
         
@@ -178,7 +183,7 @@ class PlanningManager:
 
         # determine planning horizon
         self.setPHStart(date.today()+timedelta(days=1)) 
-        self.setPHEnd((sortedtuples[-1][1].getDeadLine()+timedelta(days=21)).date())  
+        self.setPHEnd((sortedtuples[-1][1].getDeadLine()+timedelta(days=90)).date())  
 
         # self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(type(self.getPHStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
  
@@ -193,78 +198,60 @@ class PlanningManager:
 
         for resname,res in self.getDataManager().getResources().items():
             res.getCapacityLevels().clear()
+            res.getCapacityUsePlan().clear()
+          
             
             cumulative_capacity = 0
           
             for curr_date in daterange:
                 cumulative_capacity+= int(res.getDailyCapacity())
                 res.getCapacityLevels()[curr_date] = cumulative_capacity
-                res.getCapacityUsePlan()[curr_date] = 0
+               
 
         for prname,prod in self.getDataManager().getProducts().items():
-          
+            #prod.getDemandingOrders().clear()
             prod.getTargetLevels().clear()
             prod.getReservedStockLevels().clear()
             for curr_date in daterange:
                 prod.TargetLevels[curr_date] = 0
                 
-                
-    
      
         # Start planning 
-        #self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
+        self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
 
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
-
+            myord.resetOrderPlan()
             
             for curr_deliverydate in pd.date_range(max(myord.getDeadLine().date(),self.getPHStart()),self.getPHEnd()):
-           
                
                 if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
-                    #self.getVisualManager().getPLTBresult2exp().value+="No issue in production for "+myord.getName()+"\n"
-                    #self.getLogData()["Log_"+str(len(self.getLogData()))]="No issue in production for "+myord.getName()
-
-                    #self.getVisualManager().getPLTBresult2exp().value+="Order "+myord.getName()+", planned "+str(curr_deliverydate)+">>>> "+myord.getProduct().getName()+"\n"
-    
+   
                     myord.setPlannedDelivery(curr_deliverydate)
-               
-                    # apply resource use plan
-                    for resname,res in self.getDataManager().getResources().items():
-                        #self.getVisualManager().getPLTBresult2exp().value+="res "+res.getName()+": "+str( res.getCapacityReserved().values())+"\n"
-                        for mydate,val in res.getCapacityReserved().items():
-                            #self.getVisualManager().getPLTBresult2exp().value+=str(mydate)+">>>"+str(self.getPHEnd())+"\n"
-                            #self.getVisualManager().getPLTBresult2exp().value+="****list "+str([x for x in res.getCapacityUsePlan().keys()])+"\n"
-                            for curr_date in pd.date_range(mydate,self.getPHEnd()):
 
-                                if not curr_date in res.getCapacityUsePlan():
-                                    self.getVisualManager().getPLTBresult2exp().value+="****date "+str(curr_date)+"\n"
-                                    
-                                res.getCapacityUsePlan()[curr_date]+=val
+                   # apply resource use plan: convert reserved capacity use to actual capacity use.
+                    for res in myord.getOrderPlan()['Resources']: 
+                        
+                        for mydate,val in res.getCapacityReserved().items():
                            
-                    # update target stock levels
-                    #self.getVisualManager().getPLTBresult2exp().value+="stock levels... "+"\n"
-                    for prname,prod in self.getDataManager().getProducts().items():
-                    
+                            if mydate in res.getCapacityUsePlan():
+                                res.getCapacityUsePlan()[mydate]+=val
+                            else: 
+                                res.getCapacityUsePlan()[mydate]=val
+                                
+                            
+                             
+                    # update target stock levels: convert tentative stock levels to target stock levels. 
+                    for prod in myord.getOrderPlan()['Products']:
+                       
+                        prod.getDemandingOrders()[myord]=sum([lvl for mydate,lvl in prod.getReservedStockLevels().items()])
                         for mydate,lvl in prod.getReservedStockLevels().items():
                             for curr_date in pd.date_range(mydate,self.getPHEnd()):
-                                if not curr_date in prod.getTargetLevels():
-                                    self.getVisualManager().getPLTBresult2exp().value+="****date "+str(curr_date)+"\n"
                                 prod.getTargetLevels()[curr_date]+= lvl
-                        prod.getReservedStockLevels().clear()
+
+                myord.resetOrderPlan()
+
+                if myord.getPlannedDelivery() != None:
                     break
-                                
-                else:
-                    #self.getLogData()["Log_"+str(len(self.getLogData()))]="Issue in production for "+myord.getName()
-                    #self.getVisualManager().getPLTBresult2exp().value+="Issue in production for "+myord.getName()+"\n"
-                    
-        
-                    for resname,res in self.getDataManager().getResources().items():
-                        res.getCapacityReserved().clear()
-    
-                    for prname,prod in self.getDataManager().getProducts().items():
-                        if len(prod.getMPredecessors()) > 0: 
-                            continue
-                        prod.getReservedStockLevels().clear()
                 
      
     

@@ -33,9 +33,11 @@ class Product():
         self.PurchaseLevels = dict() #key: first day of week, val: purchase amount / for raw materials
         self.PrescribedBatchsize=None #If None then it is order dependent.
         self.ChosenBatchsize=None #This will be the prescribed batchsize or the order size if no prescribedBatch is available.
+        self.DemandingOrders = dict() #key: order,  #val: quantity
         
-        
-        
+
+    def getDemandingOrders(self):
+        return self.DemandingOrders
 
     def getTargetLevels(self):
         return self.TargetLevels
@@ -86,6 +88,7 @@ class Resource():
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
         self.CapacityReserved = dict() 
+        
         # PlANNING
 
         # SCHEDULING 
@@ -99,6 +102,8 @@ class Resource():
         # SCHEDULING 
 
 
+   
+        
     def getBatchSize(self):
         return self.batchsize 
     def getCapacityLevels(self):
@@ -149,7 +154,7 @@ class Operation():
         self.ID = myid
         self.Name = myname
         self.ProcessTime = myproctime
-        self.RequiredResources = []
+        self.RequiredResources = [] # Attention: How to handle alternative resources in this structure!!
         self.Jobs = []
         self.batchsize = 12 # to be changed..
 
@@ -249,6 +254,10 @@ class CustomerOrder():
         self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
         self.ReferenceNumber = 0
         self.DelayReasons = dict() # key: prod, value: (resource/lead time,date)
+        self.OrderPlanDict = dict() # key: plan item type, value: list of items
+
+        self.OrderPlanDict['Products'] = []  # for target stock levels
+        self.OrderPlanDict['Resources'] = [] # for capacity levels
 
         # PlANNING
         self.PlannedDelivery = None
@@ -256,6 +265,24 @@ class CustomerOrder():
 
     def getDelayReasons(self):
         return self.DelayReasons
+
+    def getOrderPlan(self):
+        return self.OrderPlanDict
+        
+    def resetOrderPlan(self):
+        for planitem,itemlist in self.OrderPlanDict.items():
+
+            if planitem == 'Products':
+                for prod in itemlist:
+                    if len(prod.getMPredecessors()) > 0: 
+                        continue
+                    prod.getReservedStockLevels().clear()
+            
+            if planitem == 'Resources':
+                for res in itemlist:
+                    res.getCapacityReserved().clear()
+            itemlist.clear()
+        return
 
     def getPlannedDelivery(self):
         return self.PlannedDelivery

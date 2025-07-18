@@ -30,6 +30,7 @@ class SchedulingManager:
         self.VisualManager = None
         self.PlanningManager = None
         self.JobsCreated = False
+        self.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 
 
     def isJobCreated(self):
@@ -244,7 +245,7 @@ class SchedulingManager:
         shiftlistaut=[]
 
         for scheduleday in pd.date_range(psstart,pssend):
-            print("Schedule day",scheduleday)
+            self.getVisualManager().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
         while i <= day:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
