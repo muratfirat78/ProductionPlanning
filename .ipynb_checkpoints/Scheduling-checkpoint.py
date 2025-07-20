@@ -29,7 +29,16 @@ class SchedulingManager:
         self.DataManager = None
         self.VisualManager = None
         self.PlanningManager = None
-        
+        self.JobsCreated = False
+        self.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+    def isJobCreated(self):
+        return self.JobsCreated
+
+    def setJobCreated(self):
+        self.JobsCreated = True
+        return  
 
     def setDataManager(self,DataMgr):
         self.DataManager = DataMgr 
@@ -54,9 +63,59 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
-    
-    def CreateJobs(self):
+    def DefineJobPrecedences(self):
 
+        oprdict = dict() # key: operation, #val: set of jobs
+
+     # Collect operations with jobs
+        nrjobs = 0
+        for prname,prod in self.getDataManager().getProducts().items():
+            for opr in prod.getOperations():
+                if not opr in oprdict:
+                    oprdict[opr] = opr.getJobs()
+                    nrjobs+= len(opr.getJobs())
+
+        revopdict = {k: oprdict[k] for k in sorted(oprdict, key=lambda x: list(oprdict.keys()).index(x), reverse=True)}
+        
+        
+        for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
+            if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
+                CurJobs = revopdict[k1][::-1];
+                Predjobs = revopdict[k2][::-1];
+                
+                for i in range(0,len(CurJobs)):
+                    CapCurJob = CurJobs[i].getQuantity();           
+                              
+                    
+                    for k in Predjobs:
+                        
+                        if k.getQuantity() < CapCurJob:
+                            CapCurJob = CapCurJob - k.getQuantity();
+                            if k not in CurJobs[i].getPredecessors():
+                                CurJobs[i].getPredecessors().append(k);
+                            if CurJobs[i] not in k.getSuccessor():
+                                k.getSuccessor().append(CurJobs[i]);
+                            Predjobs.remove(k)
+                        else:
+                            if k not in CurJobs[i].getPredecessors():
+                                CurJobs[i].getPredecessors().append(k);
+                            
+                            if CurJobs[i] not in k.getSuccessor():
+                                k.getSuccessor().append(CurJobs[i]);
+                            Predjobs.remove(k)                       
+                            break
+
+        return nrjobs,oprdict
+
+    
+    def CreateJobs(self,psstart,scheduleweeks):
+
+        if self.isJobCreated():
+            return
+
+
+        pssend= psstart+timedelta(days=14*scheduleweeks)
+        
 
         self.getVisualManager().getPSchScheRes().value+="Creating jobs..."+"\n"
         opslist = []
@@ -71,7 +130,9 @@ class SchedulingManager:
 
             reversed_ops = orginalList[::-1]  
 
-            demandcurve = list(prod.getTargetLevels().items())
+   
+            #demandcurve = list([(ddate,amount) for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
+            demandcurve = list([(date,level) for date,level in prod.getTargetLevels().items() if pd.Timestamp(date) <= pd.Timestamp(pssend)])
 
             totaldmd = 0
             if len(demandcurve) > 0:
@@ -81,7 +142,7 @@ class SchedulingManager:
                 continue
 
             opslist.append(prod.getName()) 
-            self.getVisualManager().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
+            #self.getVisualManager().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
             #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
 
             #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
@@ -163,66 +224,44 @@ class SchedulingManager:
         #self.getVisualManager().getPLTBCheckRaw().value = 
         # self.getVisualManager().getPLTBresult2exp().value+="-> Products"+str(len(opslist))+"\n"
         self.getVisualManager().getPSchScheRes().value+="Job creation completed.."+"\n"
-        #self.getVisualManager().getPSchResources().options = [op.getName() for op in opslist] 
+        #self.getVisualManager().getPSchResources().options = [op.getName() for op in opslist]
+
+        self.setJobCreated()             
         
         return
 
     def MakeSchedule(self,b):
 
-        self.CreateJobs()
+
+        psstart = self.getPlanningManager().getPHStart()
 
         self.getVisualManager().getPSchScheRes().value+="Scheduling starts..."+"\n"
+        self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"\n"
 
-        oprdict = dict() # key: operation, #val: set of jobs
-        
+        ScheduleWeeks = 3 # weeks
+        self.CreateJobs(psstart,ScheduleWeeks)
+
+        pssend= psstart+timedelta(days=7*ScheduleWeeks)
+
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
-        
-        # Collect operations with jobs
-        nrjobs = 0
-        for prname,prod in self.getDataManager().getProducts().items():
-            for opr in prod.getOperations():
-                if not opr in oprdict:
-                    oprdict[opr] = opr.getJobs()
-                    nrjobs+= len(opr.getJobs())
-                    
+
+        nrjobs,oprdict = self.DefineJobPrecedences()
+       
         self.getVisualManager().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
-        revopdict = {k: oprdict[k] for k in sorted(oprdict, key=lambda x: list(oprdict.keys()).index(x), reverse=True)}
-        
-        
-        for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
-            if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
-                CurJobs = revopdict[k1][::-1];
-                Predjobs = revopdict[k2][::-1];
-                
-                for i in range(0,len(CurJobs)):
-                    CapCurJob = CurJobs[i].getQuantity();           
-                              
-                    
-                    for k in Predjobs:
-                        
-                        if k.getQuantity() < CapCurJob:
-                            CapCurJob = CapCurJob - k.getQuantity();
-                            if k not in CurJobs[i].getPredecessors():
-                                CurJobs[i].getPredecessors().append(k);
-                            if CurJobs[i] not in k.getSuccessor():
-                                k.getSuccessor().append(CurJobs[i]);
-                            Predjobs.remove(k)
-                        else:
-                            if k not in CurJobs[i].getPredecessors():
-                                CurJobs[i].getPredecessors().append(k);
-                            
-                            if CurJobs[i] not in k.getSuccessor():
-                                k.getSuccessor().append(CurJobs[i]);
-                            Predjobs.remove(k)                       
-                            break
+      
         ## Initialize shifts (example 30 days?)
-        day = 1000;
+        day = 7*ScheduleWeeks;
         
         i=1;
         shiftlistman=[]
         shiftlistaut=[]
-        while i <= day:
+
+        
+
+        for scheduleday in pd.date_range(psstart,pssend):
+            self.getVisualManager().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
+        while i <= day+1:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
             shiftlistaut.append(shift1)
@@ -232,13 +271,13 @@ class SchedulingManager:
             shift3=Shift(i,3,8)
             shiftlistaut.append(shift3)
             i+=1
-
+    
         
         
         #Initialize Schedulable Jobs
         AllJobs = dict()
         SchedulableJobs=[]
-        
+        self.getVisualManager().getPSchScheRes().value+="TEST"+str(SchedulableJobs)+"\n"
         ScheduledJobs=dict()
         for opr, jobs in oprdict.items():
             for job in jobs:
@@ -255,7 +294,7 @@ class SchedulingManager:
                 for i in shiftlistaut:
                     res.getSchedule()[i]=[]
         
-        #Create Schedule
+        #Create Schedule   
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
                 self.getVisualManager().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
@@ -314,6 +353,11 @@ class SchedulingManager:
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
+
+                            if shift.getDay() > day:
+                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                SchedulableJobs.remove(j) #Remove scheduled job
+                                break
                             
                             if shiftnumber == 1:
                                 effort = 0                                                                   
@@ -430,6 +474,12 @@ class SchedulingManager:
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
+
+                            if shift.getDay() > day:
+                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                SchedulableJobs.remove(j) #Remove scheduled job
+                                break
+                            
                             if shiftnumber == 1:
                                 time = 8
                             else:
@@ -497,6 +547,11 @@ class SchedulingManager:
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
+
+                            if shift.getDay() > day:
+                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                SchedulableJobs.remove(j) #Remove scheduled job
+                                break
                             
                             if shiftnumber == 1:
                                 effort = 0                                                                                         
@@ -647,7 +702,7 @@ class SchedulingManager:
                         
                         break
                 break
-        self.getVisualManager().getPSchScheRes().value+=" All jobs are scheduled: "+str(nrjobs)+"\n"
+        self.getVisualManager().getPSchScheRes().value+=" Scheduled: "+str(len(ScheduledJobs))+" of the total of "+str(nrjobs)+"\n"
 
         schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
         folder = 'UseCases'; casename = self.getVisualManager().getCOTBcasename().value
@@ -672,7 +727,7 @@ class SchedulingManager:
 
                     
                         
-                        
+       
                 
                         
                 

@@ -105,7 +105,7 @@ class SchedulingManager:
                             Predjobs.remove(k)                       
                             break
 
-        return
+        return nrjobs,oprdict
 
     
     def CreateJobs(self,psstart,scheduleweeks):
@@ -132,7 +132,7 @@ class SchedulingManager:
 
    
             #demandcurve = list([(ddate,amount) for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
-            demandcurve = list(prod.getTargetLevels().items())
+            demandcurve = list([(date,level) for date,level in prod.getTargetLevels().items() if pd.Timestamp(date) <= pd.Timestamp(pssend)])
 
             totaldmd = 0
             if len(demandcurve) > 0:
@@ -246,20 +246,22 @@ class SchedulingManager:
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
 
-        self.DefineJobPrecedences()
+        nrjobs,oprdict = self.DefineJobPrecedences()
        
         self.getVisualManager().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
       
         ## Initialize shifts (example 30 days?)
-        day = 1000;
+        day = 7*ScheduleWeeks;
         
         i=1;
         shiftlistman=[]
         shiftlistaut=[]
 
+        
+
         for scheduleday in pd.date_range(psstart,pssend):
             self.getVisualManager().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
-        while i <= day:
+        while i <= day+1:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
             shiftlistaut.append(shift1)
@@ -269,13 +271,13 @@ class SchedulingManager:
             shift3=Shift(i,3,8)
             shiftlistaut.append(shift3)
             i+=1
-
+    
         
         
         #Initialize Schedulable Jobs
         AllJobs = dict()
         SchedulableJobs=[]
-        
+        self.getVisualManager().getPSchScheRes().value+="TEST"+str(SchedulableJobs)+"\n"
         ScheduledJobs=dict()
         for opr, jobs in oprdict.items():
             for job in jobs:
@@ -292,7 +294,7 @@ class SchedulingManager:
                 for i in shiftlistaut:
                     res.getSchedule()[i]=[]
         
-        #Create Schedule
+        #Create Schedule   
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
                 self.getVisualManager().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
@@ -351,6 +353,11 @@ class SchedulingManager:
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
+
+                            if shift.getDay() > day:
+                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                SchedulableJobs.remove(j) #Remove scheduled job
+                                break
                             
                             if shiftnumber == 1:
                                 effort = 0                                                                   
@@ -467,6 +474,12 @@ class SchedulingManager:
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
+
+                            if shift.getDay() > day:
+                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                SchedulableJobs.remove(j) #Remove scheduled job
+                                break
+                            
                             if shiftnumber == 1:
                                 time = 8
                             else:
@@ -534,6 +547,11 @@ class SchedulingManager:
                             
                             shiftcap = shift.getCapacity()
                             shiftnumber = shift.getNumber()
+
+                            if shift.getDay() > day:
+                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                SchedulableJobs.remove(j) #Remove scheduled job
+                                break
                             
                             if shiftnumber == 1:
                                 effort = 0                                                                                         
@@ -684,7 +702,7 @@ class SchedulingManager:
                         
                         break
                 break
-        self.getVisualManager().getPSchScheRes().value+=" All jobs are scheduled: "+str(nrjobs)+"\n"
+        self.getVisualManager().getPSchScheRes().value+=" Scheduled: "+str(len(ScheduledJobs))+" of the total of "+str(nrjobs)+"\n"
 
         schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
         folder = 'UseCases'; casename = self.getVisualManager().getCOTBcasename().value

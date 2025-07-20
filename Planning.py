@@ -106,8 +106,11 @@ class PlanningManager:
           
             for operation in product.getOperations():
 
-                # skip quantity when resource is outsourced.  
-                resource_use = quantity*operation.getProcessTime() 
+                # skip quantity when resource is outsourced.
+                if operation.getRequiredResources()[0].getType() == 'Outsourced':
+                    resource_use = operation.getProcessTime()
+                else:
+                    resource_use = quantity*operation.getProcessTime() 
                
                 
                 totaltime+=resource_use
