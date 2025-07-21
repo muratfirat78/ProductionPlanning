@@ -282,6 +282,8 @@ class DataManager:
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
                         newprod.setPrescribedBatchsize(r["PrescribedBatchsize"])
                         newprod.setChosenBatchsize(r["ChosenBatchsize"])
+                        newprod.setStockUnit(r["StockUnit"])
+                        newprod.setStockBatch(r["StockBatch"])
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
