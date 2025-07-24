@@ -69,6 +69,9 @@ class Product():
         return self.PN
     def getStockLevel(self):
         return self.StockLevel
+    def setStockLevel(self,lvl):
+        self.StockLevel = lvl
+        return 
     def getPredecessors(self):
         return self.Predecessors
     def getMPredecessors(self):
