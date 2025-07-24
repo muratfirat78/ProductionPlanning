@@ -74,7 +74,7 @@ class PlanningManager:
         
         return
 
-    def PlanProduction(self,order,product,mydate,quantity):
+    def PlanProduction(self,order,product,mydate,quantity,lvl):
 
         #calculate use of resource for production for every operation
         #assume: one workday includes 16 hours of two shifts. 
@@ -82,6 +82,8 @@ class PlanningManager:
 
         if not product in order.getOrderPlan()['Products']:
             order.getOrderPlan()['Products'].append(product)
+
+        self.getVisualManager().getPLTBresult2exp().value+=" "+str(lvl)+"  ==> "+product.getName()+": "+str(mydate)+"\n"
 
         quantity = quantity/product.getStockBatch()
 
@@ -106,11 +108,8 @@ class PlanningManager:
           
             for operation in product.getOperations():
 
-                # skip quantity when resource is outsourced.
-                if operation.getRequiredResources()[0].getType() == 'Outsourced':
-                    resource_use = operation.getProcessTime()
-                else:
-                    resource_use = quantity*operation.getProcessTime() 
+                # skip quantity when resource is outsourced.  
+                resource_use = quantity*operation.getProcessTime() 
                
                 
                 totaltime+=resource_use
@@ -156,9 +155,12 @@ class PlanningManager:
 
             if mydate.weekday() - workdays < 0:
                 workdays+=2
-                
+
+            
             
             newdate = mydate- timedelta(days = workdays)
+
+            self.getVisualManager().getPLTBresult2exp().value+="   ==> "+product.getName()+":"+str(newdate)+"\n"
 
             
             if newdate.date()  < self.getPHStart():
@@ -173,7 +175,7 @@ class PlanningManager:
                 #self.getVisualManager().getPLTBresult2exp().value+="predecessor.."+str(predecessor.getName())+"\n"
     
                
-                if not self.PlanProduction(order,predecessor,newdate,quantity*multiplier):
+                if not self.PlanProduction(order,predecessor,newdate,quantity*multiplier,lvl+1):
                     return False
     
         return True
@@ -187,19 +189,22 @@ class PlanningManager:
             - The primary goal is to plan customer orders without any delay. If the delivery of a customer order should be with some delay, then it loses itspriority compared to all other cutomer orders to be planned.  
             - The combined required capacity levels of planned customer orders should respect to the capacity levels of all resources.
             - Every raw material can be purchased at most certain amount in every week. The required raw material levels of planned customer orders should be feasible by possibly purchasing additional amount of raw materials for every week.  
+
+            INPUT: 
+            1) Customer orders, 2) Planning Period, 3) BOMs or products
+            OUTPUT:
+            1) Delivery date of Customer orders, 2) Target Levels of Products, 3) Capacity use plan of resources
+            
         '''
 
-        PlanningWeeks = 24
-        # START: here is your code to make planning 
-        self.getVisualManager().getPLTBresult2exp().value+=">Planning weeks: "+str(PlanningWeeks)+"\n"
- 
+        
         mydict = self.getDataManager().getCustomerOrders()
         sortedtuples = sorted(mydict.items(), key=lambda item: item[1].getDeadLine())
         mydict = {k: v for k, v in sortedtuples}
         self.getDataManager().setCustomerOrders(mydict)
 
         # determine planning horizon
-        phstart = date.today()+timedelta(days=1)
+        phstart = self.getPHStart()
 
         if phstart.weekday() > 0:
             phstart = phstart+timedelta(days=7-phstart.weekday())
@@ -208,9 +213,6 @@ class PlanningManager:
  
         self.setPHStart(phstart) 
 
-      
-        self.setPHEnd((phstart+timedelta(days=7*PlanningWeeks)))  
-
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
  
 
@@ -218,6 +220,9 @@ class PlanningManager:
 
         #self.getVisualManager().getPLTBresult2exp().value+=">> Resources capacities.. "+str(len(self.getDataManager().getResources().items()))+"\n"
         daterange = pd.date_range(self.getPHStart(),self.getPHEnd())
+
+        for ordname,myord in self.getDataManager().getCustomerOrders().items():
+            myord.resetPlannedDelivery()
 
         for resname,res in self.getDataManager().getResources().items():
             res.getCapacityLevels().clear()
@@ -245,23 +250,27 @@ class PlanningManager:
         # Start planning 
         self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
 
+        planned = 0
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
             myord.resetOrderPlan()
+
+            self.getVisualManager().getPLTBresult2exp().value+="Order: "+str(myord.getName())+"\n"
+
+            mindeliverydate = max(myord.getDeadLine().date(),self.getPHStart())+timedelta(days=1)
             
-            for curr_deliverydate in pd.date_range(max(myord.getDeadLine().date(),self.getPHStart()),self.getPHEnd()):
+            for curr_deliverydate in pd.date_range(mindeliverydate,self.getPHEnd()):
                 if curr_deliverydate.weekday() >= 5:
                     continue
                     
       
-                if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
-   
+                if self.PlanProduction(myord,myord.getProduct(),curr_deliverydate,myord.getQuantity(),1):
+
+                    planned+=1
                     myord.setPlannedDelivery(curr_deliverydate)
 
                    # apply resource use plan: convert reserved capacity use to actual capacity use.
                     for res in myord.getOrderPlan()['Resources']: 
-                        
                         for mydate,val in res.getCapacityReserved().items():
-                           
                             if mydate in res.getCapacityUsePlan():
                                 res.getCapacityUsePlan()[mydate]+=val
                             else: 
@@ -276,14 +285,24 @@ class PlanningManager:
                         for mydate,lvl in prod.getReservedStockLevels().items():
                             for curr_date in pd.date_range(mydate,self.getPHEnd()):
                                 prod.getTargetLevels()[curr_date]+= lvl
-
-                myord.resetOrderPlan()
-
-                if myord.getPlannedDelivery() != None:
                     break
-                
-     
-    
+                else:
+                    myord.resetOrderPlan()
+
+        self.getVisualManager().getPLTBresult2exp().value+=">> Completed..  planned: "+str(planned)+"/"+str(len(self.getDataManager().getCustomerOrders()))+"\n"
+        custordlist = [myord for myord in self.getDataManager().getCustomerOrders().values()]
+        #custordlist_strd = sorted(custordlist, key=lambda x: (x.getPlannedDelivery()-max(x.getDeadLine().date(),self.getPHStart())).days, reverse=True)
+
+        ops = []
+        
+        for x in custordlist:
+            if x.getPlannedDelivery() != None:
+                ops.append(x.getName()+": "+str((x.getPlannedDelivery().date()-max(x.getDeadLine().date(),self.getPHStart())).days-1))
+            else:
+                ops.append(x.getName()+": "+str(max(x.getDeadLine().date(),self.getPHStart()))+">>"+"XXXXXX")
+        self.getVisualManager().getPLTBOrdlist().options = ops
+
+        
         # END: here is your code to make planning 
         # self.getVisualManager().getPLTBresult2exp().value+=">> Deliveries"+"\n"
         for ordname,myord in self.getDataManager().getCustomerOrders().items():

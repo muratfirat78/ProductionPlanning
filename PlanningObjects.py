@@ -117,7 +117,9 @@ class Resource():
 
         # SCHEDULING 
 
-
+    def setName(self,name):
+        self.Name = name
+        return
    
         
     def getBatchSize(self):
@@ -302,6 +304,9 @@ class CustomerOrder():
 
     def getPlannedDelivery(self):
         return self.PlannedDelivery
+    def resetPlannedDelivery(self):
+        self.PlannedDelivery = None
+        return 
     def setPlannedDelivery(self,myval):
         self.PlannedDelivery = myval
         return 
