@@ -273,14 +273,24 @@ class CustomerOrder():
         self.ReferenceNumber = 0
         self.DelayReasons = dict() # key: prod, value: (resource/lead time,date)
         self.OrderPlanDict = dict() # key: plan item type, value: list of items
+       
 
         self.OrderPlanDict['Products'] = []  # for target stock levels
         self.OrderPlanDict['Resources'] = [] # for capacity levels
 
         # PlANNING
         self.PlannedDelivery = None
+        self.LatestStart = None
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
 
+
+    def getLatestStart(self):
+        return self.LatestStart
+
+    def setLatestStart(self,myit):
+        self.LatestStart = myit
+        return 
+    
     def getDelayReasons(self):
         return self.DelayReasons
 

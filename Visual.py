@@ -1113,7 +1113,10 @@ class VisualManager():
             myord = self.DataManager.getCustomerOrders()[ordname]
             self.getPLTBOrdProd().value = "Final Product: "+"\n"
             self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
+            self.getPLTBOrdProd().value += "LS: "+str(myord.getLatestStart())+"\n"
+            self.getPLTBOrdProd().value += "Q: "+str(myord.getQuantity())+"\n"
 
+            
             if (myord.getPlannedDelivery().date()-max(myord.getDeadLine().date(),self.getPlanningManager().getPHStart())).days-1 > 0:
                 self.getPLTBOrdProd().value += "Delay reasons: "+"\n"
                 for myprd,reason in myord.getDelayReasons().items():

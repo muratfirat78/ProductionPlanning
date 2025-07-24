@@ -166,9 +166,12 @@ class PlanningManager:
             if newdate.date()  < self.getPHStart():
                 order.getDelayReasons()[product] = (product.getName(),str(mydate.date())+"->"+str(newdate.date()))
                 return False
-     
-                
-                
+
+            if order.getLatestStart()== None:
+                order.setLatestStart(newdate)
+            else:
+                if newdate < order.getLatestStart():
+                    order.setLatestStart(newdate)                
        
         if len(product.getMPredecessors()) > 0:
             for predecessor,multiplier in product.getMPredecessors().items():
