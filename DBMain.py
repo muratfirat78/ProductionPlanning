@@ -14,14 +14,18 @@ import warnings
 import sys
 import numpy as np
 from pathlib import Path
+from VisSchedule import *
 from Visual import *
 from Data import *
 from Planning import *
 from Scheduling import *
 
+ScheduleTab = ScheduleTab()
 DataMgr = DataManager()
 VisMgr = VisualManager()
 VisMgr.setDataManager(DataMgr)
+VisMgr.setSchedulingTab(ScheduleTab)
+ScheduleTab.setVisualManager(VisMgr)
 DataMgr.setVisualManager(VisMgr)
 PlanningMgr = PlanningManager()
 PlanningMgr.setDataManager(DataMgr)

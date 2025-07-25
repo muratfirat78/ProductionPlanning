@@ -34,7 +34,7 @@ class VisualManager():
         self.SchedulingManager = None
         self.ProdSystemTab = None
 
-        self.SchedulingTab = None
+        self.SchedulingTab - None
         
         self.PSTBResList = None
         self.PSTBNewResName = None
@@ -796,13 +796,6 @@ class VisualManager():
         self.PLTBmakeplan_btn = prdlist
         return 
 
-    def setSchedulingTab(self,myit):
-        self.SchedulingTab = myit
-        return
-    
-    def getSchedulingTab(self):
-        return self.SchedulingTab
-        
 
     def ApplyVisuals(self,itemstoshow,itemstohide,itemstoreset):
 
