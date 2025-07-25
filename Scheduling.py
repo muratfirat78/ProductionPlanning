@@ -108,7 +108,7 @@ class SchedulingManager:
         return nrjobs,oprdict
 
     
-    def CreateJobs(self,psstart,scheduleweeks):
+    def CreateJobs(self,psstart,scheduleweeks,Orders):
 
         if self.isJobCreated():
             return
@@ -116,11 +116,23 @@ class SchedulingManager:
 
         pssend= psstart+timedelta(days=14*scheduleweeks)
         
+        #grab the required products and their predecessors for the possible orders
+        ListOfProd = []        
+        for i in Orders:
+            Product = i.getProduct()
+            PredProduct = i.getProduct().getPredecessors()[0]
+            ListOfProd.append(Product)
+            ListOfProd.append(PredProduct)
+            while PredProduct.getPredecessors() != []:
+                PredProduct = PredProduct.getPredecessors()[0]
+                ListOfProd.append(PredProduct)
 
         self.getVisualManager().getPSchScheRes().value+="Creating jobs..."+"\n"
         opslist = []
         
-        for prname,prod in self.getDataManager().getProducts().items():
+        #for prname,prod in self.getDataManager().getProducts().items():
+        for prod in ListOfProd:
+            prod = self.getDataManager().getProducts()[prod.getName()]
           
             produced_level = 0
             orginalList = prod.getOperations()
@@ -239,9 +251,19 @@ class SchedulingManager:
         self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"\n"
 
         ScheduleWeeks = 3 # weeks
-        self.CreateJobs(psstart,ScheduleWeeks)
-
+        
         pssend= psstart+timedelta(days=7*ScheduleWeeks)
+
+        #Determine customer orders with latest start within Scheduling
+        SelectedOrders=[]
+        for name,order in self.getDataManager().getCustomerOrders().items():
+            if not order.getLatestStart() is None:
+                if order.getLatestStart().date() <= pssend:
+                    SelectedOrders.append(order)
+                
+        self.CreateJobs(psstart,ScheduleWeeks,SelectedOrders)
+
+        
 
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
@@ -703,6 +725,33 @@ class SchedulingManager:
                         break
                 break
         self.getVisualManager().getPSchScheRes().value+=" Scheduled: "+str(len(ScheduledJobs))+" of the total of "+str(nrjobs)+"\n"
+        self.getVisualManager().getPSchScheRes().value+=" Checking completed orders \n"
+
+        for jobname, job in ScheduledJobs.items():
+            Product = job.getProduct()
+            Quant = job.getQuantity()
+            CurStock = self.getDataManager().getProducts()[Product.getName()].getStockLevel()
+            NewStock = CurStock + Quant
+            self.getDataManager().getProducts()[Product.getName()].setStockLevel(NewStock)
+
+        for orders in SelectedOrders:
+            product = orders.getProduct()
+            orderquant = orders.getQuantity()
+            productstock = self.getDataManager().getProducts()[product.getName()].getStockLevel()
+            if orderquant <= productstock:
+                self.getVisualManager().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was fully completed within the schedule horizon \n\n"
+                productstock = productstock - orderquant
+                self.getDataManager().getProducts()[product.getName()].setStockLevel(productstock)
+            elif orderquant > productstock and productstock>0:
+                self.getVisualManager().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was partially completed. "+str(productstock)+" out of "+str(orderquant)+" was created. \n\n"
+                self.getDataManager().getProducts()[product.getName()].setStockLevel(0)
+
+            else:
+               self.getVisualManager().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was not completed because there was no stock. \n\n"
+        
+        
+            
+            
 
         schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
         folder = 'UseCases'; casename = self.getVisualManager().getCOTBcasename().value
