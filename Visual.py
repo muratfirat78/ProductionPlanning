@@ -50,6 +50,14 @@ class VisualManager():
 
         self.PSTBeditres_btn = None
         self.PSTBeditprd_btn = None
+
+
+        self.USTBCustomerOders = None
+        self.USTBProducts = None
+        self.USTBRawMaterials = None
+        self.USTBRawResources = None
+
+        self.PLTBDisplayPeriod = 4 # weeks
         
         self.PSTBProdList = None
         self.PSTBProdList2 = None
@@ -77,6 +85,9 @@ class VisualManager():
         self.PLTBPlanStart = None
         self.PLTBPlanEnd = None
         self.PLTBPlanChange = None
+
+        self.PLTBDesciptives = None
+        self.PLTBDisplayPeriod = None
      
 
 
@@ -135,7 +146,55 @@ class VisualManager():
         return
 
 
-   
+    def setUSTBRawResources(self,myit):
+        self.USTBRawResources = myit
+        return
+
+    def getUSTBRawResources(self):
+        return self.USTBRawResources
+
+
+    def setUSTBRawMaterials(self,myit):
+        self.USTBRawMaterials = myit
+        return
+
+    def getUSTBRawMaterials(self):
+        return self.USTBRawMaterials
+
+
+    def setUSTBProducts(self,myit):
+        self.USTBProducts = myit
+        return
+
+    def getUSTBProducts(self):
+        return self.USTBProducts
+
+    def setUSTBCustomerOders(self,myit):
+        self.USTBCustomerOders = myit
+        return
+
+    def getUSTBCustomerOders(self):
+        return self.USTBCustomerOders
+
+
+    
+
+    def setPLTBDisplayPeriod(self,myit):
+        self.PLTBDisplayPeriod = myit
+        return
+
+    def getPLTBDisplayPeriod(self):
+        return self.PLTBDisplayPeriod
+
+    
+
+    def setPLTBDesciptives(self,myit):
+        self.PLTBDesciptives = myit
+        return
+
+    def getPLTBDesciptives(self):
+        return self.PLTBDesciptives
+
     def setPLTBOrdProd(self,myit):
         self.PLTBOrdProd = myit
         return
@@ -166,13 +225,7 @@ class VisualManager():
     def getPLTBPlanStart (self):
         return self.PLTBPlanStart
 
-    def setPLTBPlanChange(self,myit):
-        self.PLTBPlanChange = myit
-        return
-        
-    def getPLTBPlanChange(self):
-        return self.PLTBPlanChange
-
+   
     
     def setPLTBPlanEnd(self,myit):
         self.PLTBPlanEnd  = myit
@@ -779,7 +832,7 @@ class VisualManager():
             selected = self.getPLTBrawlist().value
        
 
-        if self.getPLTBCheckRaw().value: 
+        if self.getPLTBDesciptives().value == 'Product Target Levels':
             rawname = selected
            
             rawmat = None
@@ -809,7 +862,7 @@ class VisualManager():
                 plt.tight_layout()
                 plt.show()
                 
-        if self.getPLTBCheckCapacity().value:
+        if  self.getPLTBDesciptives().value == 'Resource Capacity Plans':
             res_name = selected
            
             my_res = None
@@ -826,23 +879,26 @@ class VisualManager():
             with self.getPLTBStockLevels():
                 clear_output()
                 plandays = my_res.getCapacityLevels().keys()
-                capvalues = my_res.getCapacityLevels().values()
+                capvalues = [v for v in my_res.getCapacityLevels().values()]
                 
                 usevalues = []
                 cumuseval = 0
-      
+
+                totalval = 0
+                for cstord,usedict in my_res.getCapacityUsePlan().items():
+                    totalval+=sum([v for v in usedict.values()])
+                    
                 for mydate in my_res.getCapacityLevels().keys():
-                    if mydate in my_res.getCapacityUsePlan():
-                        cumuseval+=my_res.getCapacityUsePlan()[mydate]
-                    usevalues.append(cumuseval)    
-            
+                    for cstord,usedict in my_res.getCapacityUsePlan().items():
+                        if mydate in usedict:
+                            cumuseval+=usedict[mydate]
+                    usevalues.append(cumuseval)  
+
                 
-            
-                fig = plt.figure(figsize=(6, 4))
+                fig = plt.figure(figsize=(5, 3.5))
                 ax = plt.subplot(111)
                 ax.plot(plandays,usevalues,  color='blue')
                 ax.plot(plandays,capvalues,  color='red')
-                ax.set_title('Capacity Use Plan '+res_name) 
                 plt.xticks(rotation=-45)
                 plt.tight_layout()
                 plt.show()
@@ -851,51 +907,9 @@ class VisualManager():
 
 
     
-    def RawCheck(self,event):
-
-        with self.getPLTBStockLevels():
-                clear_output()
-
-        if self.getPLTBCheckRaw().value:
-            if self.getPLTBCheckCapacity().value:
-                rawlist = []
-             
-                sorteddict = dict(sorted(self.DataManager.getProducts().items(), key=lambda item: -sum([x for x in item[1].getTargetLevels().values()])))
-                for prodname,myprod in sorteddict.items():
-                    
-                    if len(myprod.getPredecessors()) == 0:
-                        rawlist.append(prodname)
-
-              
-                self.getPLTBrawlist().options = rawlist
-                self.getPLTBrawlist().description = 'Raw Materials'
-                self.getPLTBCheckCapacity().value = False
-       
-                
-            
-           
-        return
+  
         
-    def CapCheck(self,event):
-
-        if self.getPLTBCheckCapacity().value:
-            if self.getPLTBCheckRaw().value:
-                reslist = [] 
-
-                sorteddict = dict(sorted(self.DataManager.getResources().items(), key=lambda item: -sum([x for x in item[1].getCapacityUsePlan().values()])))
-                
-                for resame,myres in sorteddict.items():
-                    reslist.append(resame)
-
-              
-                self.getPLTBrawlist().options = reslist
-                self.getPLTBrawlist().description = 'Resources'
-                self.getPLTBCheckRaw().value = False
-              
-                
-       
-        return
-
+   
     def ShowJobs(self,event):
 
         selectedopr = self.getPSchResources().value
@@ -1022,18 +1036,16 @@ class VisualManager():
         itemstoshow = [self.getPSTBnewres_btn()]; itemstoreset = itemstoshow[:3]  
         self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
 
-        self.getPLTBresult2exp().value+=" Selected Resource->"+str(selectedres)+"\n"
+        
 
 
         for resname,res in self.DataManager.getResources().items():
             if resname == selectedres:
                 sel_resource = res
-                self.getPLTBresult2exp().value+=" Selected Resource found!!!->"+str(selectedres)+"\n"
+                
                 break
 
         
-        self.getPLTBresult2exp().value+=" Resource->"+str(sel_resource.getName())+"\n"
-
         self.getPSTBResName().value = sel_resource.getName()
         self.getPSTBResType().value = sel_resource.getType()
         self.getPSTBResCap().value = str(sel_resource.getDailyCapacity())+" hrs/day"
@@ -1084,7 +1096,7 @@ class VisualManager():
        
         if self.getPlanningManager().getPHStart() != None:
             self.getPLTBmakeplan_btn().disabled = False
-        
+
         return
         
     def ShowOrderStatus(self,event):
@@ -1111,22 +1123,90 @@ class VisualManager():
         
         if ordname in self.DataManager.getCustomerOrders():
             myord = self.DataManager.getCustomerOrders()[ordname]
-            self.getPLTBOrdProd().value = "Final Product: "+"\n"
-            self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
-            self.getPLTBOrdProd().value += "LS: "+str(myord.getLatestStart())+"\n"
-            self.getPLTBOrdProd().value += "Q: "+str(myord.getQuantity())+"\n"
 
-            
-            if (myord.getPlannedDelivery().date()-max(myord.getDeadLine().date(),self.getPlanningManager().getPHStart())).days-1 > 0:
-                self.getPLTBOrdProd().value += "Delay reasons: "+"\n"
-                for myprd,reason in myord.getDelayReasons().items():
-                    self.getPLTBOrdProd().value +="  > Prod "+myprd.getName()+", reason "+str(reason[0])+":"+str(reason[1])+"\n"
+            if myord.getPlannedDelivery() != None:
+                self.getPLTBOrdProd().value = "Final Product: "+"\n"
+                self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
+                self.getPLTBOrdProd().value += "LatestStart: "+str(myord.getLatestStart())+"\n"
+                self.getPLTBOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
+                
+                self.getPLTBOrdProd().value += "Resource use: "+str(len(myord.getOrderPlan()['Resources']))+"\n"
+                resid = 1
+                for res,usedict in myord.getOrderPlan()['Resources'].items():    
+                    self.getPLTBOrdProd().value += str(resid)+"->"+res.getName()+"\n"
+                    for mydate,val in usedict.items():
+                        self.getPLTBOrdProd().value += "  >> Date: "+str(mydate)+", Val: "+str(val)+"\n"
+                    resid+=1
+
+                self.getPLTBOrdProd().value += "Target product levels: "+str(len(myord.getOrderPlan()['Products']))+"\n"
+                prodid = 1
+                for prod,usedict in myord.getOrderPlan()['Products'].items():
+                    self.getPLTBOrdProd().value += str(prodid)+"->"+prod.getName()+"\n"
+                    for mydate,val in usedict.items():
+                        self.getPLTBOrdProd().value +="  >> Date: "+str(mydate)+", Val: "+str(val)+"\n"
+                    prodid+=1
+                
+                if (myord.getPlannedDelivery().date()-max(myord.getDeadLine().date(),self.getPlanningManager().getPHStart())).days-1 > 0:
+                    self.getPLTBOrdProd().value += "Delay reasons: "+"\n"
+                    for myprd,reason in myord.getDelayReasons().items():
+                        self.getPLTBOrdProd().value +="  > Prod "+myprd.getName()+", reason "+str(reason[0])+":"+str(reason[1])+"\n"
+                else:
+                    self.getPLTBOrdProd().value += "No delay"+"\n"
             else:
-                self.getPLTBOrdProd().value += "No delay"+"\n"
+                self.getPLTBOrdProd().value = "Not planned... "+"\n"
            
         else:
-            self.getPLTBOrdProd().value = "... "+"\n"
+            self.getPLTBOrdProd().value = "Order not found..."+"\n"
 
+        
+        return
+
+  
+
+    def ShowDescriptives(self,event):
+
+        if not 'index' in event['new']:
+            return
+            
+        if event['new']['index'] < 0:
+            return
+    
+        selected = self.getPLTBDesciptives().options[event['new']['index']]
+
+        if selected == None:
+            return
+
+        if selected == '':
+            return
+
+        with self.getPLTBStockLevels():
+                clear_output()
+
+        if selected == 'Product Target Levels':
+
+            rawlist = []
+                 
+            sorteddict = dict(sorted(self.DataManager.getProducts().items(), key=lambda item: -sum([x for x in item[1].getTargetLevels().values()])))
+            for prodname,myprod in sorteddict.items():
+                        
+                if len(myprod.getPredecessors()) == 0:
+                    rawlist.append(prodname)
+    
+                  
+            self.getPLTBrawlist().options = rawlist
+     
+
+            
+           
+        if selected == 'Resource Capacity Plans':
+
+            reslist = [res.getName() for res in self.DataManager.getResources().values()] 
+            self.getPLTBrawlist().options = reslist
+
+            self.getPLTBresult2exp().value+=str(type(self.getPlanningManager().getPHEnd()))+"\n"
+                
+            #self.getPLTBDisplayPeriod().options = ["Week "+str(w) for w in range(1,weeks+1)]
+      
         
         return
         
@@ -1134,14 +1214,16 @@ class VisualManager():
         
     def generatePLTAB(self):
 
-        self.setPLTBresult2exp(widgets.Textarea(value='', placeholder='',description='Summary',disabled=True))
+        self.setPLTBresult2exp(widgets.Textarea(value='', placeholder='',description='',disabled=True))
        
         self.setPLTBOrdlist(widgets.Select(options=[],description = ''))
         self.getPLTBOrdlist().observe(self.ShowOrderStatus)
         
+        self.getPLTBOrdlist().layout.height = '150px'
+        
         self.setPLTBOrdProd(widgets.Textarea(description ='',value=''))
         self.getPLTBOrdProd().layout.height = '75px'
-
+        self.getPLTBOrdProd().layout.height = '150px'
   
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
         self.getPLTBPlanStart().observe(self.SetStart)
@@ -1149,10 +1231,8 @@ class VisualManager():
         
         self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
         self.getPLTBPlanEnd().observe(self.SetEnd)
-        
-        self.setPLTBPlanChange(widgets.Text(description ='Change:',value=''))
         self.getPLTBresult2exp().layout.height = '150px'
-        self.getPLTBresult2exp().layout.width = "40%"
+       
 
         self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan",disabled = True))
         self.getPLTBmakeplan_btn().on_click(self.getPlanningManager().MakeDeliveryPlan)
@@ -1163,20 +1243,28 @@ class VisualManager():
 
         self.setPLTBStockLevels(widgets.Output())
 
-        self.setPLTBCheckRaw(widgets.Checkbox(False, description='Raw Material'))
-        self.setPLTBCheckCapacity(widgets.Checkbox(False, description='Resource Capacity'))
-        self.setPLTBOrders(widgets.Checkbox(False, description='Delays'))
+      
+        self.setPLTBDesciptives(widgets.Dropdown(options=['Product Target Levels','Resource Utilizations','Resource Capacity Plans'], description=''))
+
+        self.getPLTBDesciptives().observe(self.ShowDescriptives)
+
+        self.setPLTBDisplayPeriod(widgets.Dropdown(options=[], description=''))
+
         
-
-        self.getPLTBCheckCapacity().observe(self.CapCheck)
-        self.getPLTBCheckRaw().observe(self.RawCheck)
     
-        tab_3 = VBox(children = [HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd()]),
-            self.getPLTBPlanChange(),self.getPLTBmakeplan_btn(),HBox(children = [self.getPLTBresult2exp(),VBox(children = [self.getPLTBOrdlist(),self.getPLTBOrdProd()],layout = widgets.Layout(width = "60%"))])
-                                 ,HBox(children=[VBox(children = [HBox(children=[self.getPLTBCheckRaw(),self.getPLTBCheckCapacity()])])
-                                                ]),HBox(children=[ self.getPLTBrawlist(),self.getPLTBStockLevels()])])
+        tab_3 = VBox(children = [
+                widgets.Label(value ='Planning Settings '),
+               HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPLTBmakeplan_btn()]),   
+               HBox(children = [VBox(children = [widgets.Label(value ='Planning Progress '),self.getPLTBresult2exp()]),
+                                VBox(children = [widgets.Label(value ='Planned Orders '),self.getPLTBOrdlist()]),
+                                VBox(children = [widgets.Label(value ='Order Details '),self.getPLTBOrdProd()])],layout = widgets.Layout(height = '205px')),
+               
+                HBox(children=[VBox(children = [widgets.Label(value ='Planning Descriptives '),self.getPLTBDesciptives()]),
+                               VBox(children = [widgets.Label(value ='Display Period'),self.getPLTBDisplayPeriod()])]),
+            
+                HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()],layout = widgets.Layout(height = '205px'))])
 
-        tab_3.layout.height = '600px'
+        tab_3.layout.height = '700px'
 
         itemstohide = [self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),self.getPSTBres_lbl(),
         self.getPSTBaddres_btn(),self.getPSTBcanclres_btn(),self.getPSTBtyp_lbl(),
@@ -1506,18 +1594,28 @@ self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getP
         self.getFolderNameTxt().on_submit(self.DataManager.on_submit_func)
        
         self.setCasesDrop(widgets.Dropdown(options=[], description='Use Cases:'))
-        self.setCaseInfo(widgets.Textarea(value='', placeholder='',description='Case Info:',disabled=True,layout = Layout(height ="200px" ,width='60%')))   
+        self.setCaseInfo(widgets.Textarea(value='', placeholder='',description='',disabled=True,layout = Layout(height ="100px" ,width='60%')))   
 
     
         self.setReadFileBtn(widgets.Button(description="Read") )
         self.getReadFileBtn().on_click(self.DataManager.read_dataset)
+
+
+        self.setUSTBCustomerOders(widgets.Label(value =''))
+        self.setUSTBProducts(widgets.Label(value =''))
+        self.setUSTBRawMaterials(widgets.Label(value =''))
+        self.setUSTBRawResources(widgets.Label(value =''))
        
 
         tablayout = widgets.Layout(height='500px')
       
        
         tab_1 = VBox(children=[
-            HBox(children = [self.getFolderNameTxt(),self.getCasesDrop(),self.getReadFileBtn()]),self.getCaseInfo()],layout=tablayout)
+            HBox(children = [self.getFolderNameTxt(),self.getCasesDrop(),self.getReadFileBtn()]),self.getCaseInfo(),
+            HBox(children = [widgets.Label(value ='Customer Orders: '),self.getUSTBCustomerOders()]),
+            HBox(children = [widgets.Label(value ='Products: '),self.getUSTBProducts()]),
+            HBox(children = [widgets.Label(value ='Raw Materials: '),self.getUSTBRawMaterials()]),
+            HBox(children = [widgets.Label(value ='Resources: '),self.getUSTBRawResources()])],layout=tablayout)
 
        
         return tab_1

@@ -104,6 +104,7 @@ class Resource():
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
         self.CapacityReserved = dict() 
+      
         
         # PlANNING
 
@@ -120,7 +121,14 @@ class Resource():
     def setName(self,name):
         self.Name = name
         return
-   
+
+    def GetTotalDemand(self):
+
+        demand = 0
+        for cust_ordr,usedict in self.getCapacityUsePlan().items():
+            demand+=sum([useval for useval in usedict.values()])
+        
+        return demand
         
     def getBatchSize(self):
         return self.batchsize 
@@ -272,11 +280,11 @@ class CustomerOrder():
         self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
         self.ReferenceNumber = 0
         self.DelayReasons = dict() # key: prod, value: (resource/lead time,date)
-        self.OrderPlanDict = dict() # key: plan item type, value: list of items
+        self.OrderPlanDict = dict() # key: plan item type, value: list of tuples (item,(date,val))
        
 
-        self.OrderPlanDict['Products'] = []  # for target stock levels
-        self.OrderPlanDict['Resources'] = [] # for capacity levels
+        self.OrderPlanDict['Products'] = dict() # for target stock levels
+        self.OrderPlanDict['Resources'] = dict() # for capacity levels
 
         # PlANNING
         self.PlannedDelivery = None
@@ -298,18 +306,8 @@ class CustomerOrder():
         return self.OrderPlanDict
         
     def resetOrderPlan(self):
-        for planitem,itemlist in self.OrderPlanDict.items():
-
-            if planitem == 'Products':
-                for prod in itemlist:
-                    if len(prod.getMPredecessors()) > 0: 
-                        continue
-                    prod.getReservedStockLevels().clear()
-            
-            if planitem == 'Resources':
-                for res in itemlist:
-                    res.getCapacityReserved().clear()
-            itemlist.clear()
+        for item,itemdict in self.OrderPlanDict.items():
+            itemdict.clear()
         return
 
     def getPlannedDelivery(self):

@@ -282,8 +282,6 @@ class DataManager:
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
                         newprod.setPrescribedBatchsize(r["PrescribedBatchsize"])
                         newprod.setChosenBatchsize(r["ChosenBatchsize"])
-                        newprod.setStockUnit(r["StockUnit"])
-                        newprod.setStockBatch(r["StockBatch"])
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
@@ -379,6 +377,11 @@ class DataManager:
      
     
         self.getVisualManager().RefreshViews()
+
+        self.getVisualManager().getUSTBCustomerOders().value = str(len(self.CustomerOrders))
+        self.getVisualManager().getUSTBProducts().value = str(len(self.getProducts()))
+        self.getVisualManager().getUSTBRawMaterials().value = str(len([prod for prod in self.getProducts().values() if len(prod.getMPredecessors()) == 0]))
+        self.getVisualManager().getUSTBRawResources().value = str(len(self.getResources()))
                 
         return
         
