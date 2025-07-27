@@ -31,6 +31,23 @@ class SchedulingManager:
         self.PlanningManager = None
         self.JobsCreated = False
         self.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        self.SHStart = None
+        self.SHEnd = None
+
+
+    def setSHStart(self,myitm):
+        self.SHStart = myitm 
+        return
+
+    def getSHStart(self):
+        return self.SHStart
+
+    def setSHEnd(self,myitm):
+        self.SHEnd = myitm 
+        return
+
+    def getSHEnd(self):
+        return self.SHEnd
 
 
     def isJobCreated(self):
@@ -127,7 +144,7 @@ class SchedulingManager:
                 PredProduct = PredProduct.getPredecessors()[0]
                 ListOfProd.append(PredProduct)
 
-        self.getVisualManager().getPSchScheRes().value+="Creating jobs..."+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Creating jobs..."+"\n"
         opslist = []
         
         #for prname,prod in self.getDataManager().getProducts().items():
@@ -154,7 +171,7 @@ class SchedulingManager:
                 continue
 
             opslist.append(prod.getName()) 
-            #self.getVisualManager().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
+            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
             #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
 
             #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
@@ -166,7 +183,7 @@ class SchedulingManager:
 
                 oprbtchsize = operation.getBatchSize()
                 prev_job = None
-                # self.getVisualManager().getPLTBresult2exp().value+="> Opr: "+str(operation.getName())+"\n"
+                # self.getVisualManager().getSchedulingTab().getPLTBresult2exp().value+="> Opr: "+str(operation.getName())+"\n"
           
                 if not prev_opr is None:
                     orgjoblist = prev_opr.getJobs()
@@ -179,7 +196,7 @@ class SchedulingManager:
                         valiter+=1
                         cum_jobneed+=job.getQuantity()
 
-                        #self.getVisualManager().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
+                        #self.getVisualManager().getSchedulingTab().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
                         if (cum_jobneed - totaljobsize >= prodbatchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
                             jobsize =prodbatchsize*((cum_jobneed - totaljobsize)//prodbatchsize)+prodbatchsize*int((cum_jobneed - totaljobsize)%prodbatchsize > 0)   
 
@@ -212,13 +229,13 @@ class SchedulingManager:
     
                            
                             jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
-                            deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0)) #hr/min/sec
+                            deadline = datetime.combine(mydate, time(0, 0, 0)) #hr/min/sec
     
                             #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
                             jobid = self.getDataManager().getJobID()
                             myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
                             myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
-                            #self.getVisualManager().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
+                            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
                             newval+=jobsize
     
                             #self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+", Q:"+str(jobsize)+"\n"
@@ -235,8 +252,8 @@ class SchedulingManager:
 
         #self.getVisualManager().getPLTBCheckRaw().value = 
         # self.getVisualManager().getPLTBresult2exp().value+="-> Products"+str(len(opslist))+"\n"
-        self.getVisualManager().getPSchScheRes().value+="Job creation completed.."+"\n"
-        #self.getVisualManager().getPSchResources().options = [op.getName() for op in opslist]
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Job creation completed.."+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchResources().options = [op.getName() for op in opslist]
 
         self.setJobCreated()             
         
@@ -245,14 +262,16 @@ class SchedulingManager:
     def MakeSchedule(self,b):
 
 
-        psstart = self.getPlanningManager().getPHStart()
+        psstart = self.getSHStart()
 
-        self.getVisualManager().getPSchScheRes().value+="Scheduling starts..."+"\n"
-        self.getVisualManager().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
+       
 
         ScheduleWeeks = 3 # weeks
         
-        pssend= psstart+timedelta(days=7*ScheduleWeeks)
+        pssend= self.getSHEnd()
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
 
         #Determine customer orders with latest start within Scheduling
         SelectedOrders=[]
@@ -270,9 +289,9 @@ class SchedulingManager:
 
         nrjobs,oprdict = self.DefineJobPrecedences()
        
-        self.getVisualManager().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
       
-        ## Initialize shifts (example 30 days?)
+         #Initialize shifts (example 30 days?)
         day = 7*ScheduleWeeks;
         
         i=1;
@@ -282,7 +301,7 @@ class SchedulingManager:
         
 
         for scheduleday in pd.date_range(psstart,pssend):
-            self.getVisualManager().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
         while i <= day+1:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
@@ -299,7 +318,7 @@ class SchedulingManager:
         #Initialize Schedulable Jobs
         AllJobs = dict()
         SchedulableJobs=[]
-        self.getVisualManager().getPSchScheRes().value+="TEST"+str(SchedulableJobs)+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="TEST"+str(SchedulableJobs)+"\n"
         ScheduledJobs=dict()
         for opr, jobs in oprdict.items():
             for job in jobs:
@@ -319,7 +338,7 @@ class SchedulingManager:
         #Create Schedule   
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
-                self.getVisualManager().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
                 predecessorjobs = j.getPredecessors()
                 successorjobs = j.getSuccessor()
                 Quantity = j.getQuantity()
@@ -377,7 +396,7 @@ class SchedulingManager:
                             shiftnumber = shift.getNumber()
 
                             if shift.getDay() > day:
-                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
                                 break
                             
@@ -397,7 +416,7 @@ class SchedulingManager:
                                         
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
-                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -405,7 +424,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
-                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                         
                                     
@@ -446,7 +465,7 @@ class SchedulingManager:
                                         Quantity = Quantity - ProcessedQuantity
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
-                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -454,7 +473,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
-                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                     
                                     
@@ -498,7 +517,7 @@ class SchedulingManager:
                             shiftnumber = shift.getNumber()
 
                             if shift.getDay() > day:
-                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
                                 break
                             
@@ -514,7 +533,7 @@ class SchedulingManager:
                                     fraction = 8 - completiontimeLatestJob
                                     processtime = processtime - time
                                     r.getSchedule()[shift].append((j,completiontimeLatestJob,'-'))
-                                    self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
+                                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                     continue
                                 else:
                                     ProcessedQuantity = Quantity
@@ -522,7 +541,7 @@ class SchedulingManager:
                                     j.setScheduledShift(shiftnumber)
                                     j.setScheduledDay(shift.getDay())
                                     ScheduledJobs[j.getName()] = j
-                                    self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                     SchedulableJobs.remove(j) #Remove scheduled job
                                 
                                 
@@ -571,7 +590,7 @@ class SchedulingManager:
                             shiftnumber = shift.getNumber()
 
                             if shift.getDay() > day:
-                                self.getVisualManager().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
                                 break
                             
@@ -599,7 +618,7 @@ class SchedulingManager:
                                         
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
-                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -607,7 +626,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
-                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                     
                                     if (CurOpeffOp1 +opef <= 1):
@@ -651,7 +670,7 @@ class SchedulingManager:
                                         Quantity = Quantity - ProcessedQuantity
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
-                                        self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     else:
                                         ProcessedQuantity = Quantity
@@ -659,7 +678,7 @@ class SchedulingManager:
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shift.getDay())
                                         ScheduledJobs[j.getName()] = j
-                                        self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         SchedulableJobs.remove(j) #Remove scheduled job
                                         
                                     SchedOp3[shift].append([j,r,ProcessedQuantity])                                
@@ -692,7 +711,7 @@ class SchedulingManager:
                                     Quantity = Quantity - ProcessedQuantity
                                     processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                     r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
-                                    self.getVisualManager().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
+                                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                     
                                 else:
                                     ProcessedQuantity = Quantity
@@ -700,7 +719,7 @@ class SchedulingManager:
                                     j.setScheduledShift(shiftnumber)
                                     j.setScheduledDay(shift.getDay())
                                     ScheduledJobs[j.getName()] = j
-                                    self.getVisualManager().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                     SchedulableJobs.remove(j) #Remove scheduled job
                                 
                                 
@@ -724,8 +743,8 @@ class SchedulingManager:
                         
                         break
                 break
-        self.getVisualManager().getPSchScheRes().value+=" Scheduled: "+str(len(ScheduledJobs))+" of the total of "+str(nrjobs)+"\n"
-        self.getVisualManager().getPSchScheRes().value+=" Checking completed orders \n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduled: "+str(len(ScheduledJobs))+" of the total of "+str(nrjobs)+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Checking completed orders \n"
 
         for jobname, job in ScheduledJobs.items():
             Product = job.getProduct()
@@ -734,51 +753,53 @@ class SchedulingManager:
             NewStock = CurStock + Quant
             self.getDataManager().getProducts()[Product.getName()].setStockLevel(NewStock)
 
+        Orderstatus = []
+
         for orders in SelectedOrders:
             product = orders.getProduct()
             orderquant = orders.getQuantity()
             productstock = self.getDataManager().getProducts()[product.getName()].getStockLevel()
             if orderquant <= productstock:
-                self.getVisualManager().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was fully completed within the schedule horizon \n\n"
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was fully completed within the schedule horizon \n\n"
                 productstock = productstock - orderquant
                 self.getDataManager().getProducts()[product.getName()].setStockLevel(productstock)
+                Orderstatus.append(str(orders.getName())+": Completed")
             elif orderquant > productstock and productstock>0:
-                self.getVisualManager().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was partially completed. "+str(productstock)+" out of "+str(orderquant)+" was created. \n\n"
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was partially completed. "+str(productstock)+" out of "+str(orderquant)+" was created. \n\n"
                 self.getDataManager().getProducts()[product.getName()].setStockLevel(0)
-
+                Orderstatus.append(str(orders.getName())+": Partially Completed")
             else:
-               self.getVisualManager().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was not completed because there was no stock. \n\n"
+               self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was not completed because there was no stock. \n\n"
+               Orderstatus.append(str(orders.getName())+": Nothing completed")
         
         
-            
+        self.getVisualManager().getSchedulingTab().getPSchOperations().options = [i.getName() for i in oprdict.keys() if self.getDataManager().getOperations()[i.getName()].getJobs() is not [] ]
+        self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
             
 
-        schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
-        folder = 'UseCases'; casename = self.getVisualManager().getCOTBcasename().value
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
+        # schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
+        # folder = 'UseCases'; casename = self.getVisualManager().getSchedulingTab().getCOTBcasename().value
+        # path = folder+"\\"+casename
+        # isExist = os.path.exists(path)
         
-        if not isExist:
-            os.makedirs(path)
+        # if not isExist:
+        #     os.makedirs(path)
         
-        for name,myres in self.getDataManager().getResources().items():
-            if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
-                for shift, jobs in myres.getSchedule().items():
-                    if jobs == []:
-                        continue
-                    else:                
-                        for job in jobs:
-                            schedules_df.loc[len(schedules_df)] = {"ResourceID":myres.getID(), "Shift":shift.getNumber(),"JobID":job[0].getID(),"Starttime":str(job[1]),"Day":shift.getDay()}
+        # for name,myres in self.getDataManager().getResources().items():
+        #     if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
+        #         for shift, jobs in myres.getSchedule().items():
+        #             if jobs == []:
+        #                 continue
+        #             else:                
+        #                 for job in jobs:
+        #                     schedules_df.loc[len(schedules_df)] = {"ResourceID":myres.getID(), "Shift":shift.getNumber(),"JobID":job[0].getID(),"Starttime":str(job[1]),"Day":shift.getDay()}
                     
-        filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-        schedules_df.to_csv(fullpath, index=False)                
+        # filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+        # schedules_df.to_csv(fullpath, index=False)                
         
 
                     
-                        
-       
-                
-                        
+                       
                 
         return 
 

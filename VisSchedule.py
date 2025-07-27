@@ -33,6 +33,8 @@ class ScheduleTab():
         self.PSchResources = None
         self.PLTBPlanStart  = None
         self.PLTBPlanEnd  = None
+        self.PSchOrderlist = None
+        self.PSchOrdProd = None
         
         return
 
@@ -79,15 +81,29 @@ class ScheduleTab():
     def getPSchJoblist(self):
         return self.PSchJoblist
 
+    def setPSchOrderlist(self,myitm):
+        self.PSchOrderlist = myitm
+        return
+        
+    def getPSchOrdProd(self):
+        return self.PSchOrdProd
+
+    def setPSchOrdProd(self,myitm):
+        self.PSchOrdProd = myitm
+        return
+        
+    def getPSchOrderlist(self):
+        return self.PSchOrderlist
+        
     def getVisualManager(self):
         return self.VisualManager
 
-    def setPSchResources(self,myitm):
-        self.PSchResources = myitm
+    def setPSchOperations(self,myitm):
+        self.PSchOperations = myitm
         return
         
-    def getPSchResources(self):
-        return self.PSchResources
+    def getPSchOperations(self):
+        return self.PSchOperations
 
 
     def SetStart(self,event):
@@ -106,7 +122,7 @@ class ScheduleTab():
 
     def ShowJobs(self,event):
 
-        selectedopr = self.getPSchResources().value
+        selectedopr = self.getPSchOperations().value
 
         if selectedopr == None:
             return
@@ -120,14 +136,56 @@ class ScheduleTab():
         for prname,prod in self.getVisualManager().DataManager.getProducts().items():
             if prod.getName() == selectedopr:
                 for opr in prod.getOperations():
-                    joblist.append("> Opr: "+opr.getName())
                     for job in opr.getJobs():
                         joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
+                        
                 break
     
         
         self.getPSchJoblist().options = [j for j in joblist]   
        
+        return
+
+    def ShowOrderStatus(self,event):
+
+        if not 'new' in event:
+            return
+
+        if not 'index' in event['new']:
+            return
+            
+        if event['new']['index'] < 0:
+            return
+            
+        self.getPSchOrdProd().value = "order..index>> "+str(event['new']['index'])+"\n"
+        
+        ordtext = self.getPSchOrderlist().options[event['new']['index']]
+
+        self.getPSchOrdProd().value += ">"+str(ordtext.find(":"))+"\n"
+        
+        ordname = ordtext[:ordtext.find(":")]
+
+        self.getPSchOrdProd().value += ordname+"\n"
+
+        
+        if ordname in self.getVisualManager().DataManager.getCustomerOrders():
+            myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
+
+            if myord.getPlannedDelivery() != None:
+                self.getPSchOrdProd().value = "Final Product: "+"\n"
+                self.getPSchOrdProd().value += myord.getProduct().getName()+"\n"
+                self.getPSchOrdProd().value += "LatestStart: "+str(myord.getLatestStart())+"\n"
+                self.getPSchOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
+                
+                self.getPSchOrdProd().value += "Resource use: "+str(len(myord.getOrderPlan()['Resources']))+"\n"
+                
+            else:
+                self.getPSchOrdProd().value = "Not planned... "+"\n"
+           
+        else:
+            self.getPSchOrdProd().value = "Order not found..."+"\n"
+
+        
         return
         
     
@@ -143,7 +201,17 @@ class ScheduleTab():
         self.getPSchTBmakesch_btn().on_click(self.getVisualManager().getSchedulingManager().MakeSchedule)
 
         self.setPSchJoblist(widgets.Select(options=[],description = 'Jobs'))
-        self.getPSchJoblist().layout.height = '250px'
+        self.getPSchJoblist().layout.height = '150px'
+        self.getPSchJoblist().layout.width = '400px'
+
+        self.setPSchOrderlist(widgets.Select(options=[],description = 'Orders'))
+        self.getPSchOrderlist().layout.height = '150px'
+        self.getPSchOrderlist().layout.width = '400px'
+        self.getPSchOrderlist().observe(self.ShowOrderStatus)
+
+        self.setPSchOrdProd(widgets.Select(options=[],description = 'Order information'))
+        self.getPSchOrdProd().layout.height = '150px'
+        self.getPSchOrdProd().layout.width = '400px'
 
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
         self.getPLTBPlanStart().observe(self.SetStart)
@@ -154,11 +222,16 @@ class ScheduleTab():
      
 
 
-        self.setPSchResources(widgets.Dropdown(options=[], description='Operations:'))
-        self.getPSchResources().observe(self.ShowJobs)
+        self.setPSchOperations(widgets.Select(options=[], description='Operations:'))
+        self.getPSchOperations().layout.height = '150px'
+        self.getPSchOperations().layout.width = '400px'
+        self.getPSchOperations().observe(self.ShowJobs)
     
-        tab_sch = VBox(children = [HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
-                                   HBox(children=[self.getPSchResources(),self.getPSchJoblist()]),self.getPSchScheRes()])
+        tab_sch = VBox(children = [
+            widgets.Label(Value ='Schedule Settings '),
+            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
+                                   HBox(children=[self.getPSchOperations(),self.getPSchJoblist()]),HBox(children=[self.getPSchOrderlist(), self.getPSchOrdProd()]),
+            HBox(children=[self.getPSchScheRes()])])
 
         tab_sch.layout.height = '600px'
           

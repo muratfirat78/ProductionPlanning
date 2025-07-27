@@ -229,7 +229,7 @@ class SchedulingManager:
     
                            
                             jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
-                            deadline = datetime.combine(datetime.date(mydate), time(0, 0, 0)) #hr/min/sec
+                            deadline = datetime.combine(mydate, time(0, 0, 0)) #hr/min/sec
     
                             #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
                             jobid = self.getDataManager().getJobID()
@@ -291,7 +291,7 @@ class SchedulingManager:
        
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
       
-        ## Initialize shifts (example 30 days?)
+         #Initialize shifts (example 30 days?)
         day = 7*ScheduleWeeks;
         
         i=1;
@@ -753,6 +753,8 @@ class SchedulingManager:
             NewStock = CurStock + Quant
             self.getDataManager().getProducts()[Product.getName()].setStockLevel(NewStock)
 
+        Orderstatus = []
+
         for orders in SelectedOrders:
             product = orders.getProduct()
             orderquant = orders.getQuantity()
@@ -760,37 +762,40 @@ class SchedulingManager:
             if orderquant <= productstock:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was fully completed within the schedule horizon \n\n"
                 productstock = productstock - orderquant
-                self.getDataManager().getSchedulingTab().getProducts()[product.getName()].setStockLevel(productstock)
+                self.getDataManager().getProducts()[product.getName()].setStockLevel(productstock)
+                Orderstatus.append(str(orders.getName())+": Completed")
             elif orderquant > productstock and productstock>0:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was partially completed. "+str(productstock)+" out of "+str(orderquant)+" was created. \n\n"
-                self.getDataManager().getSchedulingTab().getProducts()[product.getName()].setStockLevel(0)
-
+                self.getDataManager().getProducts()[product.getName()].setStockLevel(0)
+                Orderstatus.append(str(orders.getName())+": Partially Completed")
             else:
                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was not completed because there was no stock. \n\n"
+               Orderstatus.append(str(orders.getName())+": Nothing completed")
         
         
-            
+        self.getVisualManager().getSchedulingTab().getPSchOperations().options = [i.getName() for i in oprdict.keys() if self.getDataManager().getOperations()[i.getName()].getJobs() is not [] ]
+        self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
             
 
-        schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
-        folder = 'UseCases'; casename = self.getVisualManager().getSchedulingTab().getCOTBcasename().value
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
+        # schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
+        # folder = 'UseCases'; casename = self.getVisualManager().getSchedulingTab().getCOTBcasename().value
+        # path = folder+"\\"+casename
+        # isExist = os.path.exists(path)
         
-        if not isExist:
-            os.makedirs(path)
+        # if not isExist:
+        #     os.makedirs(path)
         
-        for name,myres in self.getDataManager().getResources().items():
-            if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
-                for shift, jobs in myres.getSchedule().items():
-                    if jobs == []:
-                        continue
-                    else:                
-                        for job in jobs:
-                            schedules_df.loc[len(schedules_df)] = {"ResourceID":myres.getID(), "Shift":shift.getNumber(),"JobID":job[0].getID(),"Starttime":str(job[1]),"Day":shift.getDay()}
+        # for name,myres in self.getDataManager().getResources().items():
+        #     if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
+        #         for shift, jobs in myres.getSchedule().items():
+        #             if jobs == []:
+        #                 continue
+        #             else:                
+        #                 for job in jobs:
+        #                     schedules_df.loc[len(schedules_df)] = {"ResourceID":myres.getID(), "Shift":shift.getNumber(),"JobID":job[0].getID(),"Starttime":str(job[1]),"Day":shift.getDay()}
                     
-        filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-        schedules_df.to_csv(fullpath, index=False)                
+        # filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+        # schedules_df.to_csv(fullpath, index=False)                
         
 
                     
