@@ -124,6 +124,64 @@ class SchedulingManager:
 
         return nrjobs,oprdict
 
+  
+
+    def FineTuneOrderDeliveries(self):
+
+        mydict = self.getDataManager().getCustomerOrders()
+        sortedtuples = sorted(mydict.items(), key=lambda item: item[1].getDeadLine())
+        mydict = {k: v for k, v in sortedtuples}
+        self.getDataManager().setCustomerOrders(mydict)
+
+        for ordname,myord in self.getDataManager().getCustomerOrders().items():
+            curr_product = myord.getProduct()
+
+            #while curr_product.getSuccessor != None:
+                
+                
+                
+
+
+        return 
+
+
+    def UpdateJobLS(self,job,pushdays):
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="push days: "+str(pushdays)+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job->"+str(job.getName())+", LS: "+str(job.getLatestStart())+"\n"
+        job.setLatestStart(job.getLatestStart().date()+timedelta(days = pushdays))
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="*new LS->"+str(job.getLatestStart())+"\n"
+        job.setDeadLine(job.getDeadLine().date()+timedelta(days = pushdays))
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="*new D->"+str(job.getDeadLine())+"\n"
+        
+        for jsuccessor in job.getSuccessor():
+            self.UpdateJobLS(jsuccessor,pushdays)
+
+        return
+
+    def JobLatestStarts(self,psstart):
+
+        
+        for oprname,opr in self.getDataManager().getOperations().items():
+  
+            for job in opr.getJobs():
+                
+                if len(job.getPredecessors()) == 0: # root job 
+                   
+                    if job.getLatestStart().date() < psstart:
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Root job->"+str(job.getName())+", LS: "+str(job.getLatestStart())+"\n"
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" types->"+str(type(psstart))+"-"+str(type(job.getLatestStart()))+"\n"
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" PSSTART->"+str(psstart)+"\n"
+
+                        
+                        pushdays = (psstart-job.getLatestStart().date()).days
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="to updatejobLS...push days "+str(pushdays)+"\n"
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Successors.. "+str(len(job.getSuccessor()))+"\n"
+                        self.UpdateJobLS(job,pushdays)
+                                      
+        return
+
+    
     
     def CreateJobs(self,psstart,scheduleweeks,Orders):
 
@@ -260,9 +318,9 @@ class SchedulingManager:
                                     break
      
                             if not outsourced:
-                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" deadline >"+str(myjob.getDeadLine())+"\n"
+                                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" deadline >"+str(myjob.getDeadLine())+"\n"
                                 myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
-                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" lateststart >"+str(myjob.getLatestStart())+"\n"
+                                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" lateststart >"+str(myjob.getLatestStart())+"\n"
                             else: 
                                 myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
                             #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
@@ -321,8 +379,10 @@ class SchedulingManager:
             res.getSchedule().clear()
 
         nrjobs,oprdict = self.DefineJobPrecedences()
-       
+           
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
+
+        self.JobLatestStarts(psstart)
       
          #Initialize shifts (example 30 days?)
         day = 7*ScheduleWeeks;

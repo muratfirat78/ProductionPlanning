@@ -223,18 +223,24 @@ class Job():
         self.Successor = []
         self.LatestStart=  None
         
+        
 
 
     # SCHEDULING
         self.StartTime = None
         self.ScheduledDay=None
         self.ScheduledShift=None
+        self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
         
     def getLatestStart(self):
         return self.LatestStart
 
     def setLatestStart(self,myst):
         self.LatestStart = myst
+        return
+
+    def setDeadLine(self,myst):
+        self.DeadLine = myst
         return
 
     def getStartTime(self):
