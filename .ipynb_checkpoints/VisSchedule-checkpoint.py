@@ -30,13 +30,17 @@ class ScheduleTab():
         self.PSchScheRes = None
         self.PSchTBmakesch_btn = None
         self.PSchJoblist = None
+        self.PSchShiftJoblist = None
         self.PSchResources = None
         self.PLTBPlanStart  = None
         self.PLTBPlanEnd  = None
         self.PSchOrderlist = None
         self.PSchOrdProd = None
+        self.PLTBPlanStartv = None
         
         return
+
+      
 
     def setPLTBPlanStart(self,myit):
         self.PLTBPlanStart  = myit
@@ -81,6 +85,13 @@ class ScheduleTab():
     def getPSchJoblist(self):
         return self.PSchJoblist
 
+    def setPSchShiftJoblist(self,myitm):
+        self.PSchShiftJoblist = myitm
+        return
+        
+    def getPSchShiftJoblist(self):
+        return self.PSchShiftJoblist
+
     def setPSchOrderlist(self,myitm):
         self.PSchOrderlist = myitm
         return
@@ -90,6 +101,13 @@ class ScheduleTab():
 
     def setPSchOrdProd(self,myitm):
         self.PSchOrdProd = myitm
+        return
+
+    def getPSchResources(self):
+        return self.PSchResources
+
+    def setPSchResources(self,myitm):
+        self.PSchResources = myitm
         return
         
     def getPSchOrderlist(self):
@@ -122,68 +140,120 @@ class ScheduleTab():
 
     def ShowJobs(self,event):
 
-        selectedopr = self.getPSchOperations().value
 
+        if not "new" in event:
+            return
+    
+        if not "index" in event['new']:
+            return
+
+        selectedopr = self.getPSchOperations().options[event["new"]["index"]]
+        
         if selectedopr == None:
             return
 
         if selectedopr == '':
             return
 
+
         
-    
         joblist = [selectedopr]
-        for prname,prod in self.getVisualManager().DataManager.getProducts().items():
-            if prod.getName() == selectedopr:
-                for opr in prod.getOperations():
-                    for job in opr.getJobs():
-                        joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
-                        
-                break
-    
-        
+        self.getPSchScheRes().value+=str(len(self.getVisualManager().DataManager.getProducts()))+"\n"
+
+        if selectedopr in self.getVisualManager().DataManager.getOperations():
+            selected_op = self.getVisualManager().DataManager.getOperations()[selectedopr]
+            self.getPSchScheRes().value+="Jobs of the operation: "+str(len(selected_op.getJobs()))+"\n"
+            for job in selected_op.getJobs():
+                joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
+            self.getPSchScheRes().value+=str("In the operations!!!!!!")+"\n"
+
+            
         self.getPSchJoblist().options = [j for j in joblist]   
        
         return
 
+    def ShowShiftJobs(self,event):
+
+
+        if not "new" in event:
+            return
+    
+        if not "index" in event['new']:
+            return
+
+        selectedopr = self.getPSchResources().options[event["new"]["index"]]
+        
+        if selectedopr == None:
+            return
+
+        if selectedopr == '':
+            return
+
+
+        
+        joblist = [selectedopr]
+        
+
+        if selectedopr in self.getVisualManager().DataManager.getResources():
+            selected_op = self.getVisualManager().DataManager.getResources()[selectedopr]
+            
+            for shift, jobs in selected_op.getSchedule().items():
+                joblist.append(" >> Day: "+str(shift.getDay())+" Shift "+str(shift.getNumber())+"\n")
+                for job in jobs:
+                    joblist.append("   >> Job: "+str(job[0].getName())+", Processed Quantity: "+str(job[2])+" of Total Quantity: "+str(job[0].getQuantity())+"\n")
+            
+
+            
+        self.getPSchShiftJoblist().options = [j for j in joblist]   
+       
+        return
+    
     def ShowOrderStatus(self,event):
 
-        if not 'new' in event:
+        #self.getPSchOrdProd().value = "Selected Order >>"+str(event)+"\n"
+
+        if not "new" in event:
+            return
+    
+        if not "index" in event['new']:
             return
 
-        if not 'index' in event['new']:
+        selectedord = self.getPSchOrderlist().options[event["new"]["index"]]
+
+        self.getPSchOrdProd().value = "Selected Order >>"+str(selectedord)+"\n"
+        
+        if selectedord == None:
             return
-            
-        if event['new']['index'] < 0:
+
+        if selectedord == '':
             return
-            
-        self.getPSchOrdProd().value = "order..index>> "+str(event['new']['index'])+"\n"
-        
-        ordtext = self.getPSchOrderlist().options[event['new']['index']]
-
-        self.getPSchOrdProd().value += ">"+str(ordtext.find(":"))+"\n"
-        
-        ordname = ordtext[:ordtext.find(":")]
-
-        self.getPSchOrdProd().value += ordname+"\n"
 
         
+        ordname = selectedord[:selectedord.find(":")]
+
+        self.getPSchOrdProd().value += str(ordname)+"\n"
+
         if ordname in self.getVisualManager().DataManager.getCustomerOrders():
             myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
 
             if myord.getPlannedDelivery() != None:
                 self.getPSchOrdProd().value = "Final Product: "+"\n"
                 self.getPSchOrdProd().value += myord.getProduct().getName()+"\n"
-                self.getPSchOrdProd().value += "LatestStart: "+str(myord.getLatestStart())+"\n"
+              
                 self.getPSchOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
                 
-                self.getPSchOrdProd().value += "Resource use: "+str(len(myord.getOrderPlan()['Resources']))+"\n"
+                self.getPSchOrdProd().value += "Latest start: "+str(myord.getLatestStart())+"\n"
+                self.getPSchOrdProd().value += "Deadline: "+str(myord.getDeadline())+"\n"
+                
+               
                 
             else:
                 self.getPSchOrdProd().value = "Not planned... "+"\n"
            
         else:
             self.getPSchOrdProd().value = "Order not found..."+"\n"
+        
+        
 
         
         return
@@ -209,7 +279,7 @@ class ScheduleTab():
         self.getPSchOrderlist().layout.width = '400px'
         self.getPSchOrderlist().observe(self.ShowOrderStatus)
 
-        self.setPSchOrdProd(widgets.Select(options=[],description = 'Order information'))
+        self.setPSchOrdProd(widgets.Textarea(options=[],description = 'Order information'))
         self.getPSchOrdProd().layout.height = '150px'
         self.getPSchOrdProd().layout.width = '400px'
 
@@ -220,7 +290,14 @@ class ScheduleTab():
         self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
         self.getPLTBPlanEnd().observe(self.SetEnd)
      
+        self.setPSchResources(widgets.Select(options=[], description='Resources:'))
+        self.getPSchResources().layout.height = '150px'
+        self.getPSchResources().layout.width = '400px'
+        self.getPSchResources().observe(self.ShowShiftJobs)
 
+        self.setPSchShiftJoblist(widgets.Select(options=[],description = 'Shift Jobs'))
+        self.getPSchShiftJoblist().layout.height = '150px'
+        self.getPSchShiftJoblist().layout.width = '400px'
 
         self.setPSchOperations(widgets.Select(options=[], description='Operations:'))
         self.getPSchOperations().layout.height = '150px'
@@ -230,7 +307,7 @@ class ScheduleTab():
         tab_sch = VBox(children = [
             widgets.Label(Value ='Schedule Settings '),
             HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
-                                   HBox(children=[self.getPSchOperations(),self.getPSchJoblist()]),HBox(children=[self.getPSchOrderlist(), self.getPSchOrdProd()]),
+                                   HBox(children=[self.getPSchOperations(),self.getPSchJoblist()]),HBox(children=[self.getPSchResources(),self.getPSchShiftJoblist()]),HBox(children=[self.getPSchOrderlist(), self.getPSchOrdProd()]),
             HBox(children=[self.getPSchScheRes()])])
 
         tab_sch.layout.height = '600px'

@@ -868,8 +868,10 @@ class SchedulingManager:
         
 
         myops =  [i.getName() for i in oprdict.keys() if len(self.getDataManager().getOperations()[i.getName()].getJobs()) > 0 ]
+        myres = [i for i in self.getDataManager().getResources().keys()]
         self.getVisualManager().getSchedulingTab().getPSchOperations().options = myops
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
+        self.getVisualManager().getSchedulingTab().getPSchResources().options = myres
             
 
         # schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
@@ -892,7 +894,7 @@ class SchedulingManager:
         # filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
         # schedules_df.to_csv(fullpath, index=False)                
         
-
+        
                     
                        
                 
