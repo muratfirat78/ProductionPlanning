@@ -147,12 +147,12 @@ class SchedulingManager:
 
     def UpdateJobLS(self,job,pushdays):
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="push days: "+str(pushdays)+"\n"
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job->"+str(job.getName())+", LS: "+str(job.getLatestStart())+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="push days: "+str(pushdays)+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job->"+str(job.getName())+", LS: "+str(job.getLatestStart())+"\n"
         job.setLatestStart(job.getLatestStart().date()+timedelta(days = pushdays))
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="*new LS->"+str(job.getLatestStart())+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="*new LS->"+str(job.getLatestStart())+"\n"
         job.setDeadLine(job.getDeadLine().date()+timedelta(days = pushdays))
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="*new D->"+str(job.getDeadLine())+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="*new D->"+str(job.getDeadLine())+"\n"
         
         for jsuccessor in job.getSuccessor():
             self.UpdateJobLS(jsuccessor,pushdays)
@@ -169,14 +169,14 @@ class SchedulingManager:
                 if len(job.getPredecessors()) == 0: # root job 
                    
                     if job.getLatestStart().date() < psstart:
-                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Root job->"+str(job.getName())+", LS: "+str(job.getLatestStart())+"\n"
-                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" types->"+str(type(psstart))+"-"+str(type(job.getLatestStart()))+"\n"
-                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" PSSTART->"+str(psstart)+"\n"
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Root job->"+str(job.getName())+", LS: "+str(job.getLatestStart())+"\n"
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" types->"+str(type(psstart))+"-"+str(type(job.getLatestStart()))+"\n"
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" PSSTART->"+str(psstart)+"\n"
 
                         
                         pushdays = (psstart-job.getLatestStart().date()).days
-                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="to updatejobLS...push days "+str(pushdays)+"\n"
-                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Successors.. "+str(len(job.getSuccessor()))+"\n"
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="to updatejobLS...push days "+str(pushdays)+"\n"
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Successors.. "+str(len(job.getSuccessor()))+"\n"
                         self.UpdateJobLS(job,pushdays)
                                       
         return
@@ -393,8 +393,8 @@ class SchedulingManager:
 
         
 
-        for scheduleday in pd.date_range(psstart,pssend):
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
+        #for scheduleday in pd.date_range(psstart,pssend):
+            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
         while i <= day+1:
             shift1 = Shift(i,1,8)
             shiftlistman.append(shift1)
@@ -854,6 +854,7 @@ class SchedulingManager:
             productstock = self.getDataManager().getProducts()[product.getName()].getStockLevel()
             if orderquant <= productstock:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was fully completed within the schedule horizon \n\n"
+                
                 productstock = productstock - orderquant
                 self.getDataManager().getProducts()[product.getName()].setStockLevel(productstock)
                 Orderstatus.append(str(orders.getName())+": Completed")

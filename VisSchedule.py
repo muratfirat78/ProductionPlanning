@@ -159,43 +159,47 @@ class ScheduleTab():
 
     def ShowOrderStatus(self,event):
 
-        if not 'new' in event:
+        #self.getPSchOrdProd().value = "Selected Order >>"+str(event)+"\n"
+
+        if not "new" in event:
+            return
+    
+        if not "index" in event['new']:
             return
 
-        if not 'index' in event['new']:
+        selectedord = self.getPSchOrderlist().options[event["new"]["index"]]
+
+        self.getPSchOrdProd().value = "Selected Order >>"+str(selectedord)+"\n"
+        
+        if selectedord == None:
             return
-            
-        if event['new']['index'] < 0:
+
+        if selectedord == '':
             return
-            
-        self.getPSchOrdProd().value = "order..index>> "+str(event['new']['index'])+"\n"
-        
-        ordtext = self.getPSchOrderlist().options[event['new']['index']]
 
-        self.getPSchOrdProd().value += ">"+str(ordtext.find(":"))+"\n"
         
-        ordname = ordtext[:ordtext.find(":")]
+        ordname = selectedord[:selectedord.find(":")]
 
-        self.getPSchOrdProd().value += ordname+"\n"
+        self.getPSchOrdProd().value += str(ordname)+"\n"
 
-       
-        
         if ordname in self.getVisualManager().DataManager.getCustomerOrders():
             myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
 
             if myord.getPlannedDelivery() != None:
                 self.getPSchOrdProd().value = "Final Product: "+"\n"
                 self.getPSchOrdProd().value += myord.getProduct().getName()+"\n"
-                self.getPSchOrdProd().value += "LatestStart: "+str(myord.getLatestStart())+"\n"
+              
                 self.getPSchOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
                 
-                self.getPSchOrdProd().value += "Resource use: "+str(len(myord.getOrderPlan()['Resources']))+"\n"
+               
                 
             else:
                 self.getPSchOrdProd().value = "Not planned... "+"\n"
            
         else:
             self.getPSchOrdProd().value = "Order not found..."+"\n"
+        
+        
 
         
         return
@@ -221,7 +225,7 @@ class ScheduleTab():
         self.getPSchOrderlist().layout.width = '400px'
         self.getPSchOrderlist().observe(self.ShowOrderStatus)
 
-        self.setPSchOrdProd(widgets.Select(options=[],description = 'Order information'))
+        self.setPSchOrdProd(widgets.Textarea(options=[],description = 'Order information'))
         self.getPSchOrdProd().layout.height = '150px'
         self.getPSchOrdProd().layout.width = '400px'
 
