@@ -35,8 +35,11 @@ class ScheduleTab():
         self.PLTBPlanEnd  = None
         self.PSchOrderlist = None
         self.PSchOrdProd = None
+        self.PLTBPlanStartv = None
         
         return
+
+      
 
     def setPLTBPlanStart(self,myit):
         self.PLTBPlanStart  = myit
@@ -122,26 +125,34 @@ class ScheduleTab():
 
     def ShowJobs(self,event):
 
-        selectedopr = self.getPSchOperations().value
 
+        if not "new" in event:
+            return
+    
+        if not "index" in event['new']:
+            return
+
+        selectedopr = self.getPSchOperations().options[event["new"]["index"]]
+        
         if selectedopr == None:
             return
 
         if selectedopr == '':
             return
 
+
         
-    
         joblist = [selectedopr]
-        for prname,prod in self.getVisualManager().DataManager.getProducts().items():
-            if prod.getName() == selectedopr:
-                for opr in prod.getOperations():
-                    for job in opr.getJobs():
-                        joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
-                        
-                break
-    
-        
+        self.getPSchScheRes().value+=str(len(self.getVisualManager().DataManager.getProducts()))+"\n"
+
+        if selectedopr in self.getVisualManager().DataManager.getOperations():
+            selected_op = self.getVisualManager().DataManager.getOperations()[selectedopr]
+            self.getPSchScheRes().value+="Jobs of the operation: "+str(len(selected_op.getJobs()))+"\n"
+            for job in selected_op.getJobs():
+                joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
+            self.getPSchScheRes().value+=str("In the operations!!!!!!")+"\n"
+
+            
         self.getPSchJoblist().options = [j for j in joblist]   
        
         return
@@ -167,6 +178,7 @@ class ScheduleTab():
 
         self.getPSchOrdProd().value += ordname+"\n"
 
+       
         
         if ordname in self.getVisualManager().DataManager.getCustomerOrders():
             myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]

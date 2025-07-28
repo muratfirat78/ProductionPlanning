@@ -102,6 +102,7 @@ class Resource():
         self.Type = mytype
         self.DayCapacity= int(mydaycp)
         self.Operations = []
+        self.Outsource = False
         self.Automated = None #Boolean Yes or No if Type is Machine, None if Type is Manual
         # PlANNING
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
@@ -120,6 +121,12 @@ class Resource():
         self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
 
         # SCHEDULING 
+
+    def setOutsource(self):
+        self.Outsource = True
+        return
+    def IsOutsource(self):
+        return self.Outsource
 
     def setName(self,name):
         self.Name = name

@@ -827,7 +827,6 @@ class VisualManager():
         if (event['name']  == "_options_labels") or (event['name']  == "options"):
             return
 
-
         if not self.DataManager.isOnlineVersion():
             if not "new" in event:
                 return
@@ -840,11 +839,20 @@ class VisualManager():
             
             selected = self.getPLTBrawlist().value
        
-
-        if self.getPLTBDesciptives().value == 'Product Target Levels':
+        self.getPLTBresult2exp().value+=str(event)+"\n"
+        self.getPLTBresult2exp().value+=str(self.getPLTBDesciptives().value)+"\n"
+        self.getPLTBresult2exp().value+=str(event["new"]["index"])+"\n"
+        self.getPLTBresult2exp().value+=str(self.getPLTBrawlist().options[event["new"]["index"]])+"\n"
+        
+        if (self.getPLTBDesciptives().value == 'Product Target Levels') or (self.getPLTBrawlist().options[event["new"]["index"]] == 'Product Target Levels' ):
             rawname = selected
+
+            rawname = self.getPLTBrawlist().options[event["new"]["index"]]
            
             rawmat = None
+
+            self.getPLTBresult2exp().value+=str(rawname in self.DataManager.getProducts())+"\n"
+            
             for prodname,myprod in self.DataManager.getProducts().items():
                 if len(myprod.getPredecessors()) == 0:
                     if rawname == prodname:
@@ -866,7 +874,7 @@ class VisualManager():
                 fig = plt.figure(figsize=(6, 4))
                 ax = plt.subplot(111)
                 ax.plot(plandays,values,  color='blue')
-                ax.set_title('Targets '+rawname) 
+                #ax.set_title('Targets '+rawname) 
                 plt.xticks(rotation=-45)
                 plt.tight_layout()
                 plt.show()
@@ -915,7 +923,7 @@ class VisualManager():
             
 
 
-    
+        return
   
         
    
@@ -1063,32 +1071,7 @@ class VisualManager():
 
         return
 
-    def generatePSschTAB(self):
-    
-
-        self.setPSchScheRes(widgets.Textarea(value='', placeholder='',description='Schedule',disabled=True))
-     
-        self.getPSchScheRes().layout.height = '150px'
-        self.getPSchScheRes().layout.width = "90%"
-
-        self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
-        self.getPSchTBmakesch_btn().on_click(self.getSchedulingManager().MakeSchedule)
-
-        self.setPSchJoblist(widgets.Select(options=[],description = 'Jobs'))
-        self.getPSchJoblist().layout.height = '250px'
-        #self.getPSchJoblist().observe(self.Rawclick)
-
-        #self.setPLTBStockLevels(widgets.Output())
-
-
-        self.setPSchResources(widgets.Dropdown(options=[], description='Operations:'))
-        self.getPSchResources().observe(self.ShowJobs)
-    
-        tab_sch = VBox(children = [self.getPSchTBmakesch_btn(),HBox(children=[self.getPSchResources(),self.getPSchJoblist()]),self.getPSchScheRes()])
-
-        tab_sch.layout.height = '600px'
-          
-        return tab_sch
+ 
 
     def SetStart(self,event):
 
@@ -1162,7 +1145,15 @@ class VisualManager():
                 else:
                     self.getPLTBOrdProd().value += "No delay"+"\n"
             else:
+                self.getPLTBOrdProd().value = "Final Product: "+"\n"
+                self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
+                self.getPLTBOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
                 self.getPLTBOrdProd().value = "Not planned... "+"\n"
+                if len(myord.getDelayReasons())>0:
+                    self.getPLTBOrdProd().value += "Delay reasons: "+"\n"
+                    for myprd,reason in myord.getDelayReasons().items():
+                        self.getPLTBOrdProd().value +="  > Prod "+myprd.getName()+", reason "+str(reason[0])+":"+str(reason[1])+"\n"
+                    
            
         else:
             self.getPLTBOrdProd().value = "Order not found..."+"\n"
@@ -1189,23 +1180,21 @@ class VisualManager():
             return
 
         with self.getPLTBStockLevels():
-                clear_output()
+            clear_output()
+
+        self.getPLTBresult2exp().value+=str(selected)+"\n"
 
         if selected == 'Product Target Levels':
 
             rawlist = []
                  
             sorteddict = dict(sorted(self.DataManager.getProducts().items(), key=lambda item: -sum([x for x in item[1].getTargetLevels().values()])))
-            for prodname,myprod in sorteddict.items():
-                        
+            for prodname,myprod in sorteddict.items():                      
                 if len(myprod.getPredecessors()) == 0:
                     rawlist.append(prodname)
-    
-                  
+                     
             self.getPLTBrawlist().options = rawlist
-     
-
-            
+               
            
         if selected == 'Resource Capacity Plans':
 
@@ -1271,7 +1260,7 @@ class VisualManager():
                 HBox(children=[VBox(children = [widgets.Label(value ='Planning Descriptives '),self.getPLTBDesciptives()]),
                                VBox(children = [widgets.Label(value ='Display Period'),self.getPLTBDisplayPeriod()])]),
             
-                HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()],layout = widgets.Layout(height = '205px'))])
+                HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()],layout = widgets.Layout(height = '375px'))])
 
         tab_3.layout.height = '700px'
 

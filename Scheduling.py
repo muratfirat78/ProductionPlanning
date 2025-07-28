@@ -772,8 +772,9 @@ class SchedulingManager:
                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was not completed because there was no stock. \n\n"
                Orderstatus.append(str(orders.getName())+": Nothing completed")
         
-        
-        self.getVisualManager().getSchedulingTab().getPSchOperations().options = [i.getName() for i in oprdict.keys() if self.getDataManager().getOperations()[i.getName()].getJobs() is not [] ]
+
+        myops =  [i.getName() for i in oprdict.keys() if len(self.getDataManager().getOperations()[i.getName()].getJobs()) > 0 ]
+        self.getVisualManager().getSchedulingTab().getPSchOperations().options = myops
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
             
 

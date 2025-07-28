@@ -303,6 +303,8 @@ class DataManager:
                         if r["Shift"] is not None:
                             newres.setAvailableShift(r["Shift"])
                         self.Resources[r["Name"]]= newres
+                        if r['Name'].find("OUT - ") != -1:
+                            newres.setOutsource()
 
                     self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
                     
