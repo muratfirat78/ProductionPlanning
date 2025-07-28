@@ -206,7 +206,20 @@ class SchedulingManager:
                    
                             jobid = self.getDataManager().getJobID()
                             myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
-                            myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+
+                            outsourced = False
+                            for resource in operation.getRequiredResources():
+                                myresource = resource
+                                if isinstance(resource,list):
+                                    myresource = resource[0]
+                                if myresource.IsOutsource():
+                                    outsourced = True
+                                    break
+
+                            if not outsourced:
+                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+                            else:
+                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
                             #self.getVisualManager().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
 
                             totaljobsize+=jobsize
@@ -230,11 +243,28 @@ class SchedulingManager:
                            
                             jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
                             deadline = datetime.combine(mydate, time(0, 0, 0)) #hr/min/sec
+
+                            
     
                             #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
                             jobid = self.getDataManager().getJobID()
                             myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
-                            myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+
+                            outsourced = False
+                            for resource in operation.getRequiredResources():
+                                myresource = resource
+                                if isinstance(resource,list):
+                                    myresource = resource[0]
+                                if myresource.IsOutsource():
+                                    outsourced = True
+                                    break
+     
+                            if not outsourced:
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" deadline >"+str(myjob.getDeadLine())+"\n"
+                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" lateststart >"+str(myjob.getLatestStart())+"\n"
+                            else: 
+                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
                             #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
                             newval+=jobsize
     
@@ -267,7 +297,10 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
        
 
-        ScheduleWeeks = 3 # weeks
+        ScheduleWeeks = ((self.getSHEnd()-self.getSHStart()).days)//7 # weeks
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
+       
         
         pssend= self.getSHEnd()
 

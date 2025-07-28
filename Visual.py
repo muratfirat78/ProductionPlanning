@@ -1202,6 +1202,8 @@ class VisualManager():
             self.getPLTBrawlist().options = reslist
 
             self.getPLTBresult2exp().value+=str(type(self.getPlanningManager().getPHEnd()))+"\n"
+
+            self.getPLTBDisplayPeriod().options = [(w+1) for w in range((self.getPlanningManager().getPHEnd()-self.getPlanningManager().getPHStart()).days//7)]
                 
             #self.getPLTBDisplayPeriod().options = ["Week "+str(w) for w in range(1,weeks+1)]
       
