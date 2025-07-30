@@ -282,8 +282,6 @@ class DataManager:
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
                         newprod.setPrescribedBatchsize(r["PrescribedBatchsize"])
                         newprod.setChosenBatchsize(r["ChosenBatchsize"])
-                        newprod.setStockUnit(r["StockUnit"])
-                        newprod.setStockBatch(r["StockBatch"])
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
@@ -292,6 +290,10 @@ class DataManager:
                     for i,r in opr_df.iterrows():
                         newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
                         self.Operations[r["Name"]]= newopr
+                    for name, opr in self.Operations.items():
+                        self.Operations[r["Name"]].getPredecessor()[r["Predecessor"]] = self.Operations[r["Predecesssor"]]
+                        
+                        
                     self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
        
                     
@@ -305,6 +307,8 @@ class DataManager:
                         if r["Shift"] is not None:
                             newres.setAvailableShift(r["Shift"])
                         self.Resources[r["Name"]]= newres
+                        if r['Name'].find("OUT - ") != -1:
+                            newres.setOutsource()
 
                     self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
                     
@@ -379,6 +383,11 @@ class DataManager:
      
     
         self.getVisualManager().RefreshViews()
+
+        self.getVisualManager().getUSTBCustomerOders().value = str(len(self.CustomerOrders))
+        self.getVisualManager().getUSTBProducts().value = str(len(self.getProducts()))
+        self.getVisualManager().getUSTBRawMaterials().value = str(len([prod for prod in self.getProducts().values() if len(prod.getMPredecessors()) == 0]))
+        self.getVisualManager().getUSTBRawResources().value = str(len(self.getResources()))
                 
         return
         
