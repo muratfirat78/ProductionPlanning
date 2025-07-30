@@ -133,10 +133,10 @@ class SchedulingManager:
         mydict = {k: v for k, v in sortedtuples}
         self.getDataManager().setCustomerOrders(mydict)
 
-        for ordname,myord in self.getDataManager().getCustomerOrders().items():
-            curr_product = myord.getProduct()
+        # for ordname,myord in self.getDataManager().getCustomerOrders().items():
+        #     curr_product = myord.getProduct()
 
-            #while curr_product.getSuccessor != None:
+        #     #while curr_product.getSuccessor != None:
                 
                 
                 
@@ -192,8 +192,10 @@ class SchedulingManager:
         pssend= psstart+timedelta(days=14*scheduleweeks)
         
         #grab the required products and their predecessors for the possible orders
-        ListOfProd = []        
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Creating jobs..."+"\n"
+        
         for i in Orders:
+            ListOfProd = []
             Product = i.getProduct()
             PredProduct = i.getProduct().getPredecessors()[0]
             ListOfProd.append(Product)
@@ -202,140 +204,142 @@ class SchedulingManager:
                 PredProduct = PredProduct.getPredecessors()[0]
                 ListOfProd.append(PredProduct)
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Creating jobs..."+"\n"
-        opslist = []
         
-        #for prname,prod in self.getDataManager().getProducts().items():
-        for prod in ListOfProd:
-            prod = self.getDataManager().getProducts()[prod.getName()]
-          
-            produced_level = 0
-            orginalList = prod.getOperations()
-
-            if len(orginalList) == 0:
-                continue
-
-            reversed_ops = orginalList[::-1]  
-
-   
-            #demandcurve = list([(ddate,amount) for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
-            demandcurve = list([(date,level) for date,level in prod.getTargetLevels().items() if pd.Timestamp(date) <= pd.Timestamp(pssend)])
-
-            totaldmd = 0
-            if len(demandcurve) > 0:
-                totaldmd=[val for dt,val in demandcurve][-1]
-
-            if totaldmd == 0:
-                continue
-
-            opslist.append(prod.getName()) 
-            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
-            #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
-
-            #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
-
-            prev_opr = None
-            prodbatchsize = prod.getChosenBatchsize()
-            #self.getVisualManager().getPLTBresult2exp().value+="HOI "+str(prod)+"\n"
-            for operation in reversed_ops:
-
-                oprbtchsize = operation.getBatchSize()
-                prev_job = None
-                # self.getVisualManager().getSchedulingTab().getPLTBresult2exp().value+="> Opr: "+str(operation.getName())+"\n"
-          
-                if not prev_opr is None:
-                    orgjoblist = prev_opr.getJobs()
-                    reversed_jobs = orgjoblist[::-1]  
-
-                    totaljobsize = 0
-                    cum_jobneed = 0
-                    valiter = 0
-                    for job in reversed_jobs:
-                        valiter+=1
-                        cum_jobneed+=job.getQuantity()
-
-                        #self.getVisualManager().getSchedulingTab().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
-                        if (cum_jobneed - totaljobsize >= prodbatchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
-                            jobsize =prodbatchsize*((cum_jobneed - totaljobsize)//prodbatchsize)+prodbatchsize*int((cum_jobneed - totaljobsize)%prodbatchsize > 0)   
-
-                            deadline = job.getLatestStart()
-                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
-
-                   
-                            jobid = self.getDataManager().getJobID()
-                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
-
-                            outsourced = False
-                            for resource in operation.getRequiredResources():
-                                myresource = resource
-                                if isinstance(resource,list):
-                                    myresource = resource[0]
-                                if myresource.IsOutsource():
-                                    outsourced = True
-                                    break
-
-                            if not outsourced:
-                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
-                            else:
-                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
-                            #self.getVisualManager().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
-
-                            totaljobsize+=jobsize
-                            operation.getJobs().insert(0,myjob)
-                         
-         
-                else:
-                    valiter = 0
-                    newdmdcurve = []
-                    newval = 0
-                    for mydate,val in demandcurve:
-                        valiter+=1
+            opslist = []
+            
+            #for prname,prod in self.getDataManager().getProducts().items():
+            for prod in ListOfProd:
+                prod = self.getDataManager().getProducts()[prod.getName()]
+              
+                produced_level = 0
+                orginalList = prod.getOperations()
+    
+                if len(orginalList) == 0:
+                    continue
+    
+                reversed_ops = orginalList[::-1]  
+    
+       
+                #demandcurve = list([(ddate,amount) for ddate,amount in prod.getTargetLevels().items() if ddate <= pssend])
+                demandcurve = list([(date,level) for date,level in prod.getTargetLevels().items() if pd.Timestamp(date) <= pd.Timestamp(pssend)])
+    
+                totaldmd = 0
+                if len(demandcurve) > 0:
+                    totaldmd=[val for dt,val in demandcurve][-1]
+    
+                if totaldmd == 0:
+                    continue
+    
+                opslist.append(prod.getName()) 
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Prod->"+str(prod.getName())+", dmd: "+str(totaldmd)+"\n"
+                #self.getVisualManager().getPLTBresult2exp().value+=" Pr "+prod.getName()+", Trglvls: "+str(len(prod.getTargetLevels()))+", No.Ops: "+str(len(prod.getOperations()))+".."+", dmd: "+str(totaldmd)+", size: "+str(len(demandcurve))+"\n"
+    
+                #self.getVisualManager().getPLTBresult2exp().value+="Initial demand curve: "+str([val for dt,val in demandcurve])+"\n"
+    
+                prev_opr = None
+                prodbatchsize = prod.getChosenBatchsize()
+                #self.getVisualManager().getPLTBresult2exp().value+="HOI "+str(prod)+"\n"
+                for operation in reversed_ops:
+    
+                    oprbtchsize = operation.getBatchSize()
+                    prev_job = None
+                    # self.getVisualManager().getSchedulingTab().getPLTBresult2exp().value+="> Opr: "+str(operation.getName())+"\n"
+              
+                    if not prev_opr is None:
+                        orgjoblist = prev_opr.getJobs()
+                        reversed_jobs = orgjoblist[::-1]  
+    
                         totaljobsize = 0
-                        
-                        if len(operation.getJobs()) > 0:
-                            totaljobsize = sum([jb.getQuantity() for jb in operation.getJobs()])
+                        cum_jobneed = 0
+                        valiter = 0
+                        for job in reversed_jobs:
+                            valiter+=1
+                            cum_jobneed+=job.getQuantity()
+    
+                            #self.getVisualManager().getSchedulingTab().getPLTBresult2exp().value+="SuccJob "+job.getName()+", q "+str(job.getQuantity())+", d "+str(job.getDeadLine())+"\n"
+                            if (cum_jobneed - totaljobsize >= prodbatchsize) or ((valiter == len(reversed_jobs)) and (cum_jobneed - totaljobsize > 0 ) ):
+                                jobsize =prodbatchsize*((cum_jobneed - totaljobsize)//prodbatchsize)+prodbatchsize*int((cum_jobneed - totaljobsize)%prodbatchsize > 0)   
+    
+                                deadline = job.getLatestStart()
+                                #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
+    
+                       
+                                jobid = self.getDataManager().getJobID()
+                                myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
+                                myjob.getOrderReserves()[i.getName()] = jobsize
+    
+                                outsourced = False
+                                for resource in operation.getRequiredResources():
+                                    myresource = resource
+                                    if isinstance(resource,list):
+                                        myresource = resource[0]
+                                    if myresource.IsOutsource():
+                                        outsourced = True
+                                        break
+    
+                                if not outsourced:
+                                    myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+                                else:
+                                    myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
+                                #self.getVisualManager().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
+    
+                                totaljobsize+=jobsize
+                                operation.getJobs().insert(0,myjob)
+                             
+             
+                    else:
+                        valiter = 0
+                        newdmdcurve = []
+                        newval = 0
+                        for mydate,val in demandcurve:
+                            valiter+=1
+                            totaljobsize = 0
                             
+                            if len(operation.getJobs()) > 0:
+                                totaljobsize = sum([jb.getQuantity() for jb in operation.getJobs()])
+                                
+        
+                            if (val - totaljobsize >= prodbatchsize) or ((demandcurve[-1][1] == val) and (val - totaljobsize > 0 ) ):
+        
+                               
+                                jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
+                                deadline = datetime.combine(mydate, time(0, 0, 0)) #hr/min/sec
     
-                        if (val - totaljobsize >= prodbatchsize) or ((demandcurve[-1][1] == val) and (val - totaljobsize > 0 ) ):
+                                
+        
+                                #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
+                                jobid = self.getDataManager().getJobID()
+                                myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
+                                myjob.getOrderReserves()[i.getName()] = jobsize
     
-                           
-                            jobsize =prodbatchsize*((val - totaljobsize)//prodbatchsize)+prodbatchsize*int((val - totaljobsize)%prodbatchsize > 0)  
-                            deadline = datetime.combine(mydate, time(0, 0, 0)) #hr/min/sec
-
+                                outsourced = False
+                                for resource in operation.getRequiredResources():
+                                    myresource = resource
+                                    if isinstance(resource,list):
+                                        myresource = resource[0]
+                                    if myresource.IsOutsource():
+                                        outsourced = True
+                                        break
+         
+                                if not outsourced:
+                                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" deadline >"+str(myjob.getDeadLine())+"\n"
+                                    myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
+                                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" lateststart >"+str(myjob.getLatestStart())+"\n"
+                                else: 
+                                    myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
+                                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
+                                newval+=jobsize
+        
+                                #self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+", Q:"+str(jobsize)+"\n"
+                                operation.getJobs().append(myjob)
+                                prev_job = myjob
+    
                             
+                        newdmdcurve.append((mydate,newval))
     
-                            #self.getVisualManager().getPLTBresult2exp().value+=" job to create "+operation.getName()+", "+str(val)+":"+str(totaljobsize)+", q: "+str(jobsize)+", BTCH: "+str(prodbatchsize)+", proctime "+str(operation.getProcessTime())+", iter: "+str(valiter)+", dl "+str(deadline)+"\n" 
-                            jobid = self.getDataManager().getJobID()
-                            myjob =  Job(jobid,"Job_"+str(jobid),prod,operation,jobsize,deadline)
-
-                            outsourced = False
-                            for resource in operation.getRequiredResources():
-                                myresource = resource
-                                if isinstance(resource,list):
-                                    myresource = resource[0]
-                                if myresource.IsOutsource():
-                                    outsourced = True
-                                    break
-     
-                            if not outsourced:
-                                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" deadline >"+str(myjob.getDeadLine())+"\n"
-                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = jobsize*operation.getProcessTime()))
-                                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" lateststart >"+str(myjob.getLatestStart())+"\n"
-                            else: 
-                                myjob.setLatestStart(myjob.getDeadLine() - timedelta(hours = operation.getProcessTime()))
-                            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> "+myjob.getName()+", q: "+str(myjob.getQuantity())+", d: "+str(myjob.getDeadLine())+"\n" 
-                            newval+=jobsize
-    
-                            #self.getVisualManager().getPLTBresult2exp().value+=" Job->"+str(prod.getName())+", "+str(operation.getName())+", Q:"+str(jobsize)+"\n"
-                            operation.getJobs().append(myjob)
-                            prev_job = myjob
-
-                        
-                    newdmdcurve.append((mydate,newval))
-
-                
-                demandcurve = newdmdcurve
-                prev_opr = operation
+                    
+                    demandcurve = newdmdcurve
+                    prev_opr = operation
                 
 
         #self.getVisualManager().getPLTBCheckRaw().value = 
@@ -363,6 +367,8 @@ class SchedulingManager:
         pssend= self.getSHEnd()
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
+
+        self.FineTuneOrderDeliveries()
 
         #Determine customer orders with latest start within Scheduling
         SelectedOrders=[]

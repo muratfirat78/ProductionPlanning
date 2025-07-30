@@ -193,6 +193,7 @@ class Operation():
         self.RequiredResources = [] # Attention: How to handle alternative resources in this structure!!
         self.Jobs = []
         self.batchsize = 12 # to be changed..
+        self.Predecessor = dict()
 
     
     def getID(self):
@@ -208,6 +209,13 @@ class Operation():
         return self.ProcessTime
     def getRequiredResources(self):
         return self.RequiredResources
+
+    def getPredecessor(self):
+        return self.Predecessor
+    def setPredecessor(self, pred):
+        self.Predecessor = pred
+        return
+
 
 class Job():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
@@ -283,6 +291,8 @@ class Job():
         return self.Predecessors
     def getSuccessor(self):
         return self.Successor 
+    def getOrderReserves(self):
+        return self.OrderReserves
     
     
 class CustomerOrder():
