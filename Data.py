@@ -289,6 +289,7 @@ class DataManager:
                     opr_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in opr_df.iterrows():
                         newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
+                        newopr.setPredecessor(r["Predecessor"])
                         self.Operations[r["Name"]]= newopr
                     self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
        
