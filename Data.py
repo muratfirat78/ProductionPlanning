@@ -274,7 +274,7 @@ class DataManager:
         
         for root, dirs, files in os.walk(abs_file_path):
             for file in files:
-                self.getVisualManager().getCaseInfo().value += ">>> file."+file+"\n" 
+                self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"... \n" 
                 
                 if file == "Products.csv": 
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
@@ -290,10 +290,6 @@ class DataManager:
                     for i,r in opr_df.iterrows():
                         newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
                         self.Operations[r["Name"]]= newopr
-                    for name, opr in self.Operations.items():
-                        self.Operations[r["Name"]].getPredecessor()[r["Predecessor"]] = self.Operations[r["Predecesssor"]]
-                        
-                        
                     self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
        
                     
