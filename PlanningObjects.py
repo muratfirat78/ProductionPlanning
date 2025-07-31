@@ -193,7 +193,7 @@ class Operation():
         self.RequiredResources = [] # Attention: How to handle alternative resources in this structure!!
         self.Jobs = []
         self.batchsize = 12 # to be changed..
-        self.Predecessor = dict()
+        self.Predecessor = None
 
     
     def getID(self):
@@ -214,6 +214,9 @@ class Operation():
         return self.Predecessor
     def setPredecessor(self, pred):
         self.Predecessor = pred
+        return
+    def setName(self, name):
+        self.Name = name
         return
 
 

@@ -1,0 +1,34 @@
+ResourceID,ResourceType,Name,DailyCapacity,Automated,OperatingEffort,Shift
+0,Operator,Operator 1,8,,0.0,1
+1,Operator,Operator 2,8,,0.0,1
+2,Operator,Operator 3,7,,0.0,2
+3,Operator,Manual workers,15,,0.0,
+4,Manual,MP2 - Material preparation - manual sawing (ZGN_02),15,,1.0,All
+5,Machine,M3-01 - Accuwell - 3axis - Manual (FR3_01),15,False,0.3,All
+6,Manual,BW - Benchwork (BKW_01),15,,1.0,All
+7,Manual,PACK - Packaging (VERP_P),15,,1.0,All
+8,Outsourced,OUT - Outsourced activity_Chromising,10000,,0.0,All
+9,Manual,MP1 - Material preparation - automatic sawing (ZGN_01),15,,0.15,All
+10,Machine,M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),24,True,0.1,All
+11,Machine,M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),24,True,0.1,All
+12,Machine,M5-03 - Haas - 5axis - Manual (UMC750),15,False,0.3,All
+13,Machine,M3-02 - Accuwell - 3axis - Manual (FR3_02),15,False,0.3,All
+14,Outsourced,OUT - Outsourced activity_Anodising,10000,,0.0,All
+15,Outsourced,OUT - Outsourced activity_Painting,10000,,0.0,All
+16,Manual,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",15,,0.0,All
+17,Machine,M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),24,True,0.1,All
+18,Outsourced,OUT - Outsourced activity_Passivating,10000,,0.0,All
+19,Outsourced,OUT - Outsourced activity_Cleaning,10000,,0.0,All
+20,Outsourced,OUT - Outsourced activity_Sandblasting,10000,,0.0,All
+21,Outsourced,OUT - Outsourced activity_Nickel plating,10000,,0.0,All
+22,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),15,False,0.3,All
+23,Machine,M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),24,True,0.1,All
+24,Outsourced,OUT - Outsourced activity_Anodising + Cleaning,10000,,0.0,All
+25,Outsourced,OUT - Outsourced activity_Anodize,10000,,0.0,All
+26,Outsourced,OUT - Outsourced activity_Chromatize,10000,,0.0,All
+27,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),24,True,0.1,All
+28,Outsourced,OUT - Outsourced activity_CAM,10000,,0.0,All
+29,Outsourced,OUT - Outsourced activity_Nickel Plating,10000,,0.0,All
+30,Outsourced,OUT - Outsourced activity_External Milling Tungsten,10000,,0.0,All
+31,Outsourced,OUT - Outsourced activity_External Cleaning + RGA,10000,,0.0,All
+32,Outsourced,OUT - Outsourced activity_Anodize (clear),10000,,0.0,All

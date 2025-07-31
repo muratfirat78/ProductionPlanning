@@ -80,49 +80,54 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
-    def DefineJobPrecedences(self):
+    def DefineJobPrecedences(self,orders):
 
-        oprdict = dict() # key: operation, #val: set of jobs
-
-     # Collect operations with jobs
+        oprdicttotal = dict() # key: operation, #val: set of jobs
         nrjobs = 0
-        for prname,prod in self.getDataManager().getProducts().items():
-            for opr in prod.getOperations():
+        for order in orders:
+            
+            oprdict = dict() #Operations specific for the order            
+            product = order.getProduct()
+            operations = product.getOperations()
+         # Collect operations with jobs            
+            
+            for opr in operations:
                 if not opr in oprdict:
                     oprdict[opr] = opr.getJobs()
                     nrjobs+= len(opr.getJobs())
-
-        revopdict = {k: oprdict[k] for k in sorted(oprdict, key=lambda x: list(oprdict.keys()).index(x), reverse=True)}
-        
-        
-        for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
-            if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
-                CurJobs = revopdict[k1][::-1];
-                Predjobs = revopdict[k2][::-1];
-                
-                for i in range(0,len(CurJobs)):
-                    CapCurJob = CurJobs[i].getQuantity();           
-                              
+                    oprdicttotal[opr] = opr.getJobs()
+    
+            revopdict = {k: oprdict[k] for k in sorted(oprdict, key=lambda x: list(oprdict.keys()).index(x), reverse=True)}
+            
+            
+            for k1, k2 in zip(revopdict, list(revopdict)[1:]): #links pairs of keys together 
+                if len(revopdict[k1]) > 0 and len(revopdict[k2]) >0:
+                    CurJobs = revopdict[k1][::-1];
+                    Predjobs = revopdict[k2][::-1];
                     
-                    for k in Predjobs:
+                    for i in range(0,len(CurJobs)):
+                        CapCurJob = CurJobs[i].getQuantity();           
+                                  
                         
-                        if k.getQuantity() < CapCurJob:
-                            CapCurJob = CapCurJob - k.getQuantity();
-                            if k not in CurJobs[i].getPredecessors():
-                                CurJobs[i].getPredecessors().append(k);
-                            if CurJobs[i] not in k.getSuccessor():
-                                k.getSuccessor().append(CurJobs[i]);
-                            Predjobs.remove(k)
-                        else:
-                            if k not in CurJobs[i].getPredecessors():
-                                CurJobs[i].getPredecessors().append(k);
+                        for k in Predjobs:
                             
-                            if CurJobs[i] not in k.getSuccessor():
-                                k.getSuccessor().append(CurJobs[i]);
-                            Predjobs.remove(k)                       
-                            break
+                            if k.getQuantity() < CapCurJob:
+                                CapCurJob = CapCurJob - k.getQuantity();
+                                if k not in CurJobs[i].getPredecessors():
+                                    CurJobs[i].getPredecessors().append(k);
+                                if CurJobs[i] not in k.getSuccessor():
+                                    k.getSuccessor().append(CurJobs[i]);
+                                Predjobs.remove(k)
+                            else:
+                                if k not in CurJobs[i].getPredecessors():
+                                    CurJobs[i].getPredecessors().append(k);
+                                
+                                if CurJobs[i] not in k.getSuccessor():
+                                    k.getSuccessor().append(CurJobs[i]);
+                                Predjobs.remove(k)                       
+                                break
 
-        return nrjobs,oprdict
+        return nrjobs,oprdicttotal
 
   
 
@@ -384,7 +389,7 @@ class SchedulingManager:
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
 
-        nrjobs,oprdict = self.DefineJobPrecedences()
+        nrjobs,oprdict = self.DefineJobPrecedences(SelectedOrders)
            
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
 
