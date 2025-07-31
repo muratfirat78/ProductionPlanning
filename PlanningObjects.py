@@ -215,6 +215,9 @@ class Operation():
     def setPredecessor(self, pred):
         self.Predecessor = pred
         return
+    def setName(self, name):
+        self.Name = name
+        return
 
 
 class Job():
