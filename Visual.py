@@ -157,12 +157,69 @@ class VisualManager():
         self.CasesDrop = None
         self.ReadFileBtn = None
 
+        self.DiagTree = None
+        self.PLTBDiagOutput = None
+        self.DiagTreeRootNode = None
 
-       
-        
-        
-  
+
+        self.UseResTree= None
+        self.UseResTreeRootNode= None
+        self.PLTBUseResOutput= None
+
         return
+
+
+    def setPLTBUseResOutput(self,myit):
+        self.PLTBUseResOutput = myit
+        return
+
+    def getPLTBUseResOutput(self):
+        return self.PLTBUseResOutput
+
+    def setUseResTree(self,myit):
+        self.UseResTree = myit
+        return
+
+    def getUseResTree(self):
+        return self.UseResTree
+
+    def setUseResTreeRootNode(self,myit):
+        self.UseResTreeRootNode = myit
+        return
+
+    def getUseResTreeRootNode(self):
+        return self.UseResTreeRootNode
+
+
+
+
+
+
+    def setDiagTreeRootNode(self,myit):
+        self.DiagTreeRootNode = myit
+        return
+
+    def getDiagTreeRootNode(self):
+        return self.DiagTreeRootNode
+        
+
+    def setPLTBDiagOutput(self,myit):
+        self.PLTBDiagOutput = myit
+        return
+
+    def getPLTBDiagOutput(self):
+        return self.PLTBDiagOutput
+        
+    
+
+    def setDiagTree(self,myit):
+        self.DiagTree = myit
+        return
+
+    def getDiagTree(self):
+        return self.DiagTree
+
+    
 
 
     def setUSTBRawResources(self,myit):
@@ -1220,63 +1277,42 @@ class VisualManager():
         if event['new']['index'] < 0:
             return
             
-        self.getPLTBOrdProd().value = "order..index>> "+str(event['new']['index'])+"\n"
+        #self.getPLTBOrdProd().value = "order..index>> "+str(event['new']['index'])+"\n"
         
         ordtext = self.getPLTBOrdlist().options[event['new']['index']]
 
-        self.getPLTBOrdProd().value += ">"+str(ordtext.find(":"))+"\n"
+        #self.getPLTBOrdProd().value += ">"+str(ordtext.find(":"))+"\n"
         
         ordname = ordtext[:ordtext.find(":")]
+        self.getPLTBresult2exp().value+=ordtext+" >> "+ordname+"\n"
 
-        self.getPLTBOrdProd().value += ordname+"\n"
+        #self.getPLTBOrdProd().value += ordname+"\n"
 
         
         if ordname in self.DataManager.getCustomerOrders():
+            self.getPLTBresult2exp().value+="order found!!!!! "+"\n"
+
             myord = self.DataManager.getCustomerOrders()[ordname]
 
+            self.MakeDiagTree(myord)
+
             if myord.getPlannedDelivery() != None:
-                self.getPLTBOrdProd().value = "Final Product: "+"\n"
-                self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
-                self.getPLTBOrdProd().value += "LatestStart: "+str(myord.getLatestStart())+"\n"
-                self.getPLTBOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
+                #self.getPLTBOrdProd().value = "Final Product: "+"\n"
+                #self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
+                #self.getPLTBOrdProd().value += "LatestStart: "+str(myord.getLatestStart())+"\n"
+                #self.getPLTBOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
                 
-                self.getPLTBOrdProd().value += "Resource use: "+str(len(myord.getOrderPlan()['Resources']))+"\n"
-                resid = 1
-                for res,usedict in myord.getOrderPlan()['Resources'].items():    
-                    self.getPLTBOrdProd().value += str(resid)+"->"+res.getName()+"\n"
-                    for mydate,val in usedict.items():
-                        self.getPLTBOrdProd().value += "  >> Date: "+str(mydate)+", Val: "+str(val)+"\n"
-                    resid+=1
+                self.MakeUseResTree(myord)
 
-                self.getPLTBOrdProd().value += "Target product levels: "+str(len(myord.getOrderPlan()['Products']))+"\n"
-                prodid = 1
-                for prod,usedict in myord.getOrderPlan()['Products'].items():
-                    self.getPLTBOrdProd().value += str(prodid)+"->"+prod.getName()+"\n"
-                    for mydate,val in usedict.items():
-                        self.getPLTBOrdProd().value +="  >> Date: "+str(mydate)+", Val: "+str(val)+"\n"
-                    prodid+=1
-                
-                if (myord.getPlannedDelivery().date()-max(myord.getDeadLine().date(),self.getPlanningManager().getPHStart())).days-1 > 0:
-                    self.getPLTBOrdProd().value += "Delay reasons: "+"\n"
-                    for myprd,reason in myord.getDelayReasons().items():
-                        self.getPLTBOrdProd().value +="  > Prod "+myprd.getName()+", reason "+str(reason[0])+":"+str(reason[1])+"\n"
-                else:
-                    self.getPLTBOrdProd().value += "No delay"+"\n"
-            else:
-                self.getPLTBOrdProd().value = "Final Product: "+"\n"
-                self.getPLTBOrdProd().value += myord.getProduct().getName()+"\n"
-                self.getPLTBOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
-                self.getPLTBOrdProd().value = "Not planned... "+"\n"
-                if len(myord.getDelayReasons())>0:
-                    self.getPLTBOrdProd().value += "Delay reasons: "+"\n"
-                    for myprd,reason in myord.getDelayReasons().items():
-                        self.getPLTBOrdProd().value +="  > Prod "+myprd.getName()+", reason "+str(reason[0])+":"+str(reason[1])+"\n"
-                    
-           
-        else:
-            self.getPLTBOrdProd().value = "Order not found..."+"\n"
+                #self.getPLTBOrdProd().value += "Target product levels: "+str(len(myord.getOrderPlan()['Products']))+"\n"
+                #prodid = 1
+                #for prod,usedict in myord.getOrderPlan()['Products'].items():
+                #    self.getPLTBOrdProd().value += str(prodid)+"->"+prod.getName()+"\n"
+                #    for mydate,val in usedict.items():
+                #        self.getPLTBOrdProd().value +="  >> Date: "+str(mydate)+", Val: "+str(val)+"\n"
+                #    prodid+=1
 
-        
+   
         return
 
     def ShowOrder(self,event):
@@ -1415,19 +1451,61 @@ class VisualManager():
 
         self.setPLTBDisplayPeriod(widgets.Dropdown(options=[], description=''))
 
+        ordl = widgets.Label(value ='Customer Orders')
+        ordl.add_class("red_label")
+        prgl = widgets.Label(value ='Planning Progress')
+        prgl.add_class("red_label")
+
+        ordresl = widgets.Label(value ='Use of Resources ')
+        ordresl.add_class("red_label")
         
+        ordtl = widgets.Label(value ='Planning Diagnostics')
+        ordtl.add_class("red_label")
+
+
+        diagtree = Tree()
+        rootnode = Node("Diagnostics",[], icon="cut", icon_style="success") 
+        diagtree.add_node(rootnode)
+        self.setDiagTree(diagtree)
+        self.setDiagTreeRootNode(rootnode)
+
+        self.setPLTBDiagOutput(widgets.Output())
+
+
+        userestree = Tree()
+        root2node = Node("Resources",[], icon="cut", icon_style="success") 
+        userestree.add_node(root2node)
+        self.setUseResTree(userestree)
+        self.setUseResTreeRootNode(root2node)
+
+        self.setPLTBUseResOutput(widgets.Output())
+
+
+   
     
         tab_3 = VBox(children = [
                 widgets.Label(value ='Planning Settings '),
                HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPLTBmakeplan_btn()]),   
-               HBox(children = [VBox(children = [widgets.Label(value ='Planning Progress '),self.getPLTBresult2exp()]),
-                                VBox(children = [widgets.Label(value ='Planned Orders '),self.getPLTBOrdlist()]),
-                                VBox(children = [widgets.Label(value ='Order Details '),self.getPLTBOrdProd()])],layout = widgets.Layout(height = '205px')),
+               HBox(children = [VBox(children = [prgl,self.getPLTBresult2exp()]),
+                                VBox(children = [ordl,self.getPLTBOrdlist()]),
+                                VBox(children = [ordresl,self.getPLTBUseResOutput(),ordtl,self.getPLTBDiagOutput()]),
+                                ]),
                
                 HBox(children=[VBox(children = [widgets.Label(value ='Planning Descriptives '),self.getPLTBDesciptives()]),
                                VBox(children = [widgets.Label(value ='Display Period'),self.getPLTBDisplayPeriod()])]),
             
                 HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()],layout = widgets.Layout(height = '375px'))])
+
+
+        
+        with self.getPLTBDiagOutput():
+            clear_output()
+            display(self.getDiagTree())
+
+        
+        with self.getPLTBUseResOutput():
+            clear_output()
+            display(self.getUseResTree())
 
         tab_3.layout.height = '700px'
 
@@ -1813,6 +1891,72 @@ class VisualManager():
         
 
         return tab_4
+
+
+
+    def MakeUseResTree(self,order):
+
+        userestree = Tree()
+
+        subnodes = []
+         
+        for res,usedict in order.getOrderPlan()['Resources'].items():  
+            mystr = ">"+res.getName()
+           
+            ressubnodes = []
+            for mydate,val in usedict.items():
+                usestr = "  > Date: "+str(mydate)+", Val: "+str(val)
+                usenode = Node(usestr,[], icon="cut", icon_style="success") 
+                ressubnodes.append(usenode)
+
+            resnode = Node(mystr,ressubnodes, icon="cut", icon_style="success") 
+            subnodes.append(resnode)
+
+         
+        nodestr = order.getName()
+        rootnode = Node(nodestr,subnodes, icon="cut", icon_style="success") 
+        
+        userestree.add_node(rootnode)
+        self.setUseResTree(userestree)
+        self.setUseResTreeRootNode(rootnode)
+        
+        with self.getPLTBUseResOutput():
+            clear_output()
+            display(self.getUseResTree())
+
+        return
+
+    def MakeDiagTree(self,order):
+
+        diagtree = Tree()
+    
+        subnodes = []
+      
+        for mydate,reasstr in order.getDelayReasons().items():
+            prodpn = reasstr[:reasstr.find("->")]
+                   
+            mystr = "> Delivery check:  "+str(mydate)
+
+            reason = reasstr[reasstr.find("->")+3:]
+            casenode = Node(reason,[], icon="cut", icon_style="success") 
+            
+            reasonnode = Node(mystr,[casenode], icon="cut", icon_style="success") 
+            subnodes.append(reasonnode)
+                
+
+        nodestr = order.getName()
+        rootnode = Node(nodestr,subnodes, icon="cut", icon_style="success") 
+        
+        diagtree.add_node(rootnode)
+        self.setDiagTree(diagtree)
+        self.setDiagTreeRootNode(rootnode)
+        
+        with self.getPLTBDiagOutput():
+            clear_output()
+            display(self.getDiagTree())
+
+
+        return 
 
     def MakeBOMTree(self,prod):
 

@@ -306,7 +306,7 @@ class CustomerOrder():
         self.Quantity = myqnty
         self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
         self.ReferenceNumber = 0
-        self.DelayReasons = dict() # key: prod, value: (resource/lead time,date)
+        self.DelayReasons = dict() # key: deldate, val: prodpn+resource cap./lead time+date
         self.OrderPlanDict = dict() # key: plan item type, value: list of tuples (item,(date,val))
        
 
