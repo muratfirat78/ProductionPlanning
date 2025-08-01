@@ -227,22 +227,22 @@ class SchedulingManager:
                         
                         
      
-        #Create Schedule   
+        #Create Schedule; we start by checking if there are still jobs that can be scheduled   
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
                 predecessorjobs = j.getPredecessors()
                 successorjobs = j.getSuccessor()
                 Quantity = j.getQuantity()
-                PartialJob = False
-                EarliestDay = 1
-                EarliestShift = 1
-                EarliestStart = 0
+                PartialJob = False #Partial Job False is an indicator to check if a job could be completely scheduled
+                EarliestDay = 1 #Initialize Earliest schedulable day, this starts at 1 but depends on predecessor jobs
+                EarliestShift = 1 #Initialize Earliest schedulable Shift, this starts at 1 but depends on predecessor jobs
+                EarliestStart = 0 #Initialize Earliest schedulable Starttime on the day, this starts at 0 (Start of working day) but depends on predecessor jobs
                 if not (predecessorjobs ==[]):
-                #Determine Earliest starttime
-                    maxpredecessorday = None;
-                    maxpredecessorshift = None;
-                    maxpredecessortime = None;
+                #Determine Earliest starttime if there are predecessor jobs
+                    maxpredecessorday = None; #The largest day of the predecessors
+                    maxpredecessorshift = None; #The Largest shift of the predecessors
+                    maxpredecessortime = None; #The Largest completiontime of the predecessors
                     for i in predecessorjobs:
                         predecessorday = ScheduledJobs[i.getName()].getScheduledDay()
                         predecessorshift = ScheduledJobs[i.getName()].getScheduledShift()
@@ -253,7 +253,7 @@ class SchedulingManager:
                             maxpredecessorshift = predecessorshift
                         if maxpredecessortime == None or completiontime >= maxpredecessortime:
                             maxpredecessortime = completiontime
-                    EarliestStart = maxpredecessor;
+                    EarliestStart = maxpredecessortime;
                     EarliestDay = maxpredecessorday;
                     EarliestShift = maxpredecessorshift;
                     
