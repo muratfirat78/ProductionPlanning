@@ -117,7 +117,8 @@ class PlanningManager:
         if len(product.getMPredecessors()) > 0: # bom case
             
             #self.getVisualManager().getPLTBresult2exp().value+="ops.. "+str(len(product.getOperations()))+"\n"
-            for operation in product.getOperations():
+            prev_job = None
+            for operation in product.getOperations(): # doubkle-check that they are in reversed order!!!!
 
                 # skip quantity when resource is outsourced:
 
@@ -176,7 +177,14 @@ class PlanningManager:
                                 order.getOrderPlan()['Resources'][myresource] = dict()
                             order.getOrderPlan()['Resources'][myresource][mydate.date()] = resource_use
                             self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
-        
+                            jobid = self.getVisualManager().getSchedulingManager().getJobID()
+                            curr_job =  Job(jobid,"Job_"+str(jobid),product,operation,curr_quantity,mydate)
+                            if prev_job!= None:
+                                curr_job.setSuccessor(prev_job)
+                                prev_job.getPredecessors().append(curr_job)
+                            prev_job = curr_job
+                            order.getMyJobs().append(curr_job)
+                                    
   
             totalhours =  int(totaltime)+int(totaltime-int(totaltime) > 0)
 
@@ -291,7 +299,7 @@ class PlanningManager:
                     if resname.find("OUT - ") != -1:
                         cumulative_capacity+= int(100000)
                     else:
-                        cumulative_capacity+= int(res.getDailyCapacity())
+                        cumulative_capacity+= int(res.getDailyCapacity()*8)
                     
                 res.getCapacityLevels()[curr_date.date()] = cumulative_capacity
                
@@ -369,6 +377,7 @@ class PlanningManager:
                     break
                 else:
                     myord.resetOrderPlan()
+                    myord.getMyJobs().clear()
                     delay+=1
 
         self.getVisualManager().getPLTBresult2exp().value+=">> Completed..  planned: "+str(planned)+"/"+str(len(self.getDataManager().getCustomerOrders()))+"\n"

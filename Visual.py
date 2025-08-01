@@ -40,6 +40,8 @@ class VisualManager():
         self.PSTBBOMOutput = None
 
         self.SchedulingTab = None
+
+        self.PSTBOprRes = None
         
         self.PSTBResList = None
         self.PSTBNewResName = None
@@ -166,8 +168,20 @@ class VisualManager():
         self.UseResTreeRootNode= None
         self.PLTBUseResOutput= None
 
+       
+
         return
 
+    
+
+    def setPSTBOprRes(self,myit):
+        self.PSTBOprRes = myit
+        return
+
+    def getPSTBOprRes(self):
+        return self.PSTBOprRes
+
+     
 
     def setPLTBUseResOutput(self,myit):
         self.PLTBUseResOutput = myit
@@ -1117,6 +1131,33 @@ class VisualManager():
             self.getPSTBOprName().value = sel_opr.getName()
             self.getPSTBOprProcTime().value = str(sel_opr.getProcessTime())
 
+            res = None
+            for resource in sel_opr.getRequiredResources():
+                    res = resource
+                    if isinstance(res,list):
+                        res = resource[0]
+                    break
+                
+            if res != None:
+                self.getPSTBOprRes().value = str(res.getName())
+                self.getPSTBResSearch().value = self.getPSTBOprRes().value
+
+        
+                itemstoshow = [self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap(),self.getPSTBeditres_btn()]
+                itemstohide = []; itemstoreset = []  
+                self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
+        
+          
+                myresname = self.getPSTBResSearch().value
+        
+                if myresname in self.DataManager.getResources():
+                    res = self.DataManager.getResources()[myresname]
+                    self.getPSTBResName().value = res.getName()
+                    self.getPSTBResType().value = res.getType()
+                    self.getPSTBResCap().value = str(res.getDailyCapacity())+" shift/day"
+                else:
+                    self.getPSTBResName().value = myresname+" not found.." 
+
         return
 
     def ShowProduct(self,event):
@@ -1195,6 +1236,7 @@ class VisualManager():
         self.getPSTBoperations().options = [opr.getName() for opr in sel_prod.getOperations()]
         
         return
+   
 
     def RecFindSelected(self,node):
     
@@ -1240,7 +1282,7 @@ class VisualManager():
         
         self.getPSTBResName().value = sel_resource.getName()
         self.getPSTBResType().value = sel_resource.getType()
-        self.getPSTBResCap().value = str(sel_resource.getDailyCapacity())+" hrs/day"
+        self.getPSTBResCap().value = str(sel_resource.getDailyCapacity())+" shift/day"
 
        
 
@@ -1286,6 +1328,8 @@ class VisualManager():
         ordname = ordtext[:ordtext.find(":")]
         self.getPLTBresult2exp().value+=ordtext+" >> "+ordname+"\n"
 
+ 
+      
         #self.getPLTBOrdProd().value += ordname+"\n"
 
         
@@ -1293,6 +1337,20 @@ class VisualManager():
             self.getPLTBresult2exp().value+="order found!!!!! "+"\n"
 
             myord = self.DataManager.getCustomerOrders()[ordname]
+
+            self.getPSTBFinalProd().value = myord.getProduct().getName()
+            self.getPSTBQuantity().value = str(myord.getQuantity())
+            self.getPSTBDeadLine().value = str(myord.getDeadLine())
+            myprodname = self.getPSTBFinalProd().value
+            self.getPSTBProdSearch().value = myprodname 
+            self.getPSTBProdName().value = myord.getProduct().getName()
+            self.getPSTBProdPN().value = myord.getProduct().getPN()
+            self.getPSTBProdStocklvl().value = str(myord.getProduct().getStockLevel())
+            self.getPSTBoperations().options = [opr.getName() for opr in myord.getProduct().getOperations()]
+
+            self.MakeBOMTree(myord.getProduct())
+
+
 
             self.MakeDiagTree(myord)
 
@@ -1587,7 +1645,7 @@ class VisualManager():
             res = self.DataManager.getResources()[myresname]
             self.getPSTBResName().value = res.getName()
             self.getPSTBResType().value = res.getType()
-            self.getPSTBResCap().value = str(res.getDailyCapacity())+" hrs/day"
+            self.getPSTBResCap().value = str(res.getDailyCapacity())+" shift/day"
         else:
             self.getPSTBResName().value = myresname+" not found.." 
                 
@@ -1777,6 +1835,8 @@ class VisualManager():
 
 
         self.setPSTBOprName(widgets.Label(value='',disabled = True))
+        self.setPSTBOprRes(widgets.Label(value='',disabled = True))
+  
        
         self.setPSTBOprProcTime(widgets.Label(value='',disabled = True))
         
@@ -1790,11 +1850,14 @@ class VisualManager():
 
         oprt = widgets.Label(value ='Process Time :')
         oprt.add_class("blue_label")
+
+        oprest = widgets.Label(value ='Resource:')
+        oprest.add_class("blue_label")
         
         
         tb4_vbox3 = VBox(children = [HBox(children=[op_box]),self.getPSTBNewOprName(),self.getPSTBNewOprProcTime(),
                                      HBox(children=[oprn,self.getPSTBOprName()]),
-                                     HBox(children=[oprt,self.getPSTBOprProcTime()]),
+                                     HBox(children=[oprt,self.getPSTBOprProcTime(),widgets.Label(value =  " | ",disabled = True),oprest,self.getPSTBOprRes()]),
                                      HBox(children=[self.getPSTBaddopr_btn(),self.getPSTBcanclopr_btn()])
                                     ,oprdsel_box])
         
