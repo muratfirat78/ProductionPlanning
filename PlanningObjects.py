@@ -245,8 +245,11 @@ class Job():
 
     # SCHEDULING
         self.StartTime = None
+        self.StartShift = None
+        self.StartDay = None
         self.ScheduledDay=None
         self.ScheduledShift=None
+        self.ScheduledTime =None
         self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
         
     def getLatestStart(self):
@@ -267,6 +270,13 @@ class Job():
         self.StartTime = myst
         return
 
+    def getScheduledTime(self):
+        return self.ScheduledTime
+
+    def setScheduledTime(self,myst):
+        self.ScheduledTime = myst
+        return
+
     def getScheduledDay(self):
         return self.ScheduledDay
 
@@ -279,6 +289,18 @@ class Job():
 
     def setScheduledShift(self,shift):
         self.ScheduledShift = shift
+        return
+    def getStartDay(self):
+        return self.StartDay
+
+    def setStartDay(self,day):
+        self.StartDay = day
+        return
+    def getStartShift(self):
+        return self.StartShift
+
+    def setStartShift(self,shift):
+        self.StartShift = shift
         return
 
     def getID(self):

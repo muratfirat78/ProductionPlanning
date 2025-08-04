@@ -187,7 +187,7 @@ class SchedulingManager:
                
         counter = 0       
         #Initialize schedule for each Resource:
-        while i <= day+1:
+        while i <= day:
             shift1 = Shift(i,1,8)
             shift2=Shift(i,2,7)
             shift3=Shift(i,3,8)
@@ -238,7 +238,7 @@ class SchedulingManager:
                 #Determine Earliest starttime if there are predecessor jobs
                     maxpredecessor = [None,None,None]
                     for i in predecessorjobs:
-                        predecessor = [ScheduledJobs[i.getName()].getScheduledDay(),ScheduledJobs[i.getName()].getScheduledShift(),ScheduledJobs[i.getName()].getStartTime() + (i.getQuantity() * self.getDataManager().getOperations()[i.getOperation().getName()].getProcessTime())]
+                        predecessor = [ScheduledJobs[i.getName()].getScheduledDay(),ScheduledJobs[i.getName()].getScheduledShift(),ScheduledJobs[i.getName()].getScheduledTime() + (i.getQuantity() * self.getDataManager().getOperations()[i.getOperation().getName()].getProcessTime())]
                         if maxpredecessor == [None,None,None]:
                             maxpredecessor = predecessor
                         if (predecessor[0] > maxpredecessor[0]) or (predecessor[0] == maxpredecessor[0] and predecessor[1] > maxpredecessor[1]) or (predecessor[0] == maxpredecessor[0] and predecessor[1] == maxpredecessor[1] and predecessor[2] > maxpredecessor[2] ):
@@ -277,7 +277,7 @@ class SchedulingManager:
                                         if shift[1] == []: #Here we have an empty shift so we set this shift as 
                                             schedulableShift = [daynum, shift]
                                             completiontimeLatestJob = 0                                            
-                                        if shift[1] != [] and shift[1][-1][0].getStartTime() + (shift[1][-1][1]*self.getDataManager().getOperations()[shift[1][-1][0].getOperation().getName()].getProcessTime()) >= shift[0].getCapacity():                                            
+                                        if shift[1] != [] and shift[1][-1][0].getScheduledTime() + (shift[1][-1][1]*self.getDataManager().getOperations()[shift[1][-1][0].getOperation().getName()].getProcessTime()) >= shift[0].getCapacity():                                            
                                             continue
                                             
                                         #Check the availability of operators/manual workers if we have a machine or manual labour                                       
@@ -325,7 +325,7 @@ class SchedulingManager:
                                                 completiontimeLatestJob = 0
                                             else:
                                                 
-                                                completiontimeLatestJob = schedulableShift[1][1][-1][0].getStartTime() + (schedulableShift[1][1][-1][0].getQuantity()*self.getDataManager().getOperations()[schedulableShift[1][1][-1][0].getOperation().getName()].getProcessTime())
+                                                completiontimeLatestJob = schedulableShift[1][1][-1][0].getScheduledTime() + (schedulableShift[1][1][-1][0].getQuantity()*self.getDataManager().getOperations()[schedulableShift[1][1][-1][0].getOperation().getName()].getProcessTime())
                                             break
                                 if schedulableShift != []:
                                     break
@@ -336,7 +336,7 @@ class SchedulingManager:
                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
                             SchedulableJobs.remove(j)
                             break
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Deze shift is degene "+str(schedulableShift)
+                    
                     shiftday = schedulableShift[0]        
                     shiftcap = schedulableShift[1][0].getCapacity()
                     shiftnumber = schedulableShift[1][0].getNumber()
@@ -347,10 +347,12 @@ class SchedulingManager:
                     if restype == 'Manual':                   
                                                                                                                                         
                             j.setStartTime(completiontimeLatestJob)
-                            if (completiontimeLatestJob + processtime) > shiftcap: #This means we can only schedule partially in this shift
+                            j.setStartDay(shiftday)
+                            j.setStartShift(shiftnumber)
+                            if (round(completiontimeLatestJob + processtime,2)) > shiftcap: #This means we can only schedule partially in this shift
                                 PartialJob = True
                                 fraction = shiftcap - completiontimeLatestJob
-                                ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                ProcessedQuantity = round(fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime(),2)
                                 Quantity = Quantity - ProcessedQuantity
                                 
                                 processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
@@ -367,10 +369,14 @@ class SchedulingManager:
                                         shiftnumber = 1
                                         if shiftday > day: #This means we fall outside the planning horizon
                                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be fully scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                            j.setScheduledShift(2)
+                                            j.setScheduledDay(shiftday-1)
+                                            j.setScheduledTime(7)
+                                            SchedulableJobs.remove(j)
                                             break
                                     if processtime > shiftcap:
                                         fraction = shiftcap
-                                        ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                        ProcessedQuantity = round(fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime(),2)
                                         Quantity = Quantity - ProcessedQuantity                                        
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                         self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
@@ -388,6 +394,7 @@ class SchedulingManager:
                                         ScheduledJobs[j.getName()] = j
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shiftday)
+                                        j.setScheduledTime(processtime)
                                         SchedulableJobs.remove(j) #Remove scheduled job
 
                                         ## check if successor can be scheduled.
@@ -413,6 +420,7 @@ class SchedulingManager:
                                 r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                 j.setScheduledShift(shiftnumber)
                                 j.setScheduledDay(shift[0].getDay())
+                                j.setScheduledTime(completiontimeLatestJob + processtime)
                                 ScheduledJobs[j.getName()] = j
                                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift[0].getNumber())+" On day "+str(shift[0].getDay())+"\n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
@@ -444,7 +452,9 @@ class SchedulingManager:
                     elif restype == 'Outsourced':                      
                                                             
                             j.setStartTime(completiontimeLatestJob)
-                            if (completiontimeLatestJob + processtime) > shiftcap:
+                            j.setStartDay(shiftday)
+                            j.setStartShift(shiftnumber)
+                            if (round(completiontimeLatestJob + processtime,2)) > shiftcap:
                                 PartialJob = True
                                 fraction = shiftcap - completiontimeLatestJob
                                 processtime = processtime - shiftcap
@@ -461,6 +471,10 @@ class SchedulingManager:
                                         shiftnumber = 1
                                         if shiftday > day: #This means we fall outside the planning horizon
                                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be fully scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                            j.setScheduledShift(2)
+                                            j.setScheduledDay(shiftday-1)
+                                            j.setScheduledTime(7)
+                                            SchedulableJobs.remove(j)
                                             break
                                     if processtime > shiftcap:
                                         fraction = shiftcap - completiontimeLatestJob
@@ -471,12 +485,13 @@ class SchedulingManager:
                                     if processtime <= shiftcap:
                                         PartialJob = False
                                         fraction = shiftcap - completiontimeLatestJob
-                                        processtime = processtime - shiftcap
+                                        processtime = processtime
                                         r.getSchedule()[shiftday][shiftnumber-1][1].append([j,'-'])
                                         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"
                                         ScheduledJobs[j.getName()] = j
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shiftday)
+                                        j.setScheduledTime(processtime)
                                         SchedulableJobs.remove(j) #Remove scheduled job
 
                                         ## check if successor can be scheduled.                                        
@@ -498,6 +513,7 @@ class SchedulingManager:
                                 r.getSchedule()[shiftday][shiftnumber-1][1].append([j,'-'])
                                 j.setScheduledShift(shiftnumber)
                                 j.setScheduledDay(shift[0].getDay())
+                                j.setScheduledTime(round(completiontimeLatestJob + processtime,2))
                                 ScheduledJobs[j.getName()] = j
                                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift[0].getNumber())+" On day "+str(shift[0].getDay())+"\n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
@@ -531,10 +547,12 @@ class SchedulingManager:
                     else:
                                                                                                           
                         j.setStartTime(completiontimeLatestJob)
-                        if (completiontimeLatestJob + processtime) > shiftcap: #This means we can only schedule partially in this shift
+                        j.setStartDay(shiftday)
+                        j.setStartShift(shiftnumber)
+                        if (round(completiontimeLatestJob + processtime,2)) > shiftcap: #This means we can only schedule partially in this shift
                             PartialJob = True
                             fraction = shiftcap - completiontimeLatestJob
-                            ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                            ProcessedQuantity = round(fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime(),2)
                             Quantity = Quantity - ProcessedQuantity
                             
                             processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
@@ -556,6 +574,10 @@ class SchedulingManager:
                                         shiftnumber = 1
                                         if shiftday > day: #This means we fall outside the planning horizon
                                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be fully scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                            j.setScheduledShift(3)
+                                            j.setScheduledDay(shiftday-1)
+                                            j.setScheduledTime(8)
+                                            SchedulableJobs.remove(j)
                                             break
                                 else:
                                     if shiftnumber == 1:
@@ -568,10 +590,14 @@ class SchedulingManager:
                                         shiftnumber = 1
                                         if shiftday > day: #This means we fall outside the planning horizon
                                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be fully scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
+                                            j.setScheduledShift(2)
+                                            j.setScheduledDay(shiftday-1)
+                                            j.setScheduledTime(7)
+                                            SchedulableJobs.remove(j)
                                             break
                                 if processtime > shiftcap:
                                     fraction = shiftcap
-                                    ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                    ProcessedQuantity = round(fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime(),2)
                                     Quantity = Quantity - ProcessedQuantity                                        
                                     processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                     if shiftnumber == 1 and effort1 <= effort2:
@@ -585,7 +611,7 @@ class SchedulingManager:
                                     continue
                                 if processtime <= shiftcap:
                                     PartialJob = False
-                                    ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
+                                    ProcessedQuantity = round(processtime/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime(),2)
                                     Quantity = Quantity - ProcessedQuantity                                        
                                     processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
                                     if shiftnumber == 1 and effort1 <= effort2:
@@ -599,6 +625,7 @@ class SchedulingManager:
                                     ScheduledJobs[j.getName()] = j
                                     j.setScheduledShift(shiftnumber)
                                     j.setScheduledDay(shiftday)
+                                    j.setScheduledTime(processtime)
                                     SchedulableJobs.remove(j) #Remove scheduled job
 
                                     ## check if successor can be scheduled.
@@ -624,6 +651,7 @@ class SchedulingManager:
                             r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                             j.setScheduledShift(shiftnumber)
                             j.setScheduledDay(shift[0].getDay())
+                            j.setScheduledTime(round(completiontimeLatestJob + processtime,2))
                             ScheduledJobs[j.getName()] = j
                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift[0].getNumber())+" On day "+str(shift[0].getDay())+"\n"
                             SchedulableJobs.remove(j) #Remove scheduled job
@@ -669,27 +697,35 @@ class SchedulingManager:
             self.getDataManager().getProducts()[Product.getName()].setStockLevel(NewStock)
 
         Orderstatus = []
-
+        
         for orders in SelectedOrders:
+            UncompletedJobs = []            
+            jobs = orders.getMyJobs()
+            for job in jobs:
+                if job.getName() in ScheduledJobs.keys():
+                    continue                
+                else:
+                    UncompletedJobs.append(job)            
+            
             product = orders.getProduct()
             orderquant = orders.getQuantity()
             productstock = self.getDataManager().getProducts()[product.getName()].getStockLevel()
-            if orderquant <= productstock:
+            if len(UncompletedJobs) == 0:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was fully completed within the schedule horizon \n\n"
                 
                 productstock = productstock - orderquant
                 self.getDataManager().getProducts()[product.getName()].setStockLevel(productstock)
                 Orderstatus.append(str(orders.getName())+": Completed")
-            elif orderquant > productstock and productstock>0:
+            elif 0 < len(UncompletedJobs) < len(jobs):
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was partially completed. "+str(productstock)+" out of "+str(orderquant)+" was created. \n\n"
                 self.getDataManager().getProducts()[product.getName()].setStockLevel(0)
                 Orderstatus.append(str(orders.getName())+": Partially Completed")
-            else:
+            elif len(UncompletedJobs) == len(jobs):
                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Order: "+str(orders.getName())+" of product "+str(product.getName())+" with a quantity of "+str(orderquant)+" was not completed because there was no stock. \n\n"
                Orderstatus.append(str(orders.getName())+": Nothing completed")
         
 
-        myops =  [i.getName() for i in oprdict.keys() if len(self.getDataManager().getOperations()[i.getName()].getJobs()) > 0 ]
+        myops =  [i.getName() for i in oprdict.keys()]
         myres = [i for i in self.getDataManager().getResources().keys()]
         self.getVisualManager().getSchedulingTab().getPSchOperations().options = myops
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus

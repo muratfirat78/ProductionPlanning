@@ -197,10 +197,11 @@ class ScheduleTab():
         if selectedopr in self.getVisualManager().DataManager.getResources():
             selected_op = self.getVisualManager().DataManager.getResources()[selectedopr]
             
-            for shift, jobs in selected_op.getSchedule().items():
-                joblist.append(" >> Day: "+str(shift.getDay())+" Shift "+str(shift.getNumber())+"\n")
-                for job in jobs:
-                    joblist.append("   >> Job: "+str(job[0].getName())+", Processed Quantity: "+str(job[2])+" of Total Quantity: "+str(job[0].getQuantity())+"\n")
+            for day, shiftjobs in selected_op.getSchedule().items():
+                for shift in shiftjobs:
+                    joblist.append(" >> Day: "+str(day)+" Shift "+str(shift[0].getNumber())+"\n")
+                    for job in shift[1]:
+                        joblist.append("   >> Job: "+str(job[0].getName())+", Processed Quantity: "+str(job[1])+" of Total Quantity: "+str(job[0].getQuantity())+"\n")
             
 
             

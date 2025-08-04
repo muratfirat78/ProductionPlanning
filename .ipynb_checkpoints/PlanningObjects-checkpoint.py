@@ -100,16 +100,17 @@ class Resource():
         self.ID = myid
         self.Name = myname
         self.Type = mytype
-        self.DayCapacity= int(mydaycp)
+        self.DayCapacity= int(mydaycp%8>0)+mydaycp//8
         self.Operations = []
         self.Outsource = False
         self.Automated = None #Boolean Yes or No if Type is Machine, None if Type is Manual
+        self.FTERequirement = 0.0 # per unit operating time. Mostly applied to machines. 
         # PlANNING
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
-        self.CapacityReserved = dict() 
-      
+        self.CapacityReserved = dict()
         
+   
         # PlANNING
 
         # SCHEDULING 
@@ -120,7 +121,14 @@ class Resource():
         self.OperatingEffort = 0
         self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
 
-        # SCHEDULING 
+        # SCHEDULING
+
+    def setFTERequirement(self):
+        self.FTERequirement = True
+        return
+    def getFTERequirement(self):
+        return self.FTERequirement
+    
 
     def setOutsource(self):
         self.Outsource = True
@@ -193,7 +201,7 @@ class Operation():
         self.RequiredResources = [] # Attention: How to handle alternative resources in this structure!!
         self.Jobs = []
         self.batchsize = 12 # to be changed..
-        self.Predecessor = None
+        self.Predecessor = dict()
 
     
     def getID(self):
@@ -215,9 +223,6 @@ class Operation():
     def setPredecessor(self, pred):
         self.Predecessor = pred
         return
-    def setName(self, name):
-        self.Name = name
-        return
 
 
 class Job():
@@ -231,17 +236,20 @@ class Job():
         # PLANNING
         self.DeadLine = myddline
         self.Predecessors = []
-        self.Successor = []
+        self.Successor = None
         self.LatestStart=  None
         
-        
+       
         
 
 
     # SCHEDULING
         self.StartTime = None
+        self.StartShift = None
+        self.StartDay = None
         self.ScheduledDay=None
         self.ScheduledShift=None
+        self.ScheduledTime =None
         self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
         
     def getLatestStart(self):
@@ -262,6 +270,13 @@ class Job():
         self.StartTime = myst
         return
 
+    def getScheduledTime(self):
+        return self.ScheduledTime
+
+    def setScheduledTime(self,myst):
+        self.ScheduledTime = myst
+        return
+
     def getScheduledDay(self):
         return self.ScheduledDay
 
@@ -274,6 +289,18 @@ class Job():
 
     def setScheduledShift(self,shift):
         self.ScheduledShift = shift
+        return
+    def getStartDay(self):
+        return self.StartDay
+
+    def setStartDay(self,day):
+        self.StartDay = day
+        return
+    def getStartShift(self):
+        return self.StartShift
+
+    def setStartShift(self,shift):
+        self.StartShift = shift
         return
 
     def getID(self):
@@ -294,6 +321,9 @@ class Job():
         return self.Predecessors
     def getSuccessor(self):
         return self.Successor 
+    def setSuccessor(self,myjob):
+        self.Successor = myjob
+        return
     def getOrderReserves(self):
         return self.OrderReserves
     
@@ -309,7 +339,7 @@ class CustomerOrder():
         self.Quantity = myqnty
         self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
         self.ReferenceNumber = 0
-        self.DelayReasons = dict() # key: prod, value: (resource/lead time,date)
+        self.DelayReasons = dict() # key: deldate, val: prodpn+resource cap./lead time+date
         self.OrderPlanDict = dict() # key: plan item type, value: list of tuples (item,(date,val))
        
 
@@ -320,7 +350,14 @@ class CustomerOrder():
         self.PlannedDelivery = None
         self.LatestStart = None
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
+        self.MyJobs = [] # created during the planning, order batching convention 
 
+    def getMyJobs(self):
+        return self.MyJobs
+
+    def setMyJobs(self,myit):
+        self.MyJobs = myit
+        return 
 
     def getLatestStart(self):
         return self.LatestStart
