@@ -703,6 +703,11 @@ class SchedulingManager:
             jobs = orders.getMyJobs()
             for job in jobs:
                 if job.getName() in ScheduledJobs.keys():
+                    Product = job.getProduct()
+                    Quant = job.getQuantity()
+                    CurStock = self.getDataManager().getProducts()[Product.getName()].getStockLevel()
+                    NewStock = CurStock + Quant
+                    self.getDataManager().getProducts()[Product.getName()].setStockLevel(NewStock)
                     continue                
                 else:
                     UncompletedJobs.append(job)            
