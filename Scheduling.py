@@ -166,16 +166,7 @@ class SchedulingManager:
 
         #for scheduleday in pd.date_range(psstart,pssend):
             #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
-        while i <= day+1:
-            shift1 = Shift(i,1,8)
-            shiftlistman.append(shift1)
-            shiftlistaut.append(shift1)
-            shift2=Shift(i,2,7)
-            shiftlistman.append(shift2)
-            shiftlistaut.append(shift2)
-            shift3=Shift(i,3,8)
-            shiftlistaut.append(shift3)
-            i+=1
+        
     
         
         
@@ -210,10 +201,12 @@ class SchedulingManager:
                     res.getSchedule()[i].append((shift2,[]))
                     if not ((res.getAutomated() is None) or (res.getAutomated()==False)):
                         res.getSchedule()[i].append((shift3,[]))
+                    
                 if res.getType() == "Manual":
                     res.getSchedule()[i] = []
                     res.getSchedule()[i].append((shift1,[]))
                     res.getSchedule()[i].append((shift2,[]))
+                    
                 if res.getType() == "Operator":
                     res.getSchedule()[i] = []
 
@@ -222,20 +215,22 @@ class SchedulingManager:
                         opno += 1
                     else:
                         res.getSchedule()[i].append((shift2,[]))
+                   
                 if res.getType() == "Outsourced":
                     res.getSchedule()[i] = []
                     res.getSchedule()[i].append((shift1,[]))
                     res.getSchedule()[i].append((shift2,[]))
-                    res.getSchedule()[i].append((shift3,[]))    
-                        
-                        
+                    res.getSchedule()[i].append((shift3,[]))
+                    
+            i+=1        
+                    
      
         #Create Schedule; we start by checking if there are still jobs that can be scheduled   
         while len(SchedulableJobs) >0:
             for j in SchedulableJobs:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"               
                 predecessorjobs = j.getPredecessors()
-                successorjobs = j.getSuccessor()
+                successorjob = j.getSuccessor()
                 Quantity = j.getQuantity()
                 PartialJob = False #Partial Job False is an indicator to check if a job could be completely scheduled during the shift
                 EarliestStart = [1,1,0] # Initialize the earliest start [day,shift,starttime(i.e. completiontime of latest job)]
@@ -255,37 +250,44 @@ class SchedulingManager:
                 resources = j.getOperation().getRequiredResources()
                 for r in resources:
                     ##Here we implement first available resources when we have alternative machines implemented...
-                    
+                    r = self.getDataManager().getResources()[r.getName()]
                     Automated = r.getAutomated()
                     opef = r.getOperatingEffort()
                     
                     restype = r.getType()
                     schedulableShift = [] #Here we track if we can schedule the job in the available shifts [day,shift]
                     completiontimeLatestJob = None #Here we track the completion time of the latest job
-                    
 
-                    while schedulableShift == []: #Here we find the [day,shift] for when we can schedule the job 
+                                       
+
+                    while schedulableShift == []: #Here we find the [day,shift] for when we can schedule the job
+                        
                         for daynum, shiftjob in r.getSchedule().items():                          
-                                
+                              
                             #Check which is the earliest shift that we are allowed to schedule also checking for effort availability of the operators
                             
                             if (daynum < EarliestStart[0]):
                                 continue
                             if daynum >= EarliestStart[0]:
-                                for shift in shiftjob:
+                                for shift in shiftjob: 
                                     if shift[0].getNumber() < EarliestStart[1]:
+                                        
                                         continue
                                     if shift[0].getNumber() == EarliestStart[1]: #Check if latest job ends before the end of the shift
-                                        if shift[1][-1][0].getStartTime() + (shift[1][-1][1]*self.getDataManager().getOperations()[shift[1][-1][0].getOperation().getName()].getProcessTime()) >= shift[0].getCapacity():
+                                        if shift[1] == []: #Here we have an empty shift so we set this shift as 
+                                            schedulableShift = [daynum, shift]
+                                            completiontimeLatestJob = 0                                            
+                                        if shift[1] != [] and shift[1][-1][0].getStartTime() + (shift[1][-1][1]*self.getDataManager().getOperations()[shift[1][-1][0].getOperation().getName()].getProcessTime()) >= shift[0].getCapacity():                                            
                                             continue
                                             
-                                        #Check the availability of operators/manual workers if we have a machine or manual labour
+                                        #Check the availability of operators/manual workers if we have a machine or manual labour                                       
                                         effort = 0
-                                        workershiftjobs = None #Find the shift for effor to check
+                                        workershiftjobs = [] #Find the shift for effor to check
                                         if restype == 'Manual':
                                             SchedWorker = self.getDataManager().getResources()['Manual workers'].getSchedule()[daynum]
                                             for wrkshiftjob in SchedWorker:
-                                                if wrkshiftjob[0].getNumber() == shift[0].getNumber:
+                                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shift check "+str(wrkshiftjob[0])+" and "+str(shift[0])+" \n"
+                                                if wrkshiftjob[0].getNumber() == shift[0].getNumber():
                                                     workershiftjobs = wrkshiftjob[1]
                                             for workerjob in workershiftjobs: #Here we are calculating the effort of the shift already in use. workerjob is [job,processed quantity]
                                                 effort += workerjob[0].getOperation().getRequiredResources()[0].getOperatingEffort()* workerjob[0].getOperation().getProcessTime()*workerjob[1]
@@ -295,8 +297,9 @@ class SchedulingManager:
                                             if shift[0].getNumber() == 1:
                                                 effort1 = 0
                                                 effort2 = 0
-                                                SchedWorker1 = self.getDataManager().getResources()['Operator 1'].getSchedule()[daynum]
-                                                SchedWorker2 = self.getDataManager().getResources()['Operator 2'].getSchedule()[daynum]
+                                                SchedWorker1 = self.getDataManager().getResources()['Operator 1'].getSchedule()[daynum][0]
+                                                SchedWorker2 = self.getDataManager().getResources()['Operator 2'].getSchedule()[daynum][0]
+                                                
                                                 workershiftjobs1 = SchedWorker1[1]
                                                 workershiftjobs2 = SchedWorker2[1]
                                                 for workerjob in workershiftjobs1: #Here we are calculating the effort of the shift already in use. workerjob is [job,processed quantity]
@@ -307,7 +310,7 @@ class SchedulingManager:
                                                 if effort >= 8:
                                                     continue
                                             if shift[0].getNumber() == 2:                                                
-                                                SchedWorker = self.getDataManager().getResources()['Operator 3'].getSchedule()[daynum]
+                                                SchedWorker = self.getDataManager().getResources()['Operator 3'].getSchedule()[daynum][0]
                                                 workershiftjobs = SchedWorker[1]
                                                 
                                                 for workerjob in workershiftjobs: #Here we are calculating the effort of the shift already in use. workerjob is [job,processed quantity]
@@ -318,7 +321,11 @@ class SchedulingManager:
                                         
                                         else:
                                             schedulableShift = [daynum,shift]
-                                            completiontimeLatestJob = shift[1][-1].getStartTime() + (shift[1][-1].getQuantity()*self.getDataManager().getOperations()[shift[1][-1].getOperation().getName()].getProcessTime())
+                                            if schedulableShift[1][1] == []:
+                                                completiontimeLatestJob = 0
+                                            else:
+                                                
+                                                completiontimeLatestJob = schedulableShift[1][1][-1][0].getStartTime() + (schedulableShift[1][1][-1][0].getQuantity()*self.getDataManager().getOperations()[schedulableShift[1][1][-1][0].getOperation().getName()].getProcessTime())
                                             break
                                 if schedulableShift != []:
                                     break
@@ -329,10 +336,13 @@ class SchedulingManager:
                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Job "+str(j.getName())+" cannot be scheduled on resource "+str(r.getName())+" Within the scheduling horizon of "+ str(day)+" days. \n"
                             SchedulableJobs.remove(j)
                             break
-    
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Deze shift is degene "+str(schedulableShift)
                     shiftday = schedulableShift[0]        
-                    shiftcap = schedulableShift[1].getCapacity()
-                    shiftnumber = schedulableShift[1].getNumber()
+                    shiftcap = schedulableShift[1][0].getCapacity()
+                    shiftnumber = schedulableShift[1][0].getNumber()
+
+                    ##We have now determined the first shift that we can schedule in
+
                     
                     if restype == 'Manual':                   
                                                                                                                                         
@@ -344,7 +354,7 @@ class SchedulingManager:
                                 Quantity = Quantity - ProcessedQuantity
                                 
                                 processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
-                                r.getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                                r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                 while PartialJob == True and shiftday <= day: #Also check if we are still in the scheduling horizon
                                     if shiftnumber == 1:
@@ -363,8 +373,8 @@ class SchedulingManager:
                                         ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
                                         Quantity = Quantity - ProcessedQuantity                                        
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
-                                        self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
-                                        r.getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                                        self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                        r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                         continue
                                     if processtime <= shiftcap:
@@ -372,8 +382,8 @@ class SchedulingManager:
                                         ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
                                         Quantity = Quantity - ProcessedQuantity                                        
                                         processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
-                                        self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
-                                        r.getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                                        self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                        r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"
                                         ScheduledJobs[j.getName()] = j
                                         j.setScheduledShift(shiftnumber)
@@ -381,16 +391,17 @@ class SchedulingManager:
                                         SchedulableJobs.remove(j) #Remove scheduled job
 
                                         ## check if successor can be scheduled.
-                                        for sucjob in successorjobs:
-                                            Schedulable = True
-                                            for predjbs in sucjob.getPredecessors():
-                                                if predjbs in ScheduledJobs:
-                                                    continue
-                                                else:
-                                                    Schedulable = False;
-                                            if Schedulable == True:
-                                                if sucjob not in ScheduledJobs:
-                                                    SchedulableJobs.append(sucjob)
+                                    
+                                        Schedulable = True
+                                        if successorjob is not None:
+                                                for predjbs in successorjob.getPredecessors():
+                                                    if predjbs in ScheduledJobs:
+                                                        continue
+                                                    else:
+                                                        Schedulable = False;
+                                        if Schedulable == True:
+                                            if successorjob not in ScheduledJobs and successorjob is not None:
+                                                SchedulableJobs.append(successorjob)
                                                     
 
                                 break
@@ -399,28 +410,28 @@ class SchedulingManager:
                                 
                             else:
                                 ProcessedQuantity = Quantity
-                                r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                                r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                 j.setScheduledShift(shiftnumber)
-                                j.setScheduledDay(shift.getDay())
+                                j.setScheduledDay(shift[0].getDay())
                                 ScheduledJobs[j.getName()] = j
-                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift[0].getNumber())+" On day "+str(shift[0].getDay())+"\n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
-                                self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                                self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                             
-                                                               
-                                                            
+                                                                                                                         
                                 
                                 ## check if successor can be scheduled.
-                                for sucjob in successorjobs:
-                                    Schedulable = True
-                                    for predjbs in sucjob.getPredecessors():
-                                        if predjbs in ScheduledJobs:
-                                            continue
-                                        else:
-                                            Schedulable = False;
-                                    if Schedulable == True:
-                                        if sucjob not in ScheduledJobs:
-                                            SchedulableJobs.append(sucjob)
+                                    
+                                Schedulable = True
+                                if successorjob is not None:
+                                        for predjbs in successorjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                if Schedulable == True:
+                                    if successorjob not in ScheduledJobs and successorjob is not None:
+                                        SchedulableJobs.append(successorjob)
                             
                             
                             
@@ -437,7 +448,7 @@ class SchedulingManager:
                                 PartialJob = True
                                 fraction = shiftcap - completiontimeLatestJob
                                 processtime = processtime - shiftcap
-                                r.getSchedule()[shiftday].append([shiftnumber,[j,'-']])
+                                r.getSchedule()[shiftday][shiftnumber-1][1].append([j,'-'])
                                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                 while PartialJob == True and shiftday <= day: #Also check if we are still in the scheduling horizon
                                     if shiftnumber == 1:
@@ -454,41 +465,41 @@ class SchedulingManager:
                                     if processtime > shiftcap:
                                         fraction = shiftcap - completiontimeLatestJob
                                         processtime = processtime - shiftcap
-                                        r.getSchedule()[shiftday].append([shiftnumber,[j,'-']])
+                                        r.getSchedule()[shiftday][shiftnumber-1][1].append([j,'-'])
                                         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
                                         continue
                                     if processtime <= shiftcap:
                                         PartialJob = False
                                         fraction = shiftcap - completiontimeLatestJob
                                         processtime = processtime - shiftcap
-                                        r.getSchedule()[shiftday].append([shiftnumber,[j,'-']])
+                                        r.getSchedule()[shiftday][shiftnumber-1][1].append([j,'-'])
                                         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"
                                         ScheduledJobs[j.getName()] = j
                                         j.setScheduledShift(shiftnumber)
                                         j.setScheduledDay(shiftday)
                                         SchedulableJobs.remove(j) #Remove scheduled job
 
-                                        ## check if successor can be scheduled.
-                                        for sucjob in successorjobs:
-                                            Schedulable = True
-                                            for predjbs in sucjob.getPredecessors():
-                                                if predjbs in ScheduledJobs:
-                                                    continue
-                                                else:
-                                                    Schedulable = False;
-                                            if Schedulable == True:
-                                                if sucjob not in ScheduledJobs:
-                                                    SchedulableJobs.append(sucjob)
+                                        ## check if successor can be scheduled.                                        
+                                    
+                                        Schedulable = True
+                                        for predjbs in successorjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                        if Schedulable == True:
+                                            if successorjob not in ScheduledJobs and successorjob is not None:
+                                                SchedulableJobs.append(successorjob)
                                 break
 
                                                 
                             else:
                                 ProcessedQuantity = Quantity
-                                r.getSchedule()[shiftday].append([shiftnumber,[j,'-']])
+                                r.getSchedule()[shiftday][shiftnumber-1][1].append([j,'-'])
                                 j.setScheduledShift(shiftnumber)
-                                j.setScheduledDay(shift.getDay())
+                                j.setScheduledDay(shift[0].getDay())
                                 ScheduledJobs[j.getName()] = j
-                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift[0].getNumber())+" On day "+str(shift[0].getDay())+"\n"
                                 SchedulableJobs.remove(j) #Remove scheduled job
                             
                             
@@ -496,16 +507,17 @@ class SchedulingManager:
                                                             
                             
                                 ## check if successor can be scheduled.
-                                for sucjob in successorjobs:
-                                    Schedulable = True
-                                    for predjbs in sucjob.getPredecessors():
-                                        if predjbs in ScheduledJobs:
-                                            continue
-                                        else:
-                                            Schedulable = False;
-                                    if Schedulable == True:
-                                        if sucjob not in ScheduledJobs:
-                                                SchedulableJobs.append(sucjob)
+                                    
+                                Schedulable = True
+                                if successorjob is not None:
+                                        for predjbs in successorjob.getPredecessors():
+                                            if predjbs in ScheduledJobs:
+                                                continue
+                                            else:
+                                                Schedulable = False;
+                                if Schedulable == True:
+                                    if successorjob not in ScheduledJobs and successorjob is not None:
+                                        SchedulableJobs.append(successorjob)
                             
                             
                             
@@ -526,7 +538,7 @@ class SchedulingManager:
                             Quantity = Quantity - ProcessedQuantity
                             
                             processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
-                            r.getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                            r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                             while PartialJob == True and shiftday <= day: #Also check if we are still in the scheduling horizon
                                 if Automated == True:
@@ -562,8 +574,13 @@ class SchedulingManager:
                                     ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
                                     Quantity = Quantity - ProcessedQuantity                                        
                                     processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
-                                    self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
-                                    r.getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                                    if shiftnumber == 1 and effort1 <= effort2:
+                                        self.getDataManager().getResources()['Operator 1'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                    elif shiftnumber == 1 and effort1 > effort2:
+                                        self.getDataManager().getResources()['Operator 2'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                    else:
+                                        self.getDataManager().getResources()['Operator 3'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                    r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Partially scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"+"Quantity remaining: "+str(Quantity)+"\n"
                                     continue
                                 if processtime <= shiftcap:
@@ -571,8 +588,13 @@ class SchedulingManager:
                                     ProcessedQuantity = fraction/self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime()
                                     Quantity = Quantity - ProcessedQuantity                                        
                                     processtime = (Quantity * self.getDataManager().getOperations()[j.getOperation().getName()].getProcessTime())
-                                    self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
-                                    r.getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
+                                    if shiftnumber == 1 and effort1 <= effort2:
+                                        self.getDataManager().getResources()['Operator 1'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                    elif shiftnumber == 1 and effort1 > effort2:
+                                        self.getDataManager().getResources()['Operator 2'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                    else:
+                                        self.getDataManager().getResources()['Operator 3'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                                    r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shiftnumber)+" On day "+str(shiftday)+"\n"
                                     ScheduledJobs[j.getName()] = j
                                     j.setScheduledShift(shiftnumber)
@@ -580,16 +602,17 @@ class SchedulingManager:
                                     SchedulableJobs.remove(j) #Remove scheduled job
 
                                     ## check if successor can be scheduled.
-                                    for sucjob in successorjobs:
-                                        Schedulable = True
-                                        for predjbs in sucjob.getPredecessors():
+                                    
+                                    Schedulable = True
+                                    if successorjob is not None:
+                                        for predjbs in successorjob.getPredecessors():
                                             if predjbs in ScheduledJobs:
                                                 continue
                                             else:
                                                 Schedulable = False;
-                                        if Schedulable == True:
-                                            if sucjob not in ScheduledJobs:
-                                                SchedulableJobs.append(sucjob)
+                                    if Schedulable == True:
+                                        if successorjob not in ScheduledJobs and successorjob is not None:
+                                            SchedulableJobs.append(successorjob)
                                                 
 
                             break
@@ -598,28 +621,32 @@ class SchedulingManager:
                             
                         else:
                             ProcessedQuantity = Quantity
-                            r.getSchedule()[shift].append((j,completiontimeLatestJob,ProcessedQuantity))
+                            r.getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
                             j.setScheduledShift(shiftnumber)
-                            j.setScheduledDay(shift.getDay())
+                            j.setScheduledDay(shift[0].getDay())
                             ScheduledJobs[j.getName()] = j
-                            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift.getNumber())+" On day "+str(shift.getDay())+"\n"
+                            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Completely scheduled "+str(j.getName())+" on resource "+str(r.getName())+" During shift "+str(shift[0].getNumber())+" On day "+str(shift[0].getDay())+"\n"
                             SchedulableJobs.remove(j) #Remove scheduled job
-                            self.getDataManager().getResources()['Manual workers'].getSchedule()[shiftday].append([shiftnumber,[j,ProcessedQuantity]])
-                        
-                                                           
+                            if shiftnumber == 1 and effort1 <= effort2:
+                                self.getDataManager().getResources()['Operator 1'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                            elif shiftnumber == 1 and effort1 > effort2:
+                                self.getDataManager().getResources()['Operator 2'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])
+                            else:
+                                self.getDataManager().getResources()['Operator 3'].getSchedule()[shiftday][shiftnumber-1][1].append([j,ProcessedQuantity])                            
                                                         
                             
                             ## check if successor can be scheduled.
-                            for sucjob in successorjobs:
-                                Schedulable = True
-                                for predjbs in sucjob.getPredecessors():
-                                    if predjbs in ScheduledJobs:
-                                        continue
-                                    else:
-                                        Schedulable = False;
-                                if Schedulable == True:
-                                    if sucjob not in ScheduledJobs:
-                                        SchedulableJobs.append(sucjob)
+                                    
+                            Schedulable = True
+                            if successorjob is not None:
+                                    for predjbs in successorjob.getPredecessors():
+                                        if predjbs in ScheduledJobs:
+                                            continue
+                                        else:
+                                            Schedulable = False;
+                            if Schedulable == True:
+                                if successorjob not in ScheduledJobs and successorjob is not None:
+                                    SchedulableJobs.append(successorjob)
                         
                         
                         
