@@ -183,7 +183,10 @@ class PlanningManager:
                                 curr_job.setSuccessor(prev_job)
                                 prev_job.getPredecessors().append(curr_job)
                             prev_job = curr_job
+                            curr_job.setCustomerOrder(order)
+                                
                             order.getMyJobs().append(curr_job)
+                             
                                     
   
             totalhours =  int(totaltime)+int(totaltime-int(totaltime) > 0)

@@ -117,11 +117,19 @@ class Resource():
         
         self.batchsize = 12 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
-        self.Schedule = dict()  #key: day, val: list of (jobs, starttimes)
+        self.Schedule = dict()  #key: shift, val: []
         self.OperatingEffort = 0
         self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
+        self.EmptySlots = [] # list of tuples ((starttime,length),startshift)
+        self.ShiftAvailability = dict() #key: shift, val: boolena available/unavailable.  
 
         # SCHEDULING
+    def getEmptySlots(self):
+        return self.EmptySlots
+
+    def getShiftAvailability(self):
+        return self.ShiftAvailability
+
 
     def setFTERequirement(self):
         self.FTERequirement = True
@@ -139,6 +147,8 @@ class Resource():
     def setName(self,name):
         self.Name = name
         return
+
+    
 
     def GetTotalDemand(self):
 
@@ -191,7 +201,81 @@ class Resource():
     def setAvailableShift(self,shift):
         self.AvailableShift = shift
         return 
+
+    def InitializeEmptySlot(self):
+        firstshift = None
+
+        availabletimes = 0
+        for shift,jobs in self.getSchedule().items():
+            availabletimes+=shift.getEndTime()-shift.getStartTime()+1
+            if shift.getPrevious() == None:
+                firstshift = shift
+
+        self.getEmptySlots().append(((firstshift.getStartTime(),availabletimes),firstshift))
+        
+        return 
+          
+
+    def CheckSlot(self,job):
+        time =  job.getLatestPredecessorCompletion()
+        for slot in self.getEmptyslotlist():    
+            if slot[0][1] <  job.getQuantity()*job.getOperation().getProcessTime():
+                continue
+
+            length = slot[0][1]; startshift = slot[1]; curr_time = slot[0][0]
+           
+            while startshift.getEndTime() < time: 
+                length = length - (startshift.getEndTime()-curr_time)
+                startshift = startshift.getNext()
+                while not self.getShiftAvailability()[startshift]: 
+                    startshift = startshift.getNext()
+                curr_time = startshift.getStartTime()
+                   
+                            
+            length = length - max(time- curr_time,0)
+            unusedtime = slot[0][1] - length
+        
+            if length < job.getQuantity()*job.getOperation().getProcessTime(): 
+                continue 
+                   
+            jobstarttime = max(time, curr_time)
+            return (slot,(jobstarttime, unusedtime))
     
+        return None  # meaning that the resource cannot process the job due to fully scheduled… 
+
+
+    def ScheduleJob(self,job,jobstarttime,unusedtime,emptyslot):
+        job.SetScheduled()
+        job.setStartTime(jobstarttime)  
+
+        curr_time = jobstarttime
+        curr_shift = empytslot[1]
+        processtime = job.getQuantity()*job.getOperation().getProcessTime()
+
+        # find completion time of the job
+        delayinstart = 0
+        while processtime > 0: 
+            self.getSchedule()[curr_shift].append(job)
+            timeinshift =  curr_shift.getEndTime() - curr_time
+            curr_time = curr_time + min(timeinshift, processtime)
+            processtime = processtime - min(timeinshift, processtime)
+
+            while not self.getShiftAvailability()[curr_shift]: 
+                curr_shift = curr_shift.getNext()
+                
+        job.setCompletionTime(curr_time)
+   
+        if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
+            newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
+            self.getEmptyslotlist().insert(self.getEmptyslotlist().index(emptyslot),newslot) # insert this just before into the index of empyslot.
+
+        emptyslot[0][0] =  curr_time; emptyslot[0][1] =  emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())
+        emptyslot[1] = curr_shift
+
+        return
+       
+
+
 class Operation():
     # Operation(r["OperationID"],r["Name"],r["ProcessTime"])
     def __init__(self,myid,myname,myproctime):
@@ -238,6 +322,7 @@ class Job():
         self.Predecessors = []
         self.Successor = None
         self.LatestStart=  None
+        self.CustomerOrder = None
         
        
         
@@ -245,12 +330,52 @@ class Job():
 
     # SCHEDULING
         self.StartTime = None
+        self.CompletionTime = None
         self.StartShift = None
         self.StartDay = None
         self.ScheduledDay=None
         self.ScheduledShift=None
+        self.Scheduled = False
         self.ScheduledTime =None
         self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
+
+    def IsScheduled(self):
+        return self.Scehduled
+    def SetScheduled(self):
+        self.Scheduled = True
+        return 
+
+    def IsSchedulable(self):
+        for pred in self.getPredecessors():
+            if not pred.IsScheduled():
+                return False
+        return True
+    
+    def getCompletionTime(self):
+        return self.CompletionTime
+
+    def setCompletionTime(self,myst):
+        self.CompletionTime = myst
+        return
+
+    def setCustomerOrder(self,co):
+        self.CustomerOrder = co
+        return
+    def getCustomerOrder(self):
+        return self.CustomerOrder
+        
+
+    def getLatestPredecessorCompletion(self):
+
+        maxcomptime = 0
+
+        for pred in self.Predecessors:
+            if not pred.IsScheduled:
+                return -1 # not applicable to start
+            else: 
+                maxcomptime = max(maxcomptime,pred.getCompletionTime())
+
+        return maxcomptime
         
     def getLatestStart(self):
         return self.LatestStart
@@ -341,8 +466,7 @@ class CustomerOrder():
         self.ReferenceNumber = 0
         self.DelayReasons = dict() # key: deldate, val: prodpn+resource cap./lead time+date
         self.OrderPlanDict = dict() # key: plan item type, value: list of tuples (item,(date,val))
-       
-
+     
         self.OrderPlanDict['Products'] = dict() # for target stock levels
         self.OrderPlanDict['Resources'] = dict() # for capacity levels
 
@@ -352,6 +476,17 @@ class CustomerOrder():
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
         self.MyJobs = [] # created during the planning, order batching convention 
 
+    def getStatus(self):
+        nojobscompleted  = sum([int(jb.IsScheduled()) for jb in self.getMyJobs()])
+
+        if nojobscompleted == len(self.getMyJobs()):
+            return "Completed"
+        else:
+            if nojobscompleted == 0:
+                return "Pending"
+            else:
+                return "In-Progress"
+        
     def getMyJobs(self):
         return self.MyJobs
 
@@ -396,6 +531,8 @@ class CustomerOrder():
         # PlANNING
 
     
+
+    
     def isDelayed(self):
         return (self.DeadLine < self.PlannedDelivery)
     def getID(self):
@@ -415,10 +552,42 @@ class CustomerOrder():
         return self.ProductName
 
 class Shift():
-    def __init__(self,myday,number,shiftcap):
+    def __init__(self,myday,number,shiftca,previous):
         self.Day = myday
         self.Number = number
         self.Capacity = shiftcap
+        self.StartTime = 0
+        self.EndTime = 0
+        self.next = None
+        previous =  None
+        if previous != None: 
+            previous.setNext(self)
+        
+        self.previous = previous
+
+    def setStartTime(self,time):
+        self.StartTime = time
+        return 
+
+    def getStartTime(self):
+        return self.StartTime
+
+    def setNext(self,nt):
+        self.next = nt
+        return 
+
+    def getNext(self):
+        return self.next
+
+    def getPrevious(self):
+        return self.previous
+     
+    def setEndTime(self,time):
+        self.EndTime= time
+        return 
+
+    def getEndTime(self):
+        return self.EndTime
         
 
     def getDay(self):
