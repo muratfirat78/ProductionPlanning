@@ -206,11 +206,11 @@ class Resource():
         firstshift = None
 
         availabletimes = 0
+        
         for shift,jobs in self.getSchedule().items():
-            availabletimes+=shift.getEndTime()-shift.getStartTime()+1
-            if shift.getPrevious() == None:
-                firstshift = shift
-
+            availabletimes+=shift.getEndTime()-shift.getStartTime()+1           
+            if shift.getPrevious() == None:                
+                firstshift = shift                                  
         self.getEmptySlots().append(((firstshift.getStartTime(),availabletimes),firstshift))
         
         return 
@@ -218,7 +218,7 @@ class Resource():
 
     def CheckSlot(self,job):
         time =  job.getLatestPredecessorCompletion()
-        for slot in self.getEmptyslotlist():    
+        for slot in self.getEmptySlots():    
             if slot[0][1] <  job.getQuantity()*job.getOperation().getProcessTime():
                 continue
 
@@ -247,11 +247,11 @@ class Resource():
     def ScheduleJob(self,job,jobstarttime,unusedtime,emptyslot):
         job.SetScheduled()
         job.setStartTime(jobstarttime)  
-
+        
         curr_time = jobstarttime
-        curr_shift = empytslot[1]
+        curr_shift = emptyslot[1]
         processtime = job.getQuantity()*job.getOperation().getProcessTime()
-
+        
         # find completion time of the job
         delayinstart = 0
         while processtime > 0: 
@@ -259,7 +259,9 @@ class Resource():
             timeinshift =  curr_shift.getEndTime() - curr_time
             curr_time = curr_time + min(timeinshift, processtime)
             processtime = processtime - min(timeinshift, processtime)
-
+            
+            curr_shift=curr_shift.getNext()
+            
             while not self.getShiftAvailability()[curr_shift]: 
                 curr_shift = curr_shift.getNext()
                 
@@ -267,7 +269,7 @@ class Resource():
    
         if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
             newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
-            self.getEmptyslotlist().insert(self.getEmptyslotlist().index(emptyslot),newslot) # insert this just before into the index of empyslot.
+            self.getEmptySlots().insert(self.getEmptySlots().index(emptyslot),newslot) # insert this just before into the index of empyslot.
 
         newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
         emptyslot = newmeptyslot
@@ -339,7 +341,7 @@ class Job():
         self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
 
     def IsScheduled(self):
-        return self.Scehduled
+        return self.Scheduled
     def SetScheduled(self):
         self.Scheduled = True
         return 
@@ -551,14 +553,13 @@ class CustomerOrder():
         return self.ProductName
 
 class Shift():
-    def __init__(self,myday,number,shiftca,previous):
+    def __init__(self,myday,number,shiftcap,previous):
         self.Day = myday
         self.Number = number
         self.Capacity = shiftcap
         self.StartTime = 0
         self.EndTime = 0
-        self.next = None
-        previous =  None
+        self.next = None        
         if previous != None: 
             previous.setNext(self)
         

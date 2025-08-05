@@ -244,7 +244,7 @@ class ScheduleTab():
                 self.getPSchOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
                 
                 self.getPSchOrdProd().value += "Latest start: "+str(myord.getLatestStart())+"\n"
-                self.getPSchOrdProd().value += "Deadline: "+str(myord.getDeadline())+"\n"
+                
                 
                
                 
