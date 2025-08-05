@@ -244,42 +244,30 @@ class SchedulingManager:
      
         #Create Schedule; we start by checking if there are still jobs that can be scheduled   
         allscheduled = 0
-        
         while len(SchedulableJobs) >0:
-            ScheduledJobs = []
-            JobsToRemove = []
+
             nrscheduled = 0
             for j in SchedulableJobs:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"  
-                myresource = None
+                
                 for resource in j.getOperation().getRequiredResources():
                     myresource = resource
                     if isinstance(resource,list):
                         myresource = resource[0]
                     break
-                if myresource == None: 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Op: "+str(j.getOperation().getName())+" has no resource.."+"\n"
-                    JobsToRemove.append(j)
-                    continue
                 schreturn = myresource.CheckSlot(j)
                 if schreturn == None: 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+" cannot be scheduled in "+resource.getName()+"\n"
-                    JobsToRemove.append(j)
-                    continue
+                        continue
                 else: 
                     nrscheduled+=1
                     allscheduled+=1
                     slot,scheinfo = schreturn  
                     jobstarttime, unusedtime = scheinfo
                     myresource.ScheduleJob(j,jobstarttime,unusedtime,slot)
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+resource.getName()+", st "+str(jobstarttime)+".. "+"\n"
-                    ScheduledJobs.append(j)
+
+                    SchedulableJobs.remove(j)
                     if j.getSuccessor().IsSchedulable():
                         SchedulableJobs.append(j.getSuccessor())
-            for j in ScheduledJobs:
-                SchedulableJobs.remove(j)
-            for j in JobsToRemove:
-                SchedulableJobs.remove(j)
 
             if nrscheduled == 0:
                 break # no job can be scheduled anymore.. 

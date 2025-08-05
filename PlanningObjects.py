@@ -269,9 +269,8 @@ class Resource():
             newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
             self.getEmptyslotlist().insert(self.getEmptyslotlist().index(emptyslot),newslot) # insert this just before into the index of empyslot.
 
-        emptyslot[0][0] =  curr_time; emptyslot[0][1] =  emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())
-        emptyslot[1] = curr_shift
-
+        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
+        emptyslot = newmeptyslot
         return
        
 
