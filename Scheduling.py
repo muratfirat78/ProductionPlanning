@@ -125,16 +125,20 @@ class SchedulingManager:
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
 
-     
+        scheduleperiod = pd.date_range(psstart,pssend)
+        
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period length: "+str(len(scheduleperiod))+"\n"
 
+        
+      
         oprdict = dict()
         nrjobs = 0
 
         #Determine customer orders with latest start within Scheduling
         SelectedOrders=[]
         for name,order in self.getDataManager().getCustomerOrders().items():
-            if not order.getLatestStart() is None:
-                if order.getLatestStart().date() <= pssend:
+            if order.getLatestStart() != None:
+                if order.getLatestStart().date() < pssend:
                     nrjobs+=len(order.getMyJobs())
                     for job in order.getMyJobs():
                         if not job.getOperation() in oprdict:
@@ -142,10 +146,12 @@ class SchedulingManager:
                         oprdict[job.getOperation()].append(job)
                         
                     SelectedOrders.append(order)
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
+                   
                 
         #self.CreateJobs(psstart,ScheduleWeeks,SelectedOrders)
 
-        
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Orders in scheduling: "+str(len(SelectedOrders))+"\n"
 
         for resname,res in self.getDataManager().getResources().items():
             res.getSchedule().clear()
@@ -171,23 +177,29 @@ class SchedulingManager:
             for job in jobs:
                 if job.IsSchedulable():
                     SchedulableJobs.append(job)
+                else:
+                    if len(job.getPredecessors()) == 0:
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="No-sch job: "+str(len(opr.getName()))+"\n"
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="SchedulableJobs: m"+str(len(SchedulableJobs))+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="SchedulableJobs: "+str(len(SchedulableJobs))+"\n"
+
+       
               
         i=1
         prev_dayshift = None 
         scheduletimehour = 1
-        while i <= scheduldays:
+        
+        for curr_date in scheduleperiod:
             
-            shift1=Shift(i,1,8,prev_dayshift)
+            shift1=Shift(curr_date,1,prev_dayshift)
             shift1.setStartTime(scheduletimehour)            
             scheduletimehour+=8
             shift1.setEndTime(scheduletimehour-1)
-            shift2=Shift(i,2,7,shift1)
+            shift2=Shift(curr_date,2,shift1)
             shift2.setStartTime(scheduletimehour)                     
             scheduletimehour+=8
             shift2.setEndTime(scheduletimehour-1)
-            shift3=Shift(i,3,8,shift2)
+            shift3=Shift(curr_date,3,shift2)
             shift3.setStartTime(scheduletimehour)
             scheduletimehour+=8
             shift3.setEndTime(scheduletimehour-1)
@@ -215,26 +227,14 @@ class SchedulingManager:
                     res.getShiftAvailability()[shift3] = False
                     
                 if res.getType() == "Operator":
+                    res.getShiftAvailability()[shift1] = True
+                    res.getSchedule()[shift1] = []
+                    res.getShiftAvailability()[shift2] = True
+                    res.getSchedule()[shift2] = []
                     res.getShiftAvailability()[shift3] = False
 
-                    if opno < 2:
-                        res.getShiftAvailability()[shift1] = True
-                        res.getSchedule()[shift1] = []
-                        res.getShiftAvailability()[shift2] = False
-                        opno += 1
-                    elif opno == 3:
-                        if i ==1:
-                            repshift = shift2
-                            repshift.setPrevious(None)
-                        res.getShiftAvailability()[shift1] = False
-                        res.getShiftAvailability()[repshift] = True
-                        res.getSchedule()[shift2] = []
-                    else:
-                        res.getShiftAvailability()[shift1] = True
-                        res.getSchedule()[shift1] = []
-                        res.getShiftAvailability()[shift2] = True
-                        res.getSchedule()[shift2] = []
-                   
+                 
+          
                 if res.getType() == "Outsourced":
                     res.getShiftAvailability()[shift1] = True
                     res.getSchedule()[shift1] = []
@@ -242,8 +242,7 @@ class SchedulingManager:
                     res.getSchedule()[shift2] = []
                     res.getShiftAvailability()[shift3] = True
                     res.getSchedule()[shift3] = []
-                if res.getName() != 'Operator 3':
-                    res.InitializeEmptySlot()
+                    
                 
                     
                 
@@ -251,9 +250,19 @@ class SchedulingManager:
                 #     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+= res.getName()+str(slot[0][0])+","+slot[0][1]+"\n"  
                     
             i+=1        
+
+       
+        for resname, res in self.getDataManager().getResources().items():
+            if res.getName() == "M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01)":
+                for shift,jobs in res.getSchedule().items():
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Sh:("+str(shift.getDay())+","+str(shift.getNumber())+"), hrs: ["+str(shift.getStartTime())+"-"+str(shift.getEndTime())+"]\n" 
                     
-     
-        #Create Schedule; we start by checking if there are still jobs that can be scheduled   
+                displayed = True
+
+            
+            res.InitializeEmptySlot()
+        #Create Schedule; we start by checking if there are still jobs that can be scheduled  
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" starting... "+"\n"  
         allscheduled = 0
         
         while len(SchedulableJobs) >0:
@@ -261,7 +270,15 @@ class SchedulingManager:
             JobsToRemove = []
             nrscheduled = 0
             for j in SchedulableJobs:
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+"\n"  
+                prednames = ""
+
+                for pred in j.getPredecessors():
+                    prednames+="-"+pred.getName()
+                
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Checking job "+str(j.getName())+", LPCT: "+str(j.getLatestPredecessorCompletion())+", p: "+str(j.getQuantity()*j.getOperation().getProcessTime())+", prd: "+prednames+"\n"  
+
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Operation "+str(j.getOperation().getName())+"\n"
+                
                 myresource = None
                 for resource in j.getOperation().getRequiredResources():
                     myresource = resource
@@ -272,19 +289,35 @@ class SchedulingManager:
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Op: "+str(j.getOperation().getName())+" has no resource.."+"\n"
                     JobsToRemove.append(j)
                     continue
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="..Resource "+str(resource.getName())+"\n"  
                 schreturn = myresource.CheckSlot(j)
                 if schreturn == None: 
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+" cannot be scheduled in "+resource.getName()+"\n"
                     JobsToRemove.append(j)
                     continue
                 else: 
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+", Preds: "+str(len(j.getPredecessors()))+", LPCT: "+str(j.getLatestPredecessorCompletion())+"\n"  
                     nrscheduled+=1
                     allscheduled+=1
                     slot,scheinfo = schreturn  
-                    jobstarttime, unusedtime = scheinfo                    
-                    myresource.ScheduleJob(j,jobstarttime,unusedtime,slot)
+                    jobstarttime, unusedtime = scheinfo 
+                    
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" jobstarttime "+str(jobstarttime)+", unusedtime: "+str(unusedtime)+"\n" 
+
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
+                    #for myslot in resource.getEmptySlots(): 
+                    #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" *Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
+
+                
+                    newslot = myresource.ScheduleJob(j,jobstarttime,unusedtime,slot)
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+resource.getName()+", st "+str(jobstarttime)+".. "+"\n"
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled completion time "+str(j.getCompletionTime())+", st "+str(jobstarttime)+".. "+"\n"
+
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" NEW Slot: St: "+str(newslot[0][0])+", l: "+str(newslot[0][1])+", Shft: ("+str(newslot[1].getDay())+","+str(newslot[1].getNumber())+")"+"\n" 
+
+                    #for myslot in resource.getEmptySlots(): 
+                    #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" **Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
+                    
                     ScheduledJobs.append(j)
                     if j.getSuccessor() != None and j.getSuccessor().IsSchedulable():
                         SchedulableJobs.append(j.getSuccessor())

@@ -118,6 +118,7 @@ class Resource():
         self.batchsize = 12 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
         self.Schedule = dict()  #key: shift, val: []
+
         self.OperatingEffort = 0
         self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
         self.EmptySlots = [] # list of tuples ((starttime,length),startshift)
@@ -205,35 +206,56 @@ class Resource():
     def InitializeEmptySlot(self):
         firstshift = None
 
-        availabletimes = 0
+        availablehours = 0
         
         for shift,jobs in self.getSchedule().items():
-            availabletimes+=shift.getEndTime()-shift.getStartTime()+1           
+            availablehours+=(shift.getEndTime()-shift.getStartTime()+1)          
             if shift.getPrevious() == None:                
                 firstshift = shift                                  
-        self.getEmptySlots().append(((firstshift.getStartTime(),availabletimes),firstshift))
+        self.getEmptySlots().append(((firstshift.getStartTime(),availablehours),firstshift))
         
         return 
           
 
     def CheckSlot(self,job):
         time =  job.getLatestPredecessorCompletion()
-        for slot in self.getEmptySlots():    
-            if slot[0][1] <  job.getQuantity()*job.getOperation().getProcessTime():
-                continue
 
+        if self.getName().find("OUT -") != -1:
+            slot = self.getEmptySlots()[0]
+            return (slot,(time,0))
+
+
+        
+        for slot in self.getEmptySlots():    
+            if slot[0][1] < job.getQuantity()*job.getOperation().getProcessTime():
+                continue
+            if (slot[1].getNext() == None) and (slot[1].getEndTime() < time):
+                return None
+   
             length = slot[0][1]; startshift = slot[1]; curr_time = slot[0][0]
+
+            unusedtime = 0
+            if time >= curr_time:
+                if  startshift.getEndTime() >= time: 
+                    length -=  (time-curr_time)
+                    unusedtime = time-curr_time
+                    curr_time = time
+                else:
+                    while startshift.getEndTime() < time: 
+                        length = length - (startshift.getEndTime()-curr_time+1)
+                        unusedtime += (startshift.getEndTime()-curr_time+1)
+                        if startshift.getNext() == None:
+                            return None
+                        startshift = startshift.getNext()
+                        while not self.getShiftAvailability()[startshift]: 
+                            if startshift.getNext() == None:
+                                return None
+                            startshift = startshift.getNext()
+                        curr_time = startshift.getStartTime()
+                    unusedtime += time-curr_time
+                    length -= (time-curr_time) 
+          
            
-            while startshift.getEndTime() < time: 
-                length = length - (startshift.getEndTime()-curr_time)
-                startshift = startshift.getNext()
-                while not self.getShiftAvailability()[startshift]: 
-                    startshift = startshift.getNext()
-                curr_time = startshift.getStartTime()
-                   
-                            
-            length = length - max(time- curr_time,0)
-            unusedtime = slot[0][1] - length
         
             if length < job.getQuantity()*job.getOperation().getProcessTime(): 
                 continue 
@@ -247,23 +269,28 @@ class Resource():
     def ScheduleJob(self,job,jobstarttime,unusedtime,emptyslot):
         job.SetScheduled()
         job.setStartTime(jobstarttime)  
+
+        if self.getName().find("OUT -") != -1:
+            job.setCompletionTime(job.getStartTime()+job.getOperation().getProcessTime())
+            return
         
         curr_time = jobstarttime
         curr_shift = emptyslot[1]
         processtime = job.getQuantity()*job.getOperation().getProcessTime()
         
         # find completion time of the job
-        delayinstart = 0
+       
         while processtime > 0: 
             self.getSchedule()[curr_shift].append(job)
-            timeinshift =  curr_shift.getEndTime() - curr_time
+            timeinshift =  curr_shift.getEndTime() - curr_time + 1
             curr_time = curr_time + min(timeinshift, processtime)
             processtime = processtime - min(timeinshift, processtime)
-            
-            curr_shift=curr_shift.getNext()
-            
-            while not self.getShiftAvailability()[curr_shift]: 
-                curr_shift = curr_shift.getNext()
+
+            if processtime > 0:
+                curr_shift=curr_shift.getNext()
+                
+                while not self.getShiftAvailability()[curr_shift]: 
+                    curr_shift = curr_shift.getNext()
                 
         job.setCompletionTime(curr_time)
 
@@ -276,7 +303,9 @@ class Resource():
         self.getEmptySlots().remove(emptyslot)
         newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
         self.getEmptySlots().insert(slotindex,newmeptyslot)
-        return
+
+        
+        return newmeptyslot
        
 
 
@@ -556,10 +585,9 @@ class CustomerOrder():
         return self.ProductName
 
 class Shift():
-    def __init__(self,myday,number,shiftcap,previous):
+    def __init__(self,myday,number,previous):
         self.Day = myday
         self.Number = number
-        self.Capacity = shiftcap
         self.StartTime = 0
         self.EndTime = 0
         self.next = None        
@@ -599,7 +627,6 @@ class Shift():
     def getNumber(self):
         return self.Number
 
-    def getCapacity(self):
-        return self.Capacity
+ 
 
 
