@@ -284,6 +284,7 @@ class SchedulingManager:
                     jobstarttime, unusedtime = scheinfo                    
                     myresource.ScheduleJob(j,jobstarttime,unusedtime,slot)
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+resource.getName()+", st "+str(jobstarttime)+".. "+"\n"
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled completion time "+str(j.getCompletionTime())+", st "+str(jobstarttime)+".. "+"\n"
                     ScheduledJobs.append(j)
                     if j.getSuccessor() != None and j.getSuccessor().IsSchedulable():
                         SchedulableJobs.append(j.getSuccessor())
@@ -309,26 +310,36 @@ class SchedulingManager:
         #self.getVisualManager().getSchedulingTab().getPSchResources().options = myres
             
 
-        # schedules_df = pd.DataFrame(columns= ["ResourceID","Shift","JobID","Starttime","Day"])
-        # folder = 'UseCases'; casename = self.getVisualManager().getSchedulingTab().getCOTBcasename().value
-        # path = folder+"\\"+casename
-        # isExist = os.path.exists(path)
+        Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
+        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
+        path = folder+"\\"+casename
+        isExist = os.path.exists(path)
         
-        # if not isExist:
-        #     os.makedirs(path)
+        if not isExist:
+            os.makedirs(path)
         
-        # for name,myres in self.getDataManager().getResources().items():
-        #     if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
-        #         for shift, jobs in myres.getSchedule().items():
-        #             if jobs == []:
-        #                 continue
-        #             else:                
-        #                 for job in jobs:
-        #                     schedules_df.loc[len(schedules_df)] = {"ResourceID":myres.getID(), "Shift":shift.getNumber(),"JobID":job[0].getID(),"Starttime":str(job[1]),"Day":shift.getDay()}
+        for name,myres in self.getDataManager().getResources().items():
+            if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
+                for shift, jobs in myres.getSchedule().items():
+                    if jobs == []:
+                        continue
+                    else: 
+                        jobs.sort(key=lambda x: x.getStartTime())
+                        for job in jobs:
+                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":job.getCompletionTime()}
+                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":job.getCompletionTime()}
+                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":shift.getEndTime()}
+                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
                     
-        # filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-        # schedules_df.to_csv(fullpath, index=False)                
+        filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+        Schedule_df.to_csv(fullpath, index=False)                
         
+        
+            
         
                     
                        
