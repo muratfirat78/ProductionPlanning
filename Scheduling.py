@@ -354,15 +354,15 @@ class SchedulingManager:
                     JobsToRemove.append(j)
                     continue
                 else: 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+", Preds: "+str(len(j.getPredecessors()))+", LPCT: "+str(j.getLatestPredecessorCompletion())+"\n"  
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Scheduling job "+str(j.getName())+", Preds: "+str(len(j.getPredecessors()))+", LPCT: "+str(j.getLatestPredecessorCompletion())+"\n"  
                     nrscheduled+=1
                     allscheduled+=1
                     slot,scheinfo = schreturn  
                     jobstarttime, unusedtime = scheinfo 
                     
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" jobstarttime "+str(jobstarttime)+", unusedtime: "+str(unusedtime)+"\n" 
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" jobstarttime "+str(jobstarttime)+", unusedtime: "+str(unusedtime)+"\n" 
 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
                     #for myslot in resource.getEmptySlots(): 
                     #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" *Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
 
@@ -372,9 +372,9 @@ class SchedulingManager:
                 
                     newslot = self.ScheduleJob(myresource,j,jobstarttime,unusedtime,slot)
                     #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+myresource.getName()+", st "+str(jobstarttime)+".. "+"\n"
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled ct: "+str(j.getCompletionTime())+", st: "+str(jobstarttime)+".. "+"\n"
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled ct: "+str(j.getCompletionTime())+", st: "+str(jobstarttime)+".. "+"\n"
 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" NEW Slot: St: "+str(newslot[0][0])+", l: "+str(newslot[0][1])+", Shft: ("+str(newslot[1].getDay())+","+str(newslot[1].getNumber())+")"+"\n" 
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" NEW Slot: St: "+str(newslot[0][0])+", l: "+str(newslot[0][1])+", Shft: ("+str(newslot[1].getDay())+","+str(newslot[1].getNumber())+")"+"\n" 
 
                     #for myslot in resource.getEmptySlots(): 
                     #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" **Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
@@ -402,6 +402,10 @@ class SchedulingManager:
         #self.getVisualManager().getSchedulingTab().getPSchOperations().options = myops
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
         #self.getVisualManager().getSchedulingTab().getPSchResources().options = myres
+
+        self.getVisualManager().getSchedulingTab().getPSchResources().options = [name for name,myres in self.getDataManager().getResources().items() ]
+
+            
             
 
         Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])

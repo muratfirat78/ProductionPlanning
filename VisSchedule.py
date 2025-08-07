@@ -205,31 +205,48 @@ class ScheduleTab():
         if not "index" in event['new']:
             return
 
-        selectedopr = self.getPSchResources().options[event["new"]["index"]]
+        selectedres = self.getPSchResources().options[event["new"]["index"]]
         
-        if selectedopr == None:
+        if selectedres == None:
             return
 
-        if selectedopr == '':
+        if selectedres == '':
             return
 
+  
 
+        if selectedres in self.getVisualManager().DataManager.getResources():
+            selected_res = self.getVisualManager().DataManager.getResources()[selectedres]
+
+            
+
+            restree = Tree()
+         
+            shiftnodes = []
+
+            for shift,jobs in selected_res.getSchedule().items():
+                jobnodes = []
+               
+                for job in jobs:
+                    schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
+                    jobnode = Node(job.getName()+" > "+schstr,[], icon="cut", icon_style="success") 
+                    jobnodes.append(jobnode)
+                shiftnode = Node(str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
+                shiftnodes.append(shiftnode)
         
-        joblist = [selectedopr]
-        
+            rootnode = Node(selected_res.getName(),shiftnodes, icon="cut", icon_style="success") 
 
-        if selectedopr in self.getVisualManager().DataManager.getResources():
-            selected_op = self.getVisualManager().DataManager.getResources()[selectedopr]
-            
-            for day, shiftjobs in selected_op.getSchedule().items():
-                for shift in shiftjobs:
-                    joblist.append(" >> Day: "+str(day)+" Shift "+str(shift[0].getNumber())+"\n")
-                    for job in shift[1]:
-                        joblist.append("   >> Job: "+str(job[0].getName())+", Processed Quantity: "+str(job[1])+" of Total Quantity: "+str(job[0].getQuantity())+"\n")
-            
+            restree.add_node(rootnode)
 
-            
-        self.getPSchShiftJoblist().options = [j for j in joblist]   
+            self.setSchTree(restree)
+            self.setSchTreeRootNode(restree)
+    
+         
+            with self.getPSTBResSchOutput():
+                clear_output()
+                display(self.getSchTree())
+
+
        
         return
     
@@ -362,6 +379,8 @@ class ScheduleTab():
         with self.getPSTBOrdOutput():
             clear_output()
             display(self.getMyOrdTree())
+
+        
         with self.getPSTBResSchOutput():
             clear_output()
             display(self.getSchTree())
