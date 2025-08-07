@@ -424,14 +424,18 @@ class SchedulingManager:
                     else: 
                         jobs.sort(key=lambda x: x.getStartTime())
                         for job in jobs:
+                            shiftstart = datetime.combine(psstart, time()) + timedelta(hours=shift.getStartTime())
+                            shiftend = datetime.combine(psstart, time()) + timedelta(hours=shift.getEndTime())
+                            jobstart = datetime.combine(psstart, time()) + timedelta(hours=round(job.getStartTime(),2))
+                            jobend = datetime.combine(psstart, time()) + timedelta(hours=round(job.getCompletionTime(),2))
                             if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":job.getCompletionTime()}
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"Job":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":jobstart,"Completion in Shift":jobend}
                             if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":job.getCompletionTime()}
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"Job":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shiftstart,"Completion in Shift":jobend}
                             if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":shift.getEndTime()}
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"Job":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shiftstart,"Completion in Shift":shiftend+timedelta(minutes=59, seconds=59)}
                             if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"Job":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":jobstart,"Completion in Shift":shiftend+timedelta(minutes=59, seconds=59)}
                     
         filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
         Schedule_df.to_csv(fullpath, index=False)                
