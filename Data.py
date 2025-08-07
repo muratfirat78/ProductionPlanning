@@ -371,6 +371,19 @@ class DataManager:
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
+            # check if the same type of resource is already in the required resources list of operation. 
+            resinserted = False
+            for oprres in opr.getRequiredResources():
+                if isinstance(oprres,list): # we expect that this is always true, but for now let is check. 
+                    if oprres[0].getType() == res.getTtype():
+                        oprres.append(res)
+                        resinserted = True
+                        break
+            if not resinserted:
+                opr.getRequiredResources().append([res])
+          
+                
+
             #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
             
             opr.getRequiredResources().append(res)

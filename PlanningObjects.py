@@ -272,6 +272,7 @@ class Resource():
 
         if self.getName().find("OUT -") != -1:
             job.setCompletionTime(job.getStartTime()+job.getOperation().getProcessTime())
+            self.getSchedule()[emptyslot[1]].append(job)
             return
         
         curr_time = jobstarttime
