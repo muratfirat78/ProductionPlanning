@@ -90,6 +90,57 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
+    def ScheduleJob(self,res,job,jobstarttime,unusedtime,emptyslot):
+        job.SetScheduled()
+        job.setStartTime(jobstarttime)  
+
+        if res.getName().find("OUT -") != -1:
+            job.setCompletionTime(job.getStartTime()+job.getOperation().getProcessTime())
+            res.getSchedule()[emptyslot[1]].append(job)
+            return
+        
+        curr_time = jobstarttime
+        curr_shift = emptyslot[1]
+        processtime = job.getQuantity()*job.getOperation().getProcessTime()
+
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="in scheduling..."+"\n"
+        
+        # find completion time of the job
+       
+        while processtime > 0: 
+            res.getSchedule()[curr_shift].append(job)
+            timeinshift =  curr_shift.getEndTime() - curr_time + 1
+            curr_time = curr_time + min(timeinshift, processtime)
+            processtime = processtime - min(timeinshift, processtime)
+
+            if processtime > 0:
+                curr_shift=curr_shift.getNext()
+                
+                while not res.getShiftAvailability()[curr_shift]: 
+                    curr_shift = curr_shift.getNext()
+
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="completion time ..."+str(curr_time)+"\n"
+        job.setCompletionTime(curr_time)
+
+        slotindex = res.getEmptySlots().index(emptyslot)
+        if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
+            newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
+            res.getEmptySlots().insert(res.getEmptySlots().index(emptyslot),newslot) # insert this just before into the index of empyslot.
+            slotindex+=1
+
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="new slot, slot index: "+str(slotindex)+"\n"
+        
+        res.getEmptySlots().remove(emptyslot)
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="previous one removed... "+"\n"
+        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="new created... "+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Res:"+res.getName()+", new Slot: St: "+str(newmeptyslot[0][0])+", l: "+str(newmeptyslot[0][1])+", Shft: ("+str(newmeptyslot[1].getDay())+","+str(newmeptyslot[1].getNumber())+")"+"\n" 
+        res.getEmptySlots().insert(slotindex,newmeptyslot)
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="empty slots of resource: "+str(len(res.getEmptySlots()))+"\n"
+
+
+        return newmeptyslot
+
     def MakeSchedule(self,b):
         '''
         -	Class shift: (myday,number (1 or 2))
@@ -261,6 +312,9 @@ class SchedulingManager:
 
             
             res.InitializeEmptySlot()
+            for slot in res.getEmptySlots():  
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Res:"+res.getName()+", Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
+                
         #Create Schedule; we start by checking if there are still jobs that can be scheduled  
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" starting... "+"\n"  
         allscheduled = 0
@@ -277,22 +331,26 @@ class SchedulingManager:
                 
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Checking job "+str(j.getName())+", LPCT: "+str(j.getLatestPredecessorCompletion())+", p: "+str(j.getQuantity()*j.getOperation().getProcessTime())+", prd: "+prednames+"\n"  
 
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Operation "+str(j.getOperation().getName())+"\n"
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Operation: "+str(j.getOperation().getName())+", res: "+str(len(j.getOperation().getRequiredResources()))+"\n"
+                
+               
                 
                 myresource = None
                 for resource in j.getOperation().getRequiredResources():
                     myresource = resource
                     if isinstance(resource,list):
                         myresource = resource[0]
-                    break
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" ***res: "+str(myresource.getName())+"\n"
+                        break
                 if myresource == None: 
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Op: "+str(j.getOperation().getName())+" has no resource.."+"\n"
                     JobsToRemove.append(j)
                     continue
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="..Resource "+str(resource.getName())+"\n"  
+                    
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="..Resource "+str(myresource.getName())+"\n"  
                 schreturn = myresource.CheckSlot(j)
                 if schreturn == None: 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+" cannot be scheduled in "+resource.getName()+"\n"
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+" cannot be scheduled in "+myresource.getName()+"\n"
                     JobsToRemove.append(j)
                     continue
                 else: 
@@ -308,10 +366,13 @@ class SchedulingManager:
                     #for myslot in resource.getEmptySlots(): 
                     #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" *Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
 
+                    if not slot[1] in myresource.getSchedule():
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Shift not in the sechdule!!!!!!!!!!"+"\n" 
+
                 
-                    newslot = myresource.ScheduleJob(j,jobstarttime,unusedtime,slot)
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+resource.getName()+", st "+str(jobstarttime)+".. "+"\n"
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled completion time "+str(j.getCompletionTime())+", st "+str(jobstarttime)+".. "+"\n"
+                    newslot = self.ScheduleJob(myresource,j,jobstarttime,unusedtime,slot)
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+myresource.getName()+", st "+str(jobstarttime)+".. "+"\n"
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled ct: "+str(j.getCompletionTime())+", st: "+str(jobstarttime)+".. "+"\n"
 
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" NEW Slot: St: "+str(newslot[0][0])+", l: "+str(newslot[0][1])+", Shft: ("+str(newslot[1].getDay())+","+str(newslot[1].getNumber())+")"+"\n" 
 

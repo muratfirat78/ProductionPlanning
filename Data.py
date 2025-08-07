@@ -386,8 +386,7 @@ class DataManager:
 
             #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
             
-            opr.getRequiredResources().append(res)
-    
+        
         
                    
      

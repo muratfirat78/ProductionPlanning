@@ -9,6 +9,7 @@ Created on Wed Apr  3 11:46:59 2024
 from IPython.display import clear_output
 from IPython import display
 from ipywidgets import *
+from ipytree import Tree, Node
 from datetime import timedelta,date,datetime
 import matplotlib.pyplot as plt
 import warnings
@@ -20,6 +21,10 @@ import sys
 import numpy as np
 from pathlib import Path
 from PlanningObjects import *
+from IPython.display import display, HTML
+
+display(HTML("<style>.red_label { color:red }</style>"))
+display(HTML("<style>.blue_label { color:blue }</style>"))
 
 
 class ScheduleTab():
@@ -37,16 +42,67 @@ class ScheduleTab():
         self.PSchOrderlist = None
         self.PSchOrdProd = None
         self.PLTBPlanStartv = None
+        self.PSTBOrdOutput = None
+        self.PSTBResSchOutput = None
+        self.MyOrdTree = None
+        self.SchTree = None
+        self.SchTreeRootNode = None
+        self.OrdTreeRootNode = None
         
         return
 
+    def setSchTreeRootNode(self,myit):
+        self.SchTreeRootNode  = myit
+        return
+        
+    def getSchTreeRootNode(self):
+        return self.SchTreeRootNode
+        
+    
+    def setOrdTreeRootNode(self,myit):
+        self.OrdTreeRootNode  = myit
+        return
+        
+    def getOrdTreeRootNode(self):
+        return self.OrdTreeRootNode
+
+    def setMyOrdTree(self,myit):
+        self.MyOrdTree  = myit
+        return
+        
+    def getMyOrdTree(self):
+        return self.MyOrdTree
+
+    def setSchTree(self,myit):
+        self.SchTree  = myit
+        return
+        
+    def getSchTree(self):
+        return self.SchTree
+      
+
+
+    def setPSTBResSchOutput(self,myit):
+        self.PSTBResSchOutput = myit
+        return
+        
+    def getPSTBResSchOutput(self):
+        return self.PSTBResSchOutput
+        
+
+    def setPSTBOrdOutput(self,myit):
+        self.PSTBOrdOutput  = myit
+        return
+        
+    def getPSTBOrdOutput(self):
+        return self.PSTBOrdOutput
       
 
     def setPLTBPlanStart(self,myit):
         self.PLTBPlanStart  = myit
         return
         
-    def getPLTBPlanStart (self):
+    def getPLTBPlanStart(self):
         return self.PLTBPlanStart
 
    
@@ -138,39 +194,7 @@ class ScheduleTab():
        
         return
 
-    def ShowJobs(self,event):
-
-
-        if not "new" in event:
-            return
     
-        if not "index" in event['new']:
-            return
-
-        selectedopr = self.getPSchOperations().options[event["new"]["index"]]
-        
-        if selectedopr == None:
-            return
-
-        if selectedopr == '':
-            return
-
-
-        
-        joblist = [selectedopr]
-        self.getPSchScheRes().value+=str(len(self.getVisualManager().DataManager.getProducts()))+"\n"
-
-        if selectedopr in self.getVisualManager().DataManager.getOperations():
-            selected_op = self.getVisualManager().DataManager.getOperations()[selectedopr]
-            self.getPSchScheRes().value+="Jobs of the operation: "+str(len(selected_op.getJobs()))+"\n"
-            for job in selected_op.getJobs():
-                joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
-            self.getPSchScheRes().value+=str("In the operations!!!!!!")+"\n"
-
-            
-        self.getPSchJoblist().options = [j for j in joblist]   
-       
-        return
 
     def ShowShiftJobs(self,event):
 
@@ -221,8 +245,7 @@ class ScheduleTab():
 
         selectedord = self.getPSchOrderlist().options[event["new"]["index"]]
 
-        self.getPSchOrdProd().value = "Selected Order >>"+str(selectedord)+"\n"
-        
+       
         if selectedord == None:
             return
 
@@ -232,57 +255,64 @@ class ScheduleTab():
         
         ordname = selectedord[:selectedord.find(":")]
 
-        self.getPSchOrdProd().value += str(ordname)+"\n"
-
+      
         if ordname in self.getVisualManager().DataManager.getCustomerOrders():
             myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
 
-            if myord.getPlannedDelivery() != None:
-                self.getPSchOrdProd().value = "Final Product: "+"\n"
-                self.getPSchOrdProd().value += myord.getProduct().getName()+"\n"
-              
-                self.getPSchOrdProd().value += "Quantity: "+str(myord.getQuantity())+"\n"
-                
-                self.getPSchOrdProd().value += "Latest start: "+str(myord.getLatestStart())+"\n"
-                
-                
-               
-                
-            else:
-                self.getPSchOrdProd().value = "Not planned... "+"\n"
-           
-        else:
-            self.getPSchOrdProd().value = "Order not found..."+"\n"
-        
-        
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="order jobs..."+str(len(myord.getMyJobs()))+"\n"
+            
+            ordjobtree = Tree()
+         
+            jobnodes = []
+            for job in myord.getMyJobs():
+                schstr = "Unscheduled"
+                if job.IsScheduled():
+                    schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
+                jobnode = Node(job.getName()+"> "+schstr,[], icon="cut", icon_style="success") 
+                jobnodes.append(jobnode)
 
-        
+           
+            rootnode = Node(myord.getName(),jobnodes, icon="cut", icon_style="success") 
+
+            ordjobtree.add_node(rootnode)
+
+            self.setMyOrdTree(ordjobtree)
+            self.setOrdTreeRootNode(rootnode)
+    
+         
+            with self.getPSTBOrdOutput():
+                clear_output()
+                display(self.getMyOrdTree())
+
+       
         return
         
     
     def generatePSschTAB(self):
     
 
-        self.setPSchScheRes(widgets.Textarea(value='', placeholder='',description='Schedule',disabled=True))
+        self.setPSchScheRes(widgets.Textarea(value='', placeholder='',description='',disabled=True))
      
         self.getPSchScheRes().layout.height = '150px'
-        self.getPSchScheRes().layout.width = "90%"
+        self.getPSchScheRes().layout.width = '700px'
 
         self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
         self.getPSchTBmakesch_btn().on_click(self.getVisualManager().getSchedulingManager().MakeSchedule)
 
-        self.setPSchJoblist(widgets.Select(options=[],description = 'Jobs'))
-        self.getPSchJoblist().layout.height = '150px'
-        self.getPSchJoblist().layout.width = '400px'
+        ordl = widgets.Label(value ='Customer Orders')
+        ordl.add_class("red_label")
 
-        self.setPSchOrderlist(widgets.Select(options=[],description = 'Orders'))
+        reslb = widgets.Label(value ='Resources')
+        reslb.add_class("red_label")
+
+        schpr = widgets.Label(value ='Scheduling procedure progress ')
+        schpr.add_class("red_label")
+     
+        self.setPSchOrderlist(widgets.Select(options=[],description = ''))
         self.getPSchOrderlist().layout.height = '150px'
         self.getPSchOrderlist().layout.width = '400px'
         self.getPSchOrderlist().observe(self.ShowOrderStatus)
 
-        self.setPSchOrdProd(widgets.Textarea(options=[],description = 'Order information'))
-        self.getPSchOrdProd().layout.height = '150px'
-        self.getPSchOrdProd().layout.width = '400px'
 
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
         self.getPLTBPlanStart().observe(self.SetStart)
@@ -291,25 +321,52 @@ class ScheduleTab():
         self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
         self.getPLTBPlanEnd().observe(self.SetEnd)
      
-        self.setPSchResources(widgets.Select(options=[], description='Resources:'))
+        self.setPSchResources(widgets.Select(options=[], description=''))
         self.getPSchResources().layout.height = '150px'
         self.getPSchResources().layout.width = '400px'
         self.getPSchResources().observe(self.ShowShiftJobs)
 
-        self.setPSchShiftJoblist(widgets.Select(options=[],description = 'Shift Jobs'))
-        self.getPSchShiftJoblist().layout.height = '150px'
-        self.getPSchShiftJoblist().layout.width = '400px'
+        
+        ordtr = widgets.Label(value ='Order Schedule')
+        ordtr.add_class("red_label")
 
-        self.setPSchOperations(widgets.Select(options=[], description='Operations:'))
-        self.getPSchOperations().layout.height = '150px'
-        self.getPSchOperations().layout.width = '400px'
-        self.getPSchOperations().observe(self.ShowJobs)
-    
+        restr = widgets.Label(value ='Resource Schedule')
+        restr.add_class("red_label")
+
+        OrdSchTree = Tree()
+        rootnode = Node("Order Jobs",[], icon="cut", icon_style="success") 
+        OrdSchTree.add_node(rootnode)
+        self.setMyOrdTree(OrdSchTree)
+        self.setOrdTreeRootNode(rootnode)
+        self.setPSTBOrdOutput(widgets.Output())
+
+        MySchTree = Tree()
+        rootnode = Node("Resource Shifts",[], icon="cut", icon_style="success") 
+        MySchTree.add_node(rootnode)
+        self.setSchTree(MySchTree)
+        self.setSchTreeRootNode(rootnode)
+        self.setPSTBResSchOutput(widgets.Output())
+
+
+      
         tab_sch = VBox(children = [
             widgets.Label(Value ='Schedule Settings '),
             HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
-                                   HBox(children=[self.getPSchOperations(),self.getPSchJoblist()]),HBox(children=[self.getPSchResources(),self.getPSchShiftJoblist()]),HBox(children=[self.getPSchOrderlist(), self.getPSchOrdProd()]),
-            HBox(children=[self.getPSchScheRes()])])
+            HBox(children=[VBox(children = [reslb,self.getPSchResources()]),VBox(children= [restr,self.getPSTBResSchOutput()])]),
+            HBox(children=[VBox(children= [ordl,self.getPSchOrderlist()]), VBox(children= [ordtr,self.getPSTBOrdOutput()])]),
+            HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])])
+
+
+        
+         
+        with self.getPSTBOrdOutput():
+            clear_output()
+            display(self.getMyOrdTree())
+        with self.getPSTBResSchOutput():
+            clear_output()
+            display(self.getSchTree())
+
+
 
         tab_sch.layout.height = '600px'
           

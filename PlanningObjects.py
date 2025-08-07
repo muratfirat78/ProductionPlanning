@@ -266,49 +266,6 @@ class Resource():
         return None  # meaning that the resource cannot process the job due to fully scheduled… 
 
 
-    def ScheduleJob(self,job,jobstarttime,unusedtime,emptyslot):
-        job.SetScheduled()
-        job.setStartTime(jobstarttime)  
-
-        if self.getName().find("OUT -") != -1:
-            job.setCompletionTime(job.getStartTime()+job.getOperation().getProcessTime())
-            self.getSchedule()[emptyslot[1]].append(job)
-            return
-        
-        curr_time = jobstarttime
-        curr_shift = emptyslot[1]
-        processtime = job.getQuantity()*job.getOperation().getProcessTime()
-        
-        # find completion time of the job
-       
-        while processtime > 0: 
-            self.getSchedule()[curr_shift].append(job)
-            timeinshift =  curr_shift.getEndTime() - curr_time + 1
-            curr_time = curr_time + min(timeinshift, processtime)
-            processtime = processtime - min(timeinshift, processtime)
-
-            if processtime > 0:
-                curr_shift=curr_shift.getNext()
-                
-                while not self.getShiftAvailability()[curr_shift]: 
-                    curr_shift = curr_shift.getNext()
-                
-        job.setCompletionTime(curr_time)
-
-        slotindex = self.getEmptySlots().index(emptyslot)
-        if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
-            newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
-            self.getEmptySlots().insert(self.getEmptySlots().index(emptyslot),newslot) # insert this just before into the index of empyslot.
-            slotindex+=1
-        
-        self.getEmptySlots().remove(emptyslot)
-        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
-        self.getEmptySlots().insert(slotindex,newmeptyslot)
-
-        
-        return newmeptyslot
-       
-
 
 class Operation():
     # Operation(r["OperationID"],r["Name"],r["ProcessTime"])
