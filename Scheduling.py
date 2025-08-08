@@ -99,13 +99,28 @@ class SchedulingManager:
             res.getSchedule()[emptyslot[1]].append(job)
             return
         
-        curr_time = jobstarttime
+        curr_time = emptyslot[0][0]
         curr_shift = emptyslot[1]
+
+        nousedtime = unusedtime
+
+        while nousedtime > 0: 
+            timeinshift =  curr_shift.getEndTime() - curr_time + 1
+            curr_time = curr_time + min(timeinshift, nousedtime)
+            nousedtime = nousedtime - min(timeinshift, nousedtime)
+
+            if nousedtime > 0:
+                curr_shift=curr_shift.getNext()
+                
+                while not res.getShiftAvailability()[curr_shift]: 
+                    curr_shift = curr_shift.getNext()
+
+        curr_time = jobstarttime
         processtime = job.getQuantity()*job.getOperation().getProcessTime()
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="in scheduling..."+"\n"
         
-        # find completion time of the job
+        #find completion time of the job
        
         while processtime > 0: 
             res.getSchedule()[curr_shift].append(job)
@@ -360,9 +375,9 @@ class SchedulingManager:
                     slot,scheinfo = schreturn  
                     jobstarttime, unusedtime = scheinfo 
                     
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" jobstarttime "+str(jobstarttime)+", unusedtime: "+str(unusedtime)+"\n" 
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" jobstarttime "+str(jobstarttime)+", unusedtime: "+str(unusedtime)+"\n" 
 
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
                     #for myslot in resource.getEmptySlots(): 
                     #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" *Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
 
@@ -374,7 +389,7 @@ class SchedulingManager:
                     #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled "+myresource.getName()+", st "+str(jobstarttime)+".. "+"\n"
                     #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(j.getName())+"scheduled ct: "+str(j.getCompletionTime())+", st: "+str(jobstarttime)+".. "+"\n"
 
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" NEW Slot: St: "+str(newslot[0][0])+", l: "+str(newslot[0][1])+", Shft: ("+str(newslot[1].getDay())+","+str(newslot[1].getNumber())+")"+"\n" 
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" NEW Slot: St: "+str(newslot[0][0])+", l: "+str(newslot[0][1])+", Shft: ("+str(newslot[1].getDay())+","+str(newslot[1].getNumber())+")"+"\n" 
 
                     #for myslot in resource.getEmptySlots(): 
                     #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" **Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 

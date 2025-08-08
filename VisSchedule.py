@@ -231,7 +231,7 @@ class ScheduleTab():
                     schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
                     jobnode = Node(job.getName()+" > "+schstr,[], icon="cut", icon_style="success") 
                     jobnodes.append(jobnode)
-                shiftnode = Node(str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
+                shiftnode = Node("Shift: "+str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
                 shiftnodes.append(shiftnode)
         
             rootnode = Node(selected_res.getName(),shiftnodes, icon="cut", icon_style="success") 
