@@ -33,8 +33,7 @@ class Product():
         self.TargetLevels = dict() #key: date, val: required stock value on the date /for products
         self.ReservedStockLevels = dict() #key: date, val: required stock value on the date /for products
         self.PurchaseLevels = dict() #key: first day of week, val: purchase amount / for raw materials
-        self.PrescribedBatchsize=None #If None then it is order dependent.
-        self.ChosenBatchsize=None #This will be the prescribed batchsize or the order size if no prescribedBatch is available.
+        self.Batchsize = None #This will be the prescribed batchsize or the order size if no Batch is available.
         self.DemandingOrders = dict() #key: order,  #val: quantity
         
 
@@ -83,16 +82,49 @@ class Product():
         return
     def getSuccessor(self):
         return self.Successor
-    def getPrescribedBatchsize(self):
-        return self.PrescribedBatchsize
-    def setPrescribedBatchsize(self,size):
-        self.PrescribedBatchsize = size
+    def getBatchsize(self):
+        return self.Batchsize
+    def setBatchsize(self,size):
+        self.Batchsize = size
         return
-    def getChosenBatchsize(self):
-        return self.ChosenBatchsize
-    def setChosenBatchsize(self,size):
-        self.ChosenBatchsize = size
+
+
+class MachineGroup():
+    def __init__(self):
+        self.Machines = []  
+        self.OperatingTeam = None
+        
+
+    def getMachines(self):
+        return self.Machines
+        
+    def getOperatingTeam(self):
+        return self.OperatingTeam 
+    def setOperatingTeam(self,opt):
+        self.OperatingTeam = opt
+        return 
+
+class OperatingTeam():
+    
+    def __init__(self):
+        self.Operators = []
+        self.MachineGroup = None
+        self.CapacityUse = dict() #key: Shift, val: fte use. 
+        
+
+
+    def getCapacityUse(self):
+        return self.CapacityUse 
+    def getOperators(self):
+        return self.Operators 
+        
+    def getMachineGroup(self):
+        return self.MachineGroup
+    def setMachineGroup(self,mg):
+        self.MachineGroup = mg
         return
+
+    
 
 class Resource():
     # Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
@@ -103,13 +135,15 @@ class Resource():
         self.DayCapacity= int(mydaycp%8>0)+mydaycp//8
         self.Operations = []
         self.Outsource = False
-        self.Automated = None #Boolean Yes or No if Type is Machine, None if Type is Manual
+        self.Automated = False  #Boolean Yes or No if Type is Machine, None if Type is Manual
         self.FTERequirement = 0.0 # per unit operating time. Mostly applied to machines. 
         # PlANNING
         self.CapacityLevels = dict() # key: date, val: cumulative capacity level on the date 
         self.CapacityUsePlan = dict() # #key: date, val: planned cumulative capacity use
         self.CapacityReserved = dict()
-        
+        self.OperatingTeam = None
+        self.MachineGroup = None
+       
    
         # PlANNING
 
@@ -118,6 +152,7 @@ class Resource():
         self.batchsize = 12 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
         self.Schedule = dict()  #key: shift, val: []
+        self.ShiftOperatingModes = dict() #key: shift val: one of "Operated", "Self". Self mode only can continue the started job, cannot start a job. 
 
         self.OperatingEffort = 0
         self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
@@ -125,6 +160,25 @@ class Resource():
         self.ShiftAvailability = dict() #key: shift, val: boolena available/unavailable.  
 
         # SCHEDULING
+
+    def getShiftOperatingModes(self):
+        return self.ShiftOperatingModes
+    
+
+    def getMachineGroup(self):
+        return self.MachineGroup
+    
+    def setMachineGroup(self,mg):
+        self.MachineGroup = mg
+        return
+        
+        
+    def getOperatingTeam(self):
+        return self.OperatingTeam
+    def setOperatingTeam(self,tm):
+        self.OperatingTeam = tm
+        return
+        
     def getEmptySlots(self):
         return self.EmptySlots
 
@@ -184,7 +238,7 @@ class Resource():
         return self.DayCapacity
     def getOperations(self):
         return self.Operations
-    def getAutomated(self):
+    def IsAutomated(self):
         return self.Automated
     def getOperatingEffort(self):
         return self.OperatingEffort
@@ -193,8 +247,8 @@ class Resource():
     def getJobs(self):
         return self.Jobs
 
-    def setAutomated(self,aut):
-        self.Automated = aut
+    def setAutomated(self):
+        self.Automated = True
         return 
     def setOperatingEffort(self,opef):
         self.OperatingEffort = opef
@@ -207,65 +261,30 @@ class Resource():
         firstshift = None
 
         availablehours = 0
+
+        
         
         for shift,jobs in self.getSchedule().items():
-            availablehours+=(shift.getEndTime()-shift.getStartTime()+1)          
-            if shift.getPrevious() == None:                
-                firstshift = shift                                  
+            availablehours+=(shift.getEndTime()-shift.getStartTime()+1)      
+
+            
+            anyprevinschedule = False
+            curr_shift = shift.getPrevious() 
+            while curr_shift != None:
+                if curr_shift in self.getSchedule():
+                    anyprevinschedule = True
+                curr_shift = curr_shift.getPrevious()
+                
+            if not anyprevinschedule:                
+                firstshift = shift
+                 
+                
         self.getEmptySlots().append(((firstshift.getStartTime(),availablehours),firstshift))
         
         return 
           
 
-    def CheckSlot(self,job):
-        time =  job.getLatestPredecessorCompletion()
-
-        if self.getName().find("OUT -") != -1:
-            slot = self.getEmptySlots()[0]
-            return (slot,(time,0))
-
-
-        
-        for slot in self.getEmptySlots():    
-            if slot[0][1] < job.getQuantity()*job.getOperation().getProcessTime():
-                continue
-            if (slot[1].getNext() == None) and (slot[1].getEndTime() < time):
-                return None
-   
-            length = slot[0][1]; startshift = slot[1]; curr_time = slot[0][0]
-
-            unusedtime = 0
-            if time >= curr_time:
-                if  startshift.getEndTime() >= time: 
-                    length -=  (time-curr_time)
-                    unusedtime = time-curr_time
-                    curr_time = time
-                else:
-                    while startshift.getEndTime() < time: 
-                        length = length - (startshift.getEndTime()-curr_time+1)
-                        unusedtime += (startshift.getEndTime()-curr_time+1)
-                        if startshift.getNext() == None:
-                            return None
-                        startshift = startshift.getNext()
-                        while not self.getShiftAvailability()[startshift]: 
-                            if startshift.getNext() == None:
-                                return None
-                            startshift = startshift.getNext()
-                        curr_time = startshift.getStartTime()
-                    unusedtime += time-curr_time
-                    length -= (time-curr_time) 
-          
-           
-        
-            if length < job.getQuantity()*job.getOperation().getProcessTime(): 
-                continue 
-                   
-            jobstarttime = max(time, curr_time)
-            return (slot,(jobstarttime, unusedtime))
     
-        return None  # meaning that the resource cannot process the job due to fully scheduled… 
-
-
 
 class Operation():
     # Operation(r["OperationID"],r["Name"],r["ProcessTime"])
@@ -471,10 +490,10 @@ class CustomerOrder():
         nojobscompleted  = sum([int(jb.IsScheduled()) for jb in self.getMyJobs()])
 
         if nojobscompleted == len(self.getMyJobs()):
-            return "Completed"
+            return "Scheduled"
         else:
             if nojobscompleted == 0:
-                return "Pending"
+                return "Unscheduled"
             else:
                 return "In-Progress"
         

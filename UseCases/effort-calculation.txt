@@ -1,0 +1,12 @@
+5*(16) = 80 mach-hours /workday (automated)
+4*(16) = 64 mach-hours /workday (manual)
+
+8 man-hour (aut) +  19.2 man-hour (man) = 27.2 man-hour
+
+1 FTE = 8 man-hour
+
+need - 27.2 / 8 >>  3.5 FTEs
+
+2 FTE shift [8-16]
+1 FTE shift [17-24]
+'

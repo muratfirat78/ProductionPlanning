@@ -22,6 +22,11 @@ import numpy as np
 from pathlib import Path
 from PlanningObjects import *
 from IPython.display import display, HTML
+import datetime as dt
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib.collections import PolyCollection
+import altair as alt
 
 display(HTML("<style>.red_label { color:red }</style>"))
 display(HTML("<style>.blue_label { color:blue }</style>"))
@@ -48,8 +53,44 @@ class ScheduleTab():
         self.SchTree = None
         self.SchTreeRootNode = None
         self.OrdTreeRootNode = None
+        self.PSTBGanttOutput = None
+        self.ScheduleVisual = None
+        self.PSchSolProps = None
+        self.ScheduleAlgs = None
         
         return
+
+    def setScheduleAlgs(self,myit):
+        self.ScheduleAlgs  = myit
+        return
+        
+    def getScheduleAlgs(self):
+        return self.ScheduleAlgs
+
+
+    def setPSchSolProps(self,myit):
+        self.PSchSolProps  = myit
+        return
+        
+    def getPSchSolProps(self):
+        return self.PSchSolProps
+
+
+    def setScheduleVisual(self,myit):
+        self.ScheduleVisual  = myit
+        return
+        
+    def getScheduleVisual(self):
+        return self.ScheduleVisual 
+        
+
+    def setPSTBGanttOutput(self,myit):
+        self.PSTBGanttOutput  = myit
+        return
+        
+    def getPSTBGanttOutput(self):
+        return self.PSTBGanttOutput
+        
 
     def setSchTreeRootNode(self,myit):
         self.SchTreeRootNode  = myit
@@ -193,7 +234,21 @@ class ScheduleTab():
         self.getVisualManager().getSchedulingManager().setSHEnd(sel_end)
        
         return
+    def RecFindSelected(self,node,parent):
+        
+        selected = None 
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="in recfindnode..."+node.name+"\n"
+        if node.selected:
+            selected = node  
+        else: 
+            for subnode in node.nodes: 
+                selected = self.RecFindSelected(subnode) 
+                if selected != None:
+                    break       
+        return selected
 
+
+  
     
 
     def ShowShiftJobs(self,event):
@@ -213,12 +268,37 @@ class ScheduleTab():
         if selectedres == '':
             return
 
-  
 
         if selectedres in self.getVisualManager().DataManager.getResources():
             selected_res = self.getVisualManager().DataManager.getResources()[selectedres]
 
-            
+            source = pd.DataFrame(columns=["Shift","Job","Start","End"])
+
+            for shift,jobs in selected_res.getSchedule().items():
+                
+                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":1,"End":1.005}])
+                source = pd.concat([source, row], axis=0, ignore_index=True)
+                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":8.995,"End":9}])
+                source = pd.concat([source, row], axis=0, ignore_index=True)
+                for job in jobs:
+
+                    starttime = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()+1+0.01
+                    endtime =  min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime()+1-0.01
+                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getName(), "Start":starttime,"End":endtime}])
+                    source = pd.concat([source, row], axis=0, ignore_index=True)
+               
+            with self.getPSTBGanttOutput():
+                
+                clear_output() 
+                display(selected_res.getName())
+      
+                for shift in source["Shift"].unique():
+                    shift_df = source[source["Shift"] == shift]
+                    
+                    bars = alt.Chart(shift_df).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Shift', sort='-x'))
+                    text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
+                     
+                    display((bars + text).properties(height=100, width=200))
 
             restree = Tree()
          
@@ -230,17 +310,21 @@ class ScheduleTab():
                 for job in jobs:
                     schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
                     jobnode = Node(job.getName()+" > "+schstr,[], icon="cut", icon_style="success") 
+                    jobnode.opened = False
                     jobnodes.append(jobnode)
                 shiftnode = Node("Shift: "+str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
+                shiftnode.opened = False
                 shiftnodes.append(shiftnode)
         
             rootnode = Node(selected_res.getName(),shiftnodes, icon="cut", icon_style="success") 
 
+            rootnode.opened = False
             restree.add_node(rootnode)
 
             self.setSchTree(restree)
             self.setSchTreeRootNode(restree)
-    
+
+            
          
             with self.getPSTBResSchOutput():
                 clear_output()
@@ -276,6 +360,8 @@ class ScheduleTab():
         if ordname in self.getVisualManager().DataManager.getCustomerOrders():
             myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
 
+            source = pd.DataFrame(columns=["Job","Start","End"])
+
             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="order jobs..."+str(len(myord.getMyJobs()))+"\n"
             
             ordjobtree = Tree()
@@ -284,9 +370,23 @@ class ScheduleTab():
             for job in myord.getMyJobs():
                 schstr = "Unscheduled"
                 if job.IsScheduled():
+                    
+                    row = pd.DataFrame([{"Job":job.getName(), "Start":job.getStartTime(),"End":job.getCompletionTime()}])
+                    source = pd.concat([source, row], axis=0, ignore_index=True)
                     schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
+                    
                 jobnode = Node(job.getName()+"> "+schstr,[], icon="cut", icon_style="success") 
                 jobnodes.append(jobnode)
+
+            with self.getPSTBGanttOutput():
+                clear_output() 
+                display(ordname)
+                bars = alt.Chart(source).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Job', sort='-x'))
+                text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
+                     
+                display((bars + text).properties(height=100, width=200))
+                
+      
 
            
             rootnode = Node(myord.getName(),jobnodes, icon="cut", icon_style="success") 
@@ -303,6 +403,98 @@ class ScheduleTab():
 
        
         return
+
+    def ShowDescriptives(self,event):
+
+        if not 'index' in event['new']:
+            return
+            
+        if event['new']['index'] < 0:
+            return
+    
+        selected = self.getScheduleVisual().options[event['new']['index']]
+
+        if selected == None:
+            return
+
+        if selected == '':
+            return
+
+        if selected == 'Solution Properties':
+
+            self.getPSchSolProps().layout.display = 'block'
+            self.getPSchSolProps().layout.visibility  = 'visible'
+            
+            
+            self.getPSchResources().layout.visibility  = 'hidden'
+            self.getPSchResources().layout.display = 'none'
+
+            self.getPSTBResSchOutput().layout.visibility  = 'hidden'
+            self.getPSTBResSchOutput().layout.display = 'none'
+            
+            self.getPSchOrderlist().layout.visibility  = 'hidden'
+            self.getPSchOrderlist().layout.display = 'none'
+            
+            self.getPSTBOrdOutput().layout.visibility  = 'hidden'
+            self.getPSTBOrdOutput().layout.display = 'none'
+
+         
+
+      
+        if selected == 'Resources':
+            
+            self.getPSchResources().layout.display = 'block'
+            self.getPSchResources().layout.visibility  = 'visible'
+            
+            self.getPSTBResSchOutput().layout.display = 'block'
+            self.getPSTBResSchOutput().layout.visibility  = 'visible'
+            
+            self.getPSchOrderlist().layout.visibility  = 'hidden'
+            self.getPSchOrderlist().layout.display = 'none'
+            
+            self.getPSTBOrdOutput().layout.visibility  = 'hidden'
+            self.getPSTBOrdOutput().layout.display = 'none'
+
+            self.getPSchSolProps().layout.visibility  = 'hidden'
+            self.getPSchSolProps().layout.display = 'none'
+
+        
+        if selected == 'Customer Orders':
+
+            self.getPSchOrderlist().layout.display = 'block'
+            self.getPSchOrderlist().layout.visibility  = 'visible'
+
+            self.getPSTBOrdOutput().layout.display = 'block'
+            self.getPSTBOrdOutput().layout.visibility  = 'visible'
+            
+            self.getPSchResources().layout.visibility  = 'hidden'
+            self.getPSchResources().layout.display = 'none'
+
+            self.getPSTBResSchOutput().layout.visibility  = 'hidden'
+            self.getPSTBResSchOutput().layout.display = 'none'
+
+            self.getPSchSolProps().layout.visibility  = 'hidden'
+            self.getPSchSolProps().layout.display = 'none'
+
+        with self.getPSTBGanttOutput():
+            clear_output()
+       
+        with self.getPSTBOrdOutput():
+            clear_output()
+          
+        with self.getPSTBResSchOutput():
+            clear_output()
+          
+    
+        
+        return
+        
+    def MakeSchedule(self,b):
+
+        self.getVisualManager().getSchedulingManager().MakeSchedule(self.getScheduleAlgs().value)
+
+        return
+        
         
     
     def generatePSschTAB(self):
@@ -314,19 +506,15 @@ class ScheduleTab():
         self.getPSchScheRes().layout.width = '700px'
 
         self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
-        self.getPSchTBmakesch_btn().on_click(self.getVisualManager().getSchedulingManager().MakeSchedule)
+        self.getPSchTBmakesch_btn().on_click(self.MakeSchedule)
 
-        ordl = widgets.Label(value ='Customer Orders')
-        ordl.add_class("red_label")
-
-        reslb = widgets.Label(value ='Resources')
-        reslb.add_class("red_label")
+      
 
         schpr = widgets.Label(value ='Scheduling procedure progress ')
         schpr.add_class("red_label")
      
         self.setPSchOrderlist(widgets.Select(options=[],description = ''))
-        self.getPSchOrderlist().layout.height = '150px'
+        self.getPSchOrderlist().layout.height = '145px'
         self.getPSchOrderlist().layout.width = '400px'
         self.getPSchOrderlist().observe(self.ShowOrderStatus)
 
@@ -339,22 +527,23 @@ class ScheduleTab():
         self.getPLTBPlanEnd().observe(self.SetEnd)
      
         self.setPSchResources(widgets.Select(options=[], description=''))
-        self.getPSchResources().layout.height = '150px'
+        self.getPSchResources().layout.height = '145px'
         self.getPSchResources().layout.width = '400px'
         self.getPSchResources().observe(self.ShowShiftJobs)
 
+        self.setPSchSolProps(widgets.Textarea(value='', placeholder='',description='',disabled=True))
+     
+        self.getPSchSolProps().layout.height = '150px'
+        self.getPSchSolProps().layout.width = '500px'
+
         
-        ordtr = widgets.Label(value ='Order Schedule')
-        ordtr.add_class("red_label")
-
-        restr = widgets.Label(value ='Resource Schedule')
-        restr.add_class("red_label")
-
         OrdSchTree = Tree()
         rootnode = Node("Order Jobs",[], icon="cut", icon_style="success") 
         OrdSchTree.add_node(rootnode)
         self.setMyOrdTree(OrdSchTree)
         self.setOrdTreeRootNode(rootnode)
+        self.setPSTBOrdOutput(widgets.Output())
+
         self.setPSTBOrdOutput(widgets.Output())
 
         MySchTree = Tree()
@@ -364,26 +553,58 @@ class ScheduleTab():
         self.setSchTreeRootNode(rootnode)
         self.setPSTBResSchOutput(widgets.Output())
 
+        self.setPSTBGanttOutput(widgets.Output())
 
-      
-        tab_sch = VBox(children = [
-            widgets.Label(Value ='Schedule Settings '),
-            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
-            HBox(children=[VBox(children = [reslb,self.getPSchResources()]),VBox(children= [restr,self.getPSTBResSchOutput()])]),
-            HBox(children=[VBox(children= [ordl,self.getPSchOrderlist()]), VBox(children= [ordtr,self.getPSTBOrdOutput()])]),
-            HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])])
+        schdes = widgets.Label(value ='Schedule Information')
+        schdes.add_class("red_label")
 
+        schalg = widgets.Label(value ='Scheduling Algorithm')
+        schalg.add_class("red_label")
+        self.setScheduleAlgs(widgets.Dropdown(options=["Simple Greedy Insertion","Advanced Greedy Insertion"], description=''))
+
+
+        self.setScheduleVisual(widgets.Dropdown(options=["Solution Properties","Resources", "Customer Orders"], description=''))
+        self.getScheduleVisual().layout.width = '150px'
+        self.getScheduleVisual().observe(self.ShowDescriptives)
 
         
-         
+        
+        tab_sch = HBox(children = [ VBox(children = [
+           
+            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
+            HBox(children = [schalg,self.getScheduleAlgs()]),
+            HBox(children=[schdes, self.getScheduleVisual()]),
+            HBox(children=[self.getPSchSolProps()]),
+            HBox(children=[VBox(children = [self.getPSchResources()]),VBox(children= [self.getPSTBResSchOutput()])]),
+            HBox(children=[VBox(children= [self.getPSchOrderlist()]), VBox(children= [self.getPSTBOrdOutput()])]),
+            HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])]),self.getPSTBGanttOutput()])
+
+
+        with self.getPSTBGanttOutput():
+            clear_output()
+       
         with self.getPSTBOrdOutput():
             clear_output()
-            display(self.getMyOrdTree())
-
-        
+          
         with self.getPSTBResSchOutput():
             clear_output()
-            display(self.getSchTree())
+
+        self.getPSchSolProps().layout.visibility  = 'hidden'
+        self.getPSchSolProps().layout.display = 'none'
+          
+
+        self.getPSchOrderlist().layout.visibility  = 'hidden'
+        self.getPSchOrderlist().layout.display = 'none'
+            
+        self.getPSTBOrdOutput().layout.visibility  = 'hidden'
+        self.getPSTBOrdOutput().layout.display = 'none'
+
+        self.getPSchResources().layout.visibility  = 'hidden'
+        self.getPSchResources().layout.display = 'none'
+
+        self.getPSTBResSchOutput().layout.visibility  = 'hidden'
+        self.getPSTBResSchOutput().layout.display = 'none'
+
 
 
 
