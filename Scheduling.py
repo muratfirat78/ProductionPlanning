@@ -19,6 +19,7 @@ from Visual import *
 from Data import *
 from GreedyInsertion import *
 from AdvancedGreedyInsertion import *
+from SimpleBatching import *
 
 #######################################################################################################################
 
@@ -276,15 +277,19 @@ class SchedulingManager:
         curr_shift = startshift
       
         #find completion time of the job
-       
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="finding completion..."+"\n"
         while processtime > 0: 
             res.getSchedule()[curr_shift].append(job)
             timeinshift =  curr_shift.getEndTime()+1 - curr_time
-            if timeinshift < processtime:
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="time in Shft: "+str(curr_shift.getDay())+","+str(curr_shift.getNumber())+") "+str(timeinshift)+"\n"
+            
+            if timeinshift < processtime - 0.00001:
                 processtime = processtime - timeinshift
             else:
                 curr_time = curr_time + processtime
                 processtime = 0
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="remianed proc time"+ str(processtime)+"\n"
 
             if processtime > 0:
                 curr_shift=curr_shift.getNext()
@@ -315,7 +320,7 @@ class SchedulingManager:
 
         return newmeptyslot
 
-    def MakeSchedule(self,algorithm):
+    def MakeSchedule(self,schedulealg,batchingalg):
         '''
         -	Class shift: (myday,number (1 or 2))
         -	Schedule: dict(key: shift, val: [(job,starttime)])  , this will be added to class resource as variable like myschedule. 
@@ -335,8 +340,12 @@ class SchedulingManager:
                                 Add s to SchedulableJobs. 
 
         '''
-      
 
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(batchingalg)+"\n"
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Batching  : "+str(batchingalg)+"\n"
+
+        
         psstart = self.getSHStart()
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
@@ -373,8 +382,21 @@ class SchedulingManager:
                         
                     SelectedOrders.append(order)
                     #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
-                   
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"
+
+        if batchingalg == "Simple Merge":
+            batchalg = BaselineBatchingAlg()
+            oprdict = batchalg.SolveBatching(oprdict,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+
+            nrjobs = 0
+    
+            for opr,jobs in oprdict.items():
+                nrjobs+=len(jobs)
                 
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (batched) jobs: "+str(nrjobs)+"\n"
+            
+            
         #self.CreateJobs(psstart,ScheduleWeeks,SelectedOrders)
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Orders in scheduling: "+str(len(SelectedOrders))+"\n"
@@ -384,9 +406,7 @@ class SchedulingManager:
 
         #nrjobs,oprdict = self.DefineJobPrecedences(SelectedOrders)
            
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule jobs: "+str(nrjobs)+"\n"
-
-      
+       
          #Initialize shifts (example 30 days?)
         scheduldays = 7*ScheduleWeeks;
    
@@ -507,10 +527,10 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" starting... "+"\n"  
       
 
-        if algorithm == "Simple Greedy Insertion":
+        if schedulealg == "Simple Greedy Insertion":
             greedyalg = GreedyInsertionAlg()
             greedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
-        if algorithm == "Advanced Greedy Insertion":
+        if schedulealg == "Advanced Greedy Insertion":
             advncdgreedyalg = AdvancedGreedyInsertionAlg()
             advncdgreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
             

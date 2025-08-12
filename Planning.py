@@ -179,8 +179,9 @@ class PlanningManager:
                             self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
                             jobid = self.getVisualManager().getSchedulingManager().getJobID()
                             curr_job =  Job(jobid,"Job_"+str(jobid),product,operation,curr_quantity,mydate)
+                            
                             if prev_job!= None:
-                                curr_job.setSuccessor(prev_job)
+                                prev_job.getSuccessors().append(curr_job)
                                 prev_job.getPredecessors().append(curr_job)
                             prev_job = curr_job
                             curr_job.setCustomerOrder(order)

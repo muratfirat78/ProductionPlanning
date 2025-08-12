@@ -57,8 +57,16 @@ class ScheduleTab():
         self.ScheduleVisual = None
         self.PSchSolProps = None
         self.ScheduleAlgs = None
+        self.BatchingAlgs = None
         
         return
+
+    def setBatchingAlgs(self,myit):
+        self.BatchingAlgs  = myit
+        return
+        
+    def getBatchingAlgs(self):
+        return self.BatchingAlgs
 
     def setScheduleAlgs(self,myit):
         self.ScheduleAlgs  = myit
@@ -491,7 +499,7 @@ class ScheduleTab():
         
     def MakeSchedule(self,b):
 
-        self.getVisualManager().getSchedulingManager().MakeSchedule(self.getScheduleAlgs().value)
+        self.getVisualManager().getSchedulingManager().MakeSchedule(self.getScheduleAlgs().value,self.getBatchingAlgs().value)
 
         return
         
@@ -558,9 +566,18 @@ class ScheduleTab():
         schdes = widgets.Label(value ='Schedule Information')
         schdes.add_class("red_label")
 
+         
+
         schalg = widgets.Label(value ='Scheduling Algorithm')
-        schalg.add_class("red_label")
+        schalg.add_class("blue_label")
+
+        
+        bchalg = widgets.Label(value ='Batching Method')
+        bchalg.add_class("blue_label")
         self.setScheduleAlgs(widgets.Dropdown(options=["Simple Greedy Insertion","Advanced Greedy Insertion"], description=''))
+        self.getScheduleAlgs().layout.width = '185px'
+        self.setBatchingAlgs(widgets.Dropdown(options=["Order size based","Simple Merge"], description=''))
+        self.getBatchingAlgs().layout.width = '150px'
 
 
         self.setScheduleVisual(widgets.Dropdown(options=["Solution Properties","Resources", "Customer Orders"], description=''))
@@ -572,7 +589,7 @@ class ScheduleTab():
         tab_sch = HBox(children = [ VBox(children = [
            
             HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
-            HBox(children = [schalg,self.getScheduleAlgs()]),
+            HBox(children = [schalg,self.getScheduleAlgs(),bchalg,self.getBatchingAlgs()]),
             HBox(children=[schdes, self.getScheduleVisual()]),
             HBox(children=[self.getPSchSolProps()]),
             HBox(children=[VBox(children = [self.getPSchResources()]),VBox(children= [self.getPSTBResSchOutput()])]),

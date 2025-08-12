@@ -294,7 +294,8 @@ class DataManager:
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
-                        newprod.setBatchsize(r["PrescribedBatchsize"])
+                        if not np.isnan(r["PrescribedBatchsize"]):
+                            newprod.setBatchsize(r["PrescribedBatchsize"])
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
@@ -428,6 +429,7 @@ class DataManager:
                 oprlst = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]]
                 if len(oprlst) > 0:
                     opr = oprlst[0]
+                    opr.setProduct(prod)
                     prod.getOperations().insert(r["OperationIndex"],opr)
                 else:
                     self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 

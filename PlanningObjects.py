@@ -296,7 +296,14 @@ class Operation():
         self.Jobs = []
         self.batchsize = 12 # to be changed..
         self.Predecessor = dict()
+        self.Product = None
 
+    def getProduct(self):
+        return self.Product 
+
+    def setProduct(self,prd):
+        self.Product = prd
+        return 
     
     def getID(self):
         return self.ID
@@ -330,10 +337,12 @@ class Job():
         # PLANNING
         self.DeadLine = myddline
         self.Predecessors = []
-        self.Successor = None
+        self.Successors = []
         self.LatestStart=  None
         self.CustomerOrder = None
-        
+        self.OrderJobs = dict() #key: customer order, val: [(job,Q)] of that order. 
+        self.batched = False
+        self.BatchJobs = []
        
         
 
@@ -349,14 +358,43 @@ class Job():
         self.ScheduledTime =None
         self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
 
+    def setBatched(self):
+        self.batched = True
+        return
+    def IsBatched(self):
+        return self.batched
+
+    def getBatchJobs(self):
+        return self.BatchJobs
+
+
+    def getOrderJobs(self):
+        return self.OrderJobs
+
     def IsScheduled(self):
         return self.Scheduled
+        
     def SetScheduled(self):
-        self.Scheduled = True
+        if len(self.getOrderJobs()) > 0:
+            self.Scheduled = True
+        else: 
+            if self.IsBatched():
+                bscheduled = True
+                for bjob in self.getBatchJobs():
+                    bscheduled = bscheduled and bjob.IsScheduled
+                self.Scheduled = bscheduled
+   
+            else: 
+                self.Scheduled = True
+            
         return 
 
     def IsSchedulable(self):
+        
         for pred in self.getPredecessors():
+            if pred.IsBatched():
+                continue
+            
             if not pred.IsScheduled():
                 return False
         return True
@@ -365,7 +403,21 @@ class Job():
         return self.CompletionTime
 
     def setCompletionTime(self,myst):
+        
         self.CompletionTime = myst
+
+        for job in self.getOrderJobs():
+            maxcomp = 0
+            allscheduled = True
+            for bjob in self.getBatchJobs():
+                if bjob.IsScheduled():
+                    maxcomp = max(maxcomp,bjob.getCompletionTime())
+                else: 
+                    allscheduled = False
+
+            if allscheduled and len(self.getBatchJobs()) > 0:
+                job.setCompletionTime(myst)
+       
         return
 
     def setCustomerOrder(self,co):
@@ -380,6 +432,9 @@ class Job():
         maxcomptime = 0
 
         for pred in self.Predecessors:
+            if pred.IsBatched():
+                continue
+                
             if not pred.IsScheduled:
                 return -1 # not applicable to start
             else: 
@@ -411,6 +466,9 @@ class Job():
     def setScheduledTime(self,myst):
         self.ScheduledTime = myst
         return
+    def IsBatchJob(self):
+        return (len(self.getOrderJobs())>0)
+   
 
     def getScheduledDay(self):
         return self.ScheduledDay
@@ -449,16 +507,20 @@ class Job():
     def getOperation(self):
         return self.Operation
     def getQuantity(self):
-        return self.Quantity
+        if len(self.getOrderJobs()) == 0:
+            return self.Quantity
+        else:
+            q = 0
+            for order,joblist in self.getOrderJobs().items():
+                for jobinfo in joblist:
+                    q+=jobinfo[1]
+            return q
     def getDeadLine(self):
         return self.DeadLine
     def getPredecessors(self):
         return self.Predecessors
-    def getSuccessor(self):
-        return self.Successor 
-    def setSuccessor(self,myjob):
-        self.Successor = myjob
-        return
+    def getSuccessors(self):
+        return self.Successors 
     def getOrderReserves(self):
         return self.OrderReserves
     

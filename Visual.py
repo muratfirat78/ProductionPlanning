@@ -167,12 +167,20 @@ class VisualManager():
         self.UseResTree= None
         self.UseResTreeRootNode= None
         self.PLTBUseResOutput= None
+        self.PSTBProdBatch = None
 
        
 
         return
 
-    
+    def setPSTBProdBatch(self,myit):
+        self.PSTBProdBatch = myit
+        return
+
+    def getPSTBProdBatch(self):
+        return self.PSTBProdBatch
+
+     
 
     def setPSTBOprRes(self,myit):
         self.PSTBOprRes = myit
@@ -1129,7 +1137,7 @@ class VisualManager():
 
         if sel_opr!= None:
             self.getPSTBOprName().value = sel_opr.getName()
-            self.getPSTBOprProcTime().value = str(sel_opr.getProcessTime())
+            self.getPSTBOprProcTime().value = str(round(sel_opr.getProcessTime(),3))
 
             res = None
             for resource in sel_opr.getRequiredResources():
@@ -1191,6 +1199,10 @@ class VisualManager():
         
         self.getPSTBProdName().value = sel_prod.getName()
         self.getPSTBProdPN().value = sel_prod.getPN()
+        if sel_prod.getBatchsize()!= None: 
+            self.getPSTBProdBatch().value = str(sel_prod.getBatchsize())
+        else:
+            self.getPSTBProdBatch().value = "-"
         self.getPSTBProdStocklvl().value = str(sel_prod.getStockLevel())
         self.getPSTBoperations().options = [opr.getName() for opr in sel_prod.getOperations()]
         
@@ -1232,6 +1244,10 @@ class VisualManager():
         self.getPSTBProdSearch().value = sel_prod.getName()
         self.getPSTBProdName().value = sel_prod.getName()
         self.getPSTBProdPN().value = sel_prod.getPN()
+        if sel_prod.getBatchsize()!= None: 
+            self.getPSTBProdBatch().value = str(sel_prod.getBatchsize())
+        else:
+            self.getPSTBProdBatch().value = "-"
         self.getPSTBProdStocklvl().value = str(sel_prod.getStockLevel())
         self.getPSTBoperations().options = [opr.getName() for opr in sel_prod.getOperations()]
         
@@ -1408,6 +1424,10 @@ class VisualManager():
        
             self.getPSTBProdName().value = myord.getProduct().getName()
             self.getPSTBProdPN().value = myord.getProduct().getPN()
+            if myord.getProduct().getBatchsize()!= None: 
+                self.getPSTBProdBatch().value = str(myord.getProduct().getBatchsize())
+            else:
+                self.getPSTBProdBatch().value = "-"
             self.getPSTBProdStocklvl().value = str(myord.getProduct().getStockLevel())
             self.getPSTBoperations().options = [opr.getName() for opr in myord.getProduct().getOperations()]
 
@@ -1667,6 +1687,10 @@ class VisualManager():
                     if p.getPN() == myprodname[:-1]:                
                         self.getPSTBProdName().value = p.getName()
                         self.getPSTBProdPN().value = p.getPN()
+                        if p.getBatchsize()!= None: 
+                            self.getPSTBProdBatch().value = str(p.getBatchsize())
+                        else:
+                            self.getPSTBProdBatch().value = "-"
                         self.getPSTBProdStocklvl().value = str(p.getStockLevel())
                         self.getPSTBoperations().options = [opr.getName() for opr in p.getOperations()]  
             else:
@@ -1676,6 +1700,10 @@ class VisualManager():
                 prod = self.DataManager.getProducts()[myprodname]
                 self.getPSTBProdName().value = prod.getName()
                 self.getPSTBProdPN().value = prod.getPN()
+                if prod.getBatchsize()!= None: 
+                    self.getPSTBProdBatch().value = str(prod.getBatchsize())
+                else:
+                    self.getPSTBProdBatch().value = "-"
                 self.getPSTBProdStocklvl().value = str(prod.getStockLevel())
                 self.getPSTBoperations().options = [opr.getName() for opr in prod.getOperations()]
             else:
@@ -1725,13 +1753,15 @@ class VisualManager():
         self.setPSTBResName(widgets.Label(value='',disabled = True))
         self.setPSTBResType(widgets.Label(value ='',disabled = True))
         self.setPSTBResCap(widgets.Label(value ='',disabled = True))
+        #self.setPSTB(widgets.Label(value ='',disabled = True))
 
         rsnl = widgets.Label(value ='Name:')
         rsnl.add_class("blue_label")
         rstl = widgets.Label(value ='Type:')
         rstl.add_class("blue_label")
-        rscl = widgets.Label(value ='Capacity:')
+        rscl = widgets.Label(value ='Cap:')
         rscl.add_class("blue_label")
+       
        
 
         tb4_vbox1 = VBox(children = [
@@ -1778,6 +1808,7 @@ class VisualManager():
         self.setPSTBProdPN(widgets.Label(value ='',disabled = True))
       
         self.setPSTBProdStocklvl(widgets.Label(value ='',disabled = True))
+        self.setPSTBProdBatch(widgets.Label(value ='',disabled = True))
   
 
        
@@ -1800,11 +1831,14 @@ class VisualManager():
 
         n = widgets.Label(value =  "Stock: ",disabled = True)
         n.add_class("blue_label")
+
+        b = widgets.Label(value =  "Batch: ",disabled = True)
+        b.add_class("blue_label")
         tb4_vbox2 = VBox(children = [HBox(children=[p_box]),
                                      #HBox(children=[self.getPSTBnewprd_btn(),self.getPSTBeditprd_btn()]),
                                      #self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),
                                      HBox(children=[l,self.getPSTBProdName()]),
-                                     HBox(children=[m,self.getPSTBProdPN(),widgets.Label(value =  " | ",disabled = True),n,self.getPSTBProdStocklvl()]),
+                                     HBox(children=[m,self.getPSTBProdPN(),widgets.Label(value =  " | ",disabled = True),n,self.getPSTBProdStocklvl(),widgets.Label(value =  " | ",disabled = True),b,self.getPSTBProdBatch()]),
                                      HBox(children = [self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn()])
                                      ,prdsel_box]
                         )

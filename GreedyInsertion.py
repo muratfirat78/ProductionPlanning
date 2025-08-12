@@ -78,8 +78,11 @@ class GreedyInsertionAlg:
                     #    Progress.value+=" **Slot: St: "+str(myslot[0][0])+", l: "+str(myslot[0][1])+", Sh: ("+str(myslot[1].getDay())+","+str(myslot[1].getNumber())+")"+"\n" 
                     
                     ScheduledJobs.append(j)
-                    if j.getSuccessor() != None and j.getSuccessor().IsSchedulable():
-                        SchedulableJobs.append(j.getSuccessor())
+                    for successor in j.getSuccessors():
+                        if successor.IsBatched():
+                            continue
+                        if successor.IsSchedulable():
+                            SchedulableJobs.append(successor)
             for j in ScheduledJobs:
                 SchedulableJobs.remove(j)
             for j in JobsToRemove:

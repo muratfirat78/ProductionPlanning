@@ -1,167 +1,108 @@
 Resource Name,Day,Shift,Job,OperationName,Start in Shift,Completion in Shift
-MP2 - Material preparation - manual sawing (ZGN_02),2025-07-31,2,,Sawing_[7005-2580-0005]  Single Rail / IGUS / WSQ-06S,86.58333333333331,87.33333333333331
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-29,2,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,38.0166666666666,40.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-29,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,41.0,44.68333333333326
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-29,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,44.68333333333326,48.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,2,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,57.0,59.349999999999916
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,2,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,57.79999999999987,64.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,2,,Milling (FR3_01)_[GF3116T006L]  Carriage,59.349999999999916,59.683333333333245
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,3,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,65.0,65.29999999999987
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,3,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,65.29999999999987,72.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,3,,Milling (FR3_01)_[4022-455-09997-3]  post 7,72.79999999999987,72.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,72.96666666666654,72.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-31,2,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,81.0,87.6333333333332
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-31,2,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,87.6333333333332,88.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-31,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,89.0,94.29999999999986
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-31,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,94.29999999999986,96.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,2,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,105.0,108.96666666666651
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,2,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,108.96666666666651,112.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,113.0,115.63333333333317
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,3,,Milling (FR3_01)_[00385-00-274-D]  Filling block,115.63333333333317,120.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-02,2,,Milling (FR3_01)_[00385-00-274-D]  Filling block,129.0,133.63333333333316
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-02,2,,Milling (FR3_01)_[4022-333-19505]  BRIL,133.63333333333316,136.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-02,3,,Milling (FR3_01)_[4022-333-19505]  BRIL,137.0,144.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,2,,Milling (FR3_01)_[4022-333-19505]  BRIL,153.0,158.2999999999998
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,2,,Milling (FR3_01)_[4022-455-09992]  POST 2,158.2999999999998,158.69999999999982
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,2,,Milling (FR3_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,158.69999999999982,160.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,2,,Milling (FR3_01)_[4022-290-63221-D]  Excenter housing z,160.36666666666648,160.0
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,3,,Milling (FR3_01)_[4022-290-63221-D]  Excenter housing z,161.0,167.19999999999982
-M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,3,,Milling (FR3_01)_[BD50-5075-009-E]  bracket,167.26666666666654,168.0
-BW - Benchwork (BKW_01),2025-07-28,2,,BW - Benchwork (BKW_01)_[GF3116T006L]  Carriage,9.0,9.333333333333332
-BW - Benchwork (BKW_01),2025-07-28,2,,BW - Benchwork (BKW_01)_[GF3116T006L]  Carriage,9.333333333333332,10.333333333333329
-BW - Benchwork (BKW_01),2025-07-28,2,,BW - Benchwork (BKW_01)_[4598-011-70891B]  ENDPLATE_2,10.333333333333329,11.99999999999999
-BW - Benchwork (BKW_01),2025-07-28,2,,BW - Bnchwork_[M.P04743]  Koppelstrip bovenligger iGate,14.016666666666648,16.0
-BW - Benchwork (BKW_01),2025-07-28,3,,BW - Bnchwork_[M.P04743]  Koppelstrip bovenligger iGate,17.0,19.033333333333296
-BW - Benchwork (BKW_01),2025-07-28,3,,BW - Benchwork (BKW_01)_[4022-631-89301]  Hinge Block LM2,19.033333333333296,21.683333333333294
-BW - Benchwork (BKW_01),2025-07-28,3,,BW - Benchwork (BKW_01)_[00385-00-320-A]  Plint adjust strip,21.683333333333294,24.0
-BW - Benchwork (BKW_01),2025-07-28,3,,BW - Benchwork (BKW_01)_[00385-00-320-A]  Plint adjust strip,24.183333333333284,24.0
-BW - Benchwork (BKW_01),2025-07-29,2,,BW - Benchwork (BKW_01)_[00385-00-320-A]  Plint adjust strip,33.0,34.68333333333327
-BW - Benchwork (BKW_01),2025-07-29,2,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,34.68333333333327,38.0166666666666
-BW - Benchwork (BKW_01),2025-07-29,2,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,38.0166666666666,40.0
-BW - Benchwork (BKW_01),2025-07-29,3,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,41.0,41.34999999999993
-BW - Benchwork (BKW_01),2025-07-29,3,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,41.34999999999993,44.68333333333326
-BW - Benchwork (BKW_01),2025-07-29,3,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,44.68333333333326,48.0
-BW - Benchwork (BKW_01),2025-07-29,3,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,48.01666666666659,48.0
-BW - Benchwork (BKW_01),2025-07-30,2,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,57.0,59.349999999999916
-BW - Benchwork (BKW_01),2025-07-30,2,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,59.349999999999916,62.683333333333245
-BW - Benchwork (BKW_01),2025-07-30,2,,BW - Benchwork (BKW_01)_[4022-656-75212]  Non loosable block M5,62.683333333333245,63.34999999999991
-BW - Benchwork (BKW_01),2025-07-30,2,,BW - Benchwork (BKW_01)_[4022-656-75183]  Non loosable block M4,63.34999999999991,64.0
-BW - Benchwork (BKW_01),2025-07-30,2,,BW - Benchwork (BKW_01)_[00385-00-274-D]  Filling block,64.01666666666657,64.0
-BW - Benchwork (BKW_01),2025-07-30,3,,BW - Benchwork (BKW_01)_[00385-00-274-D]  Filling block,65.0,67.34999999999988
-BW - Benchwork (BKW_01),2025-07-30,3,,BW - Benchwork (BKW_01)_[4022-333-19505]  BRIL,67.34999999999988,72.0
-BW - Benchwork (BKW_01),2025-07-30,3,,BW - Benchwork (BKW_01)_[4022-333-19505]  BRIL,72.34999999999988,72.0
-BW - Benchwork (BKW_01),2025-07-31,2,,BW - Benchwork (BKW_01)_[4022-333-19505]  BRIL,81.0,85.34999999999988
-BW - Benchwork (BKW_01),2025-07-31,2,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,85.34999999999988,88.0
-BW - Benchwork (BKW_01),2025-07-31,3,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,89.0,95.34999999999988
-BW - Benchwork (BKW_01),2025-07-31,3,,BW - Benchwork (BKW_01)_[00429-00-662-B]  Arret lever,95.34999999999988,96.0
-BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[00429-00-662-B]  Arret lever,105.0,106.68333333333321
-BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[00429-00-662-B]  Arret lever,106.68333333333321,110.01666666666654
-BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[4022-455-09992]  POST 2,110.01666666666654,110.21666666666654
-BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[4022-631-47801]  Interface (FIXED),110.21666666666654,110.81666666666653
-BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,110.81666666666653,112.0
-BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[4022-290-63221-D]  Excenter housing z,112.4833333333332,112.0
-BW - Benchwork (BKW_01),2025-08-01,3,,BW - Benchwork (BKW_01)_[4022-290-63221-D]  Excenter housing z,113.0,119.31666666666653
-BW - Benchwork (BKW_01),2025-08-01,3,,BW - Benchwork (BKW_01)_[4022-666-65702(R1)]  LSPH coverplate stud block,119.31666666666653,120.0
-BW - Benchwork (BKW_01),2025-08-01,3,,BW - Benchwork (BKW_01)_[4022-631-80301]  Hinge Block LR2 (fixed),120.56666666666653,120.0
-BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[4022-631-80301]  Hinge Block LR2 (fixed),129.0,130.56666666666655
-BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[4022-637-29381]  Hinge Block LM,130.56666666666655,132.7333333333332
-BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[M0216-01-363-B]  nul-graden arretsegment,132.7333333333332,133.56666666666655
-BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[M0216-01-363-B]  nul-graden arretsegment,133.56666666666655,134.3999999999999
-BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[00429-00-249-A]  Plint adjust strip,134.3999999999999,136.0
-BW - Benchwork (BKW_01),2025-08-02,3,,BW - Benchwork (BKW_01)_[00429-00-249-A]  Plint adjust strip,137.0,137.7333333333332
-BW - Benchwork (BKW_01),2025-08-02,3,,BW - Benchwork (BKW_01)_[00385-00-329-A]  End plate finger safety hinge,137.7333333333332,142.31666666666652
-BW - Benchwork (BKW_01),2025-08-02,3,,BW - Benchwork (BKW_01)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,142.31666666666652,142.81666666666652
-BW - Benchwork (BKW_01),2025-08-02,3,,BW - Benchwork (BKW_01)_[1011113A]  Cord Bracket,142.81666666666652,144.0
-BW - Benchwork (BKW_01),2025-08-03,2,,BW - Benchwork (BKW_01)_[1011113A]  Cord Bracket,153.0,155.81666666666652
-BW - Benchwork (BKW_01),2025-08-03,2,,BW - Benchwork (BKW_01)_[1082700B]  Block cooling water TMP,155.81666666666652,157.89999999999986
-BW - Benchwork (BKW_01),2025-08-03,2,,BW - Benchwork (BKW_01)_[1508130 B]  [Q] excenter housing z,157.89999999999986,160.0
-BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[1508130 B]  [Q] excenter housing z,161.0,162.06666666666652
-BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[4022-637-29391]  Hinge block fixed LM,162.06666666666652,163.86666666666653
-BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[4022-637-29301]  Hinge Block Fixed RM,163.86666666666653,166.46666666666653
-BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[BD50-5075-009-E]  bracket,166.46666666666653,167.26666666666654
-BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[BD50-5075-013F]  bracket,167.26666666666654,167.79999999999987
-BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[BD50-5075-013F]  bracket,167.79999999999987,168.0
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5075-013F]  bracket,177.0,177.46666666666653
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5085-007-C]  bracket,177.46666666666653,178.26666666666654
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5085-007-C]  bracket,178.26666666666654,180.69999999999987
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5085-009-C]  bracket,180.69999999999987,181.4999999999999
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5085-009-C]  bracket,181.4999999999999,183.93333333333322
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5075-015F]  bracket,183.93333333333322,184.0
-BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[BD50-5075-015F]  bracket,184.73333333333323,184.0
-BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[BD50-5075-015F]  bracket,185.0,186.3999999999999
-BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[4598-011-70891B]  ENDPLATE,186.3999999999999,188.06666666666655
-BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[BD50-5085-013-C]  bracket,188.06666666666655,189.7333333333332
-BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[BD50-5085-011-C]  bracket,189.7333333333332,191.39999999999986
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-28,2,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,9.0,16.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-28,3,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,17.0,24.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-29,2,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,33.0,40.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-29,3,,Milling (FR3_01)_[00385-00-102-C]  Height bearing clamp plate,41.0,47.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-29,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,47.0,48.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,2,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,57.0,64.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-30,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,65.0,72.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-31,2,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,81.0,88.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-07-31,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,89.0,96.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,2,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,105.0,112.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,3,,Milling (FR3_01)_[00385-00-321-A]  Plint fixing strip left,113.0,118.59999999999995
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-01,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,118.59999999999995,120.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-02,2,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,129.0,136.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-02,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,137.0,144.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,2,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,153.0,160.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-03,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,161.0,168.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-04,2,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,177.0,184.0
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-04,3,,Milling (FR3_01)_[00385-00-346-A]  Plint fixing strip right,185.0,190.1999999999999
+M3-01 - Accuwell - 3axis - Manual (FR3_01),2025-08-04,3,,Milling (FR3_01)_[4022-455-09992]  POST 2,190.1999999999999,191.1999999999999
+BW - Benchwork (BKW_01),2025-07-28,2,,BW - Benchwork (BKW_01)_[GF3116T006L]  Carriage,9.0,12.999999999999984
+BW - Benchwork (BKW_01),2025-07-28,2,,BW - Benchwork (BKW_01)_[4598-011-70891B]  ENDPLATE_2,12.999999999999984,16.0
+BW - Benchwork (BKW_01),2025-07-28,2,,BW - Benchwork (BKW_01)_[00385-00-320-A]  Plint adjust strip,16.84999999999997,16.0
+BW - Benchwork (BKW_01),2025-07-28,3,,BW - Benchwork (BKW_01)_[00385-00-320-A]  Plint adjust strip,17.0,24.0
+BW - Benchwork (BKW_01),2025-07-29,2,,BW - Benchwork (BKW_01)_[00385-00-320-A]  Plint adjust strip,33.0,35.74999999999993
+BW - Benchwork (BKW_01),2025-07-29,2,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,35.74999999999993,40.0
+BW - Benchwork (BKW_01),2025-07-29,3,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,41.0,48.0
+BW - Benchwork (BKW_01),2025-07-30,2,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,57.0,64.0
+BW - Benchwork (BKW_01),2025-07-30,3,,BW - Benchwork (BKW_01)_[00385-00-321-A]  Plint fixing strip left,65.0,67.5499999999999
+BW - Benchwork (BKW_01),2025-07-30,3,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,67.5499999999999,72.0
+BW - Benchwork (BKW_01),2025-07-31,2,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,81.0,88.0
+BW - Benchwork (BKW_01),2025-07-31,3,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,89.0,96.0
+BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[00385-00-346-A]  Plint fixing strip right,105.0,107.34999999999988
+BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[4022-656-75212]  Non loosable block M5,107.34999999999988,109.0833333333332
+BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[4022-656-75183]  Non loosable block M4,109.0833333333332,110.6333333333332
+BW - Benchwork (BKW_01),2025-08-01,2,,BW - Benchwork (BKW_01)_[00385-00-274-D]  Filling block,110.6333333333332,112.0
+BW - Benchwork (BKW_01),2025-08-01,3,,BW - Benchwork (BKW_01)_[00385-00-274-D]  Filling block,113.0,116.5666666666665
+BW - Benchwork (BKW_01),2025-08-01,3,,BW - Benchwork (BKW_01)_[4022-333-19505]  BRIL,116.5666666666665,120.0
+BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[4022-333-19505]  BRIL,129.0,129.5666666666665
+BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[4022-333-19505]  BRIL,129.5666666666665,134.5666666666665
+BW - Benchwork (BKW_01),2025-08-02,2,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,134.5666666666665,136.0
+BW - Benchwork (BKW_01),2025-08-02,3,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,137.0,144.0
+BW - Benchwork (BKW_01),2025-08-03,2,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,153.0,160.0
+BW - Benchwork (BKW_01),2025-08-03,3,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,161.0,168.0
+BW - Benchwork (BKW_01),2025-08-04,2,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,177.0,184.0
+BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[00385-00-113A]  Tensioner plate,185.0,185.5666666666665
+BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[4022-455-09992]  POST 2,185.5666666666665,186.0666666666665
+BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[4022-631-47801]  Interface (FIXED),186.0666666666665,187.3166666666665
+BW - Benchwork (BKW_01),2025-08-04,3,,BW - Benchwork (BKW_01)_[4022-666-65702(R1)]  LSPH coverplate stud block,187.3166666666665,191.51666666666648
 PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[M.P04743]  Koppelstrip bovenligger iGate,9.0,14.016666666666648
 PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[4022-631-89301]  Hinge Block LM2,14.016666666666648,14.899999999999977
-PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[00385-00-320-A]  Plint adjust strip,14.899999999999977,16.0
-PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[00385-00-320-A]  Plint adjust strip,17.0,17.399999999999967
-PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[00385-00-320-A]  Plint adjust strip,17.399999999999967,19.899999999999956
-PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[00385-00-321-A]  Plint fixing strip left,19.899999999999956,21.566666666666617
-PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[00385-00-321-A]  Plint fixing strip left,21.566666666666617,23.233333333333277
-PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[00385-00-321-A]  Plint fixing strip left,23.233333333333277,24.0
-PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,24.899999999999938,24.0
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,33.0,34.5666666666666
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,34.5666666666666,36.233333333333256
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,36.233333333333256,37.89999999999991
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[4022-656-75212]  Non loosable block M5,37.89999999999991,38.56666666666658
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[4022-656-75183]  Non loosable block M4,38.56666666666658,39.23333333333324
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[BD50-5075-009-E]  bracket_2,39.23333333333324,39.63333333333324
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[BD50-5075-013F]  bracket_2,39.63333333333324,39.899999999999906
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[BD50-5075-013F]  bracket_2,39.899999999999906,40.0
-PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket_2,40.733333333333235,40.0
-PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket_2,41.0,41.13333333333323
-PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket_2,41.13333333333323,42.349999999999895
-PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[BD50-5085-009-C]  bracket_2,42.349999999999895,42.74999999999989
-PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[BD50-5085-009-C]  bracket_2,42.74999999999989,43.966666666666555
-PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[00385-00-274-D]  Filling block,43.966666666666555,47.299999999999876
-PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[00385-00-102-C]  Height bearing clamp plate,47.299999999999876,48.0
-PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[00385-00-102-C]  Height bearing clamp plate,57.0,57.79999999999987
-PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[00385-00-102-C]  Height bearing clamp plate,57.79999999999987,60.29999999999986
-PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[4022-333-19505]  BRIL,60.29999999999986,61.96666666666652
-PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[4022-333-19505]  BRIL,61.96666666666652,63.63333333333318
-PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[00385-00-113A]  Tensioner plate,63.63333333333318,64.0
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[00385-00-113A]  Tensioner plate,65.0,66.9666666666665
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[00429-00-662-B]  Arret lever,66.9666666666665,68.63333333333316
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[00429-00-662-B]  Arret lever,68.63333333333316,70.29999999999981
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[4022-455-09992]  POST 2,70.29999999999981,70.49999999999982
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[4022-455-09997-3]  post 7,70.49999999999982,70.66666666666649
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[4022-631-47801]  Interface (FIXED),70.66666666666649,70.86666666666649
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,70.86666666666649,71.19999999999982
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[4022-290-63221-D]  Excenter housing z,71.19999999999982,72.0
-PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[4022-666-65702(R1)]  LSPH coverplate stud block,72.56666666666648,72.0
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[4022-666-65702(R1)]  LSPH coverplate stud block,81.0,81.81666666666648
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[BD50-5075-015F]  bracket_2,81.81666666666648,82.21666666666647
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[BD50-5075-015F]  bracket_2,82.21666666666647,83.0499999999998
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[4022-631-80301]  Hinge Block LR2 (fixed),83.0499999999998,83.71666666666646
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[4022-637-29381]  Hinge Block LM,83.71666666666646,84.79999999999978
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[00236-05-103-C]  geleideblok spanrol,84.79999999999978,86.88333333333311
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[M0216-01-363-B]  nul-graden arretsegment,86.88333333333311,87.29999999999978
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[M0216-01-363-B]  nul-graden arretsegment,87.29999999999978,87.71666666666646
-PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[00429-00-249-A]  Plint adjust strip,87.71666666666646,88.0
-PACK - Packaging (VERP_P),2025-07-31,3,,Packaging (VERP_P)_[00429-00-249-A]  Plint adjust strip,89.0,91.04999999999977
-PACK - Packaging (VERP_P),2025-07-31,3,,Packaging (VERP_P)_[00385-00-329-A]  End plate finger safety hinge,91.04999999999977,95.63333333333308
-PACK - Packaging (VERP_P),2025-07-31,3,,Packaging (VERP_P)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,95.63333333333308,95.79999999999976
-PACK - Packaging (VERP_P),2025-07-31,3,,Packaging (VERP_P)_[1011113A]  Cord Bracket,95.79999999999976,96.0
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[1011113A]  Cord Bracket,105.0,106.29999999999974
-PACK - Packaging (VERP_P),2025-08-01,2,,PACK - Packaging (VERP_P)_[BD50-5085-013-C]  bracket_2,106.29999999999974,107.13333333333307
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[BD50-5085-011-C]  bracket_2,107.13333333333307,107.9666666666664
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[1082700B]  Block cooling water TMP,107.9666666666664,108.38333333333307
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[1508130 B]  [Q] excenter housing z,108.38333333333307,109.2166666666664
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[4022-637-29391]  Hinge block fixed LM,109.2166666666664,109.81666666666639
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[4022-637-29301]  Hinge Block Fixed RM,109.81666666666639,110.68333333333305
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[BD50-5075-009-E]  bracket,110.68333333333305,111.08333333333304
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[BD50-5075-013F]  bracket,111.08333333333304,111.34999999999971
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[BD50-5075-013F]  bracket,111.34999999999971,112.0
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket,112.18333333333304,112.0
-PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket,112.58333333333303,112.0
-PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket,113.0,113.7999999999997
-PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[BD50-5085-009-C]  bracket,113.7999999999997,114.19999999999969
-PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[BD50-5085-009-C]  bracket,114.19999999999969,115.41666666666636
-PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[BD50-5075-015F]  bracket,115.41666666666636,115.81666666666635
-PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[BD50-5075-015F]  bracket,115.81666666666635,116.64999999999968
-PACK - Packaging (VERP_P),2025-08-01,3,,PACK - Packaging (VERP_P)_[BD50-5085-013-C]  bracket,116.64999999999968,117.48333333333301
-PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[BD50-5085-011-C]  bracket,117.48333333333301,118.31666666666634
+PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[BD50-5075-009-E]  bracket_2,14.899999999999977,15.299999999999976
+PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[BD50-5075-013F]  bracket_2,15.299999999999976,15.566666666666642
+PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[BD50-5075-013F]  bracket_2,15.566666666666642,16.0
+PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket_2,16.39999999999997,16.0
+PACK - Packaging (VERP_P),2025-07-28,2,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket_2,16.79999999999997,16.0
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[BD50-5085-007-C]  bracket_2,17.0,18.01666666666663
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[BD50-5085-009-C]  bracket_2,18.01666666666663,18.41666666666663
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[BD50-5085-009-C]  bracket_2,18.41666666666663,19.63333333333329
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[4022-455-09997-3]  post 7,19.63333333333329,19.799999999999955
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[BD50-5075-015F]  bracket_2,19.799999999999955,20.199999999999953
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[BD50-5075-015F]  bracket_2,20.199999999999953,21.03333333333328
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[4022-637-29381]  Hinge Block LM,21.03333333333328,22.11666666666661
+PACK - Packaging (VERP_P),2025-07-28,3,,PACK - Packaging (VERP_P)_[BD50-5085-013-C]  bracket_2,22.11666666666661,22.94999999999994
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[BD50-5085-011-C]  bracket_2,22.94999999999994,23.783333333333267
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[1508130 B]  [Q] excenter housing z,23.783333333333267,24.0
+PACK - Packaging (VERP_P),2025-07-28,3,,Packaging (VERP_P)_[4022-637-29391]  Hinge block fixed LM,24.616666666666596,24.0
+PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[4022-637-29391]  Hinge block fixed LM,33.0,33.21666666666659
+PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[4022-637-29301]  Hinge Block Fixed RM,33.21666666666659,34.08333333333325
+PACK - Packaging (VERP_P),2025-07-29,2,,Packaging (VERP_P)_[00385-00-320-A]  Plint adjust strip,34.08333333333325,40.0
+PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[00385-00-320-A]  Plint adjust strip,41.0,44.983333333333206
+PACK - Packaging (VERP_P),2025-07-29,3,,Packaging (VERP_P)_[00385-00-321-A]  Plint fixing strip left,44.983333333333206,48.0
+PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[00385-00-321-A]  Plint fixing strip left,57.0,64.0
+PACK - Packaging (VERP_P),2025-07-30,2,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,64.88333333333316,64.0
+PACK - Packaging (VERP_P),2025-07-30,3,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,65.0,72.0
+PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[00385-00-346-A]  Plint fixing strip right,81.0,84.7833333333331
+PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[4022-656-75212]  Non loosable block M5,84.7833333333331,86.51666666666642
+PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[4022-656-75183]  Non loosable block M4,86.51666666666642,88.0
+PACK - Packaging (VERP_P),2025-07-31,2,,Packaging (VERP_P)_[00385-00-274-D]  Filling block,88.06666666666642,88.0
+PACK - Packaging (VERP_P),2025-07-31,3,,Packaging (VERP_P)_[00385-00-274-D]  Filling block,89.0,93.99999999999973
+PACK - Packaging (VERP_P),2025-07-31,3,,Packaging (VERP_P)_[00385-00-102-C]  Height bearing clamp plate,93.99999999999973,96.0
+PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[00385-00-102-C]  Height bearing clamp plate,105.0,111.99999999999969
+PACK - Packaging (VERP_P),2025-08-01,2,,Packaging (VERP_P)_[4022-333-19505]  BRIL,111.99999999999969,112.0
+PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[4022-333-19505]  BRIL,113.0,113.66666666666634
+PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[4022-333-19505]  BRIL,113.66666666666634,115.333333333333
+PACK - Packaging (VERP_P),2025-08-01,3,,Packaging (VERP_P)_[00385-00-113A]  Tensioner plate,115.333333333333,120.0
+PACK - Packaging (VERP_P),2025-08-02,2,,Packaging (VERP_P)_[00385-00-113A]  Tensioner plate,129.0,134.99999999999963
+PACK - Packaging (VERP_P),2025-08-02,2,,Packaging (VERP_P)_[00429-00-662-B]  Arret lever,134.99999999999963,136.0
+PACK - Packaging (VERP_P),2025-08-02,3,,Packaging (VERP_P)_[00429-00-662-B]  Arret lever,137.0,141.66666666666626
+PACK - Packaging (VERP_P),2025-08-02,3,,Packaging (VERP_P)_[4022-455-09992]  POST 2,141.66666666666626,142.16666666666626
+PACK - Packaging (VERP_P),2025-08-02,3,,Packaging (VERP_P)_[4022-631-47801]  Interface (FIXED),142.16666666666626,142.58333333333292
+PACK - Packaging (VERP_P),2025-08-02,3,,Packaging (VERP_P)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,142.58333333333292,144.0
+PACK - Packaging (VERP_P),2025-08-03,2,,Packaging (VERP_P)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,153.0,153.56666666666624
+PACK - Packaging (VERP_P),2025-08-03,2,,Packaging (VERP_P)_[4022-290-63221-D]  Excenter housing z,153.56666666666624,156.4666666666662
+PACK - Packaging (VERP_P),2025-08-03,2,,Packaging (VERP_P)_[4022-666-65702(R1)]  LSPH coverplate stud block,156.4666666666662,160.0
+PACK - Packaging (VERP_P),2025-08-03,2,,Packaging (VERP_P)_[4022-631-80301]  Hinge Block LR2 (fixed),160.6666666666662,160.0
+PACK - Packaging (VERP_P),2025-08-03,3,,Packaging (VERP_P)_[4022-631-80301]  Hinge Block LR2 (fixed),161.0,162.46666666666619
+PACK - Packaging (VERP_P),2025-08-03,3,,Packaging (VERP_P)_[00236-05-103-C]  geleideblok spanrol,162.46666666666619,164.6999999999995
+PACK - Packaging (VERP_P),2025-08-03,3,,Packaging (VERP_P)_[M0216-01-363-B]  nul-graden arretsegment,164.6999999999995,165.9499999999995
+PACK - Packaging (VERP_P),2025-08-03,3,,Packaging (VERP_P)_[00429-00-249-A]  Plint adjust strip,165.9499999999995,168.0
+PACK - Packaging (VERP_P),2025-08-04,2,,Packaging (VERP_P)_[00429-00-249-A]  Plint adjust strip,177.0,181.21666666666616
+PACK - Packaging (VERP_P),2025-08-04,2,,Packaging (VERP_P)_[00385-00-329-A]  End plate finger safety hinge,181.21666666666616,184.0
+PACK - Packaging (VERP_P),2025-08-04,3,,Packaging (VERP_P)_[00385-00-329-A]  End plate finger safety hinge,185.0,189.09999999999945
+PACK - Packaging (VERP_P),2025-08-04,3,,Packaging (VERP_P)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,189.09999999999945,189.81666666666612
+PACK - Packaging (VERP_P),2025-08-04,3,,Packaging (VERP_P)_[1011113A]  Cord Bracket,189.81666666666612,192.0
 MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[10006767A]  RMFT Air Interface Block,9.0,9.016666666666666
 MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[7009-2500-0001]  Bearing / 1806-110-026,9.016666666666666,9.43333333333333
 MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[7009-2500-0002]  IH Seesaw / 1806-110-034,9.43333333333333,9.516666666666662
@@ -169,86 +110,93 @@ MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[700
 MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[7009-2500-0004]  IH Mounting 1  / 1806-110-036 ,10.183333333333326,10.349999999999993
 MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[7009-2500-0005]  IH Mounting 2 / 1806-110-037,10.349999999999993,10.433333333333325
 MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[4022.644.9778]  NXE LH Gripper LVLS Base,10.433333333333325,10.44999999999999
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Sawing_[4022.683.44771]  RH NXE RED RZ ENC PLATE SPPRT,10.44999999999999,10.466666666666656
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,2,,Sawing_[7291692]  P1464-M3055-00.stp,39.13333333333333,39.33333333333333
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,2,,Sawing_[7292240]  P1464-M3201-00.stp,39.93333333333333,39.99999999999999
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,3,,Sawing_[7302598]  P1464-M1012-00.stp,45.9,46.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,3,,Sawing_[7289337]  P1464-M2068-00.stp,46.266666666666666,48.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,3,,Sawing_[7265172]  P1464-M2003-00.stp,48.266666666666666,48.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,3,,Material prep (ZGN_01)_[00385-00-320-A]  Plint adjust strip,48.33333333333333,48.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Material prep (ZGN_01)_[00385-00-320-A]  Plint adjust strip,57.0,58.83333333333332
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7261698]  P1464-M1011-00.stp,57.46666666666667,57.56666666666667
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7267848]  P1464-M2015-00.stp,57.56666666666667,57.6
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7263714]  P1464-M1027-00.stp,58.43333333333334,58.46666666666667
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Material prep (ZGN_01)_[4022-631-89301]  Hinge Block LM2,58.83333333333332,59.716666666666654
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7308680]  P1464-M1022-00.stp,58.86666666666666,58.96666666666666
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7264118]  P1464-M2001-00.stp,59.300000000000004,59.333333333333336
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7314593]  P1464-M2060-01.stp,59.93333333333333,59.96666666666666
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7283800]  P1464-M3103-00.stp,61.0,61.06666666666666
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7268468]  P1464-M2016-00.stp,62.25,62.28333333333333
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Sawing_[7269980]  P1464-M2017-00.stp,63.1,63.11666666666667
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Sawing_[7270733]  P1464-M2018-00.stp,65.0,65.01666666666667
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Sawing_[7282747]  P1464-M2066-00.stp,65.48333333333333,65.5
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Sawing_[7288826]  P1464-M4011-00.stp,66.6,66.71666666666665
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Sawing_[7271654]  P1464-M2020-00.stp,67.86666666666666,67.89999999999999
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Sawing_[7272248]  P1464-M2025-00.stp,69.13333333333333,69.19999999999999
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Sawing_[7284774]  P1464-M3105-00.stp,69.28333333333333,72.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,2,,Sawing_[7284774]  P1464-M3105-00.stp,81.0,83.28333333333333
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,2,,Sawing_[7285159]  P1464-M3203-00.stp,83.28333333333333,88.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Sawing_[7285159]  P1464-M3203-00.stp,89.0,91.28333333333333
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Sawing_[7287806]  P1464-M4001-00.stp,91.28333333333333,91.31666666666666
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Sawing_[7274976]  P1464-M2031-00.stp,91.31666666666666,91.33333333333333
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Sawing_[7278476]  P1464-M2057-00.stp,91.33333333333333,91.35
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Sawing_[7279297]  P1464-M2059-00.stp,91.35,93.35
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Material prep (ZGN_01)_[00385-00-320-A]  Plint adjust strip,93.35,95.84999999999998
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Material prep (ZGN_01)_[00385-00-102-C]  Height bearing clamp plate,95.84999999999998,96.0
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,2,,Material prep (ZGN_01)_[00385-00-102-C]  Height bearing clamp plate,105.0,106.34999999999997
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,2,,Material prep (ZGN_01)_[00385-00-102-C]  Height bearing clamp plate,107.34999999999991,109.8499999999999
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,2,,Material prep (ZGN_01)_[4022-455-09997-3]  post 7,109.8499999999999,110.01666666666657
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,3,,Sawing_[7005-2580-0006]  GP Z-Adjustment Lever / 26241001,116.98333333333332,117.03333333333332
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,3,,Material prep (ZGN_01)_[4022-631-47801]  Interface (FIXED),119.0,119.2
-MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,3,,Material prep (ZGN_01)_[00236-05-103-C]  geleideblok spanrol,141.68333333333322,143.76666666666654
-M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-29,2,,Milling (FR5_01)_[4022-631-89301]  Hinge Block LM2,33.0,40.0
-M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-29,3,,Milling (FR5_01)_[4022-631-89301]  Hinge Block LM2,41.0,48.0
-M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-30,1,,Milling (FR5_01)_[4022-631-89301]  Hinge Block LM2,49.0,55.083333333333336
-M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-03,3,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,161.0,168.0
-M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-04,1,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,169.0,173.66666666666666
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-28,2,,Milling (FR4-01)_[4598-011-70891B]  ENDPLATE,11.99999999999999,16.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,2,,Material prep (ZGN_01)_[00385-00-320-A]  Plint adjust strip,10.44999999999999,16.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,3,,Material prep (ZGN_01)_[00385-00-320-A]  Plint adjust strip,17.0,21.349999999999945
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-28,3,,Material prep (ZGN_01)_[00385-00-102-C]  Height bearing clamp plate,21.349999999999945,24.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,2,,Material prep (ZGN_01)_[00385-00-102-C]  Height bearing clamp plate,33.0,39.34999999999991
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,2,,Material prep (ZGN_01)_[00429-00-662-B]  Arret lever,39.34999999999991,40.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,3,,Material prep (ZGN_01)_[00429-00-662-B]  Arret lever,41.0,46.01666666666655
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-29,3,,Material prep (ZGN_01)_[4598-011-70891B]  ENDPLATE,46.01666666666655,48.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Material prep (ZGN_01)_[4598-011-70891B]  ENDPLATE,57.0,57.86666666666654
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Material prep (ZGN_01)_[00236-05-103-C]  geleideblok spanrol,57.86666666666654,60.099999999999866
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,2,,Material prep (ZGN_01)_[00429-00-249-A]  Plint adjust strip,60.099999999999866,64.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Material prep (ZGN_01)_[00429-00-249-A]  Plint adjust strip,65.0,67.3666666666665
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-30,3,,Material prep (ZGN_01)_[00385-00-329-A]  End plate finger safety hinge,67.3666666666665,72.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,2,,Material prep (ZGN_01)_[00385-00-329-A]  End plate finger safety hinge,81.0,83.2499999999998
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,2,,Material prep (ZGN_01)_[00385-00-321-A]  Plint fixing strip left,83.2499999999998,88.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Material prep (ZGN_01)_[00385-00-321-A]  Plint fixing strip left,89.0,95.14999999999975
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-07-31,3,,Automatic Sawing (ZGN_01)_[00385-00-346-A]  Plint fixing strip right,95.14999999999975,96.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,2,,Automatic Sawing (ZGN_01)_[00385-00-346-A]  Plint fixing strip right,105.0,112.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,3,,Automatic Sawing (ZGN_01)_[00385-00-346-A]  Plint fixing strip right,113.0,115.0499999999997
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,3,,Material prep (ZGN_01)_[4022-656-75212]  Non loosable block M5,115.0499999999997,116.78333333333302
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,3,,Material prep (ZGN_01)_[4022-656-75183]  Non loosable block M4,116.78333333333302,118.33333333333302
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-01,3,,Material prep (ZGN_01)_[00385-00-274-D]  Filling block,118.33333333333302,120.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,2,,Material prep (ZGN_01)_[00385-00-274-D]  Filling block,129.0,132.26666666666634
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,2,,Material prep (ZGN_01)_[4022-455-09992]  POST 2,132.26666666666634,132.76666666666634
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,2,,Material prep (ZGN_01)_[4022-631-47801]  Interface (FIXED),132.76666666666634,133.183333333333
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,2,,Material prep (ZGN_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,133.183333333333,136.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,2,,Material prep (ZGN_01)_[4022-290-63221-D]  Excenter housing z,136.16666666666632,136.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,3,,Material prep (ZGN_01)_[4022-290-63221-D]  Excenter housing z,137.0,139.0666666666663
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,3,,Material prep (ZGN_01)_[4022-666-65702(R1)]  LSPH coverplate stud block,139.0666666666663,143.26666666666628
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-02,3,,Material prep (ZGN_01)_[4022-631-80301]  Hinge Block LR2 (fixed),143.26666666666628,144.0
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-03,2,,Material prep (ZGN_01)_[4022-631-80301]  Hinge Block LR2 (fixed),153.0,153.06666666666626
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-03,2,,Material prep (ZGN_01)_[M0216-01-363-B]  nul-graden arretsegment,153.06666666666626,154.31666666666626
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-03,2,,Material prep (ZGN_01)_[1011113A]  Cord Bracket,154.31666666666626,156.81666666666626
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-03,2,,Material prep (ZGN_01)_[1082700B]  Block cooling water TMP,156.81666666666626,157.93333333333294
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-03,2,,Material prep (ZGN_01)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,157.93333333333294,158.6499999999996
+MP1 - Material preparation - automatic sawing (ZGN_01),2025-08-03,2,,Material prep (ZGN_01)_[4022-631-54801]  INTERFACE (ADJUSTABLE),158.6499999999996,159.36666666666628
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-28,2,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,9.0,16.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-28,3,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,17.0,24.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-29,1,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,25.0,32.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-29,2,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,33.0,40.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-29,3,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,41.0,48.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-30,1,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,49.0,56.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-30,2,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,57.0,64.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-30,3,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,65.0,72.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-31,1,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,73.0,80.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-31,2,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,81.0,88.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-07-31,3,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,89.0,96.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-01,1,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,97.0,104.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-01,2,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,105.0,112.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-01,3,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,113.0,120.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-02,1,,Milling (FR5_01)_[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK,121.0,122.36666666666666
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-02,2,,Milling (FR5_01)_[4022-631-80301]  Hinge Block LR2 (fixed),129.0,136.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-02,3,,Milling (FR5_01)_[4022-631-80301]  Hinge Block LR2 (fixed),137.0,144.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-03,1,,Milling (FR5_01)_[4022-631-80301]  Hinge Block LR2 (fixed),145.0,152.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-03,2,,Milling (FR5_01)_[4022-631-80301]  Hinge Block LR2 (fixed),153.0,160.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-03,3,,Milling (FR5_01)_[4022-631-80301]  Hinge Block LR2 (fixed),161.0,168.0
+M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),2025-08-04,1,,Milling (FR5_01)_[4022-631-80301]  Hinge Block LR2 (fixed),169.0,174.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-28,2,,Milling (FR4-01)_[4598-011-70891B]  ENDPLATE,9.0,16.0
 M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-28,3,,Milling (FR4-01)_[4598-011-70891B]  ENDPLATE,17.0,24.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,1,,Milling (FR4-01)_[4598-011-70891B]  ENDPLATE,25.0,25.33333333333332
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,2,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,33.0,40.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,1,,Milling (FR4-01)_[4598-011-70891B]  ENDPLATE,25.0,32.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,2,,Milling (FR4-01)_[4598-011-70891B]  ENDPLATE,33.0,39.8
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,2,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,39.8,40.0
 M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,3,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,41.0,48.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-29,3,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,48.0,48.0
 M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,1,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,49.0,56.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,2,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,57.0,63.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,2,,Milling (FR4-01)_[4022-656-75212]  Non loosable block M5_2,63.34999999999991,64.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,3,,Milling (FR4-01)_[4022-656-75212]  Non loosable block M5_2,65.0,65.34999999999991
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,3,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4_2,65.34999999999991,67.34999999999991
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,3,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,67.34999999999991,72.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,1,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,73.0,80.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,2,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,81.0,87.34999999999991
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,2,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,87.34999999999991,88.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,3,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,89.0,96.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,1,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,97.0,104.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,2,,Milling (FR4-01)_[00385-00-102-C]  Height bearing clamp plate,105.0,107.34999999999991
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,2,,Milling (FR4-01)_[4022-455-09997-3]  post 7,107.34999999999991,108.34999999999991
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,2,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,108.34999999999991,112.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,3,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,113.0,120.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,2,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,57.0,64.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-30,3,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,65.0,72.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,1,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,73.0,80.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,2,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,81.0,88.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-07-31,3,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,89.0,96.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,1,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,97.0,104.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,2,,Milling (FR4-01)_[00385-00-320-A]  Plint adjust strip,105.0,105.2
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,2,,Milling (FR4-01)_[4022-656-75212]  Non loosable block M5_2,105.2,110.4
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,2,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4_2,110.4,112.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,3,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4_2,113.0,115.05000000000001
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-01,3,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,115.05000000000001,120.0
 M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-02,1,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,121.0,128.0
 M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-02,2,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,129.0,136.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-02,3,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,137.0,141.68333333333322
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-02,3,,Milling (FR4-01)_[00429-00-249-A]  Plint adjust strip,141.68333333333322,144.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,1,,Milling (FR4-01)_[00429-00-249-A]  Plint adjust strip,145.0,152.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,2,,Milling (FR4-01)_[00429-00-249-A]  Plint adjust strip,153.0,160.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,3,,Milling (FR4-01)_[00429-00-249-A]  Plint adjust strip,161.0,161.68333333333322
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,3,,Milling (FR4-01)_[1011113A]  Cord Bracket_2,161.68333333333322,166.68333333333322
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,3,,Milling (FR4-01)_[00385-00-321-A]  Plint fixing strip left,166.68333333333322,168.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,1,,Milling (FR4-01)_[00385-00-321-A]  Plint fixing strip left,169.0,176.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,2,,Milling (FR4-01)_[00385-00-321-A]  Plint fixing strip left,177.0,180.01666666666657
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,2,,Milling (FR4-01)_[4022-656-75212]  Non loosable block M5,180.01666666666657,183.3499999999999
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,2,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4,183.3499999999999,184.0
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,3,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4,185.0,188.01666666666657
-M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,3,,Milling (FR4-01)_[4022-455-09992]  POST 2,188.01666666666657,188.81666666666658
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-02,3,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,137.0,144.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,1,,Milling (FR4-01)_[00236-05-103-C]  geleideblok spanrol,145.0,150.78333333333333
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,2,,Milling (FR4-01)_[1011113A]  Cord Bracket_2,153.0,158.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,2,,Milling (FR4-01)_[4022-656-75212]  Non loosable block M5,158.0,160.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,3,,Milling (FR4-01)_[4022-656-75212]  Non loosable block M5,161.0,166.66666666666666
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-03,3,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4,166.66666666666666,168.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,1,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4,169.0,176.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,2,,Milling (FR4-01)_[4022-656-75183]  Non loosable block M4,177.0,177.51666666666665
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,2,,Milling (FR4-01)_[4022-455-09992]  POST 2,177.51666666666665,179.51666666666665
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,2,,Milling (FR4-01)_[1011113A]  Cord Bracket,179.51666666666665,184.0
+M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),2025-08-04,3,,Milling (FR4-01)_[1011113A]  Cord Bracket,185.0,192.0
 M5-03 - Haas - 5axis - Manual (UMC750),2025-07-28,2,,Milling_[4022.683.44771]  RH NXE RED RZ ENC PLATE SPPRT,9.0,9.3
 M5-03 - Haas - 5axis - Manual (UMC750),2025-07-28,2,,Milling_[4022.622.61941]  RH RED FRAME -X COVER,9.3,16.0
 M5-03 - Haas - 5axis - Manual (UMC750),2025-07-28,3,,Milling_[4022.622.61941]  RH RED FRAME -X COVER,17.0,24.0
@@ -287,51 +235,41 @@ M5-03 - Haas - 5axis - Manual (UMC750),2025-08-03,2,,Milling_[104009583]  HALFFA
 M5-03 - Haas - 5axis - Manual (UMC750),2025-08-03,3,,Milling_[104009583]  HALFFAB_M_MOUNTING_BLCK_FRNT_R,161.0,168.0
 M5-03 - Haas - 5axis - Manual (UMC750),2025-08-04,2,,Milling_[104009583]  HALFFAB_M_MOUNTING_BLCK_FRNT_R,177.0,180.35
 M5-03 - Haas - 5axis - Manual (UMC750),2025-08-04,2,,OPx_[7007-2500-0001]  TL 1 – Feet B / IAH ,180.35,181.35
-M5-03 - Haas - 5axis - Manual (UMC750),2025-08-04,2,,Milling - OP1_[7286825]  P1464-M3204-00.stp,181.35,183.61666666666667
-M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-30,2,,Milling - OP1+2_[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 ,57.0,64.0
-M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-30,3,,Milling - OP1+2_[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 ,65.0,72.0
-M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-31,2,,Milling - OP1+2_[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 ,81.0,88.0
-M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-31,2,,Milling (FR3_02)_[00236-05-103-C]  geleideblok spanrol,86.88333333333311,88.0
-M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-31,3,,Milling (FR3_02)_[00236-05-103-C]  geleideblok spanrol,89.0,91.04999999999977
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-28,2,,Milling (FR3_02)_[00236-05-103-C]  geleideblok spanrol,9.0,13.466666666666661
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-28,2,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment_2,13.466666666666661,16.0
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-28,3,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment_2,17.0,24.0
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-29,2,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment_2,33.0,40.0
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-29,3,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment_2,41.0,48.0
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-30,2,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment_2,57.0,64.0
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-30,2,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment,64.46666666666667,64.0
+M3-02 - Accuwell - 3axis - Manual (FR3_02),2025-07-30,3,,Milling (FR3_02)_[M0216-01-363-B]  nul-graden arretsegment,65.0,68.21666666666667
 "MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,Picking_[7005-2580-0008]  Backplate / 27244701 ,9.0,9.133333333333333
 "MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,Picking_[7009-2500-0006]  IH Mounting 3 / 1806-110-038,9.133333333333333,9.216666666666665
 "MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,"Picking, pre-cutted_[4022.644.3272]  NXE RH Gripper LVL Tool Base",9.216666666666665,9.23333333333333
 "MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,"Picking, pre-cutted_[4022.644.9779]  NXE NH Gripper LVL Tool Cover",9.23333333333333,9.249999999999996
 "MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,Picking_[7005-2540-0001]  C beam v01-03 / 07201507,9.249999999999996,9.816666666666661
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,Picking_[4022.684.31572]  RH RED TURRET ELEC COVER C,12.133333333333333,12.149999999999999
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,3,,Material prep - Picking_[M.P04743]  Koppelstrip bovenligger iGate,19.033333333333296,24.0
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-31,2,,"Picking, pre--cutted_[7275100]  P1464-M2045-00.stp",81.0,81.01666666666667
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-31,2,,Picking_[7276589]  P1464-M2054-00.stp,81.31666666666665,81.33333333333331
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-08-01,2,,Picking_[7005-2580-0009]  Baseplate / 27244702,110.18333333333331,110.31666666666663
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-08-01,3,,Picking_[7005-2580-0010]  Cylinder bracket / 27244703,115.64999999999998,115.7833333333333
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-08-01,3,,Picking_[7266236]  P1464-M2010-00.stp,116.2333333333333,117.2333333333333
-"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-08-01,3,,"Picking, pre-cutted_[7277682]  P1464-M2055-00.stp",117.2333333333333,117.24999999999997
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-28,2,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,9.333333333333332,13.999999999999998
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-28,2,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,13.999999999999998,16.0
+"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,2,,"Pre-cutted, picking only_[00385-00-113A]  Tensioner plate",9.816666666666661,16.0
+"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",2025-07-28,3,,"Pre-cutted, picking only_[00385-00-113A]  Tensioner plate",17.0,21.48333333333328
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-28,2,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,9.0,16.0
 M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-28,3,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,17.0,24.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,1,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,25.0,27.999999999999996
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,2,,Milling (FR4-02)_[GF3116T006L]  Carriage,33.0,40.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,3,,Milling (FR4-02)_[GF3116T006L]  Carriage,41.0,42.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,3,,Milling (FR4-02)_[GF3116T006L]  Carriage,42.0,48.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,1,,Milling (FR4-02)_[GF3116T006L]  Carriage,49.0,56.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,2,,Milling (FR4-02)_[GF3116T006L]  Carriage,57.0,64.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,3,,Milling (FR4-02)_[GF3116T006L]  Carriage,65.0,69.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-31,3,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,95.34999999999988,96.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-01,1,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,97.0,104.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-01,2,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,105.0,112.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-01,3,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,113.0,120.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-02,1,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,121.0,128.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-02,2,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,129.0,136.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-02,3,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,137.0,144.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-03,1,,Milling (FR4-02)_[00385-00-113A]  Tensioner plate,145.0,145.34999999999988
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-03,2,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,153.0,160.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-03,3,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,161.0,168.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-04,1,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,169.0,176.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-04,2,,Milling (FR4-02)_[4022-637-29391]  Hinge block fixed LM_3,177.0,180.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-04,2,,Milling (FR4-02)_[4022-637-29301]  Hinge Block Fixed RM_3,180.0,184.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-04,2,,Milling (FR4-02)_[4022-637-29391]  Hinge block fixed LM_2,184.33333333333334,184.0
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-04,3,,Milling (FR4-02)_[4022-637-29391]  Hinge block fixed LM_2,185.0,187.33333333333334
-M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-04,3,,Milling (FR4-02)_[4022-637-29301]  Hinge Block Fixed RM_2,187.33333333333334,191.66666666666669
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,1,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,25.0,32.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,2,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,33.0,40.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-29,3,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,41.0,48.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,1,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,49.0,56.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,2,,Milling (FR4-02)_[GF3116T006L]  Carriage_2,57.0,64.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,2,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,65.0,64.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-30,3,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,65.0,72.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-31,1,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,73.0,80.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-31,2,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,81.0,88.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-07-31,3,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,89.0,96.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-01,1,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,97.0,104.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-01,2,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,105.0,112.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-01,3,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,113.0,120.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-02,1,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,121.0,128.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-02,2,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,129.0,136.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-02,3,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,137.0,144.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-03,1,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,145.0,152.0
+M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),2025-08-03,2,,Milling (FR4-02)_[00429-00-662-B]  Arret lever,153.0,158.33333333333331
 M3-03 - Haas - 3axis - Manual (VF2SS),2025-07-28,2,,Milling_[4022.684.31572]  RH RED TURRET ELEC COVER C,9.0,12.133333333333333
 M3-03 - Haas - 3axis - Manual (VF2SS),2025-07-28,2,,Milling - OP2_[7290605]  P1464-M3030-00.stp,12.133333333333333,16.0
 M3-03 - Haas - 3axis - Manual (VF2SS),2025-07-28,3,,Milling - OP2_[7290605]  P1464-M3030-00.stp,17.0,17.733333333333334
@@ -361,17 +299,27 @@ M3-03 - Haas - 3axis - Manual (VF2SS),2025-07-31,3,,Milling_[7005-2580-0009]  Ba
 M3-03 - Haas - 3axis - Manual (VF2SS),2025-08-01,2,,Milling_[7005-2580-0009]  Baseplate / 27244702,105.0,110.18333333333331
 M3-03 - Haas - 3axis - Manual (VF2SS),2025-08-01,2,,milling_[7005-2580-0010]  Cylinder bracket / 27244703,110.18333333333331,112.0
 M3-03 - Haas - 3axis - Manual (VF2SS),2025-08-01,3,,milling_[7005-2580-0010]  Cylinder bracket / 27244703,113.0,115.64999999999998
-M3-03 - Haas - 3axis - Manual (VF2SS),2025-08-01,3,,Milling - OP1_[7266236]  P1464-M2010-00.stp,115.64999999999998,116.2333333333333
-M3-03 - Haas - 3axis - Manual (VF2SS),2025-08-01,3,,Milling - OP1_[7277682]  P1464-M2055-00.stp,116.2333333333333,116.8333333333333
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-28,3,,Milling (FR5_02)_[4022-631-89301]  Hinge Block LM2,21.683333333333294,24.0
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-29,1,,Milling (FR5_02)_[4022-631-89301]  Hinge Block LM2,25.0,26.09999999999996
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-01,2,,Milling (FR5_02)_[4022-631-47801]  Interface (FIXED)_2,110.81666666666653,112.0
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-01,3,,Milling (FR5_02)_[4022-631-47801]  Interface (FIXED),113.0,119.0
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-02,3,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_3,142.81666666666652,143.14999999999986
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-02,3,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,143.14999999999986,144.0
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-03,1,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,145.0,145.64999999999986
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-03,2,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),153.0,160.0
-M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-03,3,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),161.0,161.33333333333334
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-28,2,,Milling (FR5_02)_[4022-631-47801]  Interface (FIXED)_2,9.0,11.916666666666664
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-28,2,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_3,11.916666666666664,13.349999999999996
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-28,2,,Milling (FR5_02)_[4022-631-47801]  Interface (FIXED),13.349999999999996,16.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-28,3,,Milling (FR5_02)_[4022-631-47801]  Interface (FIXED),17.0,24.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-29,1,,Milling (FR5_02)_[4022-631-47801]  Interface (FIXED),25.0,25.849999999999994
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-29,2,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,33.0,40.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-29,3,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,41.0,43.75
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-29,3,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),43.75,48.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-30,1,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),49.0,56.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-30,2,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),57.0,64.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-30,3,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),65.0,72.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-31,1,,Milling (FR5-02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),73.0,79.58333333333334
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-31,2,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_3,81.0,82.43333333333334
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-31,2,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,82.43333333333334,88.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-31,3,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE)_2,89.0,93.18333333333334
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-07-31,3,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),93.18333333333334,96.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-01,1,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),97.0,104.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-01,2,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),105.0,112.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-01,3,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),113.0,120.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-02,1,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),121.0,128.0
+M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),2025-08-02,2,,Milling (FR5_02)_[4022-631-54801]  INTERFACE (ADJUSTABLE),129.0,129.01666666666668
 M5-04 - Haas - 5axis  - Manual (UMC750SS),2025-07-28,2,,Milling - OP3/9_[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 ,9.0,16.0
 M5-04 - Haas - 5axis  - Manual (UMC750SS),2025-07-28,3,,Milling - OP3/9_[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 ,17.0,24.0
 M5-04 - Haas - 5axis  - Manual (UMC750SS),2025-07-29,1,,Milling - OP3/9_[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 ,25.0,32.0
