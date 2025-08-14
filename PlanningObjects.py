@@ -344,7 +344,8 @@ class Job():
         self.batched = False
         self.BatchJobs = []
        
-        
+        self.ActualStart = None
+        self.ActualCompletion = None
 
 
     # SCHEDULING
@@ -356,8 +357,31 @@ class Job():
         self.ScheduledShift=None
         self.Scheduled = False
         self.ScheduledTime =None
-        self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order. 
+        self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order.
+        self.ScheduledResource = None
+        self.ScheduledShift = None
+        self.ScheduledCompShift = None
 
+    def getScheduledShift(self):
+        return self.ScheduledShift
+
+    def setScheduledShift(self,myst):
+        self.ScheduledShift = myst
+        return
+    def getScheduledCompShift(self):
+        return self.ScheduledCompShift
+
+    def setScheduledCompShift(self,myst):
+        self.ScheduledCompShift = myst
+        return
+    
+    def getScheduledResource(self):
+        return self.ScheduledResource
+
+    def setScheduledResource(self,myst):
+        self.ScheduledResource = myst
+        return
+    
     def setBatched(self):
         self.batched = True
         return
@@ -419,6 +443,25 @@ class Job():
                 job.setCompletionTime(myst)
        
         return
+
+
+    def setActualStart(self,co):
+        self.ActualStart = co
+        return
+
+    
+    def getActualStart(self):
+        return self.ActualStart
+
+
+    def setActualCompletion(self,co):
+        self.ActualCompletion = co
+        return
+
+    
+    def getActualCompletion(self):
+        return self.ActualCompletion
+    
 
     def setCustomerOrder(self,co):
         self.CustomerOrder = co
@@ -629,11 +672,27 @@ class Shift():
         self.Number = number
         self.StartTime = 0
         self.EndTime = 0
+        self.StartHour = None
+        self.EndHour = None
         self.next = None        
         if previous != None: 
             previous.setNext(self)
         
         self.previous = previous
+
+    def setEndHour(self,time):
+        self.EndHour = time
+        return 
+
+    def getEndHour(self):
+        return self.EndHour
+
+    def setStartHour(self,time):
+        self.StartHour = time
+        return 
+
+    def getStartHour(self):
+        return self.StartHour
 
     def setStartTime(self,time):
         self.StartTime = time

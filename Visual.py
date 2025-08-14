@@ -40,6 +40,7 @@ class VisualManager():
         self.PSTBBOMOutput = None
 
         self.SchedulingTab = None
+        self.ProductionProgressTab = None
 
         self.PSTBOprRes = None
         
@@ -926,6 +927,12 @@ class VisualManager():
     def getSchedulingTab(self):
         return self.SchedulingTab
 
+    def setProductionProgressTab(self,myit):
+        self.ProductionProgressTab = myit
+        return
+    
+    def getProductionProgressTab(self):
+        return self.ProductionProgressTab
 
     def getPSTBFinalProd(self):
         return self.PSTBFinalProd
@@ -2133,6 +2140,8 @@ class VisualManager():
         self.getPSTBProdList().options = [opname for opname in self.DataManager.getProducts().keys()]
         self.getPSTBProdList2().options = [opname for opname in self.DataManager.getProducts().keys()]
         self.getCOTBorders().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
+        self.getProductionProgressTab().getCustomerOrderList().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
+        self.getProductionProgressTab().getResourceList().options = [resname for resname in self.DataManager.getResources().keys()]
         
         return
     def CreateResource(self,event):

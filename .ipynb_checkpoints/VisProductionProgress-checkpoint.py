@@ -305,7 +305,7 @@ class ScheduleTab():
                     
                     bars = alt.Chart(shift_df).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Shift', sort='-x'))
                     text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
-
+                     
                     display((bars + text).properties(height=100, width=200))
 
             restree = Tree()

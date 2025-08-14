@@ -115,231 +115,10 @@ class SchedulingManager:
 
         return totalfte
 
-    def CheckSlot(self,resource,job):
-        time =  job.getLatestPredecessorCompletion()
-
-        if resource.getName().find("OUT -") != -1:
-            slot = resource.getEmptySlots()[0]
-            return (slot,(time,0))
-
-
-        
-        for slot in resource.getEmptySlots():    
-            if slot[0][1] < job.getQuantity()*job.getOperation().getProcessTime():
-                continue
-            if (slot[1].getNext() == None) and (slot[1].getEndTime() < time):
-                return None
    
-            length = slot[0][1]; curr_shift = slot[1]; curr_time = slot[0][0]
-
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" slot start Shift: "+str(curr_shift.getDay())+"-"+str(curr_shift.getNumber())+"\n"
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" slot start "+str(curr_time)+", length "+str(length)+"> "+", LPCT "+str(time)+"\n"
-
-
-            unusedtime = 0
-
-            reasonstr =" Shift: "+str(curr_shift.getDay())+"-"+str(curr_shift.getNumber())+" r: "
-            proper = (curr_shift.getEndTime() >= time)
-            if not proper: 
-                reasonstr+=" Time > shift end.."
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 1: "+reasonstr+"\n"
-            
-            if not (resource.getShiftAvailability()[curr_shift]):
-                reasonstr+=" resource not available.."
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 2: "+reasonstr+"\n"
-            proper = (proper) and (resource.getShiftAvailability()[curr_shift])
-            if resource.getType() == "Machine": 
-                if (resource.getShiftOperatingModes()[curr_shift] == "Self-Running"):
-                    reasonstr+=" self-running, job cannot start.."
-                proper = proper and (not (resource.getShiftOperatingModes()[curr_shift] == "Self-Running"))
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 3: "+reasonstr+"\n"
-            if not self.CheckFTEAvailability(resource,job,curr_time,curr_shift):
-                reasonstr+="+  fte unavailable.."
-            proper = proper and (self.CheckFTEAvailability(resource,job,curr_time,curr_shift))
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 4: "+reasonstr+", proper: "+str(proper)+"\n"
-
-                    
-            while not proper: 
-          
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=reasonstr+"\n"
-                if (curr_shift.getNext() == None):
-                    return None
-                length -= (curr_shift.getEndTime()+1-curr_time)
-                unusedtime += (curr_shift.getEndTime()+1-curr_time)
-                curr_shift = curr_shift.getNext()    
-                curr_time = curr_shift.getStartTime()
-
-                if length < job.getQuantity()*job.getOperation().getProcessTime(): 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Length did not survive: "+str(length)+"\n"
-                    break
-
-                reasonstr =" Shift: "+str(curr_shift.getDay())+"-"+str(curr_shift.getNumber())+" r: "
-                proper = (curr_shift.getEndTime() >= time)
-                if not proper: 
-                    reasonstr+=" Time > shift end.."
-                    continue
-                  
-                if not (resource.getShiftAvailability()[curr_shift]):
-                    reasonstr+="+ resource not available.."
-                proper = (proper) and (resource.getShiftAvailability()[curr_shift])
-                        
-                if not proper: 
-                    continue 
-                            
-                if resource.getType() == "Machine": 
-                    if (resource.getShiftOperatingModes()[curr_shift] == "Self-Running"):
-                        reasonstr+="+self-running, job cannot start.."
-                    proper = proper and (not (resource.getShiftOperatingModes()[curr_shift] == "Self-Running"))
-                    if not proper: 
-                        continue
-
-                
-                if not self.CheckFTEAvailability(resource,job,curr_time,curr_shift):
-                    reasonstr+="+  fte unavailable.."
-                proper = proper and (self.CheckFTEAvailability(resource,job,curr_time,curr_shift))
-                
-            if not proper: 
-                if length < job.getQuantity()*job.getOperation().getProcessTime(): 
-                    continue 
-                    
-            unusedtime += max(time-curr_time,0)
-            length -= max(time-curr_time,0)
-
-
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="unused: "+str(unusedtime)+", length "+str(length)+"\n"
-        
-            if length < job.getQuantity()*job.getOperation().getProcessTime(): 
-                continue 
-                   
-            jobstarttime = max(time, curr_time)
-
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="jobstarttime: "+str(jobstarttime)+"\n"
-        
-            return ((slot,curr_shift),(jobstarttime, unusedtime))
-    
-        return None  # meaning that the resource cannot process the job due to fully scheduled… 
-
-    def CheckFTEAvailability(self,res,job,jobstarttime,startshift):
-
-        if res!= "Machine":
-            return True
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="FTE availability check..."+"\n"
-
-        curr_time = jobstarttime
-        processtime = job.getQuantity()*job.getOperation().getProcessTime()
-        curr_shift = startshift
-      
-        while processtime > 0: 
-
-            fte_use = self.CalculateFTEUse(res,curr_shift)
-            ftecapacity = sum([int(curr_shift in opr.getShiftAvailability()) for opr in res.getMachineGroup().getOperatingTeam().getOperators()])
-            
-            timeinshift =  curr_shift.getEndTime()+1 - curr_time
-            if timeinshift < processtime:
-                processtime = processtime - timeinshift
-                fte_use += timeinshift/(curr_shift.getEndTime()-curr_shift.getStartTime()+1)
-            else:
-                curr_time = curr_time + processtime
-                fte_use += processtime/(curr_shift.getEndTime()-curr_shift.getStartTime()+1)
-                processtime = 0
-
-            if fte_use > ftecapacity:
-                return False
-
-            if processtime > 0:
-                curr_shift=curr_shift.getNext()
-                curr_time = curr_shift.getStartTime()
-                
-                while not res.getShiftAvailability()[curr_shift]: 
-                    curr_shift = curr_shift.getNext()
-                    if curr_shift == None:
-                        return False
-                    curr_time = curr_shift.getStartTime()
- 
-        return True
-
-
-    def ScheduleJob(self,res,job,jobstarttime,unusedtime,emptyslot,startshift):
-        job.SetScheduled()
-        job.setStartTime(jobstarttime)  
-
-        if res.getName().find("OUT -") != -1:
-            job.setCompletionTime(job.getStartTime()+job.getOperation().getProcessTime())
-            res.getSchedule()[emptyslot[1]].append(job)
-            return
-        
-        curr_time = emptyslot[0][0]
-        
-
-        curr_time = jobstarttime
-        processtime = job.getQuantity()*job.getOperation().getProcessTime()
-        curr_shift = startshift
-      
-        #find completion time of the job
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="finding completion..."+"\n"
-        while processtime > 0: 
-            res.getSchedule()[curr_shift].append(job)
-            timeinshift =  curr_shift.getEndTime()+1 - curr_time
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="time in Shft: "+str(curr_shift.getDay())+","+str(curr_shift.getNumber())+") "+str(timeinshift)+"\n"
-            
-            if timeinshift < processtime - 0.00001:
-                processtime = processtime - timeinshift
-            else:
-                curr_time = curr_time + processtime
-                processtime = 0
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="remianed proc time"+ str(processtime)+"\n"
-
-            if processtime > 0:
-                curr_shift=curr_shift.getNext()
-                curr_time = curr_shift.getStartTime()
-                
-                while not res.getShiftAvailability()[curr_shift]: 
-                    curr_shift = curr_shift.getNext()
-                    if curr_shift == None:
-                        return None
-                    curr_time = curr_shift.getStartTime()
- 
-
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="completion time ..."+str(curr_time)+"\n"
-        job.setCompletionTime(curr_time)
-
-        slotindex = res.getEmptySlots().index(emptyslot)
-        if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
-            newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
-            res.getEmptySlots().insert(res.getEmptySlots().index(emptyslot),newslot) # insert this just before into the index of empyslot.
-            slotindex+=1
-
-
-        
-
-        res.getEmptySlots().remove(emptyslot)
-        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
-        res.getEmptySlots().insert(slotindex,newmeptyslot)
-
-        return newmeptyslot
 
     def MakeSchedule(self,schedulealg,batchingalg):
-        '''
-        -	Class shift: (myday,number (1 or 2))
-        -	Schedule: dict(key: shift, val: [(job,starttime)])  , this will be added to class resource as variable like myschedule. 
-        -	Pseudocode of scheduling heuristic: 
-            Initialize shifts for the scheduling period and link shifts with precedence relations Day1-Shift1->Day1-Shift2->Day2-Shift1….
-            Initialize SchedulableJobs as jobs with no predecessor
-            Initialize Schedules of all resources with created shifts
-
-             While len(SchedulableJobs) > 0:
-                   For job j in SchedulableJobs:
-                        ES_j = max(maxpredecessor completion, 0) 
-                        Check compatible and alternative resources that can process the job j and find the available 
-                                                            earliest start time that is not smaller than ES_j.
-                        Schedule job j to the resource where it can be processed with earliest start time. 
-                     For successor s in Successors list of job j: 
-                           If all predecessors of s is scheduled (possibly has other predecessors): 
-                                Add s to SchedulableJobs. 
-
-        '''
+      
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(batchingalg)+"\n"
 
@@ -353,7 +132,7 @@ class SchedulingManager:
 
         ScheduleWeeks = ((self.getSHEnd()-self.getSHStart()).days)//7 # weeks
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
        
         
         pssend= self.getSHEnd()
@@ -439,29 +218,41 @@ class SchedulingManager:
         
         for curr_date in scheduleperiod:
             
-            shift1=Shift(curr_date,1,prev_dayshift)
-            shift1.setStartTime(scheduletimehour)            
+            shift1=Shift(curr_date,3,prev_dayshift)
+            shift1.setStartTime(scheduletimehour)  
+
+            shift1.setStartHour(curr_date + timedelta(hours=0))
+            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
+          
             scheduletimehour+=8
             shift1.setEndTime(scheduletimehour-1)
-            shift2=Shift(curr_date,2,shift1)
-            shift2.setStartTime(scheduletimehour)                     
+            shift2=Shift(curr_date,1,shift1)
+            shift2.setStartTime(scheduletimehour)   
             scheduletimehour+=8
             shift2.setEndTime(scheduletimehour-1)
-            shift3=Shift(curr_date,3,shift2)
+
+            shift2.setStartHour(curr_date + timedelta(hours=8))
+            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
+
+            
+            shift3=Shift(curr_date,2,shift2)
             shift3.setStartTime(scheduletimehour)
             scheduletimehour+=8
             shift3.setEndTime(scheduletimehour-1)
+            shift3.setStartHour(curr_date + timedelta(hours=16))
+            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
+            
             prev_dayshift=shift3
 
             opno = 0
             for resname, res in self.getDataManager().getResources().items():
 
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+", res.. "+str(res.getName())+"\n"
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+", res.. "+str(res.getName())+"\n"
 
                 if res.getType() == "Machine":
 
                     res.getShiftAvailability()[shift1] = res.IsAutomated() 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+"shift1 - available: "+str( res.getShiftAvailability())+"\n"
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+"shift1 - available: "+str( res.getShiftAvailability())+"\n"
                     if res.getShiftAvailability()[shift1]:
                         res.getSchedule()[shift1] = []
                         res.getShiftOperatingModes()[shift1] = "Self-Running"
@@ -510,7 +301,7 @@ class SchedulingManager:
                     
             i+=1        
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="shift creation completed.."+"\n"
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="shift creation completed.."+"\n"
         for resname, res in self.getDataManager().getResources().items():
             if res.getName() == "M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01)":
                 for shift,jobs in res.getSchedule().items():
@@ -518,7 +309,7 @@ class SchedulingManager:
                     
                 displayed = True
 
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="initializing empty slots for "+res.getName()+"\n"
+            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="initializing empty slots for "+res.getName()+"\n"
             res.InitializeEmptySlot()
             for slot in res.getEmptySlots():  
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Res:"+res.getName()+", Slot: St: "+str(slot[0][0])+", l: "+str(slot[0][1])+", Shft: ("+str(slot[1].getDay())+","+str(slot[1].getNumber())+")"+"\n" 
@@ -548,6 +339,8 @@ class SchedulingManager:
         #self.getVisualManager().getSchedulingTab().getPSchOperations().options = myops
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
         #self.getVisualManager().getSchedulingTab().getPSchResources().options = myres
+
+        
 
 
         self.getVisualManager().getSchedulingTab().getPSchSolProps().value = "Scheduled jobs: "+str(sum([int(j.IsScheduled()) for j in AllJobs]))+"/"+str(len(AllJobs))+"\n"
@@ -634,8 +427,9 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchResources().options = [name for name,myres in self.getDataManager().getResources().items() ]
 
 
-       
-            
+        self.getVisualManager().getProductionProgressTab().getResourceList().options = [name for name,myres in self.getDataManager().getResources().items() ]
+
+        self.getVisualManager().getProductionProgressTab().getCustomerOrderList().options = Orderstatus
 
         Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
         folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"

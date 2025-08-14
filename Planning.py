@@ -118,7 +118,10 @@ class PlanningManager:
             
             #self.getVisualManager().getPLTBresult2exp().value+="ops.. "+str(len(product.getOperations()))+"\n"
             prev_job = None
-            for operation in product.getOperations(): # doubkle-check that they are in reversed order!!!!
+            reversedoprs = [p for p in product.getOperations()]
+            reversedoprs = reversedoprs[::-1]
+            for operation in reversedoprs: # doubkle-check that they are in reversed order!!!!
+                
 
                 # skip quantity when resource is outsourced:
 
@@ -182,7 +185,7 @@ class PlanningManager:
                             
                             if prev_job!= None:
                                 prev_job.getSuccessors().append(curr_job)
-                                prev_job.getPredecessors().append(curr_job)
+                                curr_job.getPredecessors().append(prev_job)
                             prev_job = curr_job
                             curr_job.setCustomerOrder(order)
                                 
