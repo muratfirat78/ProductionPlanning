@@ -170,6 +170,9 @@ class VisualManager():
         self.PLTBUseResOutput= None
         self.PSTBProdBatch = None
 
+        self.DataDiaBtn = None # Button for data diagnostics
+        self.DataDiaOpt = None
+
        
 
         return
@@ -950,6 +953,20 @@ class VisualManager():
         return self.PSTBDeadLine
     def setPSTBDeadLine(self,myit):
         self.PSTBDeadLine = myit
+        return
+
+    def getDataDiaBtn(self):
+        return self.DataDiaBtn
+
+    def setDataDiaBtn(self,myint):
+        self.DataDiaBtn = myint
+        return
+
+    def getDataDiaOpt(self):
+        return self.DataDiaOpt
+
+    def setDataDiaOpt(self,myint):
+        self.DataDiaOpt = myint
         return
     
 
@@ -1961,6 +1978,10 @@ class VisualManager():
         self.setCOTBsave_bttn(widgets.Button(description="Save"))
         self.getCOTBsave_bttn().on_click(self.DataManager.SaveInstance)
 
+        self.setDataDiaOpt(widgets.Dropdown(options = ['a','b','c'],description = ''))
+        self.setDataDiaBtn(widgets.Button(description="Run diagnostics"))
+        self.getDataDiaBtn().on_click('hi')
+
 
         ordinf = widgets.Label(value ='Order Information')
         ordinf.add_class("red_label")
@@ -1991,7 +2012,7 @@ class VisualManager():
 
         tab_4 = VBox(children=[HBox(children=[tb4_vbox1,tb4_vbox2,tb4_vbox3]),
                                ordersbox,
-                               HBox(children=[self.getCOTBsave_bttn(),self.getCOTBcasename()])])
+                               HBox(children=[self.getCOTBsave_bttn(),self.getCOTBcasename(), self.getDataDiaOpt(),self.getDataDiaBtn()])])
         
 
         return tab_4

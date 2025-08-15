@@ -33,12 +33,20 @@ class DataManager:
         self.Products = dict() # key: Productname, val: ProductObject
         self.CustomerOrders  = dict() # key: Ordername, val: OrderObject
         self.Operations = dict()  # key: OperationName, val: OperationObjec
+        self.MachineGroups = [] 
+        self.OperatingTeams = []
         self.VisualManager = None
         self.colabpath = '/content/ProductionPlanning'
         self.onlineversion = False       
         
         return
 
+    def getOperatingTeams(self):
+        return self.OperatingTeams
+        
+    def getMachineGroups(self):
+        return self.MachineGroups
+        
     def setOnlineVersion(self,ver):
         self.onlineversion = ver
         return
@@ -251,6 +259,8 @@ class DataManager:
         resources_df.to_csv(fullpath, index=False)
         filename = 'CustomerOrders.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
         orders_df.to_csv(fullpath, index=False)
+        filename = 'OperatorsMachines.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+        oprmch_df.to_csv(fullpath, index=False)
 
         return
 
@@ -275,13 +285,17 @@ class DataManager:
         for root, dirs, files in os.walk(abs_file_path):
             for file in files:
                 self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"... \n" 
+
+                if file == "OperatorsMachines.csv": 
+                    oprmch_df = pd.read_csv(abs_file_path+'/'+file)
+                    self.getVisualManager().getCaseInfo().value += "OperatorsMachines read.."+str(len(oprmch_df))+"\n"            
                 
                 if file == "Products.csv": 
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
                         newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
-                        newprod.setPrescribedBatchsize(r["PrescribedBatchsize"])
-                        newprod.setChosenBatchsize(r["ChosenBatchsize"])
+                        if not np.isnan(r["PrescribedBatchsize"]):
+                            newprod.setBatchsize(r["PrescribedBatchsize"])
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
@@ -298,8 +312,10 @@ class DataManager:
                     res_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
                         newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
-                        if r["Automated"] is not None:
-                            newres.setAutomated(r["Automated"])
+                        if not np.isnan(r["Automated"]):
+                            if str(r["Automated"]) == "True":
+                                newres.setAutomated() 
+                            
                         newres.setOperatingEffort(r["OperatingEffort"])
                         if r["Shift"] is not None:
                             newres.setAvailableShift(r["Shift"])
@@ -333,8 +349,63 @@ class DataManager:
         for ordname,myord in self.CustomerOrders.items():
             #self.getVisualManager().getCaseInfo().value += ">>> Product"+myord.getProductName()+" in "+str(myord.getProductName() in self.Products)+"\n" 
             myord.setProduct(self.Products[myord.getProductName()])
+
+       
+        #initilize first machine group..
+        self.getVisualManager().getCaseInfo().value += ">>> Machine groups and operating teams.. "+str(len(oprmch_df))+"\n" 
+
+        operators =[op for op in oprmch_df["OperatorID"].unique()]
+
+        self.getVisualManager().getCaseInfo().value += ">>> operators "+str(len(operators))+"\n" 
+
+        for operatorID in operators:
+            operator = [myres  for resname,myres in self.getResources().items() if myres.getID() == operatorID][0]
+            oprmachines =[mhid for mhid in oprmch_df[oprmch_df["OperatorID"] == operatorID]["MachineID"]]
+
+            self.getVisualManager().getCaseInfo().value += ">>> operator "+str(operator.getName())+" linked to "+str(oprmachines)+" machines.."+"\n" 
             
+            mymachgroup = None
+            for machineID in oprmachines:
+                mach = [myres  for resname,myres in self.getResources().items() if myres.getID() == machineID ][0]
+                # check if the machine included in the previously defined ones..
+                commonmachine = False
+                for machgroup in self.getMachineGroups():
+                    if mach in machgroup.getMachines():
+                        commonmachine = True
+                        mymachgroup = machgroup
+                        break
+                if commonmachine:
+                    break
                     
+            if mymachgroup != None:
+                
+                mymachgroup.getOperatingTeam().getOperators().append(operator)
+                operator.setOperatingTeam(mymachgroup.getOperatingTeam())
+                
+
+            else:
+                machgroup = MachineGroup()
+                operatingteam = OperatingTeam() # assumption every operator is in exactly one team
+                machgroup.setOperatingTeam(operatingteam)
+                operatingteam.setMachineGroup(machgroup)
+
+                
+                for machineID in oprmachines:
+                    mach = [myres  for resname,myres in self.getResources().items() if myres.getID() == machineID ][0]
+                    machgroup.getMachines().append(mach) 
+                    mach.setMachineGroup(machgroup)
+                    
+     
+                operator.setOperatingTeam(operatingteam) 
+                operatingteam.getOperators().append(operator)
+
+                self.getOperatingTeams().append(operatingteam)
+                self.getMachineGroups().append(machgroup)    
+            
+        self.getVisualManager().getCaseInfo().value += ">>> Machine groups.. "+str(len(self.getMachineGroups()))+"\n"                  
+        self.getVisualManager().getCaseInfo().value += ">>> Operating teams.. "+str(len(self.getOperatingTeams()))+"\n"    
+   
+                             
         self.getVisualManager().getCaseInfo().value += ">>> Precedences.. "+str(len(precmatch_df))+"\n" 
         for i,r in precmatch_df.iterrows():
     
@@ -358,6 +429,7 @@ class DataManager:
                 oprlst = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]]
                 if len(oprlst) > 0:
                     opr = oprlst[0]
+                    opr.setProduct(prod)
                     prod.getOperations().insert(r["OperationIndex"],opr)
                 else:
                     self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 
@@ -371,10 +443,22 @@ class DataManager:
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
+            # check if the same type of resource is already in the required resources list of operation. 
+            resinserted = False
+            for oprres in opr.getRequiredResources():
+                if isinstance(oprres,list): # we expect that this is always true, but for now let is check. 
+                    if oprres[0].getType() == res.getTtype():
+                        oprres.append(res)
+                        resinserted = True
+                        break
+            if not resinserted:
+                opr.getRequiredResources().append([res])
+          
+                
+
             #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
             
-            opr.getRequiredResources().append(res)
-    
+        
         
                    
      
