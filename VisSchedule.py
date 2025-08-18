@@ -58,6 +58,8 @@ class ScheduleTab():
         self.PSchSolProps = None
         self.ScheduleAlgs = None
         self.BatchingAlgs = None
+        self.PSchTBsavesch_btn = None
+        self.PSchTBschFileName = None
         
         return
 
@@ -181,6 +183,20 @@ class ScheduleTab():
         
     def getPSchTBmakesch_btn(self):
         return self.PSchTBmakesch_btn
+
+    def setPSchTBsavesch_btn(self,myitm):
+        self.PSchTBsavesch_btn = myitm
+        return
+        
+    def getPSchTBsavesch_btn(self):
+        return self.PSchTBsavesch_btn
+
+    def setPSchTBschFileName(self,myint):
+        self.PSchTBschFileName = myint
+        return
+
+    def getPSchTBschFileName(self):
+        return self.PSchTBschFileName
 
 
     def setPSchJoblist(self,myitm):
@@ -502,6 +518,42 @@ class ScheduleTab():
         self.getVisualManager().getSchedulingManager().MakeSchedule(self.getScheduleAlgs().value,self.getBatchingAlgs().value)
 
         return
+
+    def SaveSchedule(self,b):
+
+        Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
+        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
+        path = folder+"\\"+casename
+        isExist = os.path.exists(path)
+        
+        if not isExist:
+            os.makedirs(path)
+        
+        for name,myres in self.getVisualManager().DataManager.getResources().items():
+            if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
+                for shift, jobs in myres.getSchedule().items():
+                    if jobs == []:
+                        continue
+                    else: 
+                        jobs.sort(key=lambda x: x.getStartTime())
+                        for job in jobs:
+                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":job.getCompletionTime()}
+                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":job.getCompletionTime()}
+                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":shift.getEndTime()}
+                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
+                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
+                                
+                    
+        filename = self.getPSchTBschFileName().value+".csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+        Schedule_df.to_csv(fullpath, index=False)  
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule was saved in the file "+str(self.getPSchTBschFileName().value)+".csv. "+"\n"
+                                                                                     
+        return 
+        
         
         
     
@@ -516,6 +568,13 @@ class ScheduleTab():
         self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
         self.getPSchTBmakesch_btn().on_click(self.MakeSchedule)
 
+        self.setPSchTBsavesch_btn(widgets.Button(description="Save Schedule"))
+        self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
+
+        self.setPSchTBschFileName(widgets.Text(description ='Filename:',value=''))
+
+        # schfile = widgets.Label(value ='Filename: ')
+        # schfile.add_class("red_label")
       
 
         schpr = widgets.Label(value ='Scheduling procedure progress ')
@@ -588,7 +647,7 @@ class ScheduleTab():
         
         tab_sch = HBox(children = [ VBox(children = [
            
-            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
+            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn(),self.getPSchTBschFileName(),self.getPSchTBsavesch_btn()]),
             HBox(children = [schalg,self.getScheduleAlgs(),bchalg,self.getBatchingAlgs()]),
             HBox(children=[schdes, self.getScheduleVisual()]),
             HBox(children=[self.getPSchSolProps()]),

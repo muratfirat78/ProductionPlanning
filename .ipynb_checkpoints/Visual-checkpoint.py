@@ -155,6 +155,7 @@ class VisualManager():
         self.PSchScheRes = None
     
         self.CaseInfo = None
+        self.DiagInfo = None
 
         self.FolderNameTxt = None
         self.CasesDrop = None
@@ -549,6 +550,13 @@ class VisualManager():
     def setCaseInfo(self,myitm):
         self.CaseInfo = myitm
         return 
+        
+    def getDiagInfo(self):
+        return self.DiagInfo
+
+    def setDiagInfo(self,myitm):
+        self.DiagInfo = myitm
+        return
 
     def getPLTBresult2exp(self):
         return self.PLTBresult2exp
@@ -1971,6 +1979,7 @@ class VisualManager():
         self.setPSTBFinalProd(widgets.Text(description ='Product:',value='',disabled = True))
         self.setPSTBQuantity(widgets.Text(description ='Quantity:',value ='',disabled = True))
         self.setPSTBDeadLine(widgets.Text(description ='Deadline:',value ='',disabled = True))
+        self.setDiagInfo(widgets.Textarea(value='', placeholder='',description='',disabled=True,layout = Layout(height ="100px" ,width='60%')))
 
     
       
@@ -1978,9 +1987,9 @@ class VisualManager():
         self.setCOTBsave_bttn(widgets.Button(description="Save"))
         self.getCOTBsave_bttn().on_click(self.DataManager.SaveInstance)
 
-        self.setDataDiaOpt(widgets.Dropdown(options = ['a','b','c'],description = ''))
+        self.setDataDiaOpt(widgets.Dropdown(options = ['Process time diagnostics','Product operation diagnostics','Operation resource diagnostics'],description = ''))
         self.setDataDiaBtn(widgets.Button(description="Run diagnostics"))
-        self.getDataDiaBtn().on_click('hi')
+        self.getDataDiaBtn().on_click(self.RunDiagnostics)
 
 
         ordinf = widgets.Label(value ='Order Information')
@@ -2012,7 +2021,8 @@ class VisualManager():
 
         tab_4 = VBox(children=[HBox(children=[tb4_vbox1,tb4_vbox2,tb4_vbox3]),
                                ordersbox,
-                               HBox(children=[self.getCOTBsave_bttn(),self.getCOTBcasename(), self.getDataDiaOpt(),self.getDataDiaBtn()])])
+                               HBox(children=[self.getCOTBsave_bttn(),self.getCOTBcasename(), self.getDataDiaOpt(),self.getDataDiaBtn()]),
+                               HBox(children=[self.getDiagInfo()])])
         
 
         return tab_4
@@ -2290,6 +2300,91 @@ class VisualManager():
     def AssignOprClick(self,event):
         self.DataManager.AssignOperation(self.getPSTBProdList(),self.getPSTBoperations())
         return
+
+    def RunDiagnostics(self,event):
+
+        # if not 'index' in event['new']:
+        #     return
+
+        # if event['new']['index'] < 0:
+        #     return
+        self.getDiagInfo().value = ''
+        selected = self.getDataDiaOpt().value        
+
+        if selected == None:
+            return
+
+        if selected == '':
+            return
+
+        if selected == 'Process time diagnostics':
+            check = False
+            count = 0
+            self.getDiagInfo().value += ">>>Starting Process time diagnostics... "+"\n"
+            self.getDiagInfo().value += ">>>Checking operations without process time... "+"\n"
+            for opnam, opr in self.DataManager.getOperations().items():
+                if opr.getProcessTime() == 0 or opr.getProcessTime() is None:
+                    check = True
+                    count += 1
+                    self.getDiagInfo().value += "Operation "+str(opnam)+" has no process time defined. "+ "\n"
+
+            if check == True:
+                self.getDiagInfo().value +="There are "+str(count)+" out of "+str(len(self.DataManager.getOperations().items()))+" operations without a process time. "+ "\n"
+                self.getDiagInfo().value +=">>>Process time diagnostics finished... "+ "\n"
+            if check == False:
+                self.getDiagInfo().value +="All operations have a processtime defined. "+ "\n"
+                self.getDiagInfo().value +=">>>Process time diagnostics finished... "+ "\n"
+
+        if selected == 'Product operation diagnostics':
+            check = False
+            count = 0
+            self.getDiagInfo().value +=">>>Starting Product operations diagnostics... "+"\n"
+            self.getDiagInfo().value +=">>>Checking prodcuts without operations... "+"\n"
+
+            for prodname, prod in self.DataManager.getProducts().items():
+                if len(prod.getOperations()) == 0:
+                    check = True
+                    count +=1
+                    self.getDiagInfo().value +="Product "+str(prodname)+" has no operations defined. "+"\n"
+
+            if check == True:
+                self.getDiagInfo().value+="There are "+str(count)+" out of "+str(len(self.DataManager.getProducts().items()))+" products without an operation defined. "+ "\n"
+                self.getDiagInfo().value +=">>>Product operations diagnostics finished... "+ "\n"
+            if check == False:
+                self.getDiagInfo().value +="All products have an operation defined. "+ "\n"
+                self.getDiagInfo().value +=">>>Product operations diagnostics finished... "+ "\n"
+
+        if selected == 'Operation resource diagnostics':
+            check = False
+            count = 0
+            MillingOps = []
+            self.getDiagInfo().value+=">>>Starting Milling operations diagnostics... "+"\n"
+            self.getDiagInfo().value+=">>>Checking milling operations with only one resource... "+"\n"
+            for opnam,opr in self.DataManager.getOperations().items():
+                if 'Milling' in str(opnam) or 'milling' in str(opnam):
+                    MillingOps.append(opnam)
+                    if len(opr.getRequiredResources()) == 1:
+                        check = True
+                        count += 1
+                        self.getDiagInfo().value += "Operation "+str(opnam)+" has only one resource defined. "+ "\n"                        
+                        self.getDiagInfo().value += "This is resource "+ str(opr.getRequiredResources()[0][0].getName())+"."+ "\n"
+
+            if check == True:
+                self.getDiagInfo().value +="There are "+str(count)+" out of "+str(len(MillingOps))+" milling operations with only one resource defined. "+ "\n"
+                self.getDiagInfo().value +=">>>Milling operations diagnostics finished... "+ "\n"
+            if check == False:
+                self.getDiagInfo().value +="All milling operations have more that one resource defined. "+ "\n"
+                self.getDiagInfo().value +=">>>Milling operations diagnostics finished... "+ "\n"
+
+        return
+                        
+            
+            
+            
+                                                                                
+                    
+                    
+        
 
 
   
