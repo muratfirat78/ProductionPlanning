@@ -2302,6 +2302,13 @@ class VisualManager():
         return
 
     def RunDiagnostics(self,event):
+        
+        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
+        path = folder+"\\"+casename
+        isExist = os.path.exists(path)
+        
+        if not isExist:
+            os.makedirs(path)
 
         # if not 'index' in event['new']:
         #     return
@@ -2318,6 +2325,8 @@ class VisualManager():
             return
 
         if selected == 'Process time diagnostics':
+            
+            # diag_df = pd.DataFrame(columns = ["Operation name"])
             check = False
             count = 0
             self.getDiagInfo().value += ">>>Starting Process time diagnostics... "+"\n"
@@ -2327,7 +2336,7 @@ class VisualManager():
                     check = True
                     count += 1
                     self.getDiagInfo().value += "Operation "+str(opnam)+" has no process time defined. "+ "\n"
-
+                    # diag_df.loc[len(diag_df)] = {"Operation name":opnam}
             if check == True:
                 self.getDiagInfo().value +="There are "+str(count)+" out of "+str(len(self.DataManager.getOperations().items()))+" operations without a process time. "+ "\n"
                 self.getDiagInfo().value +=">>>Process time diagnostics finished... "+ "\n"
@@ -2335,17 +2344,26 @@ class VisualManager():
                 self.getDiagInfo().value +="All operations have a processtime defined. "+ "\n"
                 self.getDiagInfo().value +=">>>Process time diagnostics finished... "+ "\n"
 
+            # filename = "Process_time_diagnostics.csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+            # diag_df.to_csv(fullpath, index=False)  
+
         if selected == 'Product operation diagnostics':
+
+            # diag_df = pd.DataFrame(columns = ["Product name"])
             check = False
             count = 0
+            total = 0
             self.getDiagInfo().value +=">>>Starting Product operations diagnostics... "+"\n"
-            self.getDiagInfo().value +=">>>Checking prodcuts without operations... "+"\n"
+            self.getDiagInfo().value +=">>>Checking (non raw material) products without operations... "+"\n"
 
             for prodname, prod in self.DataManager.getProducts().items():
-                if len(prod.getOperations()) == 0:
-                    check = True
-                    count +=1
-                    self.getDiagInfo().value +="Product "+str(prodname)+" has no operations defined. "+"\n"
+                if len(prod.getPredecessors()) > 0:
+                    total +=1
+                    if len(prod.getOperations()) == 0:
+                        check = True
+                        count +=1
+                        self.getDiagInfo().value +="Product "+str(prodname)+" has no operations defined. "+"\n"
+                        # diag_df.loc[len(diag_df)] = {"Product name":prodname}
 
             if check == True:
                 self.getDiagInfo().value+="There are "+str(count)+" out of "+str(len(self.DataManager.getProducts().items()))+" products without an operation defined. "+ "\n"
@@ -2354,7 +2372,12 @@ class VisualManager():
                 self.getDiagInfo().value +="All products have an operation defined. "+ "\n"
                 self.getDiagInfo().value +=">>>Product operations diagnostics finished... "+ "\n"
 
+            # filename = "Product_operation_diagnostics.csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+            # diag_df.to_csv(fullpath, index=False)
+
         if selected == 'Operation resource diagnostics':
+
+            # diag_df = pd.DataFrame(columns = ["Operation name"])
             check = False
             count = 0
             MillingOps = []
@@ -2368,6 +2391,7 @@ class VisualManager():
                         count += 1
                         self.getDiagInfo().value += "Operation "+str(opnam)+" has only one resource defined. "+ "\n"                        
                         self.getDiagInfo().value += "This is resource "+ str(opr.getRequiredResources()[0][0].getName())+"."+ "\n"
+                        # diag_df.loc[len(diag_df)] = {"Operation name":opnam}
 
             if check == True:
                 self.getDiagInfo().value +="There are "+str(count)+" out of "+str(len(MillingOps))+" milling operations with only one resource defined. "+ "\n"
@@ -2375,6 +2399,9 @@ class VisualManager():
             if check == False:
                 self.getDiagInfo().value +="All milling operations have more that one resource defined. "+ "\n"
                 self.getDiagInfo().value +=">>>Milling operations diagnostics finished... "+ "\n"
+
+            # filename = "Operation_resource_diagnostics.csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+            # diag_df.to_csv(fullpath, index=False)
 
         return
                         

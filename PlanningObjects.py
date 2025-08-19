@@ -314,6 +314,9 @@ class Operation():
         
     def getName(self):
         return self.Name
+    def setName(self,myint):
+        self.Name = myint
+        return
     def getProcessTime(self):
         return self.ProcessTime
     def getRequiredResources(self):

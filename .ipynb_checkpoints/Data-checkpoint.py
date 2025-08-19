@@ -447,7 +447,7 @@ class DataManager:
             resinserted = False
             for oprres in opr.getRequiredResources():
                 if isinstance(oprres,list): # we expect that this is always true, but for now let is check. 
-                    if oprres[0].getType() == res.getTtype():
+                    if oprres[0].getType() == res.getType():
                         oprres.append(res)
                         resinserted = True
                         break
