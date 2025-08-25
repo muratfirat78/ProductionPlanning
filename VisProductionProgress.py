@@ -580,6 +580,11 @@ class ProductionProgressTab():
             self.getJobList().layout.visibility  = 'visible'
             self.getJobList().layout.width = '250px'
 
+            self.getJobStartBtn().layout.display = 'block'
+            self.getJobStartBtn().layout.visibility  = 'visible'
+            self.getJobCompleteBtn().layout.display = 'block'
+            self.getJobCompleteBtn().layout.visibility  = 'visible'
+
 
 
             self.getCustomerOrderList().layout.visibility  = 'hidden'
@@ -599,6 +604,11 @@ class ProductionProgressTab():
             self.getJobList().layout.display = 'block'
             self.getJobList().layout.visibility  = 'visible'
             self.getJobList().layout.width = '250px'
+         
+            self.getJobStartBtn().layout.display = 'block'
+            self.getJobStartBtn().layout.visibility  = 'visible'
+            self.getJobCompleteBtn().layout.display = 'block'
+            self.getJobCompleteBtn().layout.visibility  = 'visible'
 
             
             self.getResourceList().layout.visibility  = 'hidden'
@@ -723,9 +733,9 @@ class ProductionProgressTab():
         self.getJobList().options = ["Jobs.."]
         self.getJobList().layout.width = "300px"
 
-        self.setJobStartBtn(widgets.Button(desciption = 'Set Started'))
+        self.setJobStartBtn(widgets.Button(desciption = "Set Started"))
         self.getJobStartBtn().on_click(self.SetJobStarted)
-        self.setJobCompleteBtn(widgets.Button(desciption = 'SetCompleted'))
+        self.setJobCompleteBtn(widgets.Button(desciption = "SetCompleted"))
         self.getJobCompleteBtn().on_click(self.SetJobCompleted)
 
         self.setResShifts(widgets.Dropdown(options=[]))
@@ -754,7 +764,9 @@ class ProductionProgressTab():
         
         tab_sch = HBox(children =[ 
                        VBox(children = [schdes,self.getCustOrdersCheck(),self.getCustomerOrderList(),self.getResourceList()]),
-                       VBox(children = [self.getResShiftLbl(),self.getResShifts(),self.getPPrgOrdOutput(),self.getResShftJobsLbl(),self.getJobList()])
+                       VBox(children = [self.getResShiftLbl(),self.getResShifts(),self.getPPrgOrdOutput(),self.getResShftJobsLbl()
+                                        ,HBox(children=[self.getJobStartBtn(),self.getJobList(),self.getJobCompleteBtn()])
+                                       ])
                        ])
                                      
 
@@ -770,6 +782,12 @@ class ProductionProgressTab():
        
         self.getJobList().layout.visibility  = 'hidden'
         self.getJobList().layout.display = 'none'
+
+        self.getJobStartBtn().layout.visibility  = 'hidden'
+        self.getJobStartBtn().layout.display = 'none'
+
+        self.getJobCompleteBtn().layout.visibility  = 'hidden'
+        self.getJobCompleteBtn().layout.display = 'none'
 
 
 

@@ -60,8 +60,16 @@ class ScheduleTab():
         self.BatchingAlgs = None
         self.PSchTBsavesch_btn = None
         self.PSchTBschFileName = None
+        self.PSchTBaccsch_btn = None
         
         return
+
+    def setPSchTBaccsch_btn(self,myit):
+        self.PSchTBaccsch_btn  = myit
+        return
+        
+    def getPSchTBaccsch_btn(self):
+        return self.PSchTBaccsch_btn
 
     def setBatchingAlgs(self,myit):
         self.BatchingAlgs  = myit
@@ -565,14 +573,18 @@ class ScheduleTab():
         self.getPSchScheRes().layout.height = '150px'
         self.getPSchScheRes().layout.width = '700px'
 
-        self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule"))
+        self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule", icon = 'fa-gear'))
         self.getPSchTBmakesch_btn().on_click(self.MakeSchedule)
 
-        self.setPSchTBsavesch_btn(widgets.Button(description="Save Schedule"))
+        self.setPSchTBsavesch_btn(widgets.Button(description="Export Schedule",icon = 'fa-file-excel-o'))
         self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
 
-        self.setPSchTBschFileName(widgets.Text(description ='Filename:',value=''))
+        self.setPSchTBaccsch_btn(widgets.Button(description="Accept Schedule",icon = 'fa-check-square'))
+       
 
+        self.setPSchTBschFileName(widgets.Text(description ='',value='filename..'))
+        self.getPSchTBschFileName().layout.width = '150px'
+ 
         # schfile = widgets.Label(value ='Filename: ')
         # schfile.add_class("red_label")
       
@@ -647,9 +659,9 @@ class ScheduleTab():
         
         tab_sch = HBox(children = [ VBox(children = [
            
-            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn(),self.getPSchTBschFileName(),self.getPSchTBsavesch_btn()]),
+            HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
             HBox(children = [schalg,self.getScheduleAlgs(),bchalg,self.getBatchingAlgs()]),
-            HBox(children=[schdes, self.getScheduleVisual()]),
+            HBox(children=[schdes, self.getScheduleVisual(),self.getPSchTBschFileName(),self.getPSchTBsavesch_btn(),self.getPSchTBaccsch_btn()]),
             HBox(children=[self.getPSchSolProps()]),
             HBox(children=[VBox(children = [self.getPSchResources()]),VBox(children= [self.getPSTBResSchOutput()])]),
             HBox(children=[VBox(children= [self.getPSchOrderlist()]), VBox(children= [self.getPSTBOrdOutput()])]),

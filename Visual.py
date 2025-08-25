@@ -174,9 +174,20 @@ class VisualManager():
         self.DataDiaBtn = None # Button for data diagnostics
         self.DataDiaOpt = None
 
+        self.NewCustOrdrs_btn = None
+        self.NewProd_btn = None
+        
+
        
 
         return
+
+    def setNewProd_btn(self,myit):
+        self.NewProd_btn = myit
+        return
+
+    def getNewProd_btn(self):
+        return self.NewProd_btn
 
     def setPSTBProdBatch(self,myit):
         self.PSTBProdBatch = myit
@@ -184,6 +195,13 @@ class VisualManager():
 
     def getPSTBProdBatch(self):
         return self.PSTBProdBatch
+
+    def setNewCustOrdrs_btn(self,myit):
+        self.NewCustOrdrs_btn = myit
+        return
+
+    def getNewCustOrdrs_btn(self):
+        return self.NewCustOrdrs_btn
 
      
 
@@ -1545,7 +1563,7 @@ class VisualManager():
         self.getPLTBresult2exp().layout.height = '150px'
        
 
-        self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan",disabled = True))
+        self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan",disabled = True,icon ='gear'))
         self.getPLTBmakeplan_btn().on_click(self.getPlanningManager().MakeDeliveryPlan)
 
         self.setPLTBrawlist(widgets.Select(options=[],description = ''))
@@ -1572,6 +1590,9 @@ class VisualManager():
         ordtl = widgets.Label(value ='Planning Diagnostics')
         ordtl.add_class("red_label")
 
+        plnhrn = widgets.Label(value ='Planning Horizon')
+        plnhrn.add_class("red_label")
+
 
         diagtree = Tree()
         rootnode = Node("Diagnostics",[], icon="cut", icon_style="success") 
@@ -1593,8 +1614,7 @@ class VisualManager():
 
    
     
-        tab_3 = VBox(children = [
-                widgets.Label(value ='Planning Settings '),
+        tab_3 = VBox(children = [plnhrn,
                HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPLTBmakeplan_btn()]),   
                HBox(children = [VBox(children = [prgl,self.getPLTBresult2exp()]),
                                 VBox(children = [ordl,self.getPLTBOrdlist()]),
@@ -1815,12 +1835,17 @@ class VisualManager():
 
         self.setPSTBProdSearch(widgets.Text(description ='',value=''))
         self.getPSTBProdSearch().on_submit(self.SearchProd)
+
+        self.setNewProd_btn(widgets.Button(description="Import products",icon='fa-download'))
+        self.getNewProd_btn().layout.width = '150px'
+        self.getNewProd_btn().layout.height = '28px'
         
         self.setPSTBProdList(widgets.Select(options=[],description = ''))
         self.setPSTBProdList2(widgets.Select(options=[],description = ''))
         prl = widgets.Label(value ='Products')
         prl.add_class("red_label")
-        p_box = VBox(children=[prl,self.getPSTBProdSearch(),self.getPSTBProdList()])
+        prl.layout.width = '40%'
+        p_box = VBox(children=[HBox(children=[prl,self.getNewProd_btn()]),self.getPSTBProdSearch(),self.getPSTBProdList()])
 
 
         self.getPSTBProdList().observe(self.ShowProduct)
@@ -1923,7 +1948,8 @@ class VisualManager():
         
         tb4_vbox3 = VBox(children = [HBox(children=[op_box]),self.getPSTBNewOprName(),self.getPSTBNewOprProcTime(),
                                      HBox(children=[oprn,self.getPSTBOprName()]),
-                                     HBox(children=[oprt,self.getPSTBOprProcTime(),widgets.Label(value =  " | ",disabled = True),oprest,self.getPSTBOprRes()]),
+                                     HBox(children=[oprt,self.getPSTBOprProcTime()]),
+                                     HBox(children=[oprest,self.getPSTBOprRes()]),
                                      HBox(children=[self.getPSTBaddopr_btn(),self.getPSTBcanclopr_btn()])
                                     ,oprdsel_box])
         
@@ -1971,10 +1997,17 @@ class VisualManager():
         self.setCOTBorders(widgets.Select(options=[],description = ''))
         self.getCOTBorders().observe(self.ShowOrder)
 
+       
+
+        self.setNewCustOrdrs_btn(widgets.Button(description="Import orders",icon='fa-download'))
+        self.getNewCustOrdrs_btn().layout.width = '150px'
+        self.getNewCustOrdrs_btn().layout.height = '28px'
+
         ordl = widgets.Label(value ='Customer Orders')
+        ordl.layout.width = '120px'
         ordl.add_class("red_label")
         
-        ord_box = VBox(children=[ordl,self.getCOTBorders()])
+        ord_box = VBox(children=[HBox(children =[ordl,self.getNewCustOrdrs_btn()]),self.getCOTBorders()])
 
         self.setPSTBFinalProd(widgets.Text(description ='Product:',value='',disabled = True))
         self.setPSTBQuantity(widgets.Text(description ='Quantity:',value ='',disabled = True))
@@ -1988,9 +2021,10 @@ class VisualManager():
         self.getCOTBsave_bttn().on_click(self.DataManager.SaveInstance)
 
         self.setDataDiaOpt(widgets.Dropdown(options = ['Process time diagnostics','Product operation diagnostics','Operation resource diagnostics'],description = ''))
-        self.setDataDiaBtn(widgets.Button(description="Run diagnostics"))
+        self.getDataDiaOpt().layout.width = '220px'
+        self.setDataDiaBtn(widgets.Button(description="Run",icon= 'search'))
         self.getDataDiaBtn().on_click(self.RunDiagnostics)
-
+        self.getDataDiaBtn().layout.width = '90px'
 
         ordinf = widgets.Label(value ='Order Information')
         ordinf.add_class("red_label")
@@ -1999,6 +2033,9 @@ class VisualManager():
         bominf.add_class("red_label")
 
         self.setPSTBBOMOutput(widgets.Output())
+
+        datadiag = widgets.Label(value ='Data Diagnostics')
+        datadiag.add_class("red_label")
         
         
         bomtree = Tree()
@@ -2021,7 +2058,9 @@ class VisualManager():
 
         tab_4 = VBox(children=[HBox(children=[tb4_vbox1,tb4_vbox2,tb4_vbox3]),
                                ordersbox,
-                               HBox(children=[self.getCOTBsave_bttn(),self.getCOTBcasename(), self.getDataDiaOpt(),self.getDataDiaBtn()]),
+                               HBox(children=[
+                                   #self.getCOTBsave_bttn(),self.getCOTBcasename(), 
+                                   datadiag,self.getDataDiaOpt(),self.getDataDiaBtn()]),
                                HBox(children=[self.getDiagInfo()])])
         
 
@@ -2141,7 +2180,7 @@ class VisualManager():
         self.setCaseInfo(widgets.Textarea(value='', placeholder='',description='',disabled=True,layout = Layout(height ="100px" ,width='60%')))   
 
     
-        self.setReadFileBtn(widgets.Button(description="Read") )
+        self.setReadFileBtn(widgets.Button(description="Read",icon = 'fa-folder-o') )
         self.getReadFileBtn().on_click(self.DataManager.read_dataset)
 
 
