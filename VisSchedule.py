@@ -18,6 +18,7 @@ import os
 import pandas as pd
 import warnings
 import sys
+import time
 import numpy as np
 from pathlib import Path
 from PlanningObjects import *
@@ -561,6 +562,80 @@ class ScheduleTab():
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule was saved in the file "+str(self.getPSchTBschFileName().value)+".csv. "+"\n"
                                                                                      
         return 
+
+
+    def SaveTheSchedule(self,event):
+
+        self.getVisualManager().getCaseInfo().value += ">>>  saving schedule....."+"\n" 
+        schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
+
+        
+        for name,order in self.getVisualManager().DataManager.getCustomerOrders().items():
+            self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
+            for job in order.getMyJobs(): 
+
+                if job.IsScheduled(): 
+                    starttime = job.getScheduledShift().getStartHour()+timedelta(hours = max(job.getStartTime(),job.getScheduledShift().getStartTime())-job.getScheduledShift().getStartTime())
+                                                                             
+                    #self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+str(job.getID())+"\n"  
+                    
+                    #self.getVisualManager().getCaseInfo().value += ">>>  deadline....."+str(job.getDeadLine())+"\n"  
+                    
+                   
+                    endtime =  job.getScheduledCompShift().getStartHour()+timedelta(hours = min(job.getCompletionTime(),job.getScheduledCompShift().getEndTime()+1)-job.getScheduledCompShift().getStartTime())
+                 
+                    schres = job.getScheduledResource().getID()
+                    sdayst = str(job.getScheduledShift().getDay().date())
+                    sshftst = job.getScheduledShift().getNumber()
+                    stst = str(starttime.strftime('%H:%M'))
+                    sdaycp = str(job.getScheduledCompShift().getDay().date())
+                    sshftcp = job.getScheduledCompShift().getNumber()
+                    stcp = str(endtime.strftime('%H:%M'))
+                else:
+                    starttime = "NULL"
+                    endtime ="NULL"
+                    schres = "NULL"
+                    sdayst = "NULL"
+                    sshftst = "NULL"
+                    stst = "NULL"
+                    sdaycp = "NULL"
+                    sshftcp = "NULL"
+                    stcp = "NULL"
+                    
+                    
+                schedule_df.loc[len(schedule_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),
+                                                         "Deadline":job.getDeadLine(),
+                                                       "OrderID":job.getCustomerOrder().getID(),
+                                                     "ProductID":job.getProduct().getID(),
+                                                     "OperationID":job.getOperation().getID(),
+                                                     "ResourceID":schres,
+                                                     "SchDaySt":sdayst,
+                                                     "SchShiftSt": sshftst,
+                                                     "SchTimeSt":stst,
+                                                     "SchDayCp":sdaycp,
+                                                     "SchShiftCp":sshftcp,
+                                                     "SchTimeCp":stcp,
+                                                     "ActDaySt":"",
+                                                     "ActShiftSt":"NULL","ActTimeSt":"NULL","ActDayCp":"NULL","ActShiftCp":"NULL","ActTimeCp":"NULL"
+                                                     }
+
+        
+        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
+        path = folder+"\\"+casename
+        isExist = os.path.exists(path)
+        if not isExist:
+            os.makedirs(path)
+
+        self.getVisualManager().getCaseInfo().value += ">>>..... saving schedule 22...."+"\n"
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        filename = "ScheduleJobs_"+timestr+".csv"; 
+        path = folder+"\\"+casename+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        schedule_df.to_csv(fullpath, index=False)
+        self.getVisualManager().getCaseInfo().value += ">>>.... DONE....."+"\n"
+         
+     
+        return
         
         
         
@@ -580,6 +655,7 @@ class ScheduleTab():
         self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
 
         self.setPSchTBaccsch_btn(widgets.Button(description="Accept Schedule",icon = 'fa-check-square'))
+        self.getPSchTBaccsch_btn().on_click(self.SaveTheSchedule)
        
 
         self.setPSchTBschFileName(widgets.Text(description ='',value='filename..'))
@@ -587,7 +663,7 @@ class ScheduleTab():
  
         # schfile = widgets.Label(value ='Filename: ')
         # schfile.add_class("red_label")
-      
+
 
         schpr = widgets.Label(value ='Scheduling procedure progress ')
         schpr.add_class("red_label")

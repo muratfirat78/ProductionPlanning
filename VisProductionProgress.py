@@ -454,7 +454,7 @@ class ProductionProgressTab():
             if str(shift.getStartHour())+" | "+str(shift.getEndHour()) == selected:
                 
                 self.setSelectedShift(shift)
-
+                self.getJobList().layout.visibility  = 'visible'
                 self.getJobList().options = [job.getName() for job in jobs]
 
                 with self.getPPrgOrdOutput():
@@ -562,7 +562,7 @@ class ProductionProgressTab():
       
         if selected == 'Resources':
 
-            self.getResShftJobsLbl().value = "Resource Jobs"
+            self.getResShftJobsLbl().value = "Shift Jobs"
             
             self.getResourceList().layout.display = 'block'
             self.getResourceList().layout.visibility  = 'visible'
@@ -577,15 +577,12 @@ class ProductionProgressTab():
 
 
             self.getJobList().layout.display = 'block'
-            self.getJobList().layout.visibility  = 'visible'
-            self.getJobList().layout.width = '250px'
-
+            self.getJobList().layout.visibility  = 'hidden'
+            
             self.getJobStartBtn().layout.display = 'block'
-            self.getJobStartBtn().layout.visibility  = 'visible'
+            self.getJobStartBtn().layout.visibility  = 'hidden'
             self.getJobCompleteBtn().layout.display = 'block'
-            self.getJobCompleteBtn().layout.visibility  = 'visible'
-
-
+            self.getJobCompleteBtn().layout.visibility  = 'hidden'
 
             self.getCustomerOrderList().layout.visibility  = 'hidden'
             self.getCustomerOrderList().layout.display = 'none'
@@ -602,13 +599,16 @@ class ProductionProgressTab():
             self.getCustomerOrderList().layout.height = '150px'
 
             self.getJobList().layout.display = 'block'
-            self.getJobList().layout.visibility  = 'visible'
-            self.getJobList().layout.width = '250px'
+            self.getJobList().layout.visibility  = 'hidden'
+            
+            
          
             self.getJobStartBtn().layout.display = 'block'
-            self.getJobStartBtn().layout.visibility  = 'visible'
+            self.getJobStartBtn().layout.visibility  = 'hidden'
+
             self.getJobCompleteBtn().layout.display = 'block'
-            self.getJobCompleteBtn().layout.visibility  = 'visible'
+            self.getJobCompleteBtn().layout.visibility  = 'hidden'
+        
 
             
             self.getResourceList().layout.visibility  = 'hidden'
@@ -651,6 +651,13 @@ class ProductionProgressTab():
                     for j in self.getSelectedResource().getSchedule()[self.getSelectedShift()]:
                         if j.getName() == selected:
                             self.setCurrentJob(j)
+                            if j.getActualStart() == None:
+                                self.getJobStartBtn().layout.visibility  = 'visible'
+                                self.getJobCompleteBtn().layout.visibility  = 'hidden'
+                            else:
+                                self.getJobStartBtn().layout.visibility  = 'hidden'
+                                self.getJobCompleteBtn().layout.visibility  = 'visible'
+                                
 
                     
         
@@ -721,7 +728,7 @@ class ProductionProgressTab():
         self.getCustOrdersCheck().layout.width = '150px'
         self.getCustOrdersCheck().observe(self.ShowDescriptives)
 
-        self.setResShiftLbl(widgets.Label(value ='Resource Shifts'))
+        self.setResShiftLbl(widgets.Label(value ='Shifts'))
         self.getResShiftLbl().add_class("red_label")
         self.getResShiftLbl().layout.width = "120px"
 
@@ -731,17 +738,20 @@ class ProductionProgressTab():
         self.setJobList(widgets.Select(options=[],desciption = ''))
         self.getJobList().observe(self.SetJob)
         self.getJobList().options = ["Jobs.."]
-        self.getJobList().layout.width = "300px"
+        self.getJobList().layout.width = "250px"
 
-        self.setJobStartBtn(widgets.Button(desciption = "Set Started"))
-        self.getJobStartBtn().on_click(self.SetJobStarted)
-        self.setJobCompleteBtn(widgets.Button(desciption = "SetCompleted"))
-        self.getJobCompleteBtn().on_click(self.SetJobCompleted)
+        self.setJobStartBtn(widgets.Button(description = "Set Started",icon = 'fa-check-square'))
+        #self.getJobStartBtn().on_click(self.SetJobStarted)
+        self.getJobStartBtn().layout.width = "120px"
+        
+        self.setJobCompleteBtn(widgets.Button(description = "SetCompleted",icon = 'fa-check-square'))
+        #self.getJobCompleteBtn().on_click(self.SetJobCompleted)
+        self.getJobCompleteBtn().layout.width = "120px"
 
         self.setResShifts(widgets.Dropdown(options=[]))
         self.getResShifts().observe(self.ShowResShift)
 
-        self.setCustomerOrderList(widgets.Select(options=[],desciption = ''))
+        self.setCustomerOrderList(widgets.Select(options=[],description = ''))
         self.getCustomerOrderList().options = ["Customer Order.."]
         self.getCustomerOrderList().layout.width = "300px"
         self.getCustomerOrderList().observe(self.ShowCustomerOrder)
@@ -755,6 +765,15 @@ class ProductionProgressTab():
         schdes.add_class("red_label")
         schdes.layout.width = "120px"
 
+        start_date = datetime(2020, 2, 17)
+        end_date = datetime(2020, 3, 27)
+        dates = pd.date_range(start_date, end_date, freq='D')
+        date = [(date.strftime(' %d %b %Y '), date) for date in dates]
+        
+        date_slider = widgets.SelectionSlider(options=date,orientation='horizontal',layout={'width': 'flex'})
+      
+
+
 
         self.setPPrgOrdOutput(widgets.Output())
 
@@ -762,11 +781,15 @@ class ProductionProgressTab():
             clear_output()
             display("Test")
         
-        tab_sch = HBox(children =[ 
-                       VBox(children = [schdes,self.getCustOrdersCheck(),self.getCustomerOrderList(),self.getResourceList()]),
-                       VBox(children = [self.getResShiftLbl(),self.getResShifts(),self.getPPrgOrdOutput(),self.getResShftJobsLbl()
-                                        ,HBox(children=[self.getJobStartBtn(),self.getJobList(),self.getJobCompleteBtn()])
-                                       ])
+        tab_sch = HBox(
+                       children =[ 
+                          VBox(children = [schdes,self.getCustOrdersCheck(),self.getCustomerOrderList(),self.getResourceList(),date_slider]),
+                          VBox(children = [self.getResShiftLbl(),
+                                        self.getResShifts(),
+                                        self.getPPrgOrdOutput(),
+                                        self.getResShftJobsLbl(),
+                                        HBox(children=[self.getJobStartBtn(),self.getJobList(),self.getJobCompleteBtn()])
+                              ])
                        ])
                                      
 

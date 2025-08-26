@@ -2020,7 +2020,7 @@ class VisualManager():
         self.setCOTBsave_bttn(widgets.Button(description="Save"))
         self.getCOTBsave_bttn().on_click(self.DataManager.SaveInstance)
 
-        self.setDataDiaOpt(widgets.Dropdown(options = ['Process time diagnostics','Product operation diagnostics','Operation resource diagnostics'],description = ''))
+        self.setDataDiaOpt(widgets.Dropdown(options = ['Process times','Product operations','Operation resources'],description = ''))
         self.getDataDiaOpt().layout.width = '220px'
         self.setDataDiaBtn(widgets.Button(description="Run",icon= 'search'))
         self.getDataDiaBtn().on_click(self.RunDiagnostics)

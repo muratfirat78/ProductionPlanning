@@ -364,6 +364,7 @@ class Job():
         self.ScheduledResource = None
         self.ScheduledShift = None
         self.ScheduledCompShift = None
+        
 
     def getScheduledShift(self):
         return self.ScheduledShift

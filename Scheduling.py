@@ -92,6 +92,95 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
+    def CreateShifts(self,psstart,pssend):
+
+        scheduleperiod = pd.date_range(psstart,pssend)
+              
+        i=1
+        prev_dayshift = None 
+        scheduletimehour = 1
+        
+        for curr_date in scheduleperiod:
+            
+            shift1=Shift(curr_date,3,prev_dayshift)
+            shift1.setStartTime(scheduletimehour)  
+
+            shift1.setStartHour(curr_date + timedelta(hours=0))
+            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
+          
+            scheduletimehour+=8
+            shift1.setEndTime(scheduletimehour-1)
+            shift2=Shift(curr_date,1,shift1)
+            shift2.setStartTime(scheduletimehour)   
+            scheduletimehour+=8
+            shift2.setEndTime(scheduletimehour-1)
+
+            shift2.setStartHour(curr_date + timedelta(hours=8))
+            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
+
+            
+            shift3=Shift(curr_date,2,shift2)
+            shift3.setStartTime(scheduletimehour)
+            scheduletimehour+=8
+            shift3.setEndTime(scheduletimehour-1)
+            shift3.setStartHour(curr_date + timedelta(hours=16))
+            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
+            
+            prev_dayshift=shift3
+
+            opno = 0
+            for resname, res in self.getDataManager().getResources().items():
+
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+", res.. "+str(res.getName())+"\n"
+
+                if res.getType() == "Machine":
+
+                    res.getShiftAvailability()[shift1] = res.IsAutomated() 
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+"shift1 - available: "+str( res.getShiftAvailability())+"\n"
+                    if res.getShiftAvailability()[shift1]:
+                        res.getSchedule()[shift1] = []
+                        res.getShiftOperatingModes()[shift1] = "Self-Running"
+
+                    
+                    res.getShiftAvailability()[shift2] = True
+                   
+                    res.getSchedule()[shift2] = []
+                    res.getShiftOperatingModes()[shift2] = "Operated"
+                    
+                    res.getShiftAvailability()[shift3] = True
+                    
+                    res.getSchedule()[shift3] = []
+                    res.getShiftOperatingModes()[shift3] = "Operated"
+                  
+
+                if res.getType() == "Manual":
+                    res.getShiftAvailability()[shift1] = False
+                    res.getShiftAvailability()[shift2] = True
+                    res.getSchedule()[shift2] = []
+                    res.getShiftAvailability()[shift3] = True
+                    res.getSchedule()[shift3] = []
+                    
+                if res.getType() == "Operator":
+                    res.getShiftAvailability()[shift1] = False
+                    
+                    res.getShiftAvailability()[shift2] = True
+                    res.getSchedule()[shift2] = []
+                    res.getShiftAvailability()[shift3] = True
+                    res.getSchedule()[shift3] = []
+                
+          
+                if res.getType() == "Outsourced":
+                    res.getShiftAvailability()[shift1] = True
+                    res.getSchedule()[shift1] = []
+                    res.getShiftAvailability()[shift2] = True
+                    res.getSchedule()[shift2] = []
+                    res.getShiftAvailability()[shift3] = True
+                    res.getSchedule()[shift3] = [] 
+                    
+            i+=1        
+
+        return 
+
     def CalculateFTEUse(self,res,shift):
 
         totalfte = 0
@@ -210,96 +299,8 @@ class SchedulingManager:
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="SchedulableJobs: "+str(len(SchedulableJobs))+"\n"
 
-       
-              
-        i=1
-        prev_dayshift = None 
-        scheduletimehour = 1
-        
-        for curr_date in scheduleperiod:
-            
-            shift1=Shift(curr_date,3,prev_dayshift)
-            shift1.setStartTime(scheduletimehour)  
+        self.CreateShifts(psstart,pssend)
 
-            shift1.setStartHour(curr_date + timedelta(hours=0))
-            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
-          
-            scheduletimehour+=8
-            shift1.setEndTime(scheduletimehour-1)
-            shift2=Shift(curr_date,1,shift1)
-            shift2.setStartTime(scheduletimehour)   
-            scheduletimehour+=8
-            shift2.setEndTime(scheduletimehour-1)
-
-            shift2.setStartHour(curr_date + timedelta(hours=8))
-            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
-
-            
-            shift3=Shift(curr_date,2,shift2)
-            shift3.setStartTime(scheduletimehour)
-            scheduletimehour+=8
-            shift3.setEndTime(scheduletimehour-1)
-            shift3.setStartHour(curr_date + timedelta(hours=16))
-            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
-            
-            prev_dayshift=shift3
-
-            opno = 0
-            for resname, res in self.getDataManager().getResources().items():
-
-                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+", res.. "+str(res.getName())+"\n"
-
-                if res.getType() == "Machine":
-
-                    res.getShiftAvailability()[shift1] = res.IsAutomated() 
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+"shift1 - available: "+str( res.getShiftAvailability())+"\n"
-                    if res.getShiftAvailability()[shift1]:
-                        res.getSchedule()[shift1] = []
-                        res.getShiftOperatingModes()[shift1] = "Self-Running"
-
-                    
-                    res.getShiftAvailability()[shift2] = True
-                   
-                    res.getSchedule()[shift2] = []
-                    res.getShiftOperatingModes()[shift2] = "Operated"
-                    
-                    res.getShiftAvailability()[shift3] = True
-                    
-                    res.getSchedule()[shift3] = []
-                    res.getShiftOperatingModes()[shift3] = "Operated"
-                  
-
-                if res.getType() == "Manual":
-                    res.getShiftAvailability()[shift1] = False
-                    res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
-                    res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-                    
-                if res.getType() == "Operator":
-                    res.getShiftAvailability()[shift1] = False
-                    
-                    res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
-                    res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-
-                 
-          
-                if res.getType() == "Outsourced":
-                    res.getShiftAvailability()[shift1] = True
-                    res.getSchedule()[shift1] = []
-                    res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
-                    res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-                    
-                 
-                
-                # for slot in res.getEmptySlots():
-                #     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+= res.getName()+str(slot[0][0])+","+slot[0][1]+"\n"  
-                    
-            i+=1        
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="shift creation completed.."+"\n"
         for resname, res in self.getDataManager().getResources().items():
