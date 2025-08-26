@@ -184,7 +184,8 @@ class DataManager:
         self.VisualManager.getCOTBorders().options = [myordname for myordname in self.CustomerOrders.keys()]
 
         return
-
+        
+  
 
     def SaveInstance(self,event):
 
@@ -281,10 +282,29 @@ class DataManager:
         prodopmatch_df = pd.DataFrame()
         precmatch_df = pd.DataFrame()
         oprsresources_df = pd.DataFrame()
+
+        scheduledate = None
+        schfile = None
         
         for root, dirs, files in os.walk(abs_file_path):
             for file in files:
                 self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"... \n" 
+
+                if file.find("ScheduleJobs") != -1:
+                    filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
+                   
+                  
+                    if scheduledate == None: 
+                        scheduledate = filedate
+                        schfile = file
+                    else:
+                        if filedate > scheduledate:
+                            scheduledate = filedate
+                            schfile = file
+                            self.getVisualManager().getCaseInfo().value += "scheduledate..."+str(scheduledate)+"\n"            
+                
+                    
+                    
 
                 if file == "OperatorsMachines.csv": 
                     oprmch_df = pd.read_csv(abs_file_path+'/'+file)
@@ -341,9 +361,11 @@ class DataManager:
                     precmatch_df = pd.read_csv(abs_file_path+'/'+file)
 
                 if file == "ResourcesOperations.csv": 
-                    oprsresources_df = pd.read_csv(abs_file_path+'/'+file)
+                    oprsresources_df = pd.read_csv(abs_file_path+'/'+file)                    
+                        
                     self.getVisualManager().getCaseInfo().value += "ResourcesOperations: "+str(len(oprsresources_df))+"\n"  
 
+      
        
         self.getVisualManager().getCaseInfo().value += ">>> CustomerOrders.. "+str(len(self.CustomerOrders))+"\n" 
         for ordname,myord in self.CustomerOrders.items():
@@ -443,23 +465,66 @@ class DataManager:
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
-            # check if the same type of resource is already in the required resources list of operation. 
-            resinserted = False
-            for oprres in opr.getRequiredResources():
-                if isinstance(oprres,list): # we expect that this is always true, but for now let is check. 
-                    if oprres[0].getType() == res.getType():
-                        oprres.append(res)
-                        resinserted = True
-                        break
-            if not resinserted:
-                opr.getRequiredResources().append([res])
+            opr.getRequiredResources().append([res])
+            
+            # # check if the same type of resource is already in the required resources list of operation. 
+            # resinserted = False
+            # for oprres in opr.getRequiredResources():
+            #     if isinstance(oprres,list): # we expect that this is always true, but for now let is check. 
+            #         if oprres[0].getType() == res.getType():
+            #             oprres.append(res)
+            #             resinserted = True
+            #             break
+            # if not resinserted:
+            #     opr.getRequiredResources().append([res])
           
                 
 
             #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
+        earliest = None
+        latest = None
             
-        
-        
+        if schfile != None:
+            schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
+
+            self.getVisualManager().getCaseInfo().value += ">>>> Schedule file read, jobs.."+str(len(schedule_df))+"\n" 
+            for i,r in schedule_df.iterrows():
+                self.getVisualManager().getCaseInfo().value += ">>>> i.."+str(i)+"\n" 
+                
+                opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
+                res = None
+                #self.getVisualManager().getCaseInfo().value += ">>>> resourceID.."+str(str(r["ResourceID"]) == 'nan')+"\n" 
+                if str(r["ResourceID"]) != 'nan':
+                    res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
+                    
+                prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]] [0]
+                order = [myord  for oname,myord in self.getCustomerOrders().items() if myord.getID() == r["OrderID"]] [0]
+                newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],r["Deadline"])
+                #self.getVisualManager().getCaseInfo().value += ">>>> i2.."+str(i)+"\n" 
+                #order.getMyJobs().append(newjob)
+                #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(r["SchDaySt"])+"\n" 
+               
+                if str(r["SchDaySt"]) != 'nan':
+                    stdate = datetime.strptime(r["SchDaySt"],'%Y-%m-%d')
+                    #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(stdate)+"\n" 
+                    if earliest == None:
+                        earliest = stdate
+                    else:
+                        if earliest > stdate:
+                            earliest = stdate
+                #self.getVisualManager().getCaseInfo().value += ">>>> SchDayCp.."+str(r["SchDayCp"])+"\n" 
+                if str(r["SchDayCp"]) != 'nan':
+                    cpdate = datetime.strptime(r["SchDayCp"],'%Y-%m-%d')
+                    if latest == None:
+                        latest = cpdate
+                    else:
+                        if latest < cpdate:
+                            latest = cpdate
+                    
+        if (earliest!= None) and (latest!= None):
+            self.getVisualManager().getCaseInfo().value += ">>>> Schedule earliest - latest .."+str(earliest)+":"+str(latest)+"\n"             
+                
+                
                    
      
     
