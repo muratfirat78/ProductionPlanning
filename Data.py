@@ -295,8 +295,17 @@ class DataManager:
         for i,r in orders_df.iterrows():
             if not r["Name"] in self.CustomerOrders:
                 neworder = CustomerOrder(len(self.CustomerOrders),r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
-                neworder.setProduct(self.Products[neworder.getProductName()])
-                self.CustomerOrders[r["Name"]] = neworder     
+                if neworder.getProductName() in self.Products:
+                    neworder.setProduct(self.Products[neworder.getProductName()])
+                else: 
+                    self.getVisualManager().getDiagInfo().value += "Product"+str(neworder.getProductName())+" not found, so being created.."+"\n"
+                    newprod = Product(len(self.Products),neworder.getProductName(),"XXXXXX",0)
+                    self.Products[neworder.getProductName()]= newprod
+                    neworder.setProduct(newprod)
+                    
+                self.CustomerOrders[r["Name"]] = neworder   
+        
+        self.getVisualManager().getPSTBProdList().options = [prname for prname in self.Products.keys()]
                     
         self.getVisualManager().getDiagInfo().value += "Orders updated.."+str(prev_size)+"->"+str(len(self.CustomerOrders))+"\n"     
 
