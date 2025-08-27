@@ -290,13 +290,17 @@ class DataManager:
                 break
 
         prev_size = len(self.CustomerOrders)
+
         
         for i,r in orders_df.iterrows():
             if not r["Name"] in self.CustomerOrders:
                 neworder = CustomerOrder(len(self.CustomerOrders),r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
+                neworder.setProduct(self.Products[neworder.getProductName()])
                 self.CustomerOrders[r["Name"]] = neworder     
                     
         self.getVisualManager().getDiagInfo().value += "Orders updated.."+str(prev_size)+"->"+str(len(self.CustomerOrders))+"\n"     
+
+       
 
         self.getVisualManager().getCOTBorders().options =  [myordname for myordname in self.CustomerOrders.keys()]
 
