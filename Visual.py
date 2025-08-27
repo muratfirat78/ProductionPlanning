@@ -176,11 +176,21 @@ class VisualManager():
 
         self.NewCustOrdrs_btn = None
         self.NewProd_btn = None
+
+        self.UpdStocks_btn = None
         
 
        
 
         return
+
+    def setUpdStocks_btn(self,myit):
+        self.UpdStocks_btn = myit
+        return
+
+    def getUpdStocks_btn(self):
+        return self.UpdStocks_btn
+
 
     def setNewProd_btn(self,myit):
         self.NewProd_btn = myit
@@ -1621,8 +1631,8 @@ class VisualManager():
                                 VBox(children = [ordresl,self.getPLTBUseResOutput(),ordtl,self.getPLTBDiagOutput()]),
                                 ]),
                
-                HBox(children=[VBox(children = [widgets.Label(value ='Planning Descriptives '),self.getPLTBDesciptives()]),
-                               VBox(children = [widgets.Label(value ='Display Period'),self.getPLTBDisplayPeriod()])]),
+                HBox(children=[VBox(children = [widgets.Label(value ='Planning Descriptives '),self.getPLTBDesciptives()])
+                              ]),
             
                 HBox(children=[self.getPLTBrawlist(),self.getPLTBStockLevels()],layout = widgets.Layout(height = '375px'))])
 
@@ -1836,16 +1846,21 @@ class VisualManager():
         self.setPSTBProdSearch(widgets.Text(description ='',value=''))
         self.getPSTBProdSearch().on_submit(self.SearchProd)
 
-        self.setNewProd_btn(widgets.Button(description="Import products",icon='fa-download'))
-        self.getNewProd_btn().layout.width = '150px'
+        self.setNewProd_btn(widgets.Button(description="New products",icon='fa-download'))
+        self.getNewProd_btn().layout.width = '130px'
         self.getNewProd_btn().layout.height = '28px'
+
+        self.setUpdStocks_btn(widgets.Button(description="Update stock",icon='fa-download'))
+        self.getUpdStocks_btn().layout.width = '120px'
+        self.getUpdStocks_btn().layout.height = '28px'
+
         
         self.setPSTBProdList(widgets.Select(options=[],description = ''))
         self.setPSTBProdList2(widgets.Select(options=[],description = ''))
         prl = widgets.Label(value ='Products')
         prl.add_class("red_label")
-        prl.layout.width = '40%'
-        p_box = VBox(children=[HBox(children=[prl,self.getNewProd_btn()]),self.getPSTBProdSearch(),self.getPSTBProdList()])
+        #prl.layout.width = '30%'
+        p_box = VBox(children=[HBox(children=[prl,self.getNewProd_btn(),self.getUpdStocks_btn()]),self.getPSTBProdSearch(),self.getPSTBProdList()])
 
 
         self.getPSTBProdList().observe(self.ShowProduct)
@@ -1866,7 +1881,9 @@ class VisualManager():
       
         self.setPSTBProdStocklvl(widgets.Label(value ='',disabled = True))
         self.setPSTBProdBatch(widgets.Label(value ='',disabled = True))
-  
+
+        
+      
 
        
         
@@ -1896,6 +1913,7 @@ class VisualManager():
                                      #self.getPSTBNewProdName(),self.getPSTBNewProdPN(),self.getPSTBNewProdStocklvl(),
                                      HBox(children=[l,self.getPSTBProdName()]),
                                      HBox(children=[m,self.getPSTBProdPN(),widgets.Label(value =  " | ",disabled = True),n,self.getPSTBProdStocklvl(),widgets.Label(value =  " | ",disabled = True),b,self.getPSTBProdBatch()]),
+                                    
                                      HBox(children = [self.getPSTBaddprod_btn(),self.getPSTBcnclprod_btn()])
                                      ,prdsel_box]
                         )

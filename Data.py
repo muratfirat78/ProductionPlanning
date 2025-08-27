@@ -486,7 +486,7 @@ class DataManager:
 
             self.getVisualManager().getCaseInfo().value += ">>>> Schedule file read, jobs.."+str(len(schedule_df))+"\n" 
             for i,r in schedule_df.iterrows():
-                self.getVisualManager().getCaseInfo().value += ">>>> i.."+str(i)+"\n" 
+                #self.getVisualManager().getCaseInfo().value += ">>>> i.."+str(i)+"\n" 
                 
                 opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
                 res = None
