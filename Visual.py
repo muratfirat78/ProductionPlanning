@@ -2018,6 +2018,7 @@ class VisualManager():
        
 
         self.setNewCustOrdrs_btn(widgets.Button(description="Import orders",icon='fa-download'))
+        self.getNewCustOrdrs_btn().on_click(self.DataManager.ImportOrders)
         self.getNewCustOrdrs_btn().layout.width = '150px'
         self.getNewCustOrdrs_btn().layout.height = '28px'
 

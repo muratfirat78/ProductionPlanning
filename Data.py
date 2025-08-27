@@ -265,6 +265,44 @@ class DataManager:
 
         return
 
+    def ImportOrders(self,b):  
+
+        rel_path = self.getVisualManager().getFolderNameTxt().value+'/'+self.getVisualManager().getCasesDrop().value+'/'+'input_files'
+        orders_df = pd.DataFrame()
+
+        if self.onlineversion:
+            self.getVisualManager().getCaseInfo().value += ">>> Online version, aborted... \n"
+            return
+        else:
+            abs_file_path = os.path.join(Path.cwd(), rel_path)
+
+        filefound = False
+
+        for root, dirs, files in os.walk(abs_file_path):
+            for file in files:
+                self.getVisualManager().getDiagInfo().value += ">>> reading file "+file+"... \n"
+                if file.find("OrderDelta") != -1:
+                    orders_df = pd.read_csv(abs_file_path+'/'+file)
+                    self.getVisualManager().getDiagInfo().value += "Orders to imports.."+str(len(orders_df))+"\n"    
+                    filefound = True
+                    break
+            if filefound:
+                break
+
+        prev_size = len(self.CustomerOrders)
+        
+        for i,r in orders_df.iterrows():
+            if not r["Name"] in self.CustomerOrders:
+                neworder = CustomerOrder(len(self.CustomerOrders),r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
+                self.CustomerOrders[r["Name"]] = neworder     
+                    
+        self.getVisualManager().getDiagInfo().value += "Orders updated.."+str(prev_size)+"->"+str(len(self.CustomerOrders))+"\n"     
+
+        self.getVisualManager().getCOTBorders().options =  [myordname for myordname in self.CustomerOrders.keys()]
+
+
+        return
+
     def read_dataset(self,b):  
 
        
