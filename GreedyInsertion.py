@@ -236,21 +236,32 @@ class GreedyInsertionAlg:
                 #Progress.value+=" Checking job "+str(j.getName())+", LPCT: "+str(j.getLatestPredecessorCompletion())+", p: "+str(j.getQuantity()*j.getOperation().getProcessTime())+", prd: "+prednames+"\n"  
 
                 #Progress.value+=" Operation: "+str(j.getOperation().getName())+", res: "+str(len(j.getOperation().getRequiredResources()))+"\n"
-              
+                
+                currentStarttime = None
                 myresource = None
+                currentslot = None
                 for resource in j.getOperation().getRequiredResources():
-                    myresource = resource
-                    if isinstance(resource,list):
-                        myresource = resource[0]
-                        #Progress.value+=" ***res: "+str(myresource.getName())+"\n"
-                        break
+                    slotreturn = self.CheckSlot(resource[0],j,Progress,ScheduleMgr)
+                    if slotreturn != None:
+                        if currentStarttime is None or slotreturn[1][0] < currentStarttime:
+                            currentStarttime = slotreturn[1][0]
+                            myresource = resource[0]
+                            currentslot = slotreturn
+                # Old first machine selection
+                # for resource in j.getOperation().getRequiredResources():
+                #     myresource = resource
+                #     if isinstance(resource,list):
+                #         myresource = resource[0]
+                #         #Progress.value+=" ***res: "+str(myresource.getName())+"\n"
+                #         break
                 if myresource == None: 
                     #Progress.value+=" Op: "+str(j.getOperation().getName())+" has no resource.."+"\n"
                     JobsToRemove.append(j)
                     continue
                     
                 #Progress.value+="..Check slot res.. "+str(myresource.getName())+"\n"  
-                schreturn = self.CheckSlot(myresource,j,Progress,ScheduleMgr)
+                # schreturn = self.CheckSlot(myresource,j,Progress,ScheduleMgr)
+                schreturn = currentslot
                 if schreturn == None: 
                     #Progress.value+=str(j.getName())+" cannot be scheduled in "+myresource.getName()+"\n"
                     JobsToRemove.append(j)
