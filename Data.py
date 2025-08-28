@@ -264,6 +264,7 @@ class DataManager:
         oprmch_df.to_csv(fullpath, index=False)
 
         return
+    
 
     def ImportOrders(self,b):  
 
@@ -336,26 +337,34 @@ class DataManager:
 
         scheduledate = None
         schfile = None
+        jobprfile = None
         
         for root, dirs, files in os.walk(abs_file_path):
-            for file in files:
-                self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"... \n" 
+            
+            for file in files: 
 
                 if file.find("ScheduleJobs") != -1:
                     filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
-                   
-                  
+          
                     if scheduledate == None: 
                         scheduledate = filedate
                         schfile = file
+                        
                     else:
                         if filedate > scheduledate:
                             scheduledate = filedate
                             schfile = file
-                            self.getVisualManager().getCaseInfo().value += "scheduledate..."+str(scheduledate)+"\n"            
-                
-                    
-                    
+                            self.getVisualManager().getCaseInfo().value += "scheduledate..."+str(scheduledate)+"\n"  
+                            
+            for file in files:
+                self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"... \n" 
+
+                if file.find("ScheduleJobsPrecs") != -1:
+                    filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
+
+                    if filedate == scheduledate:
+                        jobprfile = file
+   
 
                 if file == "OperatorsMachines.csv": 
                     oprmch_df = pd.read_csv(abs_file_path+'/'+file)
@@ -537,8 +546,14 @@ class DataManager:
             
         if schfile != None:
             schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
+            jobprecs_df =   pd.read_csv(abs_file_path+'/'+jobprfile)
+
+            alljobs = dict() # key job id, val: job object.
 
             self.getVisualManager().getCaseInfo().value += ">>>> Schedule file read, jobs.."+str(len(schedule_df))+"\n" 
+            self.getVisualManager().getCaseInfo().value += ">>>> Schedule file read, jobs precedences.."+str(len(jobprecs_df))+"\n" 
+            jobpreds = []
+            
             for i,r in schedule_df.iterrows():
                 #self.getVisualManager().getCaseInfo().value += ">>>> i.."+str(i)+"\n" 
                 
@@ -551,6 +566,10 @@ class DataManager:
                 prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]] [0]
                 order = [myord  for oname,myord in self.getCustomerOrders().items() if myord.getID() == r["OrderID"]] [0]
                 newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],r["Deadline"])
+                alljobs[newjob.getID()]= newjob
+
+            
+                
                 #self.getVisualManager().getCaseInfo().value += ">>>> i2.."+str(i)+"\n" 
                 #order.getMyJobs().append(newjob)
                 #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(r["SchDaySt"])+"\n" 
@@ -571,7 +590,22 @@ class DataManager:
                     else:
                         if latest < cpdate:
                             latest = cpdate
-                    
+
+          
+            
+            for jobid,job in alljobs.items():
+                job_df = jobprecs_df[jobprecs_df["JobSuccessorID"] == job.getID()]
+                jobpreds.append(len(job_df))
+                for predid in job_df["JobPredecessorID"]:
+                    if predid in alljobs:
+                        predjob = alljobs[predid]
+                        job.getPredecessors().append(predjob)
+                    else: 
+                        self.getVisualManager().getCaseInfo().value += ">>>> pred of job "+str(job.getID())+" not in jobs.."+"\n" 
+            #self.getVisualManager().getCaseInfo().value += ">>>> job preds of job "+str(jobpreds)+"\n"
+                        
+
+                
         if (earliest!= None) and (latest!= None):
             self.getVisualManager().getCaseInfo().value += ">>>> Schedule earliest - latest .."+str(earliest)+":"+str(latest)+"\n"             
                 

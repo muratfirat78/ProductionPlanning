@@ -569,10 +569,15 @@ class ScheduleTab():
         self.getVisualManager().getCaseInfo().value += ">>>  saving schedule....."+"\n" 
         schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
 
+        jobprecs_df = pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
         
         for name,order in self.getVisualManager().DataManager.getCustomerOrders().items():
             self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
-            for job in order.getMyJobs(): 
+            for job in order.getMyJobs():
+
+                for pred in job.getPredecessors():
+                    jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
+                    
 
                 if job.IsScheduled(): 
                     starttime = job.getScheduledShift().getStartHour()+timedelta(hours = max(job.getStartTime(),job.getScheduledShift().getStartTime())-job.getScheduledShift().getStartTime())
@@ -626,12 +631,16 @@ class ScheduleTab():
         if not isExist:
             os.makedirs(path)
 
-        self.getVisualManager().getCaseInfo().value += ">>>..... saving schedule 22...."+"\n"
+        self.getVisualManager().getCaseInfo().value += ">>>..... writing files...."+"\n"
         timestr = time.strftime("%Y%m%d-%H%M%S")
         filename = "ScheduleJobs_"+timestr+".csv"; 
         path = folder+"\\"+casename+"\\"+filename
         fullpath = os.path.join(Path.cwd(), path)
         schedule_df.to_csv(fullpath, index=False)
+        filename = "ScheduleJobsPrecs_"+timestr+".csv"; 
+        path = folder+"\\"+casename+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        jobprecs_df.to_csv(fullpath, index=False)
         self.getVisualManager().getCaseInfo().value += ">>>.... DONE....."+"\n"
          
      
