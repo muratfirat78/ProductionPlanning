@@ -360,7 +360,7 @@ class Job():
         self.ScheduledShift=None
         self.Scheduled = False
         self.ScheduledTime =None
-        self.OrderReserves = dict() # key: Order, val: qunatity reserved for the order.
+        self.OrderReserves = dict() # key: Order, val: quantity reserved for the order.
         self.ScheduledResource = None
         self.ScheduledShift = None
         self.ScheduledCompShift = None

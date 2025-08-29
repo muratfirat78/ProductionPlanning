@@ -580,22 +580,13 @@ class ScheduleTab():
                     
 
                 if job.IsScheduled(): 
-                    starttime = job.getScheduledShift().getStartHour()+timedelta(hours = max(job.getStartTime(),job.getScheduledShift().getStartTime())-job.getScheduledShift().getStartTime())
-                                                                             
-                    #self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+str(job.getID())+"\n"  
-                    
-                    #self.getVisualManager().getCaseInfo().value += ">>>  deadline....."+str(job.getDeadLine())+"\n"  
-                    
-                   
-                    endtime =  job.getScheduledCompShift().getStartHour()+timedelta(hours = min(job.getCompletionTime(),job.getScheduledCompShift().getEndTime()+1)-job.getScheduledCompShift().getStartTime())
-                 
                     schres = job.getScheduledResource().getID()
                     sdayst = str(job.getScheduledShift().getDay().date())
                     sshftst = job.getScheduledShift().getNumber()
-                    stst = str(starttime.strftime('%H:%M'))
+                    stst = job.getStartTime()
                     sdaycp = str(job.getScheduledCompShift().getDay().date())
                     sshftcp = job.getScheduledCompShift().getNumber()
-                    stcp = str(endtime.strftime('%H:%M'))
+                    stcp = job.getCompletionTime()
                 else:
                     starttime = "NULL"
                     endtime ="NULL"
