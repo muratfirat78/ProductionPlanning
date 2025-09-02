@@ -20,7 +20,7 @@ import numpy as np
 from pathlib import Path
 from PlanningObjects import *
 from Visual import *
-
+from io import BytesIO,StringIO
 
 warnings.filterwarnings("ignore")
 
@@ -350,6 +350,51 @@ class DataManager:
         oprmch_df.to_csv(fullpath, index=False)
 
         return
+    def ImportOrders2(self,b):
+
+       
+        if 'new' in b:
+            if 'value' in b['new']:
+                
+                if 'name' in b['new']['value'][0]:
+                   
+                    content = BytesIO(b['new']['value'][0]['content'])
+                    orders_df = pd.read_csv(content)
+                    
+                    
+                    prev_size = len(self.CustomerOrders)
+
+                    for i,r in orders_df.iterrows():
+                        if not r["Name"] in self.CustomerOrders:
+                            neworder = CustomerOrder(len(self.CustomerOrders),r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
+                            if neworder.getProductName() in self.Products:
+                                neworder.setProduct(self.Products[neworder.getProductName()])
+                            else: 
+                                self.getVisualManager().getDiagInfo().value += "Product"+str(neworder.getProductName())+" not found, so being created.."+"\n"
+                                newprod = Product(len(self.Products),neworder.getProductName(),"XXXXXX",0)
+                                self.Products[neworder.getProductName()]= newprod
+                                neworder.setProduct(newprod)
+                                
+                            self.CustomerOrders[r["Name"]] = neworder   
+                    
+                    self.getVisualManager().getPSTBProdList().options = [prname for prname in self.Products.keys()]
+                                
+                    self.getVisualManager().getDiagInfo().value += "Orders updated.."+str(prev_size)+"->"+str(len(self.CustomerOrders))+"\n"     
+            
+                   
+            
+                    self.getVisualManager().getCOTBorders().options =  [myordname for myordname in self.CustomerOrders.keys()]
+
+
+
+        #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
+        #content = input_file['content']
+        #content = io.StringIO(content.decode('utf-8'))
+        #df = pd.read_csv(content)
+
+
+        #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
+        return
     
 
     def ImportOrders(self,b):  
@@ -675,7 +720,8 @@ class DataManager:
             scheduleds = 0
             for i,r in schedule_df.iterrows():
                
-                newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],r["Deadline"])              
+                newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],r["Deadline"])      
+                newjob.initializeMySch()
                 opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
               
                 res = None
@@ -683,57 +729,54 @@ class DataManager:
               
                 if str(r["ResourceID"]) != 'nan':
                     res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
-                    self.getVisualManager().getCaseInfo().value += ">>>> resource.."+str(res)+"\n" 
+                    #self.getVisualManager().getCaseInfo().value += ">>>> resource.."+str(res)+"\n" 
                     if res == None:
                         self.getVisualManager().getCaseInfo().value += ">>>> Resource of job (id)"+str(r["JobID"])+" not found with id: "+str(r["ResourceID"])+"\n" 
                     else:
                         scheduleds+=1
-                        newjob.setScheduledResource(res)                
+                        
+                        stday =  datetime.strptime(r["SchDaySt"],'%Y-%m-%d')
+                        newjob.getMySch().SetScheduled()
+                        newjob.getMySch().setScheduledDay(stday)  
+                        newjob.getMySch().setStartTime(r["SchTimeSt"])    
+                        newjob.getMySch().setCompletionTime(r["SchTimeCp"])
+                        newjob.getMySch().setScheduledResource(res)    
+                   
+                        cpday =  datetime.strptime(r["SchDayCp"],'%Y-%m-%d')
+    
+                        lastshift = None
+                        for shift,jobs in res.getSchedule().items():
+                            if (shift.getDay() >= stday) and (shift.getDay() <= cpday):
+                                jobs.append(newjob)
+                                insertedshifts+=1
+    
+                            if (shift.getDay() == newjob.getMySch().getScheduledDay()) and (shift.getNumber() == r["SchShiftSt"]):
+                                newjob.getMySch().setScheduledShift(shift)
+                                scheduleshiftsfound+=1
+    
+                                if lastshift == None: 
+                                    lastshift = shift
+                                else:
+                                    if shift.shift.getStartHour() >= lastshift.getStartHour():
+                                        lastshift = shift
+    
+                        if lastshift != None:
+                            newjob.getMySch().setScheduledCompShift(shift)
+                            scheduleshiftsfound+=1            
                      
                     
                 prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]] [0]
-                #order = [myord  for oname,myord in self.getCustomerOrders().items() if myord.getID() == r["OrderID"]] [0]
 
-                self.getVisualManager().getCaseInfo().value += ">>>> job.."+str(r["JobID"])+"\n"     
-        
+                ords = [myord  for oname,myord in self.getCustomerOrders().items() if myord.getID() == r["OrderID"]] 
+                if len(ords) > 0:
+                    ords[0].getMyJobs().append(newjob)
+                    
+              
                 alljobs[newjob.getID()]= newjob
 
 
-                if res!= None:
-                    stday =  datetime.strptime(r["SchDaySt"],'%Y-%m-%d')
-                    
-                    newjob.setScheduledDay(stday)  
-                    newjob.setStartTime(r["SchTimeSt"])    
-                    newjob.setCompletionTime(r["SchTimeCp"])
-                   
-                    
-                    cpday =  datetime.strptime(r["SchDayCp"],'%Y-%m-%d')
-
-                    lastshift = None
-                    for shift,jobs in res.getSchedule().items():
-                        if (shift.getDay() >= stday) and (shift.getDay() <= cpday):
-                            jobs.append(newjob)
-                            insertedshifts+=1
-
-                        if (shift.getDay() == newjob.getScheduledDay()) and (shift.getNumber() == r["SchShiftSt"]):
-                            newjob.setScheduledShift(shift)
-                            scheduleshiftsfound+=1
-
-                            if lastshift == None: 
-                                lastshift = shift
-                            else:
-                                if shift.shift.getStartHour() >= lastshift.getStartHour():
-                                    lastshift = shift
-
-                    if lastshift != None:
-                        newjob.setScheduledCompShift(shift)
-                        scheduleshiftsfound+=1            
-
-
-                
-                
                 #self.getVisualManager().getCaseInfo().value += ">>>> i2.."+str(i)+"\n" 
-                #order.getMyJobs().append(newjob)
+                
                 #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(r["SchDaySt"])+"\n" 
                
            

@@ -152,6 +152,7 @@ class Resource():
         self.batchsize = 12 # to be changed..
         self.Jobs = dict() # key: product, #val: list of job objects
         self.Schedule = dict()  #key: shift, val: []
+        self.CurrentSchedule = dict()  #key: shift, val: []
         self.ShiftOperatingModes = dict() #key: shift val: one of "Operated", "Self". Self mode only can continue the started job, cannot start a job. 
 
         self.OperatingEffort = 0
@@ -223,6 +224,10 @@ class Resource():
     def getSchedule(self):
         return self.Schedule
 
+    def getCurrentSchedule(self):
+        return self.CurrentSchedule
+
+
     def getCapacityUsePlan(self):
         return self.CapacityUsePlan
 
@@ -264,14 +269,14 @@ class Resource():
 
         
         
-        for shift,jobs in self.getSchedule().items():
+        for shift,jobs in self.getCurrentSchedule().items():
             availablehours+=(shift.getEndTime()-shift.getStartTime()+1)      
 
             
             anyprevinschedule = False
             curr_shift = shift.getPrevious() 
             while curr_shift != None:
-                if curr_shift in self.getSchedule():
+                if curr_shift in self.getCurrentSchedule():
                     anyprevinschedule = True
                 curr_shift = curr_shift.getPrevious()
                 
@@ -328,6 +333,158 @@ class Operation():
         self.Predecessor = pred
         return
 
+    
+   
+    
+
+
+class SchJob():
+    # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
+    def __init__(self,myJob):
+
+        self.job = myJob
+        self.StartTime = None
+        self.CompletionTime = None
+        self.StartShift = None
+        self.StartDay = None
+        self.ScheduledDay=None
+        self.ScheduledShift=None
+        self.Scheduled = False
+        self.ScheduledTime =None
+        self.ScheduledResource = None
+        self.ScheduledCompShift = None
+        
+
+    def getJob(self):
+        return self.job
+        
+    def getStartTime(self):
+        return self.StartTime
+
+    def setStartTime(self,myst):
+        self.StartTime = myst
+        return
+
+    def getCompletionTime(self):
+        return self.CompletionTime
+
+    def setCompletionTime(self,myst):
+        
+        self.CompletionTime = myst
+
+        for job in self.getJob().getOrderJobs():
+            maxcomp = 0
+            allscheduled = True
+            for bjob in self.getJob().getBatchJobs():
+                if bjob.getSchJob().IsScheduled():
+                    maxcomp = max(maxcomp,bjob.getSchJob().getCompletionTime())
+                else: 
+                    allscheduled = False
+
+            if allscheduled and len(self.getJob().getBatchJobs()) > 0:
+                job.getSchJob().setCompletionTime(myst)
+       
+        return
+
+    def getStartShift(self):
+        return self.StartShift
+
+    def setStartShift(self,shift):
+        self.StartShift = shift
+        return
+
+    def getStartDay(self):
+        return self.StartDay
+
+    def setStartDay(self,day):
+        self.StartDay = day
+        return
+
+    def getScheduledDay(self):
+        return self.ScheduledDay
+
+    def setScheduledDay(self,day):
+        self.ScheduledDay = day
+        return
+
+    def getScheduledShift(self):
+        return self.ScheduledShift
+
+    def setScheduledShift(self,shift):
+        self.ScheduledShift = shift
+        return
+
+
+    def IsScheduled(self):
+        return self.Scheduled
+        
+    def SetScheduled(self):
+        if len(self.getJob().getOrderJobs()) > 0:
+            self.Scheduled = True
+        else: 
+            if self.getJob().IsBatched():
+                bscheduled = True
+                for bjob in self.getJob().getBatchJobs():
+                    bscheduled = bscheduled and bjob.getSchJob().IsScheduled()
+                self.Scheduled = bscheduled
+   
+            else: 
+                self.Scheduled = True
+            
+        return 
+
+    def getScheduledTime(self):
+        return self.ScheduledTime
+
+    def setScheduledTime(self,myst):
+        self.ScheduledTime = myst
+        return
+
+    def getScheduledResource(self):
+        return self.ScheduledResource
+
+    def setScheduledResource(self,myst):
+        self.ScheduledResource = myst
+        return
+
+   
+
+    def getScheduledCompShift(self):
+        return self.ScheduledCompShift
+
+    def setScheduledCompShift(self,myst):
+        self.ScheduledCompShift = myst
+        return
+
+    def IsSchedulable(self):
+        
+        for pred in self.getJob().getPredecessors():
+            if pred.IsBatched():
+                continue
+
+              
+            if not pred.getSchJob().IsScheduled():
+                return False
+        return True
+
+    def getLatestPredecessorCompletion(self):
+
+        maxcomptime = 0
+
+        for pred in self.getJob().getPredecessors():
+            
+            if pred.IsBatched():
+                continue
+
+            if not pred.getSchJob().IsScheduled():
+                return -1 # not applicable to start
+            else: 
+                maxcomptime = max(maxcomptime,pred.getSchJob().getCompletionTime())
+
+        return maxcomptime
+
+
+
 
 class Job():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
@@ -349,42 +506,31 @@ class Job():
        
         self.ActualStart = None
         self.ActualCompletion = None
+        self.SchJob = None
+        self.MySch = None
 
 
     # SCHEDULING
-        self.StartTime = None
-        self.CompletionTime = None
-        self.StartShift = None
-        self.StartDay = None
-        self.ScheduledDay=None
-        self.ScheduledShift=None
-        self.Scheduled = False
-        self.ScheduledTime =None
-        self.OrderReserves = dict() # key: Order, val: quantity reserved for the order.
-        self.ScheduledResource = None
-        self.ScheduledShift = None
-        self.ScheduledCompShift = None
+
         
+        self.OrderReserves = dict() # key: Order, val: quantity reserved for the order.
 
-    def getScheduledShift(self):
-        return self.ScheduledShift
-
-    def setScheduledShift(self,myst):
-        self.ScheduledShift = myst
-        return
-    def getScheduledCompShift(self):
-        return self.ScheduledCompShift
-
-    def setScheduledCompShift(self,myst):
-        self.ScheduledCompShift = myst
-        return
     
-    def getScheduledResource(self):
-        return self.ScheduledResource
+    def getMySch(self):
+        return self.MySch
 
-    def setScheduledResource(self,myst):
-        self.ScheduledResource = myst
+   
+    def initializeMySch(self):
+        self.MySch = SchJob(self)
         return
+
+    def initializeSchJob(self):
+        self.SchJob = SchJob(self)
+        return
+
+    def getSchJob(self):
+        return self.SchJob
+
     
     def setBatched(self):
         self.batched = True
@@ -398,55 +544,8 @@ class Job():
 
     def getOrderJobs(self):
         return self.OrderJobs
-
-    def IsScheduled(self):
-        return self.Scheduled
-        
-    def SetScheduled(self):
-        if len(self.getOrderJobs()) > 0:
-            self.Scheduled = True
-        else: 
-            if self.IsBatched():
-                bscheduled = True
-                for bjob in self.getBatchJobs():
-                    bscheduled = bscheduled and bjob.IsScheduled
-                self.Scheduled = bscheduled
-   
-            else: 
-                self.Scheduled = True
-            
-        return 
-
-    def IsSchedulable(self):
-        
-        for pred in self.getPredecessors():
-            if pred.IsBatched():
-                continue
-            
-            if not pred.IsScheduled():
-                return False
-        return True
+ 
     
-    def getCompletionTime(self):
-        return self.CompletionTime
-
-    def setCompletionTime(self,myst):
-        
-        self.CompletionTime = myst
-
-        for job in self.getOrderJobs():
-            maxcomp = 0
-            allscheduled = True
-            for bjob in self.getBatchJobs():
-                if bjob.IsScheduled():
-                    maxcomp = max(maxcomp,bjob.getCompletionTime())
-                else: 
-                    allscheduled = False
-
-            if allscheduled and len(self.getBatchJobs()) > 0:
-                job.setCompletionTime(myst)
-       
-        return
 
 
     def setActualStart(self,co):
@@ -473,21 +572,6 @@ class Job():
     def getCustomerOrder(self):
         return self.CustomerOrder
         
-
-    def getLatestPredecessorCompletion(self):
-
-        maxcomptime = 0
-
-        for pred in self.Predecessors:
-            if pred.IsBatched():
-                continue
-                
-            if not pred.IsScheduled:
-                return -1 # not applicable to start
-            else: 
-                maxcomptime = max(maxcomptime,pred.getCompletionTime())
-
-        return maxcomptime
         
     def getLatestStart(self):
         return self.LatestStart
@@ -500,48 +584,9 @@ class Job():
         self.DeadLine = myst
         return
 
-    def getStartTime(self):
-        return self.StartTime
-
-    def setStartTime(self,myst):
-        self.StartTime = myst
-        return
-
-    def getScheduledTime(self):
-        return self.ScheduledTime
-
-    def setScheduledTime(self,myst):
-        self.ScheduledTime = myst
-        return
     def IsBatchJob(self):
         return (len(self.getOrderJobs())>0)
    
-
-    def getScheduledDay(self):
-        return self.ScheduledDay
-
-    def setScheduledDay(self,day):
-        self.ScheduledDay = day
-        return
-
-    def getScheduledShift(self):
-        return self.ScheduledShift
-
-    def setScheduledShift(self,shift):
-        self.ScheduledShift = shift
-        return
-    def getStartDay(self):
-        return self.StartDay
-
-    def setStartDay(self,day):
-        self.StartDay = day
-        return
-    def getStartShift(self):
-        return self.StartShift
-
-    def setStartShift(self,shift):
-        self.StartShift = shift
-        return
 
     def getID(self):
         return self.ID
@@ -596,15 +641,20 @@ class CustomerOrder():
         self.MyJobs = [] # created during the planning, order batching convention 
 
     def getStatus(self):
-        nojobscompleted  = sum([int(jb.IsScheduled()) for jb in self.getMyJobs()])
 
+        nojobscompleted  = 0
+        
+        for jb in order.getMyJobs():
+            if jb.getSchJob().IsScheduled():
+                nojobscompleted+=1
+    
         if nojobscompleted == len(self.getMyJobs()):
             return "Scheduled"
         else:
             if nojobscompleted == 0:
                 return "Unscheduled"
             else:
-                return "In-Progress"
+                return "Partly scheduled"
         
     def getMyJobs(self):
         return self.MyJobs
@@ -728,7 +778,18 @@ class Shift():
 
     def getNumber(self):
         return self.Number
+        
 
+class ScheduleSolution():
+    def __init__(self,mydate):
+        self.date = mydate
+        self.resources = dict()  #key: resname, #val: schdule object of resource. 
+
+    
+
+
+    def getDate(self):
+        return self.date
  
 
 

@@ -574,11 +574,11 @@ class ScheduleTab():
         for name,order in self.getVisualManager().DataManager.getCustomerOrders().items():
             self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
             for job in order.getMyJobs():
-
                 for pred in job.getPredecessors():
                     jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
-                    
 
+
+                self.getVisualManager().getCaseInfo().value += job.getName()+str(job.IsScheduled())+"\n"
                 if job.IsScheduled(): 
                     schres = job.getScheduledResource().getID()
                     sdayst = str(job.getScheduledShift().getDay().date())

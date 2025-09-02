@@ -2015,10 +2015,14 @@ class VisualManager():
         self.setCOTBorders(widgets.Select(options=[],description = ''))
         self.getCOTBorders().observe(self.ShowOrder)
 
-       
 
-        self.setNewCustOrdrs_btn(widgets.Button(description="Import orders",icon='fa-download'))
-        self.getNewCustOrdrs_btn().on_click(self.DataManager.ImportOrders)
+        self.setNewCustOrdrs_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
+                             description ='Import order',multiple=False  # True to accept multiple files upload else False
+                           ))
+        self.getNewCustOrdrs_btn().observe(self.DataManager.ImportOrders2)
+
+        #self.setNewCustOrdrs_btn(widgets.Button(description="Import orders",icon='fa-download'))
+        #self.getNewCustOrdrs_btn().on_click(self.DataManager.ImportOrders)
         self.getNewCustOrdrs_btn().layout.width = '150px'
         self.getNewCustOrdrs_btn().layout.height = '28px'
 

@@ -11,7 +11,7 @@ class GreedyInsertionAlg:
         #Progress.value+="FTE availability check..."+"\n"
 
         curr_time = jobstarttime
-        processtime = job.getQuantity()*job.getOperation().getProcessTime()
+        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime()
         curr_shift = startshift
       
         while processtime > 0: 
@@ -46,7 +46,10 @@ class GreedyInsertionAlg:
 
 
     def CheckSlot(self,resource,job,Progress,ScheduleMgr):
+
+        #Progress.value+=" checking slot, job "+str(job.getJob().getName())+"\n"
         time =  job.getLatestPredecessorCompletion()
+
 
         if resource.getName().find("OUT -") != -1:
             slot = resource.getEmptySlots()[0]
@@ -54,7 +57,7 @@ class GreedyInsertionAlg:
 
         
         for slot in resource.getEmptySlots():    
-            if slot[0][1] < job.getQuantity()*job.getOperation().getProcessTime():
+            if slot[0][1] < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime():
                 continue
             if (slot[1].getNext() == None) and (slot[1].getEndTime() < time):
                 return None
@@ -98,7 +101,7 @@ class GreedyInsertionAlg:
                 curr_shift = curr_shift.getNext()    
                 curr_time = curr_shift.getStartTime()
 
-                if length < job.getQuantity()*job.getOperation().getProcessTime(): 
+                if length < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime(): 
                     #Progress.value+="Length did not survive: "+str(length)+"\n"
                     break
 
@@ -128,7 +131,7 @@ class GreedyInsertionAlg:
                 proper = proper and (self.CheckFTEAvailability(resource,job,curr_time,curr_shift,ScheduleMgr))
                 
             if not proper: 
-                if length < job.getQuantity()*job.getOperation().getProcessTime(): 
+                if length < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime(): 
                     continue 
                     
             unusedtime += max(time-curr_time,0)
@@ -137,7 +140,7 @@ class GreedyInsertionAlg:
 
             #Progress.value+="unused: "+str(unusedtime)+", length "+str(length)+"\n"
         
-            if length < job.getQuantity()*job.getOperation().getProcessTime(): 
+            if length < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime(): 
                 continue 
                    
             jobstarttime = max(time, curr_time)
@@ -149,29 +152,32 @@ class GreedyInsertionAlg:
         return None  # meaning that the resource cannot process the job due to fully scheduled… 
 
 
-    def ScheduleJob(self,res,job,jobstarttime,unusedtime,emptyslot,startshift):
+    def ScheduleJob(self,res,job,jobstarttime,unusedtime,emptyslot,startshift,Progress):
+        #Progress.value+="Before Main assignments"+"\n"
         job.SetScheduled()
         job.setScheduledResource(res)
         job.setScheduledShift(startshift)
         job.setStartTime(jobstarttime)  
 
+        #Progress.value+="Main assignments done.."+"\n"
+
         if res.getName().find("OUT -") != -1:
-            job.setCompletionTime(job.getStartTime()+job.getOperation().getProcessTime())
-            res.getSchedule()[emptyslot[1]].append(job)
+            job.setCompletionTime(job.getStartTime()+job.getJob().getOperation().getProcessTime())
+            res.getCurrentSchedule()[emptyslot[1]].append(job)
             return
         
         curr_time = emptyslot[0][0]
         
 
         curr_time = jobstarttime
-        processtime = job.getQuantity()*job.getOperation().getProcessTime()
+        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime()
         curr_shift = startshift
       
         #find completion time of the job
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="finding completion..."+"\n"
         while processtime > 0: 
-            res.getSchedule()[curr_shift].append(job)
+            res.getCurrentSchedule()[curr_shift].append(job)
             timeinshift =  curr_shift.getEndTime()+1 - curr_time
             #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="time in Shft: "+str(curr_shift.getDay())+","+str(curr_shift.getNumber())+") "+str(timeinshift)+"\n"
             
@@ -192,6 +198,7 @@ class GreedyInsertionAlg:
                         return None
                     curr_time = curr_shift.getStartTime()
  
+        #Progress.value+="Completion time "+str(curr_time)+"\n"
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="completion time ..."+str(curr_time)+"\n"
         job.setCompletionTime(curr_time)
@@ -206,8 +213,10 @@ class GreedyInsertionAlg:
         job.setScheduledCompShift(curr_shift)
 
         res.getEmptySlots().remove(emptyslot)
-        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getQuantity()*job.getOperation().getProcessTime())),curr_shift)
+        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime())),curr_shift)
         res.getEmptySlots().insert(slotindex,newmeptyslot)
+
+        #Progress.value+="Done..."+"\n"
 
         return newmeptyslot
 
@@ -215,12 +224,14 @@ class GreedyInsertionAlg:
  
         SchedulableJobs= [] 
 
-        #Progress.value+=" Simple greedy insertion starts.."+"\n"  
+        Progress.value+=" Simple greedy insertion starts.., all jobs "+str(len(AllJobs))+"\n"  
 
-        for job in AllJobs:  
+        for job in AllJobs: 
+            #Progress.value+="  job.."+str(job.getJob().getName())+"\n"  
             if job.IsSchedulable():
                 SchedulableJobs.append(job)
                 
+        #Progress.value+="SchedulableJobs: "+str(len(SchedulableJobs))+"\n"        
 
         while len(SchedulableJobs) >0:
             ScheduledJobs = []
@@ -230,23 +241,31 @@ class GreedyInsertionAlg:
             for j in SchedulableJobs:
                 prednames = ""
 
-                for pred in j.getPredecessors():
+                for pred in j.getJob().getPredecessors():
                     prednames+="-"+pred.getName()
                 
-                #Progress.value+=" Checking job "+str(j.getName())+", LPCT: "+str(j.getLatestPredecessorCompletion())+", p: "+str(j.getQuantity()*j.getOperation().getProcessTime())+", prd: "+prednames+"\n"  
+                #Progress.value+=" Checking job "+str(j.getJob().getName())+", LPCT: "+str(j.getLatestPredecessorCompletion())+", p: "+str(j.getJob().getQuantity()*j.getJob().getOperation().getProcessTime())+", prd: "+prednames+"\n"  
 
                 #Progress.value+=" Operation: "+str(j.getOperation().getName())+", res: "+str(len(j.getOperation().getRequiredResources()))+"\n"
                 
                 currentStarttime = None
                 myresource = None
                 currentslot = None
-                for resource in j.getOperation().getRequiredResources():
+                for resource in j.getJob().getOperation().getRequiredResources():
                     slotreturn = self.CheckSlot(resource[0],j,Progress,ScheduleMgr)
                     if slotreturn != None:
-                        if currentStarttime is None or slotreturn[1][0] < currentStarttime:
+                        
+                        if currentStarttime is None:
+                            #Progress.value+=" Slot assigned..."
                             currentStarttime = slotreturn[1][0]
                             myresource = resource[0]
                             currentslot = slotreturn
+                        else:
+                            if slotreturn[1][0] < currentStarttime:
+                                #Progress.value+=" Slot updated..."
+                                currentStarttime = slotreturn[1][0]
+                                myresource = resource[0]
+                                currentslot = slotreturn
                 # Old first machine selection
                 # for resource in j.getOperation().getRequiredResources():
                 #     myresource = resource
@@ -267,7 +286,7 @@ class GreedyInsertionAlg:
                     JobsToRemove.append(j)
                     continue
                 else: 
-                   # Progress.value+=" Scheduling job "+str(j.getName())+"\n"  
+                    #Progress.value+=" Scheduling job "+str(j.getJob().getName())+"\n"  
                     slotinfo,scheinfo = schreturn 
                     slot,startshift = slotinfo
                     jobstarttime, unusedtime = scheinfo 
@@ -280,7 +299,7 @@ class GreedyInsertionAlg:
                         #Progress.value+=" Shift not in the sechdule!!!!!!!!!!"+"\n" 
 
                 
-                    newslot = self.ScheduleJob(myresource,j,jobstarttime,unusedtime,slot,startshift)
+                    newslot = self.ScheduleJob(myresource,j,jobstarttime,unusedtime,slot,startshift,Progress)
                     #Progress.value+=str(j.getName())+"scheduled "+myresource.getName()+", st "+str(jobstarttime)+".. "+"\n"
                     #Progress.value+=str(j.getName())+"scheduled ct: "+str(j.getCompletionTime())+", st: "+str(jobstarttime)+".. "+"\n"
 
@@ -299,12 +318,12 @@ class GreedyInsertionAlg:
                     
                     ScheduledJobs.append(j)
                     #Progress.value+=" sucessors "+str(len(j.getSuccessors()))+"\n"
-                    for successor in j.getSuccessors():
+                    for successor in j.getJob().getSuccessors():
                         #Progress.value+=" sucessor: "+ str(successor.getName())+", btch "+str(successor.IsBatched())+", schlbl "+str(successor.IsSchedulable())+"\n"
                         if successor.IsBatched():
                             continue
-                        if successor.IsSchedulable():
-                            SchedulableJobs.append(successor)
+                        if successor.getSchJob().IsSchedulable():
+                            SchedulableJobs.append(successor.getSchJob())
                     #Progress.value+=">>>>>>>>>>> SchedulableJobs: "+str(len(SchedulableJobs))+"\n"
             
             for j in ScheduledJobs:
@@ -313,7 +332,7 @@ class GreedyInsertionAlg:
                 SchedulableJobs.remove(j)
             
 
-            
+        Progress.value+="Scheduling completed.. "+"\n"   
         return 
         
         

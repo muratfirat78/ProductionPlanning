@@ -92,125 +92,9 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
-    def CalculateFTEUse(self,res,shift):
-
-        totalfte = 0
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" fte calculations..  "+res.getName()+"> "+str(res.getType())+"\n"
-
-            
-        machine = res
-
-        if machine.getMachineGroup() == None:
-            return totalfte
-        if machine.getMachineGroup().getOperatingTeam() == None:
-            return totalfte
-            
-        for mach in machine.getMachineGroup().getMachines():
-            if shift in mach.getSchedule():
-                for job in mach.getSchedule()[shift]:
-                    machhrprocesstime = min(shift.getEndTime()+1,job.getCompletionTime())-max(shift.getStartTime(),job.getStartTime()) #mach-hours
-                    manhourprocesstime = machhrprocesstime*mach.getOperatingEffort()
-                    totalfte+=manhourprocesstime/(shift.getEndTime()-shift.getStartTime()+1)
-
-        return totalfte
-
-   
-
-    def MakeSchedule(self,schedulealg,batchingalg):
-      
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(batchingalg)+"\n"
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Batching  : "+str(batchingalg)+"\n"
-
-        
-        psstart = self.getSHStart()
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
-       
-
-        ScheduleWeeks = ((self.getSHEnd()-self.getSHStart()).days)//7 # weeks
-
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
-       
-        
-        pssend= self.getSHEnd()
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
+    def CreateShifts(self,psstart,pssend):
 
         scheduleperiod = pd.date_range(psstart,pssend)
-        
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period length: "+str(len(scheduleperiod))+"\n"
-
-        
-      
-        oprdict = dict()
-        nrjobs = 0
-
-        #Determine customer orders with latest start within Scheduling
-        SelectedOrders=[]
-        for name,order in self.getDataManager().getCustomerOrders().items():
-            if order.getLatestStart() != None:
-                if order.getLatestStart().date() < pssend:
-                    nrjobs+=len(order.getMyJobs())
-                    for job in order.getMyJobs():
-                        if not job.getOperation() in oprdict:
-                            oprdict[job.getOperation()] = []
-                        oprdict[job.getOperation()].append(job)
-                        
-                    SelectedOrders.append(order)
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"
-
-        if batchingalg == "Simple Merge":
-            batchalg = BaselineBatchingAlg()
-            oprdict = batchalg.SolveBatching(oprdict,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
-
-            nrjobs = 0
-    
-            for opr,jobs in oprdict.items():
-                nrjobs+=len(jobs)
-                
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (batched) jobs: "+str(nrjobs)+"\n"
-            
-            
-        #self.CreateJobs(psstart,ScheduleWeeks,SelectedOrders)
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Orders in scheduling: "+str(len(SelectedOrders))+"\n"
-
-        for resname,res in self.getDataManager().getResources().items():
-            res.getSchedule().clear()
-
-        #nrjobs,oprdict = self.DefineJobPrecedences(SelectedOrders)
-           
-       
-         #Initialize shifts (example 30 days?)
-        scheduldays = 7*ScheduleWeeks;
-   
-        #for scheduleday in pd.date_range(psstart,pssend):
-            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Schedule day"+str(scheduleday)+", "+str(self.weekdays[scheduleday.weekday()])+"\n"
-        
-
-        #Initialize Schedulable Jobs
-
-        AllJobs = []
-        SchedulableJobs= [] 
-
-        # Fill the Schedulable Jobs List
-        for opr, jobs in oprdict.items():
-            for job in jobs:
-                AllJobs.append(job)
-                if job.IsSchedulable():
-                    SchedulableJobs.append(job)
-                else:
-                    if len(job.getPredecessors()) == 0:
-                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="No-sch job: "+str(len(opr.getName()))+"\n"
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="SchedulableJobs: "+str(len(SchedulableJobs))+"\n"
-
-       
               
         i=1
         prev_dayshift = None 
@@ -254,57 +138,152 @@ class SchedulingManager:
                     res.getShiftAvailability()[shift1] = res.IsAutomated() 
                     #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+"shift1 - available: "+str( res.getShiftAvailability())+"\n"
                     if res.getShiftAvailability()[shift1]:
-                        res.getSchedule()[shift1] = []
+                        res.getCurrentSchedule()[shift1] = []
                         res.getShiftOperatingModes()[shift1] = "Self-Running"
 
                     
                     res.getShiftAvailability()[shift2] = True
                    
-                    res.getSchedule()[shift2] = []
+                    res.getCurrentSchedule()[shift2] = []
                     res.getShiftOperatingModes()[shift2] = "Operated"
                     
                     res.getShiftAvailability()[shift3] = True
                     
-                    res.getSchedule()[shift3] = []
+                    res.getCurrentSchedule()[shift3] = []
                     res.getShiftOperatingModes()[shift3] = "Operated"
                   
 
                 if res.getType() == "Manual":
                     res.getShiftAvailability()[shift1] = False
                     res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
+                    res.getCurrentSchedule()[shift2] = []
                     res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
+                    res.getCurrentSchedule()[shift3] = []
                     
                 if res.getType() == "Operator":
                     res.getShiftAvailability()[shift1] = False
                     
                     res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
+                    res.getCurrentSchedule()[shift2] = []
                     res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-
-                 
+                    res.getCurrentSchedule()[shift3] = []
+                
           
                 if res.getType() == "Outsourced":
                     res.getShiftAvailability()[shift1] = True
-                    res.getSchedule()[shift1] = []
+                    res.getCurrentSchedule()[shift1] = []
                     res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
+                    res.getCurrentSchedule()[shift2] = []
                     res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-                    
-                 
-                
-                # for slot in res.getEmptySlots():
-                #     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+= res.getName()+str(slot[0][0])+","+slot[0][1]+"\n"  
+                    res.getCurrentSchedule()[shift3] = [] 
                     
             i+=1        
+
+        return 
+
+    def CalculateFTEUse(self,res,shift):
+
+        totalfte = 0
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" fte calculations..  "+res.getName()+"> "+str(res.getType())+"\n"
+
+            
+        machine = res
+
+        if machine.getMachineGroup() == None:
+            return totalfte
+        if machine.getMachineGroup().getOperatingTeam() == None:
+            return totalfte
+            
+        for mach in machine.getMachineGroup().getMachines():
+            if shift in mach.getCurrentSchedule():
+                for job in mach.getCurrentSchedule()[shift]:
+                    machhrprocesstime = min(shift.getEndTime()+1,job.getCompletionTime())-max(shift.getStartTime(),job.getStartTime()) #mach-hours
+                    manhourprocesstime = machhrprocesstime*mach.getOperatingEffort()
+                    totalfte+=manhourprocesstime/(shift.getEndTime()-shift.getStartTime()+1)
+
+        return totalfte
+
+   
+
+    def MakeSchedule(self,schedulealg,batchingalg):
+      
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(batchingalg)+"\n"
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Batching  : "+str(batchingalg)+"\n"
+
+        
+        psstart = self.getSHStart()
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
+       
+
+        ScheduleWeeks = ((self.getSHEnd()-self.getSHStart()).days)//7 # weeks
+
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
+       
+        
+        pssend= self.getSHEnd()
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
+
+        scheduleperiod = pd.date_range(psstart,pssend)
+        
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period length: "+str(len(scheduleperiod))+"\n"
+
+        
+      
+        oprdict = dict()
+        nrjobs = 0
+        AllJobs = []
+
+        #Determine customer orders with latest start within Scheduling
+        SelectedOrders=[]
+        for name,order in self.getDataManager().getCustomerOrders().items():
+            if order.getLatestStart() != None:
+                if order.getLatestStart().date() < pssend:
+                    nrjobs+=len(order.getMyJobs())
+                    for job in order.getMyJobs():
+                        job.initializeSchJob()
+                        AllJobs.append(job.getSchJob())
+                        if not job.getOperation() in oprdict:
+                            oprdict[job.getOperation()] = []
+                        oprdict[job.getOperation()].append(job.getSchJob())
+                        
+                    SelectedOrders.append(order)
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"
+
+                    
+        #if batchingalg == "Simple Merge":
+        #    batchalg = BaselineBatchingAlg()
+        #    oprdict = batchalg.SolveBatching(oprdict,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+
+        #    nrjobs = 0
+    
+        #    for opr,jobs in oprdict.items():
+        #        nrjobs+=len(jobs)
+                
+        #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (batched) jobs: "+str(nrjobs)+"\n"
+            
+            
+        #self.CreateJobs(psstart,ScheduleWeeks,SelectedOrders)
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Orders in scheduling: "+str(len(SelectedOrders))+"\n"
+
+        for resname,res in self.getDataManager().getResources().items():
+            res.getCurrentSchedule().clear()
+
+   
+        self.CreateShifts(psstart,pssend)
+
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="shift creation completed.."+"\n"
         for resname, res in self.getDataManager().getResources().items():
             if res.getName() == "M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01)":
-                for shift,jobs in res.getSchedule().items():
+                for shift,jobs in res.getCurrentSchedule().items():
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Sh:("+str(shift.getDay())+","+str(shift.getNumber())+"), hrs: ["+str(shift.getStartTime())+"-"+str(shift.getEndTime())+"]\n" 
                     
                 displayed = True
@@ -321,14 +300,19 @@ class SchedulingManager:
         if schedulealg == "Simple Greedy Insertion":
             greedyalg = GreedyInsertionAlg()
             greedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
-        if schedulealg == "Advanced Greedy Insertion":
-            advncdgreedyalg = AdvancedGreedyInsertionAlg()
-            advncdgreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+        #if schedulealg == "Advanced Greedy Insertion":
+        #    advncdgreedyalg = AdvancedGreedyInsertionAlg()
+        #    advncdgreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
             
 
         Orderstatus = []
         scheduledords = 0
         for order in SelectedOrders:
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(order.getName())+" jobs: "+str(len(order.getMyJobs()))+"\n"
+            for jb in order.getMyJobs():
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(jb.getName())+"\n"
+                   
+           
             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(order.getName())+": "+str(order.getStatus())+"\n"
             if order.getStatus() == "Scheduled":
                 scheduledords+=1
@@ -353,7 +337,7 @@ class SchedulingManager:
                 #self.getVisualManager().getSchedulingTab().getPSchSolProps().value += resname+":"+"\n"
                 avg_util = 0
                 nr_shfits = 0
-                for shift,jobs in res.getSchedule().items():
+                for shift,jobs in res.getCurrentSchedule().items():
                     #self.getVisualManager().getSchedulingTab().getPSchSolProps().value+=" Shift: ("+str(shift.getDay())+","+str(shift.getNumber())+"): "+str(shift.getStartTime())+"-"+str(shift.getEndTime())+"\n" 
                     job_process = 0
                     for job in jobs:
@@ -389,11 +373,11 @@ class SchedulingManager:
 
             if autmach != None: 
                 self.getVisualManager().getSchedulingTab().getPSchSolProps().value += " Machine Group "+str(nrgroup)+"("+str(len(machgroup.getMachines()))+" machines )"+"\n"
-                for shift in autmach.getSchedule():
+                for shift in autmach.getCurrentSchedule():
                     totalfte = 0
                     for mach in machgroup.getMachines():
-                        if shift in mach.getSchedule():
-                            for job in mach.getSchedule()[shift]:
+                        if shift in mach.getCurrentSchedule():
+                            for job in mach.getCurrentSchedule()[shift]:
                                 machhrprocesstime = min(shift.getEndTime()+1,job.getCompletionTime())-max(shift.getStartTime(),job.getStartTime()) 
                                 manhourprocesstime = machhrprocesstime*mach.getOperatingEffort()
                                 totalfte+=manhourprocesstime/(shift.getEndTime()-shift.getStartTime()+1)
@@ -427,9 +411,9 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchResources().options = [name for name,myres in self.getDataManager().getResources().items() ]
 
 
-        self.getVisualManager().getProductionProgressTab().getResourceList().options = [name for name,myres in self.getDataManager().getResources().items() ]
+        #self.getVisualManager().getProductionProgressTab().getResourceList().options = [name for name,myres in self.getDataManager().getResources().items() ]
 
-        self.getVisualManager().getProductionProgressTab().getCustomerOrderList().options = Orderstatus
+        #self.getVisualManager().getProductionProgressTab().getCustomerOrderList().options = Orderstatus
 
         # Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
         # folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
