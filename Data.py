@@ -21,6 +21,7 @@ from pathlib import Path
 from PlanningObjects import *
 from Visual import *
 from io import BytesIO,StringIO
+import time
 
 warnings.filterwarnings("ignore")
 
@@ -38,8 +39,27 @@ class DataManager:
         self.VisualManager = None
         self.colabpath = '/content/ProductionPlanning'
         self.onlineversion = False       
+        self.UseCase = None
+        self.MyFolder = None
         
         return
+
+    def setUseCase(self,usecase):
+        self.UseCase = usecase
+        return 
+
+    
+    def getUseCase(self):
+        return self.UseCase
+
+    def setMyFolder(self,usecase):
+        self.MyFolder = usecase
+        return 
+
+    
+    def getMyFolder(self):
+        return self.MyFolder
+        
 
     def getOperatingTeams(self):
         return self.OperatingTeams
@@ -448,10 +468,75 @@ class DataManager:
 
         return
 
+    def SaveSchedule(self,myschedule):
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+str(len(myschedule.getResourceSchedules()))+"\n" 
+        schjobs_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID"])
+        jobpreds_df =  pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
+        
+        for name,order in self.getCustomerOrders().items():
+            for job in order.getMyJobs():
+                schjobs_df.loc[len(schjobs_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),"Deadline":job.getDeadLine(),
+                                                    "OrderID":job.getCustomerOrder().getID(),"ProductID":job.getProduct().getID(),
+                                                    "OperationID":job.getOperation().getID()}
+                for pred in job.getPredecessors():
+                    jobpreds_df.loc[len(jobpreds_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID(),}
+                    
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shcjobs "+str(len(schjobs_df))+"\n" 
+       
+
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        filename = myschedule.getName()+"-Jobs_"+timestr+".csv"; 
+        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        schjobs_df.to_csv(fullpath, index=False)
+
+        filename = myschedule.getName()+"-Jobpreds_"+timestr+".csv"; 
+        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        jobpreds_df.to_csv(fullpath, index=False)
+
+
+        
+
+        schedule_df = pd.DataFrame(columns= ["ResourceID","Day","ShiftNo","JobID","SchStart", "SchCompletion"])
+        for resname,res_schedule in myschedule.getResourceSchedules().items():
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  res "+resname+"\n"
+            for shift,jobsdict in res_schedule.items():
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
+                for job,jobtimes in jobsdict.items():
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value += str(job.getJob().getID())+"\n"
+                    schedule_df.loc[len(schedule_df)] = {"ResourceID":self.getResources()[resname].getID(),
+                                                             "Day":shift.getDay(),
+                                                             "ShiftNo":shift.getNumber(),
+                                                             "JobID":job.getJob().getID(),
+                                                             "SchStart":jobtimes[0],
+                                                             "SchCompletion":jobtimes[1]}
+                 
+
+
+
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        filename = myschedule.getName()+"-Schedule_"+timestr+".csv"; 
+        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        schedule_df.to_csv(fullpath, index=False)
+
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>> schedule saved....."+"\n" 
+
+
+        return
+
     def read_dataset(self,b):  
 
-       
-        rel_path = self.getVisualManager().getFolderNameTxt().value+'/'+self.getVisualManager().getCasesDrop().value
+
+        self.setUseCase(self.getVisualManager().getCasesDrop().value)
+        self.setMyFolder(self.getVisualManager().getFolderNameTxt().value)
+        rel_path = self.getMyFolder()+'/'+self.getUseCase()
+
+        self.getVisualManager().getCaseInfo().value += ">>> rel_path "+rel_path+"... \n"
 
 
         if self.onlineversion:
@@ -469,12 +554,13 @@ class DataManager:
         scheduledate = None
         schfile = None
         jobprfile = None
+        jobsfile = None
         
         for root, dirs, files in os.walk(abs_file_path):
             
             for file in files: 
-
-                if (file.find("ScheduleJobs") != -1) and (file.find("ScheduleJobsPrecs") == -1):
+                break # not to start with schedule files..
+                if (file.find("Schedule") != -1):
                     filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
           
                     if scheduledate == None: 
@@ -485,17 +571,28 @@ class DataManager:
                         if filedate > scheduledate:
                             scheduledate = filedate
                             schfile = file
-                            self.getVisualManager().getCaseInfo().value += "scheduledate..."+str(scheduledate)+"\n"  
-                            
-            for file in files:
-                self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"... \n" 
+            if scheduledate!= None:
+                self.getVisualManager().getCaseInfo().value += ">>> Scheduledate..."+str(scheduledate)+"\n"  
 
-                if file.find("ScheduleJobsPrecs") != -1:
+            
+            for file in files:
+                self.getVisualManager().getCaseInfo().value += ">>> reading file "+file+"\n" 
+
+                
+                if file.find("Jobpreds") != -1:
                     filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
 
                     if filedate == scheduledate:
                         jobprfile = file
-                        self.getVisualManager().getCaseInfo().value += "jobprfile .."+str(file)+"\n"         
+                        self.getVisualManager().getCaseInfo().value += "jobprfile .."+str(file)+"\n"     
+                        
+                if file.find("Jobs") != -1:
+                    filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
+
+                    if filedate == scheduledate:
+                        jobsfile = file
+                        self.getVisualManager().getCaseInfo().value += "jobsfile .."+str(file)+"\n"         
+   
    
 
                 if file == "OperatorsMachines.csv": 
@@ -653,11 +750,13 @@ class DataManager:
 
         self.getVisualManager().getCaseInfo().value += ">>> Operation-Resources... "+str(len(oprsresources_df))+"\n" 
 
+        opswithmoreres = 0
+
         for i,r in oprsresources_df.iterrows():
             opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
-            opr.getRequiredResources().append([res])
+            opr.getRequiredResources().append(res)
             
             # # check if the same type of resource is already in the required resources list of operation. 
             # resinserted = False
@@ -670,9 +769,8 @@ class DataManager:
             # if not resinserted:
             #     opr.getRequiredResources().append([res])
           
-                
-
-            #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+">  res: "+str(res.getName())+"\n" 
+            #if len(opr.getRequiredResources())>1:
+               #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+", no.res: "+str(len(opr.getRequiredResources()))+"\n" 
         earliest = None
         latest = None
 
@@ -680,6 +778,7 @@ class DataManager:
             
         if schfile != None:
             schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
+            jobs_df =   pd.read_csv(abs_file_path+'/'+jobsfile)
             jobprecs_df =   pd.read_csv(abs_file_path+'/'+jobprfile)
 
             self.getVisualManager().getCaseInfo().value += ">>>> Schedule jobs file.."+str(schfile)+"\n" 
@@ -720,9 +819,10 @@ class DataManager:
             scheduleds = 0
             for i,r in schedule_df.iterrows():
                
+                
+                opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
                 newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],r["Deadline"])      
                 newjob.initializeMySch()
-                opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
               
                 res = None
 
@@ -744,25 +844,36 @@ class DataManager:
                    
                         cpday =  datetime.strptime(r["SchDayCp"],'%Y-%m-%d')
     
-                        lastshift = None
+                        
                         for shift,jobs in res.getSchedule().items():
-                            if (shift.getDay() >= stday) and (shift.getDay() <= cpday):
-                                jobs.append(newjob)
-                                insertedshifts+=1
-    
+                            
                             if (shift.getDay() == newjob.getMySch().getScheduledDay()) and (shift.getNumber() == r["SchShiftSt"]):
                                 newjob.getMySch().setScheduledShift(shift)
                                 scheduleshiftsfound+=1
-    
-                                if lastshift == None: 
-                                    lastshift = shift
-                                else:
-                                    if shift.shift.getStartHour() >= lastshift.getStartHour():
-                                        lastshift = shift
-    
-                        if lastshift != None:
-                            newjob.getMySch().setScheduledCompShift(shift)
-                            scheduleshiftsfound+=1            
+
+                                curr_shift = shift
+                                while curr_shift!= None: 
+                                    if (curr_shift.getDay() == datetime.strptime(r["SchDayCp"],'%Y-%m-%d')) and (curr_shift.getNumber() == r["SchShiftCp"]):
+                                        newjob.getMySch().setScheduledCompShift(curr_shift)
+                                        scheduleshiftsfound+=1
+                                        break
+                                    curr_shift = curr_shift.getNext()
+                                    
+
+                            if newjob.getMySch().getScheduledShift() != None:
+                                if newjob.getMySch().getScheduledCompShift() != None:
+                                    if shift.getStartHour() <= newjob.getMySch().getScheduledCompShift().getStartHour():
+                                        jobs.append(newjob)
+                                
+
+                        if newjob.getMySch().getScheduledShift() == None: 
+                            self.getVisualManager().getCaseInfo().value += ">>>> Start shift of job (id)"+str(r["JobID"])+" could not found.. "+"\n" 
+                           
+                        if newjob.getMySch().getScheduledCompShift() == None: 
+                            self.getVisualManager().getCaseInfo().value += ">>>> Comp shift of job (id)"+str(r["JobID"])+" could not found.. "+"\n" 
+                                        
+                             
+                    
                      
                     
                 prod = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]] [0]
@@ -779,9 +890,6 @@ class DataManager:
                 
                 #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(r["SchDaySt"])+"\n" 
                
-           
-
-            self.getVisualManager().getCaseInfo().value += ">>>> Insertedshifts .."+str(insertedshifts)+"\n"
             self.getVisualManager().getCaseInfo().value += ">>>> Scheduled shifts found .."+str(scheduleshiftsfound)+"/"+str(scheduleds)+"\n"
             
             for jobid,job in alljobs.items():

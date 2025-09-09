@@ -1206,9 +1206,10 @@ class VisualManager():
                         res = resource[0]
                     break
                 
-            if res != None:
-                self.getPSTBOprRes().value = str(res.getName())
-                self.getPSTBResSearch().value = self.getPSTBOprRes().value
+            if len(sel_opr.getRequiredResources())>0:
+                ops = [x.getName() for x in sel_opr.getRequiredResources()]
+                self.getPSTBOprRes().options = ops
+                self.getPSTBResSearch().value = ops[0]
 
         
                 itemstoshow = [self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap(),self.getPSTBeditres_btn()]
@@ -1944,7 +1945,7 @@ class VisualManager():
 
 
         self.setPSTBOprName(widgets.Label(value='',disabled = True))
-        self.setPSTBOprRes(widgets.Label(value='',disabled = True))
+        self.setPSTBOprRes(widgets.Dropdown(options=[],disabled=False))
   
        
         self.setPSTBOprProcTime(widgets.Label(value='',disabled = True))

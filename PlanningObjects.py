@@ -353,6 +353,9 @@ class SchJob():
         self.ScheduledTime =None
         self.ScheduledResource = None
         self.ScheduledCompShift = None
+    
+
+
         
 
     def getJob(self):
@@ -781,15 +784,17 @@ class Shift():
         
 
 class ScheduleSolution():
-    def __init__(self,mydate):
-        self.date = mydate
-        self.resources = dict()  #key: resname, #val: schdule object of resource. 
+    def __init__(self,myname):
+        self.name = myname
+        self.resources_sch = dict()  #key: resname, #val: schdule: dict key: Shift, val: [(jobid,st,cp)]
+        
+
+    def getName(self):
+        return self.name
+    def getResourceSchedules(self):
+        return self.resources_sch
 
     
-
-
-    def getDate(self):
-        return self.date
  
 
 

@@ -222,7 +222,8 @@ class SchedulingManager:
         ScheduleWeeks = ((self.getSHEnd()-self.getSHStart()).days)//7 # weeks
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
-       
+
+        
         
         pssend= self.getSHEnd()
 
@@ -299,11 +300,19 @@ class SchedulingManager:
 
         if schedulealg == "Simple Greedy Insertion":
             greedyalg = GreedyInsertionAlg()
-            greedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+            sch_sol = greedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" schedule will be saved... "+str(len(sch_sol.getResourceSchedules()))+"\n" 
+            for resname,res_schedule in sch_sol.getResourceSchedules().items():
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  res "+resname+"\n"
+                for shift,jobsdict in res_schedule.items():
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
+            self.getDataManager().SaveSchedule(sch_sol)
         #if schedulealg == "Advanced Greedy Insertion":
         #    advncdgreedyalg = AdvancedGreedyInsertionAlg()
         #    advncdgreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
-            
+
+
+        
 
         Orderstatus = []
         scheduledords = 0
