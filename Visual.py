@@ -1847,13 +1847,25 @@ class VisualManager():
         self.setPSTBProdSearch(widgets.Text(description ='',value=''))
         self.getPSTBProdSearch().on_submit(self.SearchProd)
 
-        self.setNewProd_btn(widgets.Button(description="New products",icon='fa-download'))
-        self.getNewProd_btn().layout.width = '130px'
+ #       self.setNewProd_btn(widgets.Button(description="New products",icon='fa-download'))
+
+        self.setNewProd_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
+                             description ='New Products',multiple=False  # True to accept multiple files upload else False
+                           ))
+        self.getNewProd_btn().observe(self.DataManager.ImportProducts)
+
+        
+        self.getNewProd_btn().layout.width = '150px'
         self.getNewProd_btn().layout.height = '28px'
 
-        self.setUpdStocks_btn(widgets.Button(description="Update stock",icon='fa-download'))
-        self.getUpdStocks_btn().layout.width = '120px'
+        self.setUpdStocks_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
+                             description ='New Operations',multiple=False  # True to accept multiple files upload else False
+                           ))
+        self.getUpdStocks_btn().layout.width = '150px'
         self.getUpdStocks_btn().layout.height = '28px'
+        self.getUpdStocks_btn().observe(self.DataManager.ImportOperations)
+
+       
 
         
         self.setPSTBProdList(widgets.Select(options=[],description = ''))

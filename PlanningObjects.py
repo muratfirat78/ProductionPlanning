@@ -66,6 +66,9 @@ class Product():
         return self.Name
     def getPN(self):
         return self.PN
+    def setPN(self,pn):
+        self.PN = pn
+        return 
     def getStockLevel(self):
         return self.StockLevel
     def setStockLevel(self,lvl):

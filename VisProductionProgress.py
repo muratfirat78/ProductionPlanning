@@ -374,6 +374,12 @@ class ProductionProgressTab():
         self.getJobList().layout.visibility  = 'hidden'
         self.getJobStartBtn().layout.visibility  = 'hidden'
         self.getJobCompleteBtn().layout.visibility  = 'hidden'
+
+        self.getJobInfo().value ="PN: "
+        self.getJobInfo2().value ="Operation: "
+        self.getJobInfo3().value ="Quantity: "
+        self.getJobInfo4().value ="Start: "
+        self.getJobInfo5().value ="Product: "
        
 
         if selected == None:
@@ -535,21 +541,26 @@ class ProductionProgressTab():
         if selected == '':
             return
 
+        self.getPProgReport().value+="Selected: "+str(selected)+"\n"
+
 
         for shift,jobs in self.getSelectedResource().getSchedule().items():
             if str(shift.getDay().date())+": "+str(shift.getStartHour().strftime("%H:%M"))+" | "+str(shift.getEndHour().strftime("%H:%M")) == selected:
+                self.getPProgReport().value+="Selected found.. , Jobs: "+str(len(jobs))+"\n"
                 
                 self.setSelectedShift(shift)
                 self.getJobList().layout.visibility  = 'visible'
-                self.getJobList().options = [job.getName() for job in jobs]
+
+                
+                self.getJobList().options = [job.getJob().getName() for job in jobs]
                 self.getJobList().selectedindex = 0
 
-                self.getJobInfo().value ="PN: "+str(jobs[0].getOperation().getProduct().getPN())
-                self.getJobInfo2().value ="Operation: "+str(jobs[0].getOperation().getName())
-                self.getJobInfo3().value ="Quantity: "+str(jobs[0].getQuantity())
-                self.getJobInfo4().value ="Start: "+str(jobs[0].getMySch().getStartTime())
-                self.getJobInfo5().value ="Product: "+str(jobs[0].getOperation().getProduct().getName())
-                if jobs[0].getActualStart() == None:
+                self.getJobInfo().value ="PN: "+str(jobs[0].getJob().getOperation().getProduct().getPN())
+                self.getJobInfo2().value ="Operation: "+str(jobs[0].getJob().getOperation().getName())
+                self.getJobInfo3().value ="Quantity: "+str(jobs[0].getJob().getQuantity())
+                self.getJobInfo4().value ="Start: "+str(jobs[0].getStartTime())
+                self.getJobInfo5().value ="Product: "+str(jobs[0].getJob().getOperation().getProduct().getName())
+                if jobs[0].getJob().getActualStart() == None:
                     self.getJobStartBtn().layout.visibility  = 'visible'
                     self.getJobCompleteBtn().layout.visibility  = 'hidden'
                 else:
@@ -559,20 +570,21 @@ class ProductionProgressTab():
 
                 with self.getPPrgOrdOutput():
                     clear_output() 
+
                     
                     plt.style.use('ggplot')
 
+                 
                     source = pd.DataFrame(columns=["Job","Start","End"])
 
                     for job in jobs:
-                        if job.getMySch() == None: 
-                            continue
-                        starttime = shift.getStartHour()+timedelta(hours = max(job.getMySch().getStartTime(),shift.getStartTime())-shift.getStartTime())
-                        endtime =  shift.getStartHour()+timedelta(hours = min(job.getMySch().getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime())
-                        row = pd.DataFrame([{"Job":job.getName(), "Start":starttime,"End":endtime}])
+                        self.getPProgReport().value+=str(shift.getStartHour())+"-"+str(job.getStartTime())+"-"+str(shift.getStartTime())+"\n"
+                        starttime = shift.getStartHour()+timedelta(hours = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime())
+                        endtime =  shift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime())
+                        row = pd.DataFrame([{"Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
                         source = pd.concat([source, row], axis=0, ignore_index=True)
                   
-                
+                   
                     
                     fig, ax = plt.subplots(figsize=(5.5,2))
                     
@@ -774,15 +786,15 @@ class ProductionProgressTab():
                 if self.getSelectedShift() in self.getSelectedResource().getSchedule():
 
                     for j in self.getSelectedResource().getSchedule()[self.getSelectedShift()]:
-                        if j.getName() == selected:
-                            self.setCurrentJob(j)
-                            if j.getMySch() != None: 
-                                self.getJobInfo().value ="PN: "+str(j.getOperation().getProduct().getPN())
-                                self.getJobInfo2().value ="Operation: "+str(j.getOperation().getName())
-                                self.getJobInfo3().value ="Quantity: "+str(j.getQuantity())
-                                self.getJobInfo4().value ="Start: "+str(j.getMySch().getStartTime())
-                                self.getJobInfo5().value ="Product: "+str(j.getOperation().getProduct().getName())
-                                if j.getActualStart() == None:
+                        if j.getJob().getName() == selected:
+                            self.setCurrentJob(j.getJob())
+                            if j != None: 
+                                self.getJobInfo().value ="PN: "+str(j.getJob().getOperation().getProduct().getPN())
+                                self.getJobInfo2().value ="Operation: "+str(j.getJob().getOperation().getName())
+                                self.getJobInfo3().value ="Quantity: "+str(j.getJob().getQuantity())
+                                self.getJobInfo4().value ="Start: "+str(j.getStartTime())
+                                self.getJobInfo5().value ="Product: "+str(j.getJob().getOperation().getProduct().getName())
+                                if j.getJob().getActualStart() == None:
                                     self.getJobStartBtn().layout.visibility  = 'visible'
                                     self.getJobCompleteBtn().layout.visibility  = 'hidden'
                                 else:
@@ -790,9 +802,19 @@ class ProductionProgressTab():
                                     self.getJobCompleteBtn().layout.visibility  = 'visible'
         if self.getSelectedOrder() != None: 
             for j in self.getSelectedOrder().getMyJobs():
+                
                 if j.getName() == selected:
+                    self.getPProgReport().value+="Selected found.. , Job: "+str(j.getName())+"\n"
                     self.setCurrentJob(j)
+                    self.getJobInfo().value ="PN: "+str(j.getOperation().getProduct().getPN())
+                    self.getJobInfo2().value ="Operation: "+str(j.getOperation().getName())
+                    self.getJobInfo3().value ="Quantity: "+str(j.getQuantity())
+                    self.getJobInfo5().value ="Product: "+str(j.getOperation().getProduct().getName())
                     if j.getMySch() != None: 
+                        self.getJobInfo4().value ="Start: "+str(j.getMySch().getStartTime())
+                    else:
+                        self.getJobInfo4().value ="Start: - "
+                       
                         if j.getActualStart() == None:
                             self.getJobStartBtn().layout.visibility  = 'visible'
                             self.getJobCompleteBtn().layout.visibility  = 'hidden'

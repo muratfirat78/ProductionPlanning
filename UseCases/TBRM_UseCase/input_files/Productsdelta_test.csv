@@ -1,0 +1,6 @@
+ProductID,ProductNumber,Name,StockUnit,StockBatch,StockLevel,PrescribedBatchsize,ChosenBatchsize
+19,00236-05-103-C,[00236-05-103-C]  geleideblok spanrol - test,mm,3000,0.0,134,134
+38,00429-00-662-B,[00429-00-662-B]  Arret lever - test ,mm,3000,0.0,400,400
+150,4022-637-29391,[4022-637-29391]  Hinge block fixed LM - test,mm,3000,0.0,36,36
+284,BD50-5085-013-C,[BD50-5085-013-C]  bracket - test,mm,3000,0.0,50,50
+516,1508130 B,[1508130 B]  [Q] excenter housing z - test,mm,3000,0.0,50,50
