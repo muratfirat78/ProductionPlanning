@@ -15,23 +15,36 @@ import sys
 import numpy as np
 from pathlib import Path
 from VisSchedule import *
+from VisSimulation import *
 from VisProductionProgress import *
 from Visual import *
 from Data import *
 from Planning import *
 from Scheduling import *
+from Simulation import *
 
 ScheduleTab = ScheduleTab()
+SimTab = SimulationTab()
 ProductionProgressTab = ProductionProgressTab()
 DataMgr = DataManager()
 VisMgr = VisualManager()
+SimMgr = SimulationManager()
+
 VisMgr.setDataManager(DataMgr)
 VisMgr.setSchedulingTab(ScheduleTab)
+VisMgr.setSimulationTab(SimTab)
 VisMgr.setProductionProgressTab(ProductionProgressTab)
+VisMgr.setSimulationManager(SimMgr)
+
 ScheduleTab.setVisualManager(VisMgr)
+SimMgr.setVisualManager(SimTab)
+SimTab.setVisualManager(VisMgr)
 ProductionProgressTab.setVisualManager(VisMgr)
 
+
 DataMgr.setVisualManager(VisMgr)
+DataMgr.setSimulationManager(SimMgr)
+
 PlanningMgr = PlanningManager()
 PlanningMgr.setDataManager(DataMgr)
 PlanningMgr.setVisualManager(VisMgr)

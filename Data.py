@@ -37,12 +37,22 @@ class DataManager:
         self.MachineGroups = [] 
         self.OperatingTeams = []
         self.VisualManager = None
+        self.SimulationManager = None
+        
         self.colabpath = '/content/ProductionPlanning'
         self.onlineversion = False       
         self.UseCase = None
         self.MyFolder = None
         
         return
+    
+    def setSimulationManager(self,myit):
+        self.SimulationManager = myit
+        return
+
+    def getSimulationManager(self):
+        return self.SimulationManager
+       
 
     def setUseCase(self,usecase):
         self.UseCase = usecase

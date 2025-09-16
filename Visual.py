@@ -36,10 +36,12 @@ class VisualManager():
         self.DataManager = None
         self.PlanningManager = None
         self.SchedulingManager = None
+        self.SimulationManager = None
         self.ProdSystemTab = None
         self.PSTBBOMOutput = None
 
         self.SchedulingTab = None
+        self.SimulationTab = None
         self.ProductionProgressTab = None
 
         self.PSTBOprRes = None
@@ -183,6 +185,24 @@ class VisualManager():
        
 
         return
+
+ 
+    def setSimulationTab(self,myit):
+        self.SimulationTab = myit
+        return
+
+    def getSimulationTab(self):
+        return self.SimulationTab
+       
+
+
+    def setSimulationManager(self,myit):
+        self.SimulationManager = myit
+        return
+
+    def getSimulationManager(self):
+        return self.SimulationManager
+       
 
     def setUpdStocks_btn(self,myit):
         self.UpdStocks_btn = myit
