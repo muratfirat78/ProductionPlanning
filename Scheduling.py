@@ -36,7 +36,18 @@ class SchedulingManager:
         self.SHStart = None
         self.SHEnd = None
         self.CurrentJobID = 0
+        self.CurrentscheduleEnd = None
+        self.MyShifts = dict()  # key: date, val: [shifts] 
 
+    def getMyShifts(self):
+        return self.MyShifts 
+
+    def setCurrentscheduleEnd(self,myitm):
+        self.CurrentscheduleEnd = myitm 
+        return
+
+    def getCurrentscheduleEnd(self):
+        return self.CurrentscheduleEnd
 
     def getJobID(self):
         self.CurrentJobID+=1
@@ -92,10 +103,12 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
-    def CreateShifts(self,psstart,pssend):
+    def CreateShifts(self,psstart,pssend,applied):
 
         scheduleperiod = pd.date_range(psstart,pssend)
-              
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shift creating starts... "+"\n"
+        
         i=1
         prev_dayshift = None 
         scheduletimehour = 1
@@ -103,13 +116,30 @@ class SchedulingManager:
         for curr_date in scheduleperiod:
             
             shift1=Shift(curr_date,3,prev_dayshift)
-            shift1.setStartTime(scheduletimehour)  
+            shift1.setStartTime(scheduletimehour) 
 
+            
             shift1.setStartHour(curr_date + timedelta(hours=0))
             shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
           
             scheduletimehour+=8
             shift1.setEndTime(scheduletimehour-1)
+
+            
+            if applied:
+                if not curr_date in self.getMyShifts():
+                    self.getMyShifts()[curr_date] = []
+                else:
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" applied but date is in shifts: "+str(curr_date)+"\n"
+
+                self.getMyShifts()[curr_date].append(shift1)     
+            else:
+                if curr_date in self.getMyShifts():
+                    shift1 = self.getMyShifts()[curr_date][0]
+                else:
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" not applied and date is not in shifts: "+str(curr_date)+"\n" 
+
+            
             shift2=Shift(curr_date,1,shift1)
             shift2.setStartTime(scheduletimehour)   
             scheduletimehour+=8
@@ -118,6 +148,14 @@ class SchedulingManager:
             shift2.setStartHour(curr_date + timedelta(hours=8))
             shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
 
+            if applied:
+                self.getMyShifts()[curr_date].append(shift2)   
+            else:
+                if curr_date in self.getMyShifts():
+                    shift2 = self.getMyShifts()[curr_date][1]
+                    
+
+            
             
             shift3=Shift(curr_date,2,shift2)
             shift3.setStartTime(scheduletimehour)
@@ -125,7 +163,13 @@ class SchedulingManager:
             shift3.setEndTime(scheduletimehour-1)
             shift3.setStartHour(curr_date + timedelta(hours=16))
             shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
-            
+
+            if applied:
+                self.getMyShifts()[curr_date].append(shift3)   
+            else:
+                if curr_date in self.getMyShifts():
+                    shift3 = self.getMyShifts()[curr_date][2]
+   
             prev_dayshift=shift3
 
             opno = 0
@@ -138,35 +182,68 @@ class SchedulingManager:
                     res.getShiftAvailability()[shift1] = res.IsAutomated() 
                     #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(curr_date)+"shift1 - available: "+str( res.getShiftAvailability())+"\n"
                     if res.getShiftAvailability()[shift1]:
-                        res.getCurrentSchedule()[shift1] = []
+                        
+                        if applied:
+                            res.getSchedule()[shift1] = []
+                        else:
+                            res.getCurrentSchedule()[shift1] = []
+                            
                         res.getShiftOperatingModes()[shift1] = "Self-Running"
 
                     
                     res.getShiftAvailability()[shift2] = True
+
+                    if applied:
+                        res.getSchedule()[shift2] = []
+                    else:
+                        res.getCurrentSchedule()[shift2] = []
                    
-                    res.getCurrentSchedule()[shift2] = []
                     res.getShiftOperatingModes()[shift2] = "Operated"
                     
                     res.getShiftAvailability()[shift3] = True
+
+                    if applied:
+                        res.getSchedule()[shift3] = []
+                    else:
+                        res.getCurrentSchedule()[shift3] = []
+
                     
-                    res.getCurrentSchedule()[shift3] = []
                     res.getShiftOperatingModes()[shift3] = "Operated"
                   
 
                 if res.getType() == "Manual":
                     res.getShiftAvailability()[shift1] = False
                     res.getShiftAvailability()[shift2] = True
-                    res.getCurrentSchedule()[shift2] = []
+                    
+                    if applied:
+                        res.getSchedule()[shift2] = []
+                    else:
+                        res.getCurrentSchedule()[shift2] = []
+            
                     res.getShiftAvailability()[shift3] = True
-                    res.getCurrentSchedule()[shift3] = []
+                    
+                    if applied:
+                        res.getSchedule()[shift3] = []
+                    else:
+                        res.getCurrentSchedule()[shift3] = []
+                
                     
                 if res.getType() == "Operator":
                     res.getShiftAvailability()[shift1] = False
                     
                     res.getShiftAvailability()[shift2] = True
-                    res.getCurrentSchedule()[shift2] = []
+                    
+                    if applied:
+                        res.getSchedule()[shift2] = []
+                    else:
+                        res.getCurrentSchedule()[shift2] = []
+                        
                     res.getShiftAvailability()[shift3] = True
-                    res.getCurrentSchedule()[shift3] = []
+                    
+                    if applied:
+                        res.getSchedule()[shift3] = []
+                    else:
+                        res.getCurrentSchedule()[shift3] = []
                 
           
                 if res.getType() == "Outsourced":
@@ -278,7 +355,7 @@ class SchedulingManager:
             res.getCurrentSchedule().clear()
 
    
-        self.CreateShifts(psstart,pssend)
+        self.CreateShifts(psstart,pssend,False)
 
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="shift creation completed.."+"\n"

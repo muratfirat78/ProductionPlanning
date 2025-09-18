@@ -40,10 +40,11 @@ ScheduleTab.setVisualManager(VisMgr)
 SimMgr.setVisualManager(SimTab)
 SimTab.setVisualManager(VisMgr)
 ProductionProgressTab.setVisualManager(VisMgr)
-
+SimMgr.setDataManager(DataMgr)
 
 DataMgr.setVisualManager(VisMgr)
 DataMgr.setSimulationManager(SimMgr)
+
 
 PlanningMgr = PlanningManager()
 PlanningMgr.setDataManager(DataMgr)
@@ -54,4 +55,5 @@ SchedulingMgr.setDataManager(DataMgr)
 SchedulingMgr.setVisualManager(VisMgr)
 SchedulingMgr.setPlanningManager(PlanningMgr)
 VisMgr.setSchedulingManager(SchedulingMgr)
+DataMgr.setSchedulingManager(SchedulingMgr)
 

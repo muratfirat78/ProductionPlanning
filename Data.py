@@ -38,6 +38,7 @@ class DataManager:
         self.OperatingTeams = []
         self.VisualManager = None
         self.SimulationManager = None
+        self.SchedulingManager = None
         
         self.colabpath = '/content/ProductionPlanning'
         self.onlineversion = False       
@@ -45,6 +46,13 @@ class DataManager:
         self.MyFolder = None
         
         return
+        
+    def getSchedulingManager(self):
+        return self.SchedulingManager
+
+    def setSchedulingManager(self,myitm):
+        self.SchedulingManager = myitm
+        return 
     
     def setSimulationManager(self,myit):
         self.SimulationManager = myit
@@ -161,91 +169,7 @@ class DataManager:
         
         return
         
-    def CreateShifts(self,psstart,pssend):
-
-        scheduleperiod = pd.date_range(psstart,pssend)
-              
-        i=1
-        prev_dayshift = None 
-        scheduletimehour = 1
-        
-        for curr_date in scheduleperiod:
-            
-            shift1=Shift(curr_date,3,prev_dayshift)
-            shift1.setStartTime(scheduletimehour)  
-
-            shift1.setStartHour(curr_date + timedelta(hours=0))
-            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
-          
-            scheduletimehour+=8
-            shift1.setEndTime(scheduletimehour-1)
-            shift2=Shift(curr_date,1,shift1)
-            shift2.setStartTime(scheduletimehour)   
-            scheduletimehour+=8
-            shift2.setEndTime(scheduletimehour-1)
-
-            shift2.setStartHour(curr_date + timedelta(hours=8))
-            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
-
-            
-            shift3=Shift(curr_date,2,shift2)
-            shift3.setStartTime(scheduletimehour)
-            scheduletimehour+=8
-            shift3.setEndTime(scheduletimehour-1)
-            shift3.setStartHour(curr_date + timedelta(hours=16))
-            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
-            
-            prev_dayshift=shift3
-
-            opno = 0
-            for resname, res in self.getResources().items():
-
-                if res.getType() == "Machine":
-
-                    res.getShiftAvailability()[shift1] = res.IsAutomated() 
-                   
-                    if res.getShiftAvailability()[shift1]:
-                        res.getSchedule()[shift1] = []
-                        res.getShiftOperatingModes()[shift1] = "Self-Running"
-
-                    res.getShiftAvailability()[shift2] = True
-                   
-                    res.getSchedule()[shift2] = []
-                    res.getShiftOperatingModes()[shift2] = "Operated"
-                    
-                    res.getShiftAvailability()[shift3] = True
-                    
-                    res.getSchedule()[shift3] = []
-                    res.getShiftOperatingModes()[shift3] = "Operated"
-                  
-
-                if res.getType() == "Manual":
-                    res.getShiftAvailability()[shift1] = False
-                    res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
-                    res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-                    
-                if res.getType() == "Operator":
-                    res.getShiftAvailability()[shift1] = False
-                    
-                    res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
-                    res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = []
-                
-          
-                if res.getType() == "Outsourced":
-                    res.getShiftAvailability()[shift1] = True
-                    res.getSchedule()[shift1] = []
-                    res.getShiftAvailability()[shift2] = True
-                    res.getSchedule()[shift2] = []
-                    res.getShiftAvailability()[shift3] = True
-                    res.getSchedule()[shift3] = [] 
-                    
-            i+=1        
-
-        return 
+    
 
     def DefinePrecedence(self,prodlist,prodlist2):
 
@@ -973,7 +897,9 @@ class DataManager:
 
             if (earliest!= None) and (latest!= None):
                 self.getVisualManager().getCaseInfo().value += ">>>> Schedule earliest - latest .."+str(earliest)+":"+str(latest)+"\n" 
-                self.CreateShifts(earliest,latest)
+                self.getSchedulingManager().setCurrentscheduleEnd(latest)
+                
+                self.getSchedulingManager().CreateShifts(earliest,latest,True)
 
            
             self.getVisualManager().getCaseInfo().value += ">>>> shifts created .."+"\n"     
@@ -1034,7 +960,7 @@ class DataManager:
                 if (startime != None) and (comptime!= None):
                     job.getMySch().setStartTime(startime)        
                     job.getMySch().setCompletionTime(comptime)   
-                    self.getVisualManager().getCaseInfo().value += ">>>> Job  .."+str(job.getName())+": "+str(job.getMySch().getStartTime())+"-"+str(job.getMySch().getCompletionTime())+"\n"     
+                    #self.getVisualManager().getCaseInfo().value += ">>>> Job  .."+str(job.getName())+": "+str(job.getMySch().getStartTime())+"-"+str(job.getMySch().getCompletionTime())+"\n"     
                     
           
 

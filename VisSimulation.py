@@ -259,50 +259,28 @@ class SimulationTab():
     def SetStart(self,event):
 
         sel_start = self.getPLTBPlanStart().value 
-        self.getVisualManager().getSchedulingManager().setSHStart(sel_start)
+        self.getVisualManager().getSimulationManager().setSimStart(sel_start)
+        self.getPSchScheRes().value+="Simulation starts "+str(sel_start)+"\n"
       
         return
         
     def SetEnd(self,event):
 
         sel_end = self.getPLTBPlanEnd().value
-        self.getVisualManager().getSchedulingManager().setSHEnd(sel_end)
+        self.getVisualManager().getSimulationManager().setSimEnd(sel_end)
+        self.getPSchScheRes().value+="Simulation ends "+str(sel_end)+"\n"
        
         return
-    def RecFindSelected(self,node,parent):
-        
-        selected = None 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="in recfindnode..."+node.name+"\n"
-        if node.selected:
-            selected = node  
-        else: 
-            for subnode in node.nodes: 
-                selected = self.RecFindSelected(subnode) 
-                if selected != None:
-                    break       
-        return selected
-
-
+ 
   
-    
-
-   
-    
-   
-   
       
     def StartSimulation(self,b):
 
-        infotxt = self.getVisualManager().getSimulationManager().RunSimulation()
-        
-
-        self.getPSchScheRes().value+=infotxt+"\n"
-        
+        self.getVisualManager().getSimulationManager().RunSimulation()
+       
         return
 
    
-        
-        
     
     def generateSimTAB(self):
     
