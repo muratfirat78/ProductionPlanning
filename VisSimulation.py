@@ -269,6 +269,9 @@ class SimulationTab():
         sel_end = self.getPLTBPlanEnd().value
         self.getVisualManager().getSimulationManager().setSimEnd(sel_end)
         self.getPSchScheRes().value+="Simulation ends "+str(sel_end)+"\n"
+
+        if (self.getVisualManager().getSimulationManager().getSimStart() != None) and (self.getVisualManager().getSimulationManager().getSimEnd() != None):
+            self.getPSchTBmakesch_btn().disabled = False
        
         return
  
@@ -290,7 +293,7 @@ class SimulationTab():
         self.getPSchScheRes().layout.height = '150px'
         self.getPSchScheRes().layout.width = '700px'
 
-        self.setPSchTBmakesch_btn(widgets.Button(description="Run Simulation", icon = 'fa-gear'))
+        self.setPSchTBmakesch_btn(widgets.Button(description="Run Simulation", icon = 'fa-gear',disabled = True))
         self.getPSchTBmakesch_btn().on_click(self.StartSimulation)
 
       
