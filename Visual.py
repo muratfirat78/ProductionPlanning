@@ -180,13 +180,19 @@ class VisualManager():
         self.NewProd_btn = None
 
         self.UpdStocks_btn = None
-        
-
-       
+        self.NewRes_btn = None
+ 
 
         return
 
- 
+    def getNewRes_btn(self):
+        return self.NewRes_btn
+
+
+    def setNewRes_btn(self,myit):
+        self.NewRes_btn = myit
+        return 
+
     def setSimulationTab(self,myit):
         self.SimulationTab = myit
         return
@@ -1807,8 +1813,14 @@ class VisualManager():
 
         opl = widgets.Label(value ='Resources')
         opl.add_class("red_label")
+
+        self.setNewRes_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
+                             description ='Resources',multiple=False  # True to accept multiple files upload else False
+                           ))
+        self.getNewRes_btn().observe(self.DataManager.ImportResources)
+
         
-        res_box = VBox(children=[opl,self.getPSTBResSearch(),self.getPSTBResList()])
+        res_box = VBox(children=[HBox(children =[opl,self.getNewRes_btn()]),self.getPSTBResSearch(),self.getPSTBResList()])
         
         
         self.setPSTBnewres_btn(widgets.Button(description="New Resource"))
@@ -1874,6 +1886,7 @@ class VisualManager():
                            ))
         self.getNewProd_btn().observe(self.DataManager.ImportProducts)
 
+      
         
         self.getNewProd_btn().layout.width = '150px'
         self.getNewProd_btn().layout.height = '28px'
@@ -2049,10 +2062,10 @@ class VisualManager():
         self.getCOTBorders().observe(self.ShowOrder)
 
 
-        self.setNewCustOrdrs_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
+        self.setNewCustOrdrs_btn(widgets.FileUpload(accept='.xlsx',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
                              description ='Import order',multiple=False  # True to accept multiple files upload else False
                            ))
-        self.getNewCustOrdrs_btn().observe(self.DataManager.ImportOrders2)
+        self.getNewCustOrdrs_btn().observe(self.DataManager.UpdateData)
 
         #self.setNewCustOrdrs_btn(widgets.Button(description="Import orders",icon='fa-download'))
         #self.getNewCustOrdrs_btn().on_click(self.DataManager.ImportOrders)
@@ -2231,9 +2244,29 @@ class VisualManager():
        
         self.setFolderNameTxt(widgets.Text(description ='Folder name:',value = 'UseCases'))
         self.getFolderNameTxt().on_submit(self.DataManager.on_submit_func)
+
        
         self.setCasesDrop(widgets.Dropdown(options=[], description='Use Cases:'))
         self.setCaseInfo(widgets.Textarea(value='', placeholder='',description='',disabled=True,layout = Layout(height ="100px" ,width='60%')))   
+
+
+        dtsetnames = [] 
+          
+        rel_path = self.getFolderNameTxt().value 
+        abs_file_path = os.path.join(Path.cwd(),rel_path)
+
+        self.getCaseInfo().value += "->"+abs_file_path+"\n"                            
+        
+        for root, dirs, files in os.walk(abs_file_path):
+            for mydir in dirs:
+                if (mydir.find("_checkpoints") > -1) or (mydir.find("input_files") > -1) :
+                    continue
+                dtsetnames.append(mydir)
+    
+    
+        self.getCasesDrop().options = [dst for dst in dtsetnames]
+        if len(dtsetnames) > 0:
+            self.getCasesDrop().value = dtsetnames[0]
 
     
         self.setReadFileBtn(widgets.Button(description="Read",icon = 'fa-folder-o') )

@@ -50,6 +50,10 @@ class Product():
     def setStockBatch(self,myit):
         self.stockbatch = myit
         return
+
+    def setID(self,myid):
+        self.ID = myid
+        return
         
     def getDemandingOrders(self):
         return self.DemandingOrders
@@ -305,9 +309,17 @@ class Operation():
         self.batchsize = 12 # to be changed..
         self.Predecessor = dict()
         self.Product = None
+        self.OperationIndex = None
 
     def getProduct(self):
         return self.Product 
+    def setOperationIndex(self,ind):
+        self.OperationIndex = ind
+        return
+
+    def getOperationIndex(self):
+        return self.OperationIndex 
+    
 
     def setProduct(self,prd):
         self.Product = prd
@@ -648,7 +660,13 @@ class CustomerOrder():
         self.ProductID = myprodid
         self.ProductName = myprodname
         self.Quantity = myqnty
-        self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
+        if not isinstance(myddline,datetime):
+            try: 
+                self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
+            except: 
+                self.DeadLine = datetime.strptime(myddline,"2025-12-31 00:00:00")
+        else: 
+            self.DeadLine = myddline
         self.ReferenceNumber = 0
         self.DelayReasons = dict() # key: deldate, val: prodpn+resource cap./lead time+date
         self.OrderPlanDict = dict() # key: plan item type, value: list of tuples (item,(date,val))
