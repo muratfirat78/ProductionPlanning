@@ -20,6 +20,7 @@ from Data import *
 from GreedyInsertion import *
 from AdvancedGreedyInsertion import *
 from SimpleBatching import *
+from AdvancedAlgorithmBryan import *
 
 #######################################################################################################################
 
@@ -388,6 +389,9 @@ class SchedulingManager:
         #    advncdgreedyalg = AdvancedGreedyInsertionAlg()
         #    advncdgreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
 
+        if schedulealg == "MILP Schedule":
+            algorithm = AdvancedMILPAlg()
+            sch_sol = algorithm.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
 
         
 

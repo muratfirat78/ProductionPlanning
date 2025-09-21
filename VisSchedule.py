@@ -721,7 +721,7 @@ class ScheduleTab():
         
         bchalg = widgets.Label(value ='Batching Method')
         bchalg.add_class("blue_label")
-        self.setScheduleAlgs(widgets.Dropdown(options=["Simple Greedy Insertion","Advanced Greedy Insertion"], description=''))
+        self.setScheduleAlgs(widgets.Dropdown(options=["Simple Greedy Insertion","Advanced Greedy Insertion", "MILP Schedule"], description=''))
         self.getScheduleAlgs().layout.width = '185px'
         self.setBatchingAlgs(widgets.Dropdown(options=["Order size based","Simple Merge"], description=''))
         self.getBatchingAlgs().layout.width = '150px'
