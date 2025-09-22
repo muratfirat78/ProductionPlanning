@@ -1113,36 +1113,78 @@ class DataManager:
 
                             self.getVisualManager().getDiagInfo().value += "pn... "+str(pnstr)+"\n" 
     
-                            if not namestr in self.Products: 
-                                myprod = Product(nrproducts,namestr,pnstr,0)  
-                                self.Products[namestr]= myprod   
+                            if not "["+pnstr+"] "+namestr in self.Products: 
+                                myprod = Product(nrproducts,"["+pnstr+"] "+namestr,pnstr,0)  
+                                self.Products["["+pnstr+"]"+namestr]= myprod   
                                 nrproducts+=1
                                     
                             else:
-                                myprod = self.Products[namestr]
+                                myprod = self.Products["["+pnstr+"] "+namestr]
+                                
 
                             self.getVisualManager().getDiagInfo().value += "oprsss... "+str(pnstr)+"\n" 
 
+                            #read the raw material: start
+                            if not pd.isna(r['Components/Product']):
+                                rawpnstr = r['Components/Product'][r['Components/Product'].find("[")+1:]
+                                rawnamestr = rawpnstr[rawpnstr.find("]")+1:]
+                                rawpnstr =  rawpnstr[:rawpnstr.find("]")]
+
+                                myrawprod = None
+
+                                if not "["+rawpnstr+"] "+rawnamestr in self.Products:
+                                    myrawprod = Product(nrproducts,"["+rawpnstr+"] "+rawnamestr,rawpnstr,0)
+                                    nrproducts+=1
+                                    self.Products["["+rawpnstr+"]"+rawnamestr]= myrawprod 
+                                else:
+                                    myrawprod = self.Products["["+rawpnstr+"] "+rawnamestr]
+                                    
+
+                                if not myrawprod in myprod.getPredecessors():
+                                    myprod.getPredecessors().append(myrawprod)
+                                    if int(r['Components/Quantity To Consume']) == 0:
+                                        myprod.getMPredecessors()[myrawprod] = 1
+                                    else:
+                                        myprod.getMPredecessors()[myrawprod] = int(r['Components/Quantity To Consume'])
+                        
+                            #read the raw material: end
+                            
+
+                            # creation of operations: start
                             if (not pd.isna(r['Work Orders/Work Center'])):
-                                
-                                lineno = i+1
-                                operations = [r['Work Orders/Work Center']]
 
                                 prev_op = None
                                 oprind = 0
+                                myopr = None
+
+                               
+                                if not pd.isna(TBRM_df.loc[i,'Work Orders/Work Center']):
+                                    myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],TBRM_df.loc[i,'Work Orders/Expected Duration'])
+                                    nroprs+=1
+                                    prev_op = myopr
+                                    self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]= myopr
+                                    myopr.setProduct(myprod)
+                                    myopr.setOperationIndex(oprind)
+                                    oprind+=1
+                                    myprod.getOperations().append(myopr)
+                                    
+                                lineno = i+1
+                                operations = [r['Work Orders/Work Center']]
+
+                              
                                 while pd.isna(TBRM_df.loc[lineno,'Product']):
                                     if pd.isna(TBRM_df.loc[lineno,'Work Orders/Work Center']):
                                         break
                                     self.getVisualManager().getDiagInfo().value += "oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n" 
 
-                                    myopr = None
+                                    
                                     if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
-                                        myopr = Operation(nroprs,TBRM_df.loc[lineno,'Work Orders/Work Center'],TBRM_df.loc[lineno,'Work Orders/Expected Duration'])
+                                        myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],TBRM_df.loc[lineno,'Work Orders/Expected Duration'])
                                         nroprs+=1
                                         if prev_op!= None:
                                             myopr.setPredecessor(prev_op)
                                         prev_op = myopr
-                                        self.Operations[TBRM_df.loc[lineno,'Work Orders/Work Center']]= myopr
+                                        self.Operations["["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center']]= myopr
                                         myopr.setProduct(myprod)
                                         myopr.setOperationIndex(oprind)
                                         oprind+=1
@@ -1151,15 +1193,16 @@ class DataManager:
                                     else:
                                         myopr = self.Operations[TBRM_df.loc[lineno,'Work Orders/Work Center']]
 
-                                    
-                                    
+                                   
                                     operations.append(TBRM_df.loc[lineno,'Work Orders/Work Center'])
                                     lineno+=1
                                     if lineno >= len(TBRM_df):
                                         break
+                                        
 
                                 self.getVisualManager().getDiagInfo().value += "No operations "+str(len(operations))+"\n" 
-
+                            # creation of operations: end
+                            
                             ordname = str(myprod.getName())+"_"+str(r['Quantity To Produce'])
                             self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
                             self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
