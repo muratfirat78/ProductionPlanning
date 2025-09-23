@@ -305,6 +305,7 @@ class Operation():
         self.Name = myname
         self.ProcessTime = myproctime
         self.RequiredResources = [] # Attention: How to handle alternative resources in this structure!!
+        self.MyResources = dict()
         self.Jobs = []
         self.batchsize = 12 # to be changed..
         self.Predecessor = dict()

@@ -349,184 +349,9 @@ class DataManager:
 
         #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
         return
-    def ImportResources(self,b):
-
-        self.getVisualManager().getDiagInfo().value += "Importing Resources.."+"\n"  
-
-        if 'new' in b:
-            if 'value' in b['new']:
-                
-                if 'name' in b['new']['value'][0]:
-                   
-                    content = BytesIO(b['new']['value'][0]['content'])
-
-                      
-                    res_df = pd.read_csv(content)
-
-                    self.getVisualManager().getDiagInfo().value += "No resources to import "+str(len(res_df))+"\n"  
-        
-                    for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
-                        newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
-                        if not np.isnan(r["Automated"]):
-                            if str(r["Automated"]) == "True":
-                                newres.setAutomated() 
-                            
-                        newres.setOperatingEffort(r["OperatingEffort"])
-                        if r["Shift"] is not None:
-                            newres.setAvailableShift(r["Shift"])
-                        self.Resources[r["Name"]]= newres
-                        if r['Name'].find("OUT - ") != -1:
-                            newres.setOutsource()
-
-                    self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n"
-                    self.getVisualManager().getPSTBResList().options = [resname for resname in self.getResources().keys()]
-                   
-
-
-
-        #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
-        #content = input_file['content']
-        #content = io.StringIO(content.decode('utf-8'))
-        #df = pd.read_csv(content)
-
-
-        #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
-        return
-    
-    def ImportProducts(self,b):
-
-        self.getVisualManager().getDiagInfo().value += "Importing Products.."+"\n"  
-
-        if 'new' in b:
-            if 'value' in b['new']:
-                
-                if 'name' in b['new']['value'][0]:
-                   
-                    content = BytesIO(b['new']['value'][0]['content'])
-
-                    if self.getVisualManager().getNewProd_btn().description == "New Products":
-                        self.getVisualManager().getNewProd_btn().description = "Precedences"
-                        products_df = pd.read_csv(content)
-        
-                        prev_size = len(self.Products)
-    
-                        prodsimprtd= 0
-                        for i,r in products_df.iterrows():
-                            if not r["Name"] in self.Products:
-                                newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
-                                if not np.isnan(r["PrescribedBatchsize"]):
-                                    newprod.setBatchsize(r["PrescribedBatchsize"])
-                                self.Products[r["Name"]]= newprod
-                            else:
-                                newprod = self.Products[r["Name"]]
-                                newprod.setID(r["ProductID"])
-                                newprod.setPN(r["ProductNumber"])
-                                if not np.isnan(r["PrescribedBatchsize"]):
-                                    newprod.setBatchsize(r["PrescribedBatchsize"])
-    
-                            prodsimprtd+=1
-                        self.getVisualManager().getCaseInfo().value += "New Products imported: "+str(prodsimprtd)+"\n"   
-    
-                        self.getVisualManager().getPSTBProdList().options = [opname for opname in self.getProducts().keys()]
-                        self.getVisualManager().getPSTBProdList2().options = [opname for opname in self.getProducts().keys()]
-                    else:
-                        precmatch_df = pd.read_csv(content)
-                        self.getVisualManager().getCaseInfo().value += ">>> Precedences.. "+str(len(precmatch_df))+"\n" 
-                        
-                        for i,r in precmatch_df.iterrows():
-    
-                            predecessor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["PredecessorID"]] [0]
-                            successor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["SuccessorID"]][0]
-            
-                            predecessor.setSuccessor(successor)
-                            successor.getPredecessors().append(predecessor)
-                            successor.getMPredecessors()[predecessor] = r["Multiplier"]
-                           
-                        
-
-
-
-        #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
-        #content = input_file['content']
-        #content = io.StringIO(content.decode('utf-8'))
-        #df = pd.read_csv(content)
-
-
-        #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
-        return
-
-    def ImportOperations(self,b):
-
-        self.getVisualManager().getDiagInfo().value += "Importing Operations.."+"\n"  
-
-        if 'new' in b:
-            if 'value' in b['new']:
-                
-                if 'name' in b['new']['value'][0]:
-                   
-                    content = BytesIO(b['new']['value'][0]['content'])
-
-                   
-
-                    if self.getVisualManager().getUpdStocks_btn().description == "New Operations":
-                        opr_df = pd.read_csv(content)
-                        self.getVisualManager().getUpdStocks_btn().description = "Product-Operations"
-                    
-                        for i,r in opr_df.iterrows():
-                            newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
-                            newopr.setPredecessor(r["Predecessor"])
-                            self.Operations[r["Name"]]= newopr
-                        self.getVisualManager().getDiagInfo().value  += "Operations imported: "+str(len(opr_df))+"\n" 
-                    else:
-                        linkprods = []
-                        prodopmatch_df = pd.read_csv(content)
-                        self.getVisualManager().getDiagInfo().value  += "Product-Operations links: "+str(len(prodopmatch_df))+"\n" 
-                        self.getVisualManager().getDiagInfo().value  += "Product IDs: "+str([p.getID() for p in self.getProducts().values()])+"\n" 
-                        for i,r in prodopmatch_df.iterrows():
-                            prodlst = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == int(r["ProductID"])]
-                            self.getVisualManager().getDiagInfo().value  += "Line: "+str(i)+", ProductID: "+str(r["ProductID"])+", found prods: "+str(len(prodlst))+"\n" 
-                            if len(prodlst) > 0: 
-                                prod = prodlst[0]
-                                if not prod in linkprods:
-                                    linkprods.append(prod)
-                                oprlst = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]]
-                                if len(oprlst) > 0:
-                                    opr = oprlst[0]
-                                    opr.setProduct(prod)
-                                    opr.setOperationIndex(r["OperationIndex"])
-                                    prod.getOperations().append(opr)
-                                else:
-                                    self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 
-                                    self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+"\n" 
-                            else:
-                                self.getVisualManager().getCaseInfo().value += "XXXX: Product not found: "+str(r["ProductID"])+"\n" 
-
-                        for prod in linkprods:
-                            prodoprs = [opr for opr in prod.getOperations()]
-                            prodoprs =  sorted(prodoprs, key=lambda x: x.getOperationIndex(), reverse=False)
-
-                            revlist = prodoprs[::-1]
-                            prod.getOperations().clear()
-                            for opr in revlist:
-                                prod.getOperations().append(opr)
-
-                    
-                    self.getVisualManager().getDiagInfo().value += ">>> Operation-Resources... "+str(len(oprsresources_df))+"\n" 
-                        
-                    
-
-     
-        #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
-        #content = input_file['content']
-        #content = io.StringIO(content.decode('utf-8'))
-        #df = pd.read_csv(content)
-
-
-        #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
-        return
     
     
-
+   
     def ImportOrders(self,b):  
 
         rel_path = self.getVisualManager().getFolderNameTxt().value+'/'+self.getVisualManager().getCasesDrop().value+'/'+'input_files'
@@ -1098,6 +923,7 @@ class DataManager:
                     noorders = 0
                     nrproducts = 1
                     nroprs = 0
+                    nrresources = 0
                     for i,r in TBRM_df.iterrows():
  
                         if (not pd.isna(r['Product'])) and (not (pd.isna(r['ID']))):
@@ -1112,14 +938,16 @@ class DataManager:
                             pnstr =  pnstr[:pnstr.find("]")]
 
                             self.getVisualManager().getDiagInfo().value += "pn... "+str(pnstr)+"\n" 
+
+                            pname =  "["+pnstr+"] "+namestr
     
-                            if not "["+pnstr+"] "+namestr in self.Products: 
-                                myprod = Product(nrproducts,"["+pnstr+"] "+namestr,pnstr,0)  
-                                self.Products["["+pnstr+"]"+namestr]= myprod   
+                            if not pname in self.Products: 
+                                myprod = Product(nrproducts,pname,pnstr,0)  
+                                self.Products[pname]= myprod   
                                 nrproducts+=1
                                     
                             else:
-                                myprod = self.Products["["+pnstr+"] "+namestr]
+                                myprod = self.Products[pname]
                                 
 
                             self.getVisualManager().getDiagInfo().value += "oprsss... "+str(pnstr)+"\n" 
@@ -1132,12 +960,13 @@ class DataManager:
 
                                 myrawprod = None
 
-                                if not "["+rawpnstr+"] "+rawnamestr in self.Products:
-                                    myrawprod = Product(nrproducts,"["+rawpnstr+"] "+rawnamestr,rawpnstr,0)
+                                rawname = "["+rawpnstr+"] "+rawnamestr
+                                if not rawname in self.Products:
+                                    myrawprod = Product(nrproducts,rawname,rawpnstr,0)
                                     nrproducts+=1
-                                    self.Products["["+rawpnstr+"]"+rawnamestr]= myrawprod 
+                                    self.Products[rawname]= myrawprod 
                                 else:
-                                    myrawprod = self.Products["["+rawpnstr+"] "+rawnamestr]
+                                    myrawprod = self.Products[rawname]
                                     
 
                                 if not myrawprod in myprod.getPredecessors():
@@ -1157,16 +986,37 @@ class DataManager:
                                 oprind = 0
                                 myopr = None
 
-                               
+                                # create the very first operation..
                                 if not pd.isna(TBRM_df.loc[i,'Work Orders/Work Center']):
-                                    myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],TBRM_df.loc[i,'Work Orders/Expected Duration'])
-                                    nroprs+=1
-                                    prev_op = myopr
-                                    self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]= myopr
-                                    myopr.setProduct(myprod)
-                                    myopr.setOperationIndex(oprind)
-                                    oprind+=1
-                                    myprod.getOperations().append(myopr)
+
+                                    myopr = None
+                                    
+                                    if not "["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'] in self.Operations:
+                                        
+                                        myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],TBRM_df.loc[i,'Work Orders/Expected Duration'])
+                                        nroprs+=1
+                                        newres = None
+                                        if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
+                                            newres = Resource(nrresources,"Machine",TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
+                                            nrresources+1
+                                            self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']] = newres
+                                        else:
+                                            newres = self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']]
+
+                                        myopr.getRequiredResources().append(newres)
+
+                                        prev_op = myopr
+                                        self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]= myopr
+                                        myopr.setProduct(myprod)
+                                        myopr.setOperationIndex(oprind)
+                                        oprind+=1
+                                        myprod.getOperations().append(myopr)
+                                        
+                                    else:
+                                        myopr = self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]
+                                        prev_op = myopr
+                                        
+                                        
                                     
                                 lineno = i+1
                                 operations = [r['Work Orders/Work Center']]
@@ -1181,6 +1031,18 @@ class DataManager:
                                     if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
                                         myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],TBRM_df.loc[lineno,'Work Orders/Expected Duration'])
                                         nroprs+=1
+
+                                        newres = None
+                                        if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Resources:
+                                            newres = Resource(nrresources,"Machine",TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
+                                            nrresources+1
+                                            self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']] = newres
+                                        else:
+                                            newres = self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']]
+
+                                        myopr.getRequiredResources().append(newres)
+
+                                        
                                         if prev_op!= None:
                                             myopr.setPredecessor(prev_op)
                                         prev_op = myopr

@@ -1192,8 +1192,11 @@ class VisualManager():
         selectedopr = self.getPSTBoperations().value
         sel_opr = None
         curr_prod = None
-    
-      
+
+        self.getDiagInfo().value+=" Finding operation information..."+"\n"
+
+        self.getDiagInfo().value+=" Selected product "+self.getPSTBProdName().value+"\n"
+        
         itemstoshow = [self.getPSTBOprName(),self.getPSTBOprProcTime()]
         itemstohide = []; itemstoreset = []  
         self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
@@ -1236,7 +1239,7 @@ class VisualManager():
                 ops = [x.getName() for x in sel_opr.getRequiredResources()]
                 self.getPSTBOprRes().options = ops
                 self.getPSTBResSearch().value = ops[0]
-
+                self.getPSTBOprRes().value = ops[0]
         
                 itemstoshow = [self.getPSTBResName(),self.getPSTBResType(),self.getPSTBResCap(),self.getPSTBeditres_btn()]
                 itemstohide = []; itemstoreset = []  
@@ -1813,14 +1816,8 @@ class VisualManager():
 
         opl = widgets.Label(value ='Resources')
         opl.add_class("red_label")
-
-        self.setNewRes_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
-                             description ='Resources',multiple=False  # True to accept multiple files upload else False
-                           ))
-        self.getNewRes_btn().observe(self.DataManager.ImportResources)
-
         
-        res_box = VBox(children=[HBox(children =[opl,self.getNewRes_btn()]),self.getPSTBResSearch(),self.getPSTBResList()])
+        res_box = VBox(children=[HBox(children =[opl]),self.getPSTBResSearch(),self.getPSTBResList()])
         
         
         self.setPSTBnewres_btn(widgets.Button(description="New Resource"))
@@ -1881,23 +1878,7 @@ class VisualManager():
 
  #       self.setNewProd_btn(widgets.Button(description="New products",icon='fa-download'))
 
-        self.setNewProd_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
-                             description ='New Products',multiple=False  # True to accept multiple files upload else False
-                           ))
-        self.getNewProd_btn().observe(self.DataManager.ImportProducts)
-
-      
-        
-        self.getNewProd_btn().layout.width = '150px'
-        self.getNewProd_btn().layout.height = '28px'
-
-        self.setUpdStocks_btn(widgets.FileUpload(accept='.csv',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
-                             description ='New Operations',multiple=False  # True to accept multiple files upload else False
-                           ))
-        self.getUpdStocks_btn().layout.width = '150px'
-        self.getUpdStocks_btn().layout.height = '28px'
-        self.getUpdStocks_btn().observe(self.DataManager.ImportOperations)
-
+    
        
 
         
@@ -1906,7 +1887,7 @@ class VisualManager():
         prl = widgets.Label(value ='Products')
         prl.add_class("red_label")
         #prl.layout.width = '30%'
-        p_box = VBox(children=[HBox(children=[prl,self.getNewProd_btn(),self.getUpdStocks_btn()]),self.getPSTBProdSearch(),self.getPSTBProdList()])
+        p_box = VBox(children=[HBox(children=[prl]),self.getPSTBProdSearch(),self.getPSTBProdList()])
 
 
         self.getPSTBProdList().observe(self.ShowProduct)
