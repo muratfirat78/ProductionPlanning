@@ -255,7 +255,7 @@ class Resource():
     def getType(self):
         return self.Type
     def getDailyCapacity(self):
-        return self.DayCapacity
+        return 8*(len(self.getAvailableShifts()))
     def getOperations(self):
         return self.Operations
     def IsAutomated(self):
@@ -669,6 +669,7 @@ class CustomerOrder():
         self.ProductID = myprodid
         self.ProductName = myprodname
         self.Quantity = myqnty
+        self.ComponentAvailable = False
         if not isinstance(myddline,datetime):
             try: 
                 self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
@@ -689,6 +690,13 @@ class CustomerOrder():
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
         self.MyJobs = [] # created during the planning, order batching convention 
 
+    def getComponentAvailable(self):
+        return self.ComponentAvailable
+
+    def SetComponentAvailable(self,myit):
+        self.ComponentAvailable = myit
+        return
+        
     def getStatus(self):
 
         nojobscompleted  = 0

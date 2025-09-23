@@ -993,8 +993,9 @@ class DataManager:
                                         myopr = None
                                         
                                         if not "["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'] in self.Operations:
-                                            
-                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],TBRM_df.loc[i,'Work Orders/Expected Duration'])
+
+                                            proctime = TBRM_df.loc[i,'Work Orders/Expected Duration']
+                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],float(proctime)/float(r['Quantity To Produce']))
                                             nroprs+=1
                                             newres = None
                                             if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
@@ -1030,7 +1031,8 @@ class DataManager:
     
                                         
                                         if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
-                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],TBRM_df.loc[lineno,'Work Orders/Expected Duration'])
+                                            proctime = TBRM_df.loc[lineno,'Work Orders/Expected Duration']
+                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],float(proctime)/float(r['Quantity To Produce']))
                                             nroprs+=1
     
                                             newres = None
@@ -1069,14 +1071,20 @@ class DataManager:
                                 ordname = str(myprod.getName())+"_"+str(r['Quantity To Produce'])
                                 self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
                                 self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
+                                myorder = None
                                 if not ordname in self.CustomerOrders:
-                                    myDeadLine = "2025-12-31 00:00:00"
-                                    if not pd.isna(r['Deadline']):
-                                        myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S")
-                                    myorder = CustomerOrder(r['ID'],ordname,myprod.getID(),myprod.getName(),r['Quantity To Produce'],myDeadLine)
+                                    myDeadLine = datetime.strptime("2025-12-31 00:00:00","%Y-%m-%d %H:%M:%S")
+                                    self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                    if not pd.isnull(r['Deadline']) :
+                                        myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S")   
+                                    myorder = CustomerOrder(r['ID'],ordname,myprod.getID(),myprod.getName(),int(r['Quantity To Produce']),myDeadLine)
                                     myorder.setProduct(myprod)
                                     
-                                    self.CustomerOrders[ordname] = myorder  
+                                    self.CustomerOrders[ordname] = myorder
+                                else:
+                                    myorder = self.CustomerOrders[ordname]
+
+                                myorder.SetComponentAvailable(r['Component Status'])
                         
                       
                                     

@@ -323,10 +323,23 @@ class PlanningManager:
         self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
 
         planned = 0
+      
         
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
-     
+
             self.getVisualManager().getPLTBresult2exp().value+="Order: "+str(myord.getName())+"\n"
+            if myord.getComponentAvailable() == "Not Available":
+                self.getVisualManager().getPLTBresult2exp().value+="Component not available.. "+"\n"
+                continue # this order cannot start due to missing component
+
+            start_date = self.getPHStart()+timedelta(days=1)
+
+            if myord.getComponentAvailable().find("Exp") != -1:
+                expected_date = myord.getComponentAvailable()
+                expected_date = expected_date[expected_date.find("Exp")+4:]
+                self.getVisualManager().getPLTBresult2exp().value+=">> expected_date..  "+str(expected_date)+"\n"
+     
+            
 
             mindeliverydate = max(myord.getDeadLine().date(),self.getPHStart())+timedelta(days=1)
 

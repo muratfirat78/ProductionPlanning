@@ -68,6 +68,7 @@ class VisualManager():
         self.PSTBFinalProd = None
         self.PSTBQuantity = None
         self.PSTBDeadLine = None
+        self.PSTBAvailable = None
 
         self.PSTBeditres_btn = None
         self.PSTBeditprd_btn = None
@@ -184,6 +185,13 @@ class VisualManager():
         self.NewRes_btn = None
  
 
+        return
+
+    def getPSTBAvailable(self):
+        return self.PSTBAvailable
+
+    def setPSTBAvailable(self,myit):
+        self.PSTBAvailable = myit
         return
 
     def getPSTBResFTE(self):
@@ -1464,10 +1472,11 @@ class VisualManager():
 
             myord = self.DataManager.getCustomerOrders()[ordname]
 
-            self.getPSTBFinalProd().value = myord.getProduct().getName()
-            self.getPSTBQuantity().value = str(myord.getQuantity())
-            self.getPSTBDeadLine().value = str(myord.getDeadLine())
-            myprodname = self.getPSTBFinalProd().value
+            self.getPSTBFinalProd().value = "Product: "+myord.getProduct().getName()
+            self.getPSTBQuantity().value = 'Quantity: '+str(myord.getQuantity())
+            self.getPSTBAvailable().value  = 'Component: '+myord.getComponentAvailable()
+            self.getPSTBDeadLine().value = 'Deadline: '+str(myord.getDeadLine())
+            myprodname = myord.getProduct().getName()
             self.getPSTBProdSearch().value = myprodname 
             self.getPSTBProdName().value = myord.getProduct().getName()
             self.getPSTBProdPN().value = myord.getProduct().getPN()
@@ -1517,9 +1526,10 @@ class VisualManager():
         if ordtext in self.DataManager.getCustomerOrders():
             myord = self.DataManager.getCustomerOrders()[ordtext]
 
-            self.getPSTBFinalProd().value = myord.getProduct().getName()
-            self.getPSTBQuantity().value = str(myord.getQuantity())
-            self.getPSTBDeadLine().value = str(myord.getDeadLine())
+            self.getPSTBFinalProd().value = "Product: "+myord.getProduct().getName()
+            self.getPSTBQuantity().value = 'Quantity: '+str(myord.getQuantity())
+            self.getPSTBAvailable().value  = 'Component: '+myord.getComponentAvailable()
+            self.getPSTBDeadLine().value = 'Deadline: '+str(myord.getDeadLine())
 
             #------------------------------------
             itemstoshow = [self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getPSTBeditprd_btn()]
@@ -1527,7 +1537,9 @@ class VisualManager():
             self.ApplyVisuals(itemstoshow,itemstohide,itemstoreset)
 
   
-            myprodname = self.getPSTBFinalProd().value
+            myprodname = myord.getProduct().getName()
+
+            
             self.getPSTBProdSearch().value = myprodname 
 
        
@@ -2083,9 +2095,12 @@ class VisualManager():
         
         ord_box = VBox(children=[HBox(children =[ordl,self.getNewCustOrdrs_btn()]),self.getCOTBorders()])
 
-        self.setPSTBFinalProd(widgets.Text(description ='Product:',value='',disabled = True))
-        self.setPSTBQuantity(widgets.Text(description ='Quantity:',value ='',disabled = True))
-        self.setPSTBDeadLine(widgets.Text(description ='Deadline:',value ='',disabled = True))
+        self.setPSTBFinalProd(widgets.Label(value ='Product:'))
+        self.setPSTBQuantity(widgets.Label(value ='Quantity:'))
+        self.getPSTBQuantity().layout.width = '110px'
+        self.setPSTBAvailable(widgets.Label(value ='Component:'))
+        self.getPSTBAvailable().layout.width = '175px'
+        self.setPSTBDeadLine(widgets.Label(value ='Deadline: '))
         self.setDiagInfo(widgets.Textarea(value='', placeholder='',description='',disabled=True,layout = Layout(height ="100px" ,width='60%')))
 
     
@@ -2120,7 +2135,7 @@ class VisualManager():
         self.getBOMTree().observe(self.ShowProduct2)
 
         ordersbox = HBox(children=[ord_box,
-                                   VBox(children=[ordinf,HBox(children=[self.getPSTBFinalProd()]),self.getPSTBQuantity(),self.getPSTBDeadLine()]),
+                        VBox(children=[ordinf,self.getPSTBFinalProd(),HBox(children=[self.getPSTBQuantity(),widgets.Label(value =  " | ",disabled = True),self.getPSTBAvailable()]),self.getPSTBDeadLine()]),
                                    VBox(children=[bominf,self.getPSTBBOMOutput()])
                                   ])
 
