@@ -52,6 +52,7 @@ class VisualManager():
         self.PSTBResName = None
         self.PSTBResType = None
         self.PSTBResOprs = None
+        self.PSTBResFTE = None
         self.PSTBResCap = None
         self.PSTBNewResCap = None
         self.PSTBaddres_btn = None
@@ -184,6 +185,14 @@ class VisualManager():
  
 
         return
+
+    def getPSTBResFTE(self):
+        return self.PSTBResFTE
+
+    def setPSTBResFTE(self,myit):
+        self.PSTBResFTE = myit
+        return 
+
 
     def getNewRes_btn(self):
         return self.NewRes_btn
@@ -1222,7 +1231,7 @@ class VisualManager():
                
 
         
-      
+        self.getDiagInfo().value+=" Selected operation "+str(sel_opr.getName())+"\n"
 
         if sel_opr!= None:
             self.getPSTBOprName().value = sel_opr.getName()
@@ -1236,7 +1245,15 @@ class VisualManager():
                     break
                 
             if len(sel_opr.getRequiredResources())>0:
+                
                 ops = [x.getName() for x in sel_opr.getRequiredResources()]
+
+                for res in sel_opr.getRequiredResources():
+                    for alter in res.getAlternatives():
+                        if not alter.getName() in ops:
+                            ops.append(alter.getName())
+                            
+                
                 self.getPSTBOprRes().options = ops
                 self.getPSTBResSearch().value = ops[0]
                 self.getPSTBOprRes().value = ops[0]
@@ -1252,7 +1269,9 @@ class VisualManager():
                     res = self.DataManager.getResources()[myresname]
                     self.getPSTBResName().value = res.getName()
                     self.getPSTBResType().value = res.getType()
-                    self.getPSTBResCap().value = str(res.getDailyCapacity())+" shift/day"
+                    self.getPSTBResCap().value = str(res.getAvailableShifts())
+                    self.getPSTBResFTE().value = str(100*res.getOperatingEffort())+" %"
+                    
                 else:
                     self.getPSTBResName().value = myresname+" not found.." 
 
@@ -1388,7 +1407,8 @@ class VisualManager():
         
         self.getPSTBResName().value = sel_resource.getName()
         self.getPSTBResType().value = sel_resource.getType()
-        self.getPSTBResCap().value = str(sel_resource.getDailyCapacity())+" shift/day"
+        self.getPSTBResCap().value = str(sel_resource.getAvailableShifts())
+        self.getPSTBResFTE().value = str(100*sel_resource.getOperatingEffort())+" %"
 
        
 
@@ -1757,7 +1777,8 @@ class VisualManager():
             res = self.DataManager.getResources()[myresname]
             self.getPSTBResName().value = res.getName()
             self.getPSTBResType().value = res.getType()
-            self.getPSTBResCap().value = str(res.getDailyCapacity())+" shift/day"
+            self.getPSTBResCap().value = str(res.getAvailableShifts())
+            self.getPSTBResFTE().value = str(100*res.getOperatingEffort())+" %"
         else:
             self.getPSTBResName().value = myresname+" not found.." 
                 
@@ -1844,6 +1865,7 @@ class VisualManager():
 
         self.setPSTBResName(widgets.Label(value='',disabled = True))
         self.setPSTBResType(widgets.Label(value ='',disabled = True))
+        self.setPSTBResFTE(widgets.Label(value ='',disabled = True))
         self.setPSTBResCap(widgets.Label(value ='',disabled = True))
         #self.setPSTB(widgets.Label(value ='',disabled = True))
 
@@ -1851,7 +1873,9 @@ class VisualManager():
         rsnl.add_class("blue_label")
         rstl = widgets.Label(value ='Type:')
         rstl.add_class("blue_label")
-        rscl = widgets.Label(value ='Cap:')
+        ftel = widgets.Label(value ='FTE:')
+        ftel.add_class("blue_label")
+        rscl = widgets.Label(value ='Shifts:')
         rscl.add_class("blue_label")
        
        
@@ -1859,8 +1883,8 @@ class VisualManager():
         tb4_vbox1 = VBox(children = [
                                      HBox(children=[res_box]),self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),
                      HBox(children=[rsnl,self.getPSTBResName()]),
-                     HBox(children=[rstl,self.getPSTBResType(),widgets.Label(value =  " | ",disabled = True),rscl,self.getPSTBResCap()]),
-                                     HBox(children=[self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]),ressel_box
+                     HBox(children=[rstl,self.getPSTBResType(),widgets.Label(value =  " | ",disabled = True),ftel,self.getPSTBResFTE(),widgets.Label(value =  " | ",disabled = True),rscl,self.getPSTBResCap()]),
+                     HBox(children=[self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]),ressel_box
                                     ]
                         )
 
@@ -2044,7 +2068,7 @@ class VisualManager():
 
 
         self.setNewCustOrdrs_btn(widgets.FileUpload(accept='.xlsx',  # Accepted file extension e.g. '.txt', '.pdf', 'image/*', 'image/*,.pdf'
-                             description ='Import order',multiple=False  # True to accept multiple files upload else False
+                             description ='Import orders',multiple=False  # True to accept multiple files upload else False
                            ))
         self.getNewCustOrdrs_btn().observe(self.DataManager.UpdateData)
 

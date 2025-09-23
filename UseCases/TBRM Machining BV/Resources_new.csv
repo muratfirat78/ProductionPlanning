@@ -1,0 +1,21 @@
+ResourceID,ResourceType,Name,DailyCapacity,Automated,Alternatives,OperatingEffort,AvailableShifts
+0,Operator,Operator 1,1,False,,0,1
+1,Operator,Operator 2,1,False,,0,1
+2,Operator,Operator 3,1,False,,0,2
+3,Operator,Manual workers,2,False,,0,1_2
+4,Machine,M5-05_(UMC750SS),2,False,M5-03~M5-04,0.3,1_2
+6,Manual,MP2_(ZGN_02),2,False,,0,1_2
+7,Machine,M3-01_(FR3_01),2,False,,0.3,1_2
+8,Manual,BW_(BKW_01),2,False,,0,1_2
+9,Manual,PACK_(VERP_P),2,False,,0,1_2
+10,Outsourced,OUT_Outsourced activity,1250,False,,0,1_2
+11,Manual,MP1_(ZGN_01),2,False,,0,1_2
+12,Machine,M5-01_(FR5_01),3,True,,0.1,1_2_3
+13,Machine,M4-01_(FR4_01),3,True,FR4_02,0.1,1_2_3
+14,Machine,M5-03_(UMC750),2,False,M5-04~M5-05,0.3,1_2
+15,Machine,M3-02_(FR3_02),2,False,M3-03,0.3,1_2
+18,Manual,MP3_(UITG_M),2,False,,0.3,1_2
+19,Machine,M4-02_(FR4_02),3,True,FR4_01,0.1,1_2_3
+24,Machine,M3-03_(VF2SS),2,False,M5-03~M5-04~M5-05,0.3,1_2
+25,Machine,M5-02_(FR5_02),3,True,,0.1,1_2_3
+29,Machine,M5-04_(UMC750SS),3,True,M5-03~M5-05,0.1,1_2_3

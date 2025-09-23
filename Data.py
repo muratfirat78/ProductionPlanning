@@ -26,7 +26,6 @@ import time
 warnings.filterwarnings("ignore")
 
 
-
 class DataManager:
     def __init__(self):        
         # Lists..
@@ -910,180 +909,272 @@ class DataManager:
                 if 'name' in b['new']['value'][0]:
                    
                     content = BytesIO(b['new']['value'][0]['content'])
+                    
+                    if  self.getVisualManager().getNewCustOrdrs_btn().description == "Import orders":
 
+                        self.getVisualManager().getNewCustOrdrs_btn().description = "Import resources"
+                        self.getVisualManager().getNewCustOrdrs_btn().accept='.csv'
                       
-                    TBRM_df = pd.read_excel(content)
-
-                    self.getVisualManager().getDiagInfo().value += "No data lines to import "+str(len(TBRM_df))+"\n"  
-       
-                    self.getVisualManager().getDiagInfo().value += "Nan ID values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["ID"]]))+"\n" 
-                    self.getVisualManager().getDiagInfo().value += "Nan Product values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Product"]]))+"\n"  
-                    self.getVisualManager().getDiagInfo().value += "Nan Operation values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Work Orders/Work Center"]]))+"\n"  
-
-                    noorders = 0
-                    nrproducts = 1
-                    nroprs = 0
-                    nrresources = 0
-                    for i,r in TBRM_df.iterrows():
- 
-                        if (not pd.isna(r['Product'])) and (not (pd.isna(r['ID']))):
-                            
-                            noorders+=1
-                            myorder = None
-                            myprod = None
-                            
-                            
-                            pnstr = r['Product'][r['Product'].find("[")+1:]
-                            namestr = pnstr[pnstr.find("]")+1:]
-                            pnstr =  pnstr[:pnstr.find("]")]
-
-                            self.getVisualManager().getDiagInfo().value += "pn... "+str(pnstr)+"\n" 
-
-                            pname =  "["+pnstr+"] "+namestr
+                        TBRM_df = pd.read_excel(content)
     
-                            if not pname in self.Products: 
-                                myprod = Product(nrproducts,pname,pnstr,0)  
-                                self.Products[pname]= myprod   
-                                nrproducts+=1
-                                    
-                            else:
-                                myprod = self.Products[pname]
+                        self.getVisualManager().getDiagInfo().value += "No data lines to import "+str(len(TBRM_df))+"\n"  
+           
+                        self.getVisualManager().getDiagInfo().value += "Nan ID values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["ID"]]))+"\n" 
+                        self.getVisualManager().getDiagInfo().value += "Nan Product values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Product"]]))+"\n"  
+                        self.getVisualManager().getDiagInfo().value += "Nan Operation values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Work Orders/Work Center"]]))+"\n"  
+    
+                        noorders = 0
+                        nrproducts = 1
+                        nroprs = 0
+                        nrresources = 0
+                        for i,r in TBRM_df.iterrows():
+     
+                            if (not pd.isna(r['Product'])) and (not (pd.isna(r['ID']))):
                                 
-
-                            self.getVisualManager().getDiagInfo().value += "oprsss... "+str(pnstr)+"\n" 
-
-                            #read the raw material: start
-                            if not pd.isna(r['Components/Product']):
-                                rawpnstr = r['Components/Product'][r['Components/Product'].find("[")+1:]
-                                rawnamestr = rawpnstr[rawpnstr.find("]")+1:]
-                                rawpnstr =  rawpnstr[:rawpnstr.find("]")]
-
-                                myrawprod = None
-
-                                rawname = "["+rawpnstr+"] "+rawnamestr
-                                if not rawname in self.Products:
-                                    myrawprod = Product(nrproducts,rawname,rawpnstr,0)
+                                noorders+=1
+                                myorder = None
+                                myprod = None
+                                
+                                
+                                pnstr = r['Product'][r['Product'].find("[")+1:]
+                                namestr = pnstr[pnstr.find("]")+1:]
+                                pnstr =  pnstr[:pnstr.find("]")]
+    
+                                self.getVisualManager().getDiagInfo().value += "pn... "+str(pnstr)+"\n" 
+    
+                                pname =  "["+pnstr+"] "+namestr
+        
+                                if not pname in self.Products: 
+                                    myprod = Product(nrproducts,pname,pnstr,0)  
+                                    self.Products[pname]= myprod   
                                     nrproducts+=1
-                                    self.Products[rawname]= myrawprod 
+                                        
                                 else:
-                                    myrawprod = self.Products[rawname]
+                                    myprod = self.Products[pname]
                                     
-
-                                if not myrawprod in myprod.getPredecessors():
-                                    myprod.getPredecessors().append(myrawprod)
-                                    if int(r['Components/Quantity To Consume']) == 0:
-                                        myprod.getMPredecessors()[myrawprod] = 1
+    
+                                #read the raw material: start
+                                if not pd.isna(r['Components/Product']):
+                                    rawpnstr = r['Components/Product'][r['Components/Product'].find("[")+1:]
+                                    rawnamestr = rawpnstr[rawpnstr.find("]")+1:]
+                                    rawpnstr =  rawpnstr[:rawpnstr.find("]")]
+    
+                                    myrawprod = None
+    
+                                    rawname = "["+rawpnstr+"] "+rawnamestr
+                                    if not rawname in self.Products:
+                                        myrawprod = Product(nrproducts,rawname,rawpnstr,0)
+                                        nrproducts+=1
+                                        self.Products[rawname]= myrawprod 
                                     else:
-                                        myprod.getMPredecessors()[myrawprod] = int(r['Components/Quantity To Consume'])
-                        
-                            #read the raw material: end
+                                        myrawprod = self.Products[rawname]
+                                        
+    
+                                    if not myrawprod in myprod.getPredecessors():
+                                        myprod.getPredecessors().append(myrawprod)
+                                        if int(r['Components/Quantity To Consume']) == 0:
+                                            myprod.getMPredecessors()[myrawprod] = 1
+                                        else:
+                                            myprod.getMPredecessors()[myrawprod] = int(r['Components/Quantity To Consume'])
                             
-
-                            # creation of operations: start
-                            if (not pd.isna(r['Work Orders/Work Center'])):
-
-                                prev_op = None
-                                oprind = 0
-                                myopr = None
-
-                                # create the very first operation..
-                                if not pd.isna(TBRM_df.loc[i,'Work Orders/Work Center']):
-
+                                #read the raw material: end
+                                
+    
+                                # creation of operations: start
+                                if (not pd.isna(r['Work Orders/Work Center'])):
+    
+                                    prev_op = None
+                                    oprind = 0
                                     myopr = None
-                                    
-                                    if not "["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'] in self.Operations:
+    
+                                    # create the very first operation..
+                                    if not pd.isna(TBRM_df.loc[i,'Work Orders/Work Center']):
+    
+                                        myopr = None
                                         
-                                        myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],TBRM_df.loc[i,'Work Orders/Expected Duration'])
-                                        nroprs+=1
-                                        newres = None
-                                        if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
-                                            newres = Resource(nrresources,"Machine",TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
-                                            nrresources+1
-                                            self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']] = newres
+                                        if not "["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'] in self.Operations:
+                                            
+                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],TBRM_df.loc[i,'Work Orders/Expected Duration'])
+                                            nroprs+=1
+                                            newres = None
+                                            if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
+                                                newres = Resource(nrresources,"Machine",TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
+                                                nrresources+1
+                                                self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']] = newres
+                                            else:
+                                                newres = self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']]
+    
+                                            myopr.getRequiredResources().append(newres)
+    
+                                            prev_op = myopr
+                                            self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]= myopr
+                                            myopr.setProduct(myprod)
+                                            myopr.setOperationIndex(oprind)
+                                            oprind+=1
+                                            myprod.getOperations().append(myopr)
+                                            
                                         else:
-                                            newres = self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']]
-
-                                        myopr.getRequiredResources().append(newres)
-
-                                        prev_op = myopr
-                                        self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]= myopr
-                                        myopr.setProduct(myprod)
-                                        myopr.setOperationIndex(oprind)
-                                        oprind+=1
-                                        myprod.getOperations().append(myopr)
+                                            myopr = self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]
+                                            prev_op = myopr
+                                            
+                                            
                                         
-                                    else:
-                                        myopr = self.Operations["["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center']]
-                                        prev_op = myopr
+                                    lineno = i+1
+                                    operations = [r['Work Orders/Work Center']]
+    
+                                  
+                                    while pd.isna(TBRM_df.loc[lineno,'Product']):
+                                        if pd.isna(TBRM_df.loc[lineno,'Work Orders/Work Center']):
+                                            break
+                                        self.getVisualManager().getDiagInfo().value += "oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n" 
+    
                                         
-                                        
-                                    
-                                lineno = i+1
-                                operations = [r['Work Orders/Work Center']]
-
-                              
-                                while pd.isna(TBRM_df.loc[lineno,'Product']):
-                                    if pd.isna(TBRM_df.loc[lineno,'Work Orders/Work Center']):
-                                        break
-                                    self.getVisualManager().getDiagInfo().value += "oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n" 
-
-                                    
-                                    if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
-                                        myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],TBRM_df.loc[lineno,'Work Orders/Expected Duration'])
-                                        nroprs+=1
-
-                                        newres = None
-                                        if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Resources:
-                                            newres = Resource(nrresources,"Machine",TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
-                                            nrresources+1
-                                            self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']] = newres
+                                        if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
+                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],TBRM_df.loc[lineno,'Work Orders/Expected Duration'])
+                                            nroprs+=1
+    
+                                            newres = None
+                                            if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Resources:
+                                                newres = Resource(nrresources,"Machine",TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
+                                                nrresources+1
+                                                self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']] = newres
+                                            else:
+                                                newres = self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']]
+    
+                                            myopr.getRequiredResources().append(newres)
+    
+                                            
+                                            if prev_op!= None:
+                                                myopr.setPredecessor(prev_op)
+                                            prev_op = myopr
+                                            self.Operations["["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center']]= myopr
+                                            myopr.setProduct(myprod)
+                                            myopr.setOperationIndex(oprind)
+                                            oprind+=1
+                                            myprod.getOperations().append(myopr)
+                                            
                                         else:
-                                            newres = self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']]
-
-                                        myopr.getRequiredResources().append(newres)
-
-                                        
-                                        if prev_op!= None:
-                                            myopr.setPredecessor(prev_op)
-                                        prev_op = myopr
-                                        self.Operations["["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center']]= myopr
-                                        myopr.setProduct(myprod)
-                                        myopr.setOperationIndex(oprind)
-                                        oprind+=1
-                                        myprod.getOperations().append(myopr)
-                                        
-                                    else:
-                                        myopr = self.Operations[TBRM_df.loc[lineno,'Work Orders/Work Center']]
-
-                                   
-                                    operations.append(TBRM_df.loc[lineno,'Work Orders/Work Center'])
-                                    lineno+=1
-                                    if lineno >= len(TBRM_df):
-                                        break
-                                        
-
-                                self.getVisualManager().getDiagInfo().value += "No operations "+str(len(operations))+"\n" 
-                            # creation of operations: end
-                            
-                            ordname = str(myprod.getName())+"_"+str(r['Quantity To Produce'])
-                            self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
-                            self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
-                            if not ordname in self.CustomerOrders:
-                                myDeadLine = "2025-12-31 00:00:00"
-                                if not pd.isna(r['Deadline']):
-                                    myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S")
-                                myorder = CustomerOrder(r['ID'],ordname,myprod.getID(),myprod.getName(),r['Quantity To Produce'],myDeadLine)
-                                myorder.setProduct(myprod)
+                                            myopr = self.Operations[TBRM_df.loc[lineno,'Work Orders/Work Center']]
+    
+                                       
+                                        operations.append(TBRM_df.loc[lineno,'Work Orders/Work Center'])
+                                        lineno+=1
+                                        if lineno >= len(TBRM_df):
+                                            break
+                                            
+    
+                                    self.getVisualManager().getDiagInfo().value += "No operations "+str(len(operations))+"\n" 
+                                # creation of operations: end
                                 
-                                self.CustomerOrders[ordname] = myorder  
-                                
-         \
-                           
-                            
-                    self.getVisualManager().getDiagInfo().value += "Production orders "+str(noorders)+"\n"  
+                                ordname = str(myprod.getName())+"_"+str(r['Quantity To Produce'])
+                                self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
+                                self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
+                                if not ordname in self.CustomerOrders:
+                                    myDeadLine = "2025-12-31 00:00:00"
+                                    if not pd.isna(r['Deadline']):
+                                        myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S")
+                                    myorder = CustomerOrder(r['ID'],ordname,myprod.getID(),myprod.getName(),r['Quantity To Produce'],myDeadLine)
+                                    myorder.setProduct(myprod)
+                                    
+                                    self.CustomerOrders[ordname] = myorder  
                         
-                    self.getVisualManager().RefreshViews()  
-               
+                      
+                                    
+                                        
+                       
+                            
+                        self.getVisualManager().getDiagInfo().value += "Production orders "+str(noorders)+"\n"  
+                            
+                        self.getVisualManager().RefreshViews()  
+
+                    else:
+                        if self.getVisualManager().getNewCustOrdrs_btn().description == "Import resources":
+                            self.getVisualManager().getNewCustOrdrs_btn().layout.visibility = 'hidden'
+                            resources_df = pd.read_csv(content)
+                            
+                            self.getVisualManager().getDiagInfo().value += "No resources "+str(len(resources_df))+"\n" 
+                            
+                            for i,r in resources_df.iterrows():
+                                #ResourceID,ResourceType,Name,DailyCapacity,Automated,Alternatives,OperatingEffort,AvailableShifts
+                                myres = None
+
+                                res_code = r['Name'][:r['Name'].find("_")]
+                                res_model = r['Name'][r['Name'].find("_")+1:]
+
+                                self.getVisualManager().getDiagInfo().value += "Resource "+str(r['Name'])+"\n" 
+
+                                matches = [r for rn,r in self.Resources.items() if (res_code in rn) and (res_model in rn)]
+
+                                self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
+                                
+                                if len(matches) == 0:
+                                    
+                                    myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
+                                    self.Resources[r['Name']] = myres
+                                    
+                                else:
+                                    myres = matches[0]
+                                    
+
+                                if not np.isnan(r["Automated"]):
+                                    if str(r["Automated"]) == "True":
+                                        myres.setAutomated()
+                                myres.setOperatingEffort(float(r["OperatingEffort"]))
+                                
+
+                                if not r["AvailableShifts"] == None:
+                                    myres.getAvailableShifts().clear()
+                                    if str(r["AvailableShifts"]).find("_") != -1: 
+                                        shifts = str(r["AvailableShifts"]).split("_")
+                                        for shift in shifts:
+                                            myres.getAvailableShifts().append(int(shift))
+                                    else:
+                                        myres.getAvailableShifts().append(int(r["AvailableShifts"]))
+
+                                
+                            for i,r in resources_df.iterrows():
+                                myres = None
+
+                                res_code = r['Name'][:r['Name'].find("_")]
+                                res_model = r['Name'][r['Name'].find("_")+1:]
+
+                                self.getVisualManager().getDiagInfo().value += "Resource "+str(r['Name'])+"\n" 
+
+                                matches = [r for rn,r in self.Resources.items() if (res_code in rn) and (res_model in rn)]
+
+                                self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
+                                
+                                if len(matches) == 0:
+                                    
+                                    myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
+                                    self.Resources[r['Name']] = myres
+                                    
+                                else:
+                                    myres = matches[0]
+
+                                if not pd.isnull(r["Alternatives"]):
+                                    self.getVisualManager().getDiagInfo().value += "Alternatives"+str(r["Alternatives"])+" >> "+str(str(r["Alternatives"]).find("~"))+"\n" 
+                                    if str(r["Alternatives"]).find("~") != -1:
+                                        alters = str(r["Alternatives"]).split("~")
+                                        for alter in alters:
+                                            resources = [rs for rn,rs in self.Resources.items() if rn.find(alter) != -1]
+                                            if len(resources) > 0:
+                                                myres.getAlternatives().append(resources[0])
+                                            else:
+                                                self.getVisualManager().getDiagInfo().value += "XXX alter not found >>> "+str(alter)+"\n" 
+                                    else:
+                                        resources = [rs for rn,rs in self.Resources.items() if r["Alternatives"] in rn]
+                                        self.getVisualManager().getDiagInfo().value += "resurces>>> "+str(len(resources))+"\n" 
+                                        if len(resources) > 0:
+                                            myres.getAlternatives().append(resources[0])
+                                        else:
+                                            self.getVisualManager().getDiagInfo().value += "XhhhhhXX alter not found >>> "+str(r["Alternatives"])+"\n" 
+                                self.getVisualManager().getDiagInfo().value += "Resource "+str(r['Name'])+" has "+str(len(myres.getAlternatives()))+" alternatives "+"\n" 
+
+                                 
+                                
+                            self.getVisualManager().RefreshViews()
+            
 
         #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
         #content = input_file['content']

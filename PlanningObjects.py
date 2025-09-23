@@ -150,6 +150,8 @@ class Resource():
         self.CapacityReserved = dict()
         self.OperatingTeam = None
         self.MachineGroup = None
+        self.Alternatives = [] # alternatives that can make the operations of this resource.
+        self.AvailableShifts = []
        
    
         # PlANNING
@@ -168,6 +170,12 @@ class Resource():
         self.ShiftAvailability = dict() #key: shift, val: boolena available/unavailable.  
 
         # SCHEDULING
+
+    def getAvailableShifts(self):
+        return self.AvailableShifts
+
+    def getAlternatives(self):
+        return self.Alternatives
 
     def getShiftOperatingModes(self):
         return self.ShiftOperatingModes
