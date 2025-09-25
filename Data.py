@@ -995,7 +995,13 @@ class DataManager:
                                         if not "["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'] in self.Operations:
 
                                             proctime = TBRM_df.loc[i,'Work Orders/Expected Duration']
-                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],float(proctime)/float(r['Quantity To Produce']))
+
+                                            if TBRM_df.loc[i,'Work Orders/Work Center'].find("OUT -")== -1:
+                                                proctime = float(proctime)/float(r['Quantity To Produce'])
+                                                
+
+                                            
+                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],proctime)
                                             nroprs+=1
                                             newres = None
                                             if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:

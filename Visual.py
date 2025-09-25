@@ -1435,10 +1435,7 @@ class VisualManager():
     def SetEnd(self,event):
 
         sel_end = self.getPLTBPlanEnd().value
-        self.getPlanningManager().setPHEnd(sel_end)
-       
-        if self.getPlanningManager().getPHStart() != None:
-            self.getPLTBmakeplan_btn().disabled = False
+        self.getPlanningManager().setPHEnd(self.getPlanningManager().getPHStart()+timedelta(days = 30*sel_end))
 
         return
         
@@ -1627,15 +1624,22 @@ class VisualManager():
         self.getPLTBOrdProd().layout.height = '150px'
   
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
+        self.getPLTBPlanStart().value = datetime.now()+timedelta(days=1)
+        self.getPlanningManager().setPHStart(self.getPLTBPlanStart().value)
         self.getPLTBPlanStart().observe(self.SetStart)
 
+                         
+        myslider = widgets.IntSlider(value=3,min=1,max=6,step=1,description='Months:',
+                               disabled=False,continuous_update=False,orientation='horizontal',readout=True,readout_format='d')
         
-        self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
+        self.setPLTBPlanEnd(myslider)
+        self.getPlanningManager().setPHEnd(self.getPlanningManager().getPHStart()+timedelta(days = 30*self.getPLTBPlanEnd().value))
+        self.getPLTBPlanEnd().layout.width = '350px'
         self.getPLTBPlanEnd().observe(self.SetEnd)
         self.getPLTBresult2exp().layout.height = '150px'
        
 
-        self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan",disabled = True,icon ='gear'))
+        self.setPLTBmakeplan_btn(widgets.Button(description="Make Plan",icon ='gear'))
         self.getPLTBmakeplan_btn().on_click(self.getPlanningManager().MakeDeliveryPlan)
 
         self.setPLTBrawlist(widgets.Select(options=[],description = ''))

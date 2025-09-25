@@ -76,13 +76,99 @@ class PlanningManager:
         
         return
 
-    def PlanProduction(self,order,delvdate,product,mydate,quantity,lvl,timecheck,delay):
+    def FindDateGivenHrDrop(self,cr_date,hours,daycapacity):
+
+        currentdate = cr_date; remainedtime = hours
+        
+        while remainedtime > daycapacity:   
+            
+            remainedtime-= daycapacity
+            currentdate = currentdate - timedelta(days = 1)
+             
+            while currentdate.weekday() >= 5:
+                currentdate = currentdate- timedelta(days = 1)
+     
+
+        return currentdate
+        
+   
+
+    
+    def CheckProduction(self,order,product,mydate,quantity):
+
+        if len(product.getMPredecessors()) > 0: # bom 
+
+            #self.getVisualManager().getPLTBresult2exp().value+=" In checking operations.. "+order.getName()+"\n"
+            
+            prodoprs = [p for p in product.getOperations()]
+            reversedoprs = prodoprs[::-1]
+            totaltime = 0  
+   
+            for operation in reversedoprs:
+
+                if len(operation.getRequiredResources())>0:
+                    resource = operation.getRequiredResources()[0]
+                
+                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime())/60 # in hours
+                    totaltime+=totuse
+           
+
+            currentdate = mydate
+            remainedtime = int(totaltime)
+       
+            while remainedtime > 15: 
+        
+                remainedtime-= 15
+                currentdate = currentdate - timedelta(days = 1)
+                 
+                while currentdate.weekday() >= 5:
+                    currentdate = currentdate- timedelta(days = 1)
+
+            newdate = currentdate
+
+            #self.getVisualManager().getPLTBresult2exp().value+=" new date... "+order.getName()+"\n"
+           
+            if order.getLatestStart()== None:
+                order.setLatestStart(newdate)
+            else:
+                if newdate < order.getLatestStart():
+                    order.setLatestStart(newdate)  
+
+            #self.getVisualManager().getPLTBresult2exp().value+=" check predecessors... "+order.getName()+"\n"
+            
+            for predecessor,multiplier in product.getMPredecessors().items():
+                #self.getVisualManager().getPLTBresult2exp().value+=" predecessor... "+predecessor.getName()+", newdate: "+str(newdate)+", x: "+str(multiplier)+"\n"
+                self.CheckProduction(order,predecessor,newdate,quantity*multiplier)
+                
+        else:
+            #self.getVisualManager().getPLTBresult2exp().value+=" no preds product.. "+order.getName()+"\n"
+            if order.getLatestStart()== None:
+                order.setLatestStart(mydate)
+            else:
+                if mydate < order.getLatestStart():
+                    order.setLatestStart(mydate) 
+
+        #self.getVisualManager().getPLTBresult2exp().value+=" DONE... "+order.getName()+"\n"
+        
+        return
+
+    def FindLS(self,order):
+
+        #self.getVisualManager().getPLTBresult2exp().value+=" Finding LS.. "+order.getName()+"\n"
+        
+        self.CheckProduction(order,order.getProduct(),order.getDeadLine().date(),order.getQuantity())
+
+        #self.getVisualManager().getPLTBresult2exp().value+=" Found LS.. "+order.getName()+"\n"
+
+        return
+
+    def PlanProduction(self,order,delvdate,product,mydate,quantity,lvl,delay):
 
         #calculate use of resource for production for every operation
         #assume: one workday includes 16 hours of two shifts. 
         #assume: all production is done sequential in operations, no batch concept 
 
-        self.getVisualManager().getPLTBresult2exp().value+=" "+str(lvl)+" St ==> "+product.getName()+",Prs "+str(len(product.getMPredecessors()))+": "+str(mydate)+"\n"
+        #self.getVisualManager().getPLTBresult2exp().value+=" "+str(lvl)+" St ==> "+product.getName()+",Preds "+str(len(product.getMPredecessors()))+": "+str(mydate)+"\n"
 
 
         if not product in order.getOrderPlan()['Products']:
@@ -92,158 +178,146 @@ class PlanningManager:
         
         quantity = quantity/product.getStockBatch()
 
-        #self.getVisualManager().getPLTBresult2exp().value+=" Q: "+str(quantity)+"\n"
+        self.getVisualManager().getPLTBresult2exp().value+=" Q: "+str(quantity)+"\n"
 
-        #self.getVisualManager().getPLTBresult2exp().value+=" resvlvls?: "+str(mydate.date() in product.getReservedStockLevels())+"\n"
-
-
+  
         if mydate.date() in product.getReservedStockLevels():
             product.getReservedStockLevels()[mydate.date()]+=quantity
         else:
             product.getReservedStockLevels()[mydate.date()]=quantity
 
-        #if len(product.getOperations()) == 0:
       
+        #self.getVisualManager().getPLTBresult2exp().value+="ops.. "+str(len(product.getOperations()))+"\n"
        
         #self.getVisualManager().getPLTBresult2exp().value+=str(type(mydate))+"  "+str(type(self.getPHStart()))+"\n"
-        if mydate.date() < self.getPHStart():
-            self.getVisualManager().getPLTBresult2exp().value+="XXXXX <  "+str(self.getPHStart())+"\n"
+        if mydate.date() < self.getPHStart().date():
+            #self.getVisualManager().getPLTBresult2exp().value+="XXXXX <  "+str(self.getPHStart())+"\n"
             order.getDelayReasons()[delvdate.date()]=str(product.getPN())+"-> Lead time "+str(mydate.date())
             return False
 
         
         #self.getVisualManager().getPLTBresult2exp().value+="not in past.. "+"\n"
-        totaltime = 0   
+        totaltime = 0  
+        
         if len(product.getMPredecessors()) > 0: # bom case
-            
-            #self.getVisualManager().getPLTBresult2exp().value+="ops.. "+str(len(product.getOperations()))+"\n"
             prev_job = None
-            reversedoprs = [p for p in product.getOperations()]
-            reversedoprs = reversedoprs[::-1]
-            for operation in reversedoprs: # doubkle-check that they are in reversed order!!!!
-                
+            prodoprs = [p for p in product.getOperations()]
+            reversedoprs = prodoprs[::-1]
 
-                # skip quantity when resource is outsourced:
-
-                curr_quantity = quantity    
-                for resource in operation.getRequiredResources():
-                    myresource = resource
-                    if isinstance(resource,list):
-                        myresource = resource[0]
-                    if myresource.IsOutsource():
-                        curr_quantity = 1
-                        break
-     
-                resource_use = curr_quantity*operation.getProcessTime() # in hours 
-                
-                
-                resource_use =  int(resource_use)+int(resource_use-int(resource_use) > 0)
-
-                #self.getVisualManager().getPLTBresult2exp().value+="op.. "+operation.getName()+", resuse: "+str(resource_use)+"\n"
-                
-                totaltime+=resource_use
-                # self.getVisualManager().getPLTBresult2exp().value+=str(operation.getName())+">> "+str(len(operation.getRequiredResources()))+"\n"
-                for resource in operation.getRequiredResources():
-
-                    myresource = resource
-                    if isinstance(resource,list):
-                        myresource = resource[0] # here first one among alternatives is selected, if there are some..
-                       
-                    #self.getVisualManager().getPLTBresult2exp().value+="res.. "+myresource.getName()+", mydate"+str(mydate)+"\n"
-
-
-                    totuse = 0; totres = 0
-                    
-                    #self.getVisualManager().getPLTBresult2exp().value+="res cap check.... "+myresource.getName()+", mydate "+str(mydate)+"\n"
-
-                    if not myresource.IsOutsource():
-                        for cust_ordr,usedict in myresource.getCapacityUsePlan().items():
-                            for checkdate,useval in usedict.items():
-                                if checkdate <= mydate.date():
-                                    totuse+=useval
-                        #self.getVisualManager().getPLTBresult2exp().value+="totuse.... "+str(totuse)+"\n"
-                        if myresource in order.getOrderPlan()['Resources']:
-                            for checkdate,useval in order.getOrderPlan()['Resources'][myresource].items():
-                                if checkdate <= mydate.date():
-                                    totres+=useval
-                        #self.getVisualManager().getPLTBresult2exp().value+="totres.... "+str(totres)+"\n"
-    
-                        
-                        
-                        if myresource.getCapacityLevels()[mydate.date()] < totuse+totres+resource_use:
-                            self.getLogData()["Log_"+str(len(self.getLogData()))]="Insufficient capacity for "
-                            order.getDelayReasons()[delvdate.date()] = str(product.getPN())+"-> "+myresource.getName()+" Cap: "+str(mydate.date())
-                            return False
-                        else:
-                            #self.getVisualManager().getPLTBresult2exp().value+="res cap ok ... "+myresource.getName()+", mydate"+str(mydate)+"\n"
-                            if not myresource in order.getOrderPlan()['Resources']:
-                                order.getOrderPlan()['Resources'][myresource] = dict()
-                            order.getOrderPlan()['Resources'][myresource][mydate.date()] = resource_use
-                            self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
-                            jobid = self.getVisualManager().getSchedulingManager().getJobID()
-                            curr_job =  Job(jobid,"Job_"+str(jobid),product,operation,curr_quantity,mydate)
-                            
-                            if prev_job!= None:
-                                prev_job.getSuccessors().append(curr_job)
-                                curr_job.getPredecessors().append(prev_job)
-                            prev_job = curr_job
-                            curr_job.setCustomerOrder(order)
-                                
-                            order.getMyJobs().append(curr_job)
-                             
-                                    
-  
-            totalhours =  int(totaltime)+int(totaltime-int(totaltime) > 0)
-
-            currentdate = mydate; remainedtime = totalhours
             
-            while remainedtime > 0:
-                #self.getVisualManager().getPLTBresult2exp().value+="remainedtime.. "+str(remainedtime)+"\n"
+            for operation in reversedoprs: 
+  
+               
 
-                if currentdate.hour == 0:
-                    timeofday = 16
-                else: 
-                    timeofday = currentdate.hour - 8
+                myresource = None # now choose the resource that has most capacity
+                avlcapacity = 0
+                resource_use = 0
+
+                # now find the resource that has the most capacity on the needed date.
+
+             
+                alternatives = []
+                for res in operation.getRequiredResources():
+                    alternatives.append(res)
+                    for alt in res.getAlternatives():
+                        if not alt in alternatives:
+                            alternatives.append(alt)
                     
-                currentdate = currentdate - timedelta(hours = min(timeofday,remainedtime))
-                remainedtime = max(remainedtime - timeofday,0) 
+                
+                for resource in alternatives:
 
-                #self.getVisualManager().getPLTBresult2exp().value+="currentdate.. "+str(currentdate)+"\n"
+                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime())/60 # in hours 
+                    
+                    if (resource.IsOutsource()) and (len(operation.getRequiredResources()) == 1):
+                        myresource = resource
+                        resource_use = totuse
+                        #self.getVisualManager().getPLTBresult2exp().value+="Op "+str(operation.getName())+", OUTres:  "+str(myresource.getName())+", use: "+str(resource_use)+"\n"
+                        break
+                    
+                 
+                    totuse =  int(totuse)+int(totuse-int(totuse) > 0)
+                    
+                    curr_use = totuse
+                    
+                    
+                    for cust_ordr,usedict in resource.getCapacityUsePlan().items():
+                        totuse+=sum([v for cd,v in usedict.items() if cd <= mydate.date()])
+                    if resource in order.getOrderPlan()['Resources']:
+                        totuse+=sum([v for cd,v in order.getOrderPlan()['Resources'][resource].items() if cd <= mydate.date()])
 
 
-                if currentdate.hour == 8:
-                    currentdate = currentdate - timedelta(hours = 8)
-                    #self.getVisualManager().getPLTBresult2exp().value+="drop 8 hours.. "+str(currentdate)+"\n"
+                  
+                    if avlcapacity <= resource.getCapacityLevels()[mydate.date()] - totuse:
+                        myresource = resource
+                        avlcapacity = resource.getCapacityLevels()[mydate.date()] - totuse
+                        resource_use = curr_use
+                    
+                        
+                   
+                if myresource == None:
+                    #self.getVisualManager().getPLTBresult2exp().value+="No feasible res found for op "+str(operation.getName())+"\n" 
+                    self.getLogData()["Log_"+str(len(self.getLogData()))]="Insufficient capacity for "
+                    order.getDelayReasons()[delvdate.date()] = str(product.getPN())+"XXXX: No resource for op "+str(operation.getName())+" on "+str(mydate.date())
+                    return False
+                else:
+                    #self.getVisualManager().getPLTBresult2exp().value+="Op "+str(operation.getName())+", alts: "+str(len(alternatives))+", res: "+str(myresource.getName())+", use: "+str(resource_use)+"\n"
+                    pass
 
+                if not myresource in order.getOrderPlan()['Resources']:
+                    order.getOrderPlan()['Resources'][myresource] = dict()
+                order.getOrderPlan()['Resources'][myresource][mydate.date()] = resource_use
+                self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
+
+                jobid = self.getVisualManager().getSchedulingManager().getJobID()
+                
+                curr_job =  Job(jobid,"Job_"+str(jobid),product,operation,quantity,mydate)
+                            
+                if prev_job!= None:
+                    prev_job.getSuccessors().append(curr_job)
+                    curr_job.getPredecessors().append(prev_job)
+                prev_job = curr_job
+                curr_job.setCustomerOrder(order)       
+                order.getMyJobs().append(curr_job)
+                totaltime+=resource_use
+                      
+            #self.getVisualManager().getPLTBresult2exp().value+="total time...."+str(totaltime)+"\n" 
+           
+            #newdate = FindDateGivenHrDrop(mydate,int(totaltime),15)
+
+            currentdate = mydate
+            remainedtime = int(totaltime)
+            #self.getVisualManager().getPLTBresult2exp().value+="mydate...."+str(mydate)+"\n" 
+        
+            while remainedtime > 15: 
+                
+                #self.getVisualManager().getPLTBresult2exp().value+="date...."+str(currentdate)+", remainedtime.. "+str(remainedtime)+"\n" 
+                
+                remainedtime-= 15
+                currentdate = currentdate - timedelta(days = 1)
+                 
                 while currentdate.weekday() >= 5:
                     currentdate = currentdate- timedelta(days = 1)
-                    #self.getVisualManager().getPLTBresult2exp().value+="drop weekend.. "+str(currentdate)+"\n"
-      
-            newdate = currentdate # set new date 
 
-            if timecheck:
-                self.getVisualManager().getPLTBresult2exp().value+="mydate.. "+str(mydate)+"\n"
-                self.getVisualManager().getPLTBresult2exp().value+="totalhours.. "+str(totalhours)+"\n"
-                self.getVisualManager().getPLTBresult2exp().value+="newdate.. "+str(newdate)+"\n"
+                if currentdate < self.getPHStart():
+                    #self.getVisualManager().getPLTBresult2exp().value+="XXXX: latest start in past...."+str(currentdate)+"\n" 
+                    order.getDelayReasons()[delvdate.date()] = str(product.getPN())+"-> Lead time goes to past "
+                    return False
 
+            newdate = currentdate
 
-            #self.getVisualManager().getPLTBresult2exp().value+=" End  ==> "+product.getName()+":"+str(newdate)+"\n"
-
-            
-            if newdate.date()  < self.getPHStart():
-                order.getDelayReasons()[delvdate.date()] = str(product.getPN())+"-> Lead time "+str(newdate.date())
+            if newdate < self.getPHStart():
+                #self.getVisualManager().getPLTBresult2exp().value+="XXXX: latest start in past...."+str(currentdate)+"\n" 
+                order.getDelayReasons()[delvdate.date()] = str(product.getPN())+"-> Lead time goes to past "
                 return False
 
-            if order.getLatestStart()== None:
-                order.setLatestStart(newdate)
-            else:
-                if newdate < order.getLatestStart():
-                    order.setLatestStart(newdate)                
+           
+            #self.getVisualManager().getPLTBresult2exp().value+="newdate...."+str(newdate)+"\n" 
+
        
-      
+        #self.getVisualManager().getPLTBresult2exp().value+="checking predecessors.. "+str(len(product.getMPredecessors()))+"\n" 
         for predecessor,multiplier in product.getMPredecessors().items():
                 #self.getVisualManager().getPLTBresult2exp().value+="predecessor.."+str(predecessor.getName())+"\n"
-            if not self.PlanProduction(order,delvdate,predecessor,newdate,quantity*multiplier,lvl+1,timecheck,delay):    
+            if not self.PlanProduction(order,delvdate,predecessor,newdate,quantity*multiplier,lvl+1,delay):    
                 return False
     
         return True
@@ -283,12 +357,12 @@ class PlanningManager:
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
  
-
+        self.getVisualManager().getPLTBmakeplan_btn().disabled = True
         # Create time-dependant lists: Capacity levels of resources, stock levels of raw materials
 
         #self.getVisualManager().getPLTBresult2exp().value+=">> Resources capacities.. "+str(len(self.getDataManager().getResources().items()))+"\n"
         daterange = pd.date_range(self.getPHStart(),self.getPHEnd())
-        self.getVisualManager().getPLTBresult2exp().value+=">: "+str(type(self.getPHStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
+        #self.getVisualManager().getPLTBresult2exp().value+=">: "+str(type(self.getPHStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
  
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
             myord.resetPlannedDelivery()
@@ -323,38 +397,63 @@ class PlanningManager:
         self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
 
         planned = 0
-      
-        
+        OrderstoPlan = []
+
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
+            #self.getVisualManager().getPLTBresult2exp().value+="Order: "+str(myord.getName())+", av: "+str(myord.getComponentAvailable())+", d: "+str(myord.getDeadLine().date())+"\n"
+            
+            self.FindLS(myord)
 
-            self.getVisualManager().getPLTBresult2exp().value+="Order: "+str(myord.getName())+"\n"
-            if myord.getComponentAvailable() == "Not Available":
-                self.getVisualManager().getPLTBresult2exp().value+="Component not available.. "+"\n"
-                continue # this order cannot start due to missing component
+            #self.getVisualManager().getPLTBresult2exp().value+="Order: "+str(myord.getName())+", d: "+str(myord.getDeadLine().date())+", ls: "+str(myord.getLatestStart())+"\n"
+            #self.getVisualManager().getPLTBresult2exp().value+=">: "+str(type(myord.getLatestStart()))+" <--> "+str(type(self.getPHEnd()))+"\n"
+ 
 
-            start_date = self.getPHStart()+timedelta(days=1)
+            
 
+            if not pd.isna(myord.getComponentAvailable()):
+                if(myord.getComponentAvailable() == "Available") and (myord.getDeadLine() > self.getPHStart()):
+                    if myord.getLatestStart() < self.getPHEnd().date():
+                        OrderstoPlan.append(myord)        
+
+        self.getVisualManager().getPLTBresult2exp().value+="Orders to plan>>>  "+str(len(OrderstoPlan))+"\n"
+        
+        for myord in OrderstoPlan:
+
+            self.getVisualManager().getPLTBresult2exp().value+="__________________________________ "+"\n"
+
+            self.getVisualManager().getPLTBresult2exp().value+="Order: "+str(myord.getName())+", d: "+str(myord.getDeadLine())+"\n"
+
+            self.getVisualManager().getPLTBresult2exp().value+=" Component.. "+str(myord.getComponentAvailable())+"\n"
+            
+
+            exp_date = self.getPHStart().date()
+
+            
             if myord.getComponentAvailable().find("Exp") != -1:
                 expected_date = myord.getComponentAvailable()
                 expected_date = expected_date[expected_date.find("Exp")+4:]
                 self.getVisualManager().getPLTBresult2exp().value+=">> expected_date..  "+str(expected_date)+"\n"
-     
-            
+                try: 
+                    exp_date = datetime.strptime(expected_date,"%d/%m/%Y").date()
+                except: 
+                    pass
 
-            mindeliverydate = max(myord.getDeadLine().date(),self.getPHStart())+timedelta(days=1)
-
+            self.getVisualManager().getPLTBresult2exp().value+=" expdate.. "+str(exp_date)+"\n"
             
+            mindeliverydate = max(myord.getDeadLine().date(),exp_date)
+
+            self.getVisualManager().getPLTBresult2exp().value+=" mindeliverydate.. "+str(mindeliverydate)+"\n"
+   
             delay = 0
             for curr_deliverydate in pd.date_range(mindeliverydate,self.getPHEnd()):
+
+                
                 if curr_deliverydate.weekday() >= 5:
                     continue
 
-                timecheck =  planned < 3
-            
-                #self.getVisualManager().getPLTBresult2exp().value+="delvdate iteration.. "+str(curr_deliverydate)+"\n"
-              
-   
-                if self.PlanProduction(myord,curr_deliverydate,myord.getProduct(),curr_deliverydate,myord.getQuantity(),1,timecheck,delay):
+                self.getVisualManager().getPLTBresult2exp().value+="---------------------------------------"+"\n"
+    
+                if self.PlanProduction(myord,curr_deliverydate,myord.getProduct(),curr_deliverydate,myord.getQuantity(),1,delay):
                    
                     planned+=1
                     myord.setPlannedDelivery(curr_deliverydate)
@@ -406,9 +505,9 @@ class PlanningManager:
 
         ops = []
         
-        for x in custordlist:
+        for x in OrderstoPlan:
             if x.getPlannedDelivery() != None:
-                ops.append(x.getName()+": "+str((x.getPlannedDelivery().date()-max(x.getDeadLine().date(),self.getPHStart())).days-1))
+                ops.append(x.getName()+": "+str((x.getPlannedDelivery().date()-x.getDeadLine().date()).days))
             else:
                 ops.append(x.getName()+": "+"XXXXXX")
         self.getVisualManager().getPLTBOrdlist().options = ops
@@ -416,8 +515,8 @@ class PlanningManager:
         
         # END: here is your code to make planning 
         # self.getVisualManager().getPLTBresult2exp().value+=">> Deliveries"+"\n"
-        for ordname,myord in self.getDataManager().getCustomerOrders().items():
-            self.getVisualManager().getPLTBresult2exp().value+="   ->"+ordname+": deadline "+str(myord.getDeadLine())+", planned delivery: "+str(myord.getPlannedDelivery())+"\n"
+        #for ordname,myord in self.getDataManager().getCustomerOrders().items():
+            #self.getVisualManager().getPLTBresult2exp().value+="   ->"+ordname+": deadline "+str(myord.getDeadLine())+", planned delivery: "+str(myord.getPlannedDelivery())+"\n"
         #self.getVisualManager().getPLTBresult2exp().value+=">> CapacityUsePlans"+"\n"
 
 
