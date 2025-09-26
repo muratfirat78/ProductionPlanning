@@ -297,13 +297,11 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
        
 
-        ScheduleWeeks = ((self.getSHEnd()-self.getSHStart()).days)//7 # weeks
-
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
 
         
         
-        pssend= self.getSHEnd()
+        pssend= self.getSHStart()+timedelta(days = 7*self.getSHEnd())
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
 

@@ -229,7 +229,7 @@ class DataManager:
     def SaveInstance(self,event):
 
         # Save Products.
-        products_df = pd.DataFrame(columns= ["ProductID", "ProductNumber","Name","StockLevel"])
+        products_df = pd.DataFrame(columns= ["ProductID","ProductNumber","Name"])
         precedences_df = pd.DataFrame(columns= ["PredecessorID","SuccessorID","Multiplier"])
         prodrops_df = pd.DataFrame(columns= ["ProductID","OperationID","OperationIndex"])
         operations_df = pd.DataFrame(columns= ["OperationID","Name","ProcessTime"])
@@ -945,7 +945,8 @@ class DataManager:
                                 pname =  "["+pnstr+"] "+namestr
         
                                 if not pname in self.Products: 
-                                    myprod = Product(nrproducts,pname,pnstr,0)  
+                                    myprod = Product(nrproducts,pname,pnstr,0)
+                                    myprod.setCreated(datetime.now())
                                     self.Products[pname]= myprod   
                                     nrproducts+=1
                                         
@@ -960,10 +961,13 @@ class DataManager:
                                     rawpnstr =  rawpnstr[:rawpnstr.find("]")]
     
                                     myrawprod = None
+
+                                    
     
                                     rawname = "["+rawpnstr+"] "+rawnamestr
                                     if not rawname in self.Products:
-                                        myrawprod = Product(nrproducts,rawname,rawpnstr,0)
+                                        myrawprod = Product(r['Components/Product/ID'],rawname,rawpnstr,0)
+                                        myrawprod.setCreated(datetime.now())
                                         nrproducts+=1
                                         self.Products[rawname]= myrawprod 
                                     else:
@@ -1001,7 +1005,7 @@ class DataManager:
                                                 
 
                                             
-                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],proctime)
+                                            myopr = Operation(TBRM_df.loc[i,'Work Orders/Work Center/ID'] ,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],proctime)
                                             nroprs+=1
                                             newres = None
                                             if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
@@ -1085,6 +1089,7 @@ class DataManager:
                                         myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S")   
                                     myorder = CustomerOrder(r['ID'],ordname,myprod.getID(),myprod.getName(),int(r['Quantity To Produce']),myDeadLine)
                                     myorder.setProduct(myprod)
+                                   
                                     
                                     self.CustomerOrders[ordname] = myorder
                                 else:
@@ -1104,6 +1109,7 @@ class DataManager:
                     else:
                         if self.getVisualManager().getNewCustOrdrs_btn().description == "Import resources":
                             self.getVisualManager().getNewCustOrdrs_btn().layout.visibility = 'hidden'
+                            
                             resources_df = pd.read_csv(content)
                             
                             self.getVisualManager().getDiagInfo().value += "No resources "+str(len(resources_df))+"\n" 
@@ -1188,13 +1194,76 @@ class DataManager:
                                  
                                 
                             self.getVisualManager().RefreshViews()
-            
+
+                            savefile = False
+                            
+                            if savefile: 
+                                usecase =  self.getVisualManager().getCasesDrop().value
+        
+                                # Save Products.
+                                products_df = pd.DataFrame(columns= ["ProductID","ProductNumber","Name","Created"])
+                                precedences_df = pd.DataFrame(columns= ["PredecessorID","SuccessorID","Multiplier"])
+                                prodrops_df = pd.DataFrame(columns= ["ProductID","OperationID","OperationIndex"])
+                                operations_df = pd.DataFrame(columns= ["OperationID","Name","ProcessTime"])
+                                opsres_df = pd.DataFrame(columns= ["OperationID","ResourceID"])
+                                resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","DailyCapacity"])
+                                orders_df = pd.DataFrame(columns= ["OrderID","ProductID","Name","Quantity","Deadline"])
+                            
+                                    
+                                for name,myprod in self.Products.items():
+                                    products_df.loc[len(products_df)] = {"ProductID":myprod.getID(), "ProductNumber":myprod.getPN(),"Name":myprod.getName(),"Created":myprod.getCreated()}
+                             
+                                    for predecessor,multiplier in myprod.getMPredecessors().items():
+                                        precedences_df.loc[len(precedences_df)] = {"PredecessorID":predecessor.getID(),"SuccessorID":myprod.getID(),"Multiplier":multiplier}
+                            
+                                    for opr in myprod.getOperations():
+                                        prodrops_df.loc[len(prodrops_df)] = {"ProductID":myprod.getID(),"OperationID":opr.getID(),"OperationIndex":opr.getOperationIndex()}
+                                            
+                            
+                            
+                                for opname,opr in self.Operations.items():
+                                    operations_df.loc[len(operations_df)]= {"OperationID":opr.getID(),"Name":opr.getName(),"ProcessTime":opr.getProcessTime()}
+                                        
+                                       
+                                   
+                                for ordname,ordr in self.CustomerOrders.items():
+                                    orders_df.loc[len(orders_df)]={"OrderID":ordr.getID(),"ProductID":ordr.getProduct().getID(),"Name":ordr.getName(),"Quantity":ordr.getQuantity(),"Deadline":ordr.getDeadLine()}
+                            
+                                
+                            
+                            
+                                folder = 'UseCases'; casename = usecase
+                                path = folder+"\\"+casename
+                                isExist = os.path.exists(path)
+                            
+                                if not isExist:
+                                    os.makedirs(path)
+                            
+                                timestr = time.strftime("%Y%m%d-%H%M%S")
+                                   
+                                    
+                                filename = 'Products_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename;  fullpath = os.path.join(Path.cwd(), path)
+                                self.getVisualManager().getCaseInfo().value += ">>> products save folder.."+str(path)+"\n" 
+                                products_df.to_csv(path, index=False)
+                                filename = 'Precedences_'+timestr+'.csv';path = folder+"\\"+casename+"\\"+filename; fullpath = os.path.join(Path.cwd(), path)
+                                precedences_df.to_csv(fullpath, index=False)
+                                filename = 'ProductsOperations_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename; fullpath = os.path.join(Path.cwd(), path)
+                                prodrops_df.to_csv(fullpath, index=False)
+                                filename = 'Operations_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename; fullpath = os.path.join(Path.cwd(), path)
+                                operations_df.to_csv(fullpath, index=False)
+                                filename = 'CustomerOrders_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+                                orders_df.to_csv(fullpath, index=False)
+           
+
+                                
 
         #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
         #content = input_file['content']
         #content = io.StringIO(content.decode('utf-8'))
         #df = pd.read_csv(content)
 
+      
+            
 
         #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
         return

@@ -35,7 +35,22 @@ class Product():
         self.PurchaseLevels = dict() #key: first day of week, val: purchase amount / for raw materials
         self.Batchsize = None #This will be the prescribed batchsize or the order size if no Batch is available.
         self.DemandingOrders = dict() #key: order,  #val: quantity
-        
+        self.Created = None # First date entered into planning system
+        self.Updated = None # Last date an update is made
+
+
+    def getCreated(self):
+        return self.Created
+    
+    def setCreated(self,myit):
+        self.Created = myit
+        return
+    def getUpdated(self):
+        return self.Updated
+    
+    def setCreated(self,myit):
+        self.Updated = myit
+        return
 
     def getStockUnit(self):
         return self.stockunit
@@ -152,7 +167,7 @@ class Resource():
         self.MachineGroup = None
         self.Alternatives = [] # alternatives that can make the operations of this resource.
         self.AvailableShifts = []
-       
+        
    
         # PlANNING
 
@@ -255,7 +270,7 @@ class Resource():
     def getType(self):
         return self.Type
     def getDailyCapacity(self):
-        return 8*(len(self.getAvailableShifts()))
+        return 7.5*(len(self.getAvailableShifts()))
     def getOperations(self):
         return self.Operations
     def IsAutomated(self):
@@ -678,17 +693,18 @@ class CustomerOrder():
         else: 
             self.DeadLine = myddline
         self.ReferenceNumber = 0
-        self.DelayReasons = dict() # key: deldate, val: prodpn+resource cap./lead time+date
-        self.OrderPlanDict = dict() # key: plan item type, value: list of tuples (item,(date,val))
-     
-        self.OrderPlanDict['Products'] = dict() # for target stock levels
-        self.OrderPlanDict['Resources'] = dict() # for capacity levels
+        self.DelayReasons = [] # key: deldate, val: prodpn+resource cap./lead time+date
+       
+        self.OrderPlanDict= dict() # for target stock levels
+       
 
         # PlANNING
         self.PlannedDelivery = None
         self.LatestStart = None
         self.RequiredCapacity = dict() #key: resourceid, val: (dict: #key: date, val: used capacity) 
         self.MyJobs = [] # created during the planning, order batching convention 
+
+    
 
     def getComponentAvailable(self):
         return self.ComponentAvailable
@@ -733,11 +749,6 @@ class CustomerOrder():
     def getOrderPlan(self):
         return self.OrderPlanDict
         
-    def resetOrderPlan(self):
-        for item,itemdict in self.OrderPlanDict.items():
-            itemdict.clear()
-        return
-
     def getPlannedDelivery(self):
         return self.PlannedDelivery
     def resetPlannedDelivery(self):

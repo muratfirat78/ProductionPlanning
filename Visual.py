@@ -1142,6 +1142,8 @@ class VisualManager():
                 clear_output()
                 plandays = my_res.getCapacityLevels().keys()
                 capvalues = [v for v in my_res.getCapacityLevels().values()]
+
+                phstend = max(my_res.getCapacityLevels().keys())
                 
                 usevalues = []
                 cumuseval = 0
@@ -1151,12 +1153,14 @@ class VisualManager():
                     totalval+=sum([v for v in usedict.values()])
                     
                 for mydate in my_res.getCapacityLevels().keys():
+                    dateuse = 0
                     for cstord,usedict in my_res.getCapacityUsePlan().items():
-                        if mydate in usedict:
-                            cumuseval+=usedict[mydate]
+                        dateuse += sum([v for d,v in usedict.items() if d == mydate])    
+                    cumuseval+=dateuse
                     usevalues.append(cumuseval)  
 
-                
+            
+              
                 fig = plt.figure(figsize=(5, 3.5))
                 ax = plt.subplot(111)
                 ax.plot(plandays,usevalues,  color='blue')
@@ -1581,19 +1585,7 @@ class VisualManager():
             clear_output()
 
         self.getPLTBresult2exp().value+=str(selected)+"\n"
-
-        if selected == 'Product Target Levels':
-
-            rawlist = []
-                 
-            sorteddict = dict(sorted(self.DataManager.getProducts().items(), key=lambda item: -sum([x for x in item[1].getTargetLevels().values()])))
-            for prodname,myprod in sorteddict.items():                      
-                if len(myprod.getPredecessors()) == 0:
-                    rawlist.append(prodname)
-                     
-            self.getPLTBrawlist().options = rawlist
-               
-           
+      
         if selected == 'Resource Capacity Plans':
 
             reslist = [res.getName() for res in self.DataManager.getResources().values()] 
@@ -1649,7 +1641,7 @@ class VisualManager():
         self.setPLTBStockLevels(widgets.Output())
 
       
-        self.setPLTBDesciptives(widgets.Dropdown(options=['Product Target Levels','Resource Utilizations','Resource Capacity Plans'], description=''))
+        self.setPLTBDesciptives(widgets.Dropdown(options=['Resource Capacity Plans'], description=''))
 
         self.getPLTBDesciptives().observe(self.ShowDescriptives)
 
@@ -2167,8 +2159,7 @@ class VisualManager():
 
         subnodes = []
          
-        for res,usedict in order.getOrderPlan()['Resources'].items():  
-            mystr = ">"+res.getName()
+        for res,usedict in order.getOrderPlan().items():  
            
             ressubnodes = []
             for mydate,val in usedict.items():
@@ -2176,7 +2167,7 @@ class VisualManager():
                 usenode = Node(usestr,[], icon="cut", icon_style="success") 
                 ressubnodes.append(usenode)
 
-            resnode = Node(mystr,ressubnodes, icon="cut", icon_style="success") 
+            resnode = Node(">"+res.getName(),ressubnodes, icon="cut", icon_style="success") 
             subnodes.append(resnode)
 
          
@@ -2199,15 +2190,11 @@ class VisualManager():
     
         subnodes = []
       
-        for mydate,reasstr in order.getDelayReasons().items():
-            prodpn = reasstr[:reasstr.find("->")]
-                   
-            mystr = "> Delivery check:  "+str(mydate)
-
-            reason = reasstr[reasstr.find("->")+3:]
-            casenode = Node(reason,[], icon="cut", icon_style="success") 
+        for reasstr in order.getDelayReasons():
+           
+            mystr = "-> "+reasstr
             
-            reasonnode = Node(mystr,[casenode], icon="cut", icon_style="success") 
+            reasonnode = Node(mystr,[], icon="cut", icon_style="success") 
             subnodes.append(reasonnode)
                 
 

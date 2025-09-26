@@ -675,10 +675,15 @@ class ScheduleTab():
 
 
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
+        self.getPLTBPlanStart().value = datetime.now()
+        self.getVisualManager().getSchedulingManager().setSHStart(self.getPLTBPlanStart().value)
         self.getPLTBPlanStart().observe(self.SetStart)
 
+        myslider = widgets.IntSlider(value=2,min=1,max=4,step=1,description='Weeks:',
+                               disabled=False,continuous_update=False,orientation='horizontal',readout=True,readout_format='d')
         
-        self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
+        self.setPLTBPlanEnd(myslider)
+        self.getVisualManager().getSchedulingManager().setSHEnd(self.getPLTBPlanEnd().value)
         self.getPLTBPlanEnd().observe(self.SetEnd)
      
         self.setPSchResources(widgets.Select(options=[], description=''))
