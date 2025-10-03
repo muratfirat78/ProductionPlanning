@@ -1,6 +1,6 @@
 from PlanningObjects import *
 
-class GreedyInsertionAlg:
+class CommonGreedyInsertionAlg:
     def __init__(self):
         self.timelimit = 60
         self.name = "SimpleGreedy"
@@ -206,6 +206,7 @@ class GreedyInsertionAlg:
           
                 schedulesol.getResourceSchedules()[res.getName()][curr_shift][job] = (curr_time,curr_time + processtime)
                 
+               
                 curr_time = curr_time + processtime
                 processtime = 0
 

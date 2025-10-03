@@ -163,7 +163,7 @@ class PlanningManager:
 
         return
 
-    def PlanProduction(self,order,delvdate,product,mydate,quantity,lvl,delay):
+    def PlanProduction(self,order,delvdate,product,mydate,quantity):
 
         #calculate use of resource for production for every operation
         #assume: one workday includes 16 hours of two shifts. 
@@ -195,29 +195,20 @@ class PlanningManager:
 
                     # neded capacity at (mydate)
                     totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime())/60 # in hours 
-               
                     curr_use = totuse
 
                     prev_val = None
                     new_val = 0
 
-                  
-
                     alldates = [d for d in resource.getCapacityReserved().keys()] 
                     allvalues = [v for v in resource.getCapacityReserved().values()]
-
-                    
-
                     if len(resource.getCapacityReserved()) > 0:
                         dtindex = -1
                         prevval = 0 
  
                         if mydate.date() >=  min(alldates): 
-                            
-                           
+                         
                             maxmindate = max([d for d in alldates if d <= mydate.date()])
-                            self.getVisualManager().getPLTBresult2exp().value+="maxmindate: "+str(maxmindate)+"\n"
-                            
                             if maxmindate == mydate: 
                                 allvalues = [allvalues[i] if alldates[i] < mydate.date() else allvalues[i]+totuse for i in range(len(alldates))]
                             else: 
@@ -238,8 +229,6 @@ class PlanningManager:
                     # now find the min diff
                     mindiff = min([resource.getCapacityLevels()[alldates[i]]-allvalues[i] for i in range(len(alldates)) ])
 
-                 
- 
                     if mindiff < 0:
                         continue
                     else: 
@@ -290,7 +279,7 @@ class PlanningManager:
                 order.getMyJobs().append(curr_job)
                       
         for predecessor,multiplier in product.getMPredecessors().items():
-            if not self.PlanProduction(order,delvdate,predecessor,mydate,quantity*multiplier,lvl+1,delay):    
+            if not self.PlanProduction(order,delvdate,predecessor,mydate,quantity*multiplier):    
                 return False
     
         return True
@@ -396,7 +385,7 @@ class PlanningManager:
                 if curr_deliverydate.weekday() >= 5:
                     continue
     
-                if self.PlanProduction(myord,curr_deliverydate,myord.getProduct(),curr_deliverydate,myord.getQuantity(),1,delay):
+                if self.PlanProduction(myord,curr_deliverydate,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
                    
                     planned+=1
                     myord.setPlannedDelivery(curr_deliverydate)

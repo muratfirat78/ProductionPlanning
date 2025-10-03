@@ -18,7 +18,7 @@ from PlanningObjects import *
 from Visual import *
 from Data import *
 from GreedyInsertion import *
-from AdvancedGreedyInsertion import *
+from CommonGreedyInsertion import *
 from SimpleBatching import *
 from AdvancedAlgorithmBryan import *
 
@@ -293,15 +293,20 @@ class SchedulingManager:
 
         
         psstart = self.getSHStart()
+        psstart = psstart.replace(hour=0, minute=0, second=0, microsecond=0)+ timedelta(days=1)
+        if psstart.weekday() > 0:
+            psstart = psstart+timedelta(days=7-psstart.weekday())
 
+        
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling starts..."+"\n"
        
 
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ScheduleWeeks..."+str(ScheduleWeeks)+"\n"
+        pssend = psstart+timedelta(days = (7*self.getSHEnd()-1) )
 
-        
-        
-        pssend= self.getSHStart()+timedelta(days = 7*self.getSHEnd())
+        if pssend.weekday() > 4:
+            pssend = pssend-timedelta(days=pssend.weekday()-4)
+      
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="ned weekday..."+str(pssend.weekday())+"\n" 
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
 
@@ -310,7 +315,6 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period length: "+str(len(scheduleperiod))+"\n"
 
         
-      
         oprdict = dict()
         nrjobs = 0
         AllJobs = []
@@ -318,18 +322,23 @@ class SchedulingManager:
         #Determine customer orders with latest start within Scheduling
         SelectedOrders=[]
         for name,order in self.getDataManager().getCustomerOrders().items():
+            
             if order.getLatestStart() != None:
-                if order.getLatestStart().date() < pssend:
+              
+                if order.getLatestStart() < pssend.date():
+                    
                     nrjobs+=len(order.getMyJobs())
+                    
                     for job in order.getMyJobs():
                         job.initializeSchJob()
                         AllJobs.append(job.getSchJob())
                         if not job.getOperation() in oprdict:
                             oprdict[job.getOperation()] = []
                         oprdict[job.getOperation()].append(job.getSchJob())
-                        
-                    SelectedOrders.append(order)
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
+
+                    if len(order.getMyJobs()) > 0: 
+                        SelectedOrders.append(order)
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"
 
@@ -374,18 +383,28 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" starting... "+"\n"  
       
 
-        if schedulealg == "Simple Greedy Insertion":
+        if schedulealg == "Simple Greedy Insertion (Fixed)":
             greedyalg = GreedyInsertionAlg()
             sch_sol = greedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+            
             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" schedule will be saved... "+str(len(sch_sol.getResourceSchedules()))+"\n" 
-            for resname,res_schedule in sch_sol.getResourceSchedules().items():
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  res "+resname+"\n"
-                for shift,jobsdict in res_schedule.items():
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
+            #for resname,res_schedule in sch_sol.getResourceSchedules().items():
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  res "+resname+"\n"
+                #for shift,jobsdict in res_schedule.items():
+                    #if len(jobsdict) > 0: 
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
             self.getDataManager().SaveSchedule(sch_sol)
-        #if schedulealg == "Advanced Greedy Insertion":
-        #    advncdgreedyalg = AdvancedGreedyInsertionAlg()
-        #    advncdgreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+        if schedulealg == "Common Greedy Insertion":
+            commongreedyalg = CommonGreedyInsertionAlg()
+            sch_sol = commongreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
+            
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" schedule will be saved... "+str(len(sch_sol.getResourceSchedules()))+"\n" 
+            #for resname,res_schedule in sch_sol.getResourceSchedules().items():
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  res "+resname+"\n"
+                #for shift,jobsdict in res_schedule.items():
+                    #if len(jobsdict) > 0: 
+                        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
+            self.getDataManager().SaveSchedule(sch_sol)
 
         if schedulealg == "MILP Schedule":
             algorithm = AdvancedMILPAlg()
@@ -422,8 +441,6 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
         #self.getVisualManager().getSchedulingTab().getPSchResources().options = myres
 
-        
-
 
         self.getVisualManager().getSchedulingTab().getPSchSolProps().value = "Scheduled jobs: "+str(scheduledjobs)+"/"+str(len(AllJobs))+"\n"
         self.getVisualManager().getSchedulingTab().getPSchSolProps().value += "Scheduled orders: "+str(scheduledords)+"/"+str(len(SelectedOrders))+"\n"
@@ -432,28 +449,15 @@ class SchedulingManager:
         
         for resname,res  in self.getDataManager().getResources().items():
             if res.getType() == "Machine":
-                #self.getVisualManager().getSchedulingTab().getPSchSolProps().value += resname+":"+"\n"
                 avg_util = 0
                 nr_shfits = 0
                 for shift,jobs in res.getCurrentSchedule().items():
-                    #self.getVisualManager().getSchedulingTab().getPSchSolProps().value+=" Shift: ("+str(shift.getDay())+","+str(shift.getNumber())+"): "+str(shift.getStartTime())+"-"+str(shift.getEndTime())+"\n" 
                     job_process = 0
                     for job in jobs:
-                        #self.getVisualManager().getSchedulingTab().getPSchSolProps().value+=job.getName()+" > "+str(job.getStartTime())+"-"+str(job.getCompletionTime())+"\n" 
-                      
-
                         shiftprocess =  min(job.getCompletionTime(),shift.getEndTime()+1)-max(job.getStartTime(),shift.getStartTime())
-                        
-                        #self.getVisualManager().getSchedulingTab().getPSchSolProps().value+=" Proc: "+str(shiftprocess)+"\n" 
-                        
                         job_process +=  shiftprocess
-                        
-                        
                     rel_job_process = job_process/(shift.getEndTime()-shift.getStartTime()+1)
-                    #self.getVisualManager().getSchedulingTab().getPSchSolProps().value+=" rel_job_process: "+str(round(rel_job_process,2))+"\n" 
-    
                     avg_util = (avg_util*nr_shfits+rel_job_process)/(nr_shfits+1)
-    
                     nr_shfits+=1
                 self.getVisualManager().getSchedulingTab().getPSchSolProps().value += resname+":"+str(round(100*avg_util,2))+"%"+"\n"
                 
@@ -468,7 +472,6 @@ class SchedulingManager:
                 if checkmach.IsAutomated():
                     autmach = checkmach
                     
-
             if autmach != None: 
                 self.getVisualManager().getSchedulingTab().getPSchSolProps().value += " Machine Group "+str(nrgroup)+"("+str(len(machgroup.getMachines()))+" machines )"+"\n"
                 for shift in autmach.getCurrentSchedule():
@@ -482,12 +485,6 @@ class SchedulingManager:
                     ftecapacity = sum([int(shift in opr.getShiftAvailability()) for opr in machgroup.getOperatingTeam().getOperators()])
                     self.getVisualManager().getSchedulingTab().getPSchSolProps().value += "Shift ["+str(shift.getDay())+","+str(shift.getNumber())+"]: "+str(round(totalfte,2))+"/"+str(ftecapacity)+"\n"     
                         
-                    
-            
-           
-            
-
-        
         self.getVisualManager().getSchedulingTab().getPSchSolProps().layout.display = 'block'
         self.getVisualManager().getSchedulingTab().getPSchSolProps().layout.visibility  = 'visible'
      

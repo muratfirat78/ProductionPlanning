@@ -417,30 +417,39 @@ class DataManager:
                     jobpreds_df.loc[len(jobpreds_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID(),}
                     
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shcjobs "+str(len(schjobs_df))+"\n" 
-       
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shcjobs "+str(len(schjobs_df))+"\n" 
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  jobpreds "+str(len(jobpreds_df))+"\n" 
 
+
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  folder "+str(self.getMyFolder())+", usecase "+str(self.getUseCase())+"\n" 
+
+  
         timestr = time.strftime("%Y%m%d-%H%M%S")
         filename = myschedule.getName()+"-Jobs_"+timestr+".csv"; 
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  filename "+str(filename)+"\n" 
+
+        
         path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
         fullpath = os.path.join(Path.cwd(), path)
         schjobs_df.to_csv(fullpath, index=False)
 
         filename = myschedule.getName()+"-Jobpreds_"+timestr+".csv"; 
+        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  filename "+str(filename)+"\n" 
+
         path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
         fullpath = os.path.join(Path.cwd(), path)
         jobpreds_df.to_csv(fullpath, index=False)
 
-
+        
         
 
         schedule_df = pd.DataFrame(columns= ["ResourceID","Day","ShiftNo","JobID","SchStart", "SchCompletion"])
         for resname,res_schedule in myschedule.getResourceSchedules().items():
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  res "+resname+"\n"
+            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  res "+resname+"\n"
             for shift,jobsdict in res_schedule.items():
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
+                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
                 for job,jobtimes in jobsdict.items():
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value += str(job.getJob().getID())+"\n"
+                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += str(job.getJob().getID())+"\n"
                     schedule_df.loc[len(schedule_df)] = {"ResourceID":self.getResources()[resname].getID(),
                                                              "Day":shift.getDay(),
                                                              "ShiftNo":shift.getNumber(),
@@ -1009,7 +1018,11 @@ class DataManager:
                                             nroprs+=1
                                             newres = None
                                             if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
-                                                newres = Resource(nrresources,"Machine",TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
+                                                restype = "Machine"
+                                                if TBRM_df.loc[i,'Work Orders/Work Center'].find("OUT - ") > -1:
+                                                    restype = "Outsourced"
+                                                    
+                                                newres = Resource(nrresources,restype,TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
                                                 nrresources+1
                                                 self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']] = newres
                                             else:
@@ -1047,7 +1060,10 @@ class DataManager:
     
                                             newres = None
                                             if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Resources:
-                                                newres = Resource(nrresources,"Machine",TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
+                                                restype = "Machine"
+                                                if TBRM_df.loc[lineno,'Work Orders/Work Center'].find("OUT - ") > -1:
+                                                    restype = "Outsourced"    
+                                                newres = Resource(nrresources,restype,TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
                                                 nrresources+1
                                                 self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']] = newres
                                             else:
@@ -1128,11 +1144,14 @@ class DataManager:
                                 self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
                                 
                                 if len(matches) == 0:
+                                    self.getVisualManager().getDiagInfo().value += "Restpye: "+str(r["ResourceType"])+"\n" 
                                     
                                     myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
                                     self.Resources[r['Name']] = myres
                                     
                                 else:
+
+                                    
                                     myres = matches[0]
                                     
 
@@ -1271,6 +1290,7 @@ class DataManager:
     def on_submit_func(self,sender):    
 
         dtsetnames = [] 
+        self.setMyFolder(self.getVisualManager().getFolderNameTxt().value)
           
         rel_path = self.getVisualManager().getFolderNameTxt().value 
         abs_file_path = os.path.join(Path.cwd(),rel_path)

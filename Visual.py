@@ -2254,6 +2254,7 @@ class VisualManager():
         
        
         self.setFolderNameTxt(widgets.Text(description ='Folder name:',value = 'UseCases'))
+        self.DataManager.setMyFolder(self.getFolderNameTxt().value)
         self.getFolderNameTxt().on_submit(self.DataManager.on_submit_func)
 
        
@@ -2278,7 +2279,8 @@ class VisualManager():
         self.getCasesDrop().options = [dst for dst in dtsetnames]
         if len(dtsetnames) > 0:
             self.getCasesDrop().value = dtsetnames[0]
-
+   
+        self.DataManager.setUseCase(self.getCasesDrop().value)
     
         self.setReadFileBtn(widgets.Button(description="Read",icon = 'fa-folder-o') )
         self.getReadFileBtn().on_click(self.DataManager.read_dataset)
