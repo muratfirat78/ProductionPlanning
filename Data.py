@@ -472,7 +472,80 @@ class DataManager:
 
         return
         
-    
+    def SaveTheSchedule(self,event):
+
+        self.getVisualManager().getCaseInfo().value += ">>>  saving schedule....."+"\n" 
+        schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
+
+        jobprecs_df = pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
+        
+        for name,order in self.getCustomerOrders().items():
+            self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
+            for job in order.getMyJobs():
+                for pred in job.getPredecessors():
+                    jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
+
+
+                self.getVisualManager().getCaseInfo().value += job.getName()+str(job.IsScheduled())+"\n"
+                if job.IsScheduled(): 
+                    schres = job.getScheduledResource().getID()
+                    sdayst = str(job.getScheduledShift().getDay().date())
+                    sshftst = job.getScheduledShift().getNumber()
+                    stst = job.getStartTime()
+                    sdaycp = str(job.getScheduledCompShift().getDay().date())
+                    sshftcp = job.getScheduledCompShift().getNumber()
+                    stcp = job.getCompletionTime()
+                else:
+                    starttime = "NULL"
+                    endtime ="NULL"
+                    schres = "NULL"
+                    sdayst = "NULL"
+                    sshftst = "NULL"
+                    stst = "NULL"
+                    sdaycp = "NULL"
+                    sshftcp = "NULL"
+                    stcp = "NULL"
+                    
+                    
+                schedule_df.loc[len(schedule_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),
+                                                         "Deadline":job.getDeadLine(),
+                                                       "OrderID":job.getCustomerOrder().getID(),
+                                                     "ProductID":job.getProduct().getID(),
+                                                     "OperationID":job.getOperation().getID(),
+                                                     "ResourceID":schres,
+                                                     "SchDaySt":sdayst,
+                                                     "SchShiftSt": sshftst,
+                                                     "SchTimeSt":stst,
+                                                     "SchDayCp":sdaycp,
+                                                     "SchShiftCp":sshftcp,
+                                                     "SchTimeCp":stcp,
+                                                     "ActDaySt":"",
+                                                     "ActShiftSt":"NULL","ActTimeSt":"NULL","ActDayCp":"NULL","ActShiftCp":"NULL","ActTimeCp":"NULL"
+                                                     }
+
+        
+        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
+        path = folder+"\\"+casename
+        isExist = os.path.exists(path)
+        if not isExist:
+            os.makedirs(path)
+
+        self.getVisualManager().getCaseInfo().value += ">>>..... writing files...."+"\n"
+        timestr = time.strftime("%Y%m%d-%H%M%S")
+        filename = "ScheduleJobs_"+timestr+".csv"; 
+        path = folder+"\\"+casename+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        schedule_df.to_csv(fullpath, index=False)
+        filename = "ScheduleJobsPrecs_"+timestr+".csv"; 
+        path = folder+"\\"+casename+"\\"+filename
+        fullpath = os.path.join(Path.cwd(), path)
+        jobprecs_df.to_csv(fullpath, index=False)
+        self.getVisualManager().getCaseInfo().value += ">>>.... DONE....."+"\n"
+         
+     
+        return
+        
+        
 
 
     def read_dataset(self,b):  

@@ -301,29 +301,43 @@ class ScheduleTab():
         if selectedres == '':
             return
 
+        with self.getPSTBGanttOutput():             
+            clear_output() 
+            display(selectedres)
+            display("In resources: ",selectedres in self.getVisualManager().DataManager.getResources())
+        
+
 
         if selectedres in self.getVisualManager().DataManager.getResources():
             selected_res = self.getVisualManager().DataManager.getResources()[selectedres]
 
             source = pd.DataFrame(columns=["Shift","Job","Start","End"])
 
-            for shift,jobs in selected_res.getSchedule().items():
+            with self.getPSTBGanttOutput():             
+                clear_output() 
+                display(selectedres)
+                display("Shifts: ",len(selected_res.getCurrentSchedule()))
+                display("Jobs: ",[len(j) for j in selected_res.getCurrentSchedule().values()])
+
+            for shift,jobs in selected_res.getCurrentSchedule().items():
                 
                 row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":1,"End":1.005}])
                 source = pd.concat([source, row], axis=0, ignore_index=True)
                 row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":8.995,"End":9}])
                 source = pd.concat([source, row], axis=0, ignore_index=True)
                 for job in jobs:
-
                     starttime = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()+1+0.01
                     endtime =  min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime()+1-0.01
-                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getName(), "Start":starttime,"End":endtime}])
+                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
                     source = pd.concat([source, row], axis=0, ignore_index=True)
+
+          
                
             with self.getPSTBGanttOutput():
                 
                 clear_output() 
                 display(selected_res.getName())
+                #display("Schedule shifts: ",selected_res.getSchedule())
       
                 for shift in source["Shift"].unique():
                     shift_df = source[source["Shift"] == shift]
@@ -337,12 +351,12 @@ class ScheduleTab():
          
             shiftnodes = []
 
-            for shift,jobs in selected_res.getSchedule().items():
+            for shift,jobs in selected_res.getCurrentSchedule().items():
                 jobnodes = []
                
                 for job in jobs:
                     schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
-                    jobnode = Node(job.getName()+" > "+schstr,[], icon="cut", icon_style="success") 
+                    jobnode = Node(job.getJob().getName()+" > "+schstr,[], icon="cut", icon_style="success") 
                     jobnode.opened = False
                     jobnodes.append(jobnode)
                 shiftnode = Node("Shift: "+str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
@@ -402,11 +416,13 @@ class ScheduleTab():
             jobnodes = []
             for job in myord.getMyJobs():
                 schstr = "Unscheduled"
-                if job.IsScheduled():
+                if job.getSchJob() is None: 
+                    continue
+                if job.getSchJob().IsScheduled():
                     
-                    row = pd.DataFrame([{"Job":job.getName(), "Start":job.getStartTime(),"End":job.getCompletionTime()}])
+                    row = pd.DataFrame([{"Job":job.getName(), "Start":job.getSchJob().getStartTime(),"End":job.getSchJob().getCompletionTime()}])
                     source = pd.concat([source, row], axis=0, ignore_index=True)
-                    schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
+                    schstr = "st: "+str(round(job.getSchJob().getStartTime(),2))+"-cp: "+str(round(job.getSchJob().getCompletionTime(),2))
                     
                 jobnode = Node(job.getName()+"> "+schstr,[], icon="cut", icon_style="success") 
                 jobnodes.append(jobnode)
@@ -564,80 +580,7 @@ class ScheduleTab():
         return 
 
 
-    def SaveTheSchedule(self,event):
-
-        self.getVisualManager().getCaseInfo().value += ">>>  saving schedule....."+"\n" 
-        schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
-
-        jobprecs_df = pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
-        
-        for name,order in self.getVisualManager().DataManager.getCustomerOrders().items():
-            self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
-            for job in order.getMyJobs():
-                for pred in job.getPredecessors():
-                    jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
-
-
-                self.getVisualManager().getCaseInfo().value += job.getName()+str(job.IsScheduled())+"\n"
-                if job.IsScheduled(): 
-                    schres = job.getScheduledResource().getID()
-                    sdayst = str(job.getScheduledShift().getDay().date())
-                    sshftst = job.getScheduledShift().getNumber()
-                    stst = job.getStartTime()
-                    sdaycp = str(job.getScheduledCompShift().getDay().date())
-                    sshftcp = job.getScheduledCompShift().getNumber()
-                    stcp = job.getCompletionTime()
-                else:
-                    starttime = "NULL"
-                    endtime ="NULL"
-                    schres = "NULL"
-                    sdayst = "NULL"
-                    sshftst = "NULL"
-                    stst = "NULL"
-                    sdaycp = "NULL"
-                    sshftcp = "NULL"
-                    stcp = "NULL"
-                    
-                    
-                schedule_df.loc[len(schedule_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),
-                                                         "Deadline":job.getDeadLine(),
-                                                       "OrderID":job.getCustomerOrder().getID(),
-                                                     "ProductID":job.getProduct().getID(),
-                                                     "OperationID":job.getOperation().getID(),
-                                                     "ResourceID":schres,
-                                                     "SchDaySt":sdayst,
-                                                     "SchShiftSt": sshftst,
-                                                     "SchTimeSt":stst,
-                                                     "SchDayCp":sdaycp,
-                                                     "SchShiftCp":sshftcp,
-                                                     "SchTimeCp":stcp,
-                                                     "ActDaySt":"",
-                                                     "ActShiftSt":"NULL","ActTimeSt":"NULL","ActDayCp":"NULL","ActShiftCp":"NULL","ActTimeCp":"NULL"
-                                                     }
-
-        
-        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
-        if not isExist:
-            os.makedirs(path)
-
-        self.getVisualManager().getCaseInfo().value += ">>>..... writing files...."+"\n"
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        filename = "ScheduleJobs_"+timestr+".csv"; 
-        path = folder+"\\"+casename+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        schedule_df.to_csv(fullpath, index=False)
-        filename = "ScheduleJobsPrecs_"+timestr+".csv"; 
-        path = folder+"\\"+casename+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        jobprecs_df.to_csv(fullpath, index=False)
-        self.getVisualManager().getCaseInfo().value += ">>>.... DONE....."+"\n"
-         
-     
-        return
-        
-        
+   
         
     
     def generatePSschTAB(self):
@@ -655,7 +598,7 @@ class ScheduleTab():
         self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
 
         self.setPSchTBaccsch_btn(widgets.Button(description="Accept Schedule",icon = 'fa-check-square'))
-        self.getPSchTBaccsch_btn().on_click(self.SaveTheSchedule)
+        self.getPSchTBaccsch_btn().on_click(self.getVisualManager().DataManager.SaveTheSchedule)
        
 
         self.setPSchTBschFileName(widgets.Text(description ='',value='filename..'))

@@ -393,7 +393,7 @@ class SchedulingManager:
                 #for shift,jobsdict in res_schedule.items():
                     #if len(jobsdict) > 0: 
                         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
-            self.getDataManager().SaveSchedule(sch_sol)
+            #self.getDataManager().SaveSchedule(sch_sol)
         if schedulealg == "Common Greedy Insertion":
             commongreedyalg = CommonGreedyInsertionAlg()
             sch_sol = commongreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
@@ -404,7 +404,7 @@ class SchedulingManager:
                 #for shift,jobsdict in res_schedule.items():
                     #if len(jobsdict) > 0: 
                         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>***>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
-            self.getDataManager().SaveSchedule(sch_sol)
+            #self.getDataManager().SaveSchedule(sch_sol)
 
         if schedulealg == "MILP Schedule":
             algorithm = AdvancedMILPAlg()
