@@ -1,0 +1,22 @@
+ResourceID,ResourceType,Name,DailyCapacity
+0,Machine,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+0,Machine,M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),22.5
+0,Machine,M3-01 - Accuwell - 3axis - Manual (FR3_01),15.0
+0,Machine,BW - Benchwork (BKW_01),15.0
+0,Outsourced,OUT - Outsourced activity,15.0
+0,Machine,PACK - Packaging (VERP_P),15.0
+0,Machine,M3-02 - Accuwell - 3axis - Manual (FR3_02),15.0
+0,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),22.5
+0,Machine,MP2 - Material preparation - manual sawing (ZGN_02),15.0
+0,Machine,M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),22.5
+0,Machine,M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),22.5
+0,Machine,M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),22.5
+0,Machine,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",15.0
+0,Machine,M5-03 - Haas - 5axis - Manual (UMC750),15.0
+0,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),15.0
+0,Machine,CMM - Hexagon - CMM (TIGO SF),0.0
+0,Operator,Operator 1,7.5
+1,Operator,Operator 2,7.5
+2,Operator,Operator 3,7.5
+3,Operator,Manual workers,15.0
+4,Machine,M5-05_(UMC750SS),15.0

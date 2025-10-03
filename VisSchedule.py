@@ -598,7 +598,7 @@ class ScheduleTab():
         self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
 
         self.setPSchTBaccsch_btn(widgets.Button(description="Accept Schedule",icon = 'fa-check-square'))
-        self.getPSchTBaccsch_btn().on_click(self.getVisualManager().DataManager.SaveTheSchedule)
+        self.getPSchTBaccsch_btn().on_click(self.getVisualManager().DataManager.SaveSchedule)
        
 
         self.setPSchTBschFileName(widgets.Text(description ='',value='filename..'))

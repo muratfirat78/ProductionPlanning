@@ -402,7 +402,10 @@ class DataManager:
 
         return
 
-    def SaveSchedule(self,myschedule):
+    
+    def SaveSchedule(self,b):
+
+        myschedule = self.getSchedulingManager().getMyCurrentSchedule() 
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+str(len(myschedule.getResourceSchedules()))+"\n" 
         schjobs_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID"])
@@ -417,9 +420,7 @@ class DataManager:
                     jobpreds_df.loc[len(jobpreds_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID(),}
                     
 
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shcjobs "+str(len(schjobs_df))+"\n" 
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  jobpreds "+str(len(jobpreds_df))+"\n" 
-
+   
 
         #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  folder "+str(self.getMyFolder())+", usecase "+str(self.getUseCase())+"\n" 
 
@@ -474,27 +475,32 @@ class DataManager:
         
     def SaveTheSchedule(self,event):
 
-        self.getVisualManager().getCaseInfo().value += ">>>  saving schedule....."+"\n" 
+        Progress = self.getVisualManager().getSchedulingTab().getPSchScheRes()
+
+        Progress.value += ">>>  saving schedule....."+"\n" 
         schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
 
         jobprecs_df = pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
         
         for name,order in self.getCustomerOrders().items():
-            self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
+            Progress.value += ">>>  order....."+str(order.getName())+", jobs: "+str(len(order.getMyJobs()))+"\n" 
             for job in order.getMyJobs():
                 for pred in job.getPredecessors():
                     jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
 
-
-                self.getVisualManager().getCaseInfo().value += job.getName()+str(job.IsScheduled())+"\n"
-                if job.IsScheduled(): 
-                    schres = job.getScheduledResource().getID()
-                    sdayst = str(job.getScheduledShift().getDay().date())
-                    sshftst = job.getScheduledShift().getNumber()
-                    stst = job.getStartTime()
-                    sdaycp = str(job.getScheduledCompShift().getDay().date())
-                    sshftcp = job.getScheduledCompShift().getNumber()
-                    stcp = job.getCompletionTime()
+                if job.getSchJob() is None: 
+                    continue
+                    
+                
+                Progress.value += job.getName()+str(job.getSchJob().IsScheduled())+"\n"
+                if job.getSchJob().IsScheduled(): 
+                    schres = job.getSchJob().getScheduledResource().getID()
+                    sdayst = str(job.getSchJob().getScheduledShift().getDay().date())
+                    sshftst = job.getSchJob().getScheduledShift().getNumber()
+                    stst = job.getSchJob().getStartTime()
+                    sdaycp = str(job.getSchJob().getScheduledCompShift().getDay().date())
+                    sshftcp = job.getSchJob().getScheduledCompShift().getNumber()
+                    stcp = job.getSchJob().getCompletionTime()
                 else:
                     starttime = "NULL"
                     endtime ="NULL"
@@ -524,13 +530,13 @@ class DataManager:
                                                      }
 
         
-        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
+        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
         path = folder+"\\"+casename
         isExist = os.path.exists(path)
         if not isExist:
             os.makedirs(path)
 
-        self.getVisualManager().getCaseInfo().value += ">>>..... writing files...."+"\n"
+        Progress.value += ">>>..... writing files...."+"\n"
         timestr = time.strftime("%Y%m%d-%H%M%S")
         filename = "ScheduleJobs_"+timestr+".csv"; 
         path = folder+"\\"+casename+"\\"+filename
@@ -540,7 +546,7 @@ class DataManager:
         path = folder+"\\"+casename+"\\"+filename
         fullpath = os.path.join(Path.cwd(), path)
         jobprecs_df.to_csv(fullpath, index=False)
-        self.getVisualManager().getCaseInfo().value += ">>>.... DONE....."+"\n"
+        Progress.value += ">>>.... DONE....."+"\n"
          
      
         return
@@ -643,9 +649,9 @@ class DataManager:
    
    
 
-                if file == "OperatorsMachines.csv": 
-                    oprmch_df = pd.read_csv(abs_file_path+'/'+file)
-                    self.getVisualManager().getCaseInfo().value += "OperatorsMachines read.."+str(len(oprmch_df))+"\n"            
+                #if file == "OperatorsMachines.csv": 
+                #    oprmch_df = pd.read_csv(abs_file_path+'/'+file)
+                #    self.getVisualManager().getCaseInfo().value += "OperatorsMachines read.."+str(len(oprmch_df))+"\n"            
                 
                 if file == "Products.csv": 
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
@@ -1096,7 +1102,7 @@ class DataManager:
                                                     restype = "Outsourced"
                                                     
                                                 newres = Resource(nrresources,restype,TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
-                                                nrresources+1
+                                                nrresources+=1
                                                 self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']] = newres
                                             else:
                                                 newres = self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']]
@@ -1137,7 +1143,7 @@ class DataManager:
                                                 if TBRM_df.loc[lineno,'Work Orders/Work Center'].find("OUT - ") > -1:
                                                     restype = "Outsourced"    
                                                 newres = Resource(nrresources,restype,TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
-                                                nrresources+1
+                                                nrresources+=1
                                                 self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']] = newres
                                             else:
                                                 newres = self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']]
@@ -1287,66 +1293,10 @@ class DataManager:
                                 
                             self.getVisualManager().RefreshViews()
 
-                            savefile = False
+                            savefile = True
                             
                             if savefile: 
-                                usecase =  self.getVisualManager().getCasesDrop().value
-        
-                                # Save Products.
-                                products_df = pd.DataFrame(columns= ["ProductID","ProductNumber","Name","Created"])
-                                precedences_df = pd.DataFrame(columns= ["PredecessorID","SuccessorID","Multiplier"])
-                                prodrops_df = pd.DataFrame(columns= ["ProductID","OperationID","OperationIndex"])
-                                operations_df = pd.DataFrame(columns= ["OperationID","Name","ProcessTime"])
-                                opsres_df = pd.DataFrame(columns= ["OperationID","ResourceID"])
-                                resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","DailyCapacity"])
-                                orders_df = pd.DataFrame(columns= ["OrderID","ProductID","Name","Quantity","Deadline"])
-                            
-                                    
-                                for name,myprod in self.Products.items():
-                                    products_df.loc[len(products_df)] = {"ProductID":myprod.getID(), "ProductNumber":myprod.getPN(),"Name":myprod.getName(),"Created":myprod.getCreated()}
-                             
-                                    for predecessor,multiplier in myprod.getMPredecessors().items():
-                                        precedences_df.loc[len(precedences_df)] = {"PredecessorID":predecessor.getID(),"SuccessorID":myprod.getID(),"Multiplier":multiplier}
-                            
-                                    for opr in myprod.getOperations():
-                                        prodrops_df.loc[len(prodrops_df)] = {"ProductID":myprod.getID(),"OperationID":opr.getID(),"OperationIndex":opr.getOperationIndex()}
-                                            
-                            
-                            
-                                for opname,opr in self.Operations.items():
-                                    operations_df.loc[len(operations_df)]= {"OperationID":opr.getID(),"Name":opr.getName(),"ProcessTime":opr.getProcessTime()}
-                                        
-                                       
-                                   
-                                for ordname,ordr in self.CustomerOrders.items():
-                                    orders_df.loc[len(orders_df)]={"OrderID":ordr.getID(),"ProductID":ordr.getProduct().getID(),"Name":ordr.getName(),"Quantity":ordr.getQuantity(),"Deadline":ordr.getDeadLine()}
-                            
-                                
-                            
-                            
-                                folder = 'UseCases'; casename = usecase
-                                path = folder+"\\"+casename
-                                isExist = os.path.exists(path)
-                            
-                                if not isExist:
-                                    os.makedirs(path)
-                            
-                                timestr = time.strftime("%Y%m%d-%H%M%S")
-                                   
-                                    
-                                filename = 'Products_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename;  fullpath = os.path.join(Path.cwd(), path)
-                                self.getVisualManager().getCaseInfo().value += ">>> products save folder.."+str(path)+"\n" 
-                                products_df.to_csv(path, index=False)
-                                filename = 'Precedences_'+timestr+'.csv';path = folder+"\\"+casename+"\\"+filename; fullpath = os.path.join(Path.cwd(), path)
-                                precedences_df.to_csv(fullpath, index=False)
-                                filename = 'ProductsOperations_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename; fullpath = os.path.join(Path.cwd(), path)
-                                prodrops_df.to_csv(fullpath, index=False)
-                                filename = 'Operations_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename; fullpath = os.path.join(Path.cwd(), path)
-                                operations_df.to_csv(fullpath, index=False)
-                                filename = 'CustomerOrders_'+timestr+'.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-                                orders_df.to_csv(fullpath, index=False)
-           
-
+                                self.SaveTheInstance()
                                 
 
         #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
@@ -1358,6 +1308,87 @@ class DataManager:
             
 
         #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
+        return
+        
+    def SaveTheInstance(self):
+
+        # Save Products.
+        products_df = pd.DataFrame(columns= ["ProductID","ProductNumber","Name","Created"])
+        precedences_df = pd.DataFrame(columns= ["PredecessorID","SuccessorID","Multiplier"])
+        prodrops_df = pd.DataFrame(columns= ["ProductID","OperationID","OperationIndex"])
+        operations_df = pd.DataFrame(columns= ["OperationID","Name","ProcessTime"])
+        opsres_df = pd.DataFrame(columns= ["OperationID","ResourceID"])
+        resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","DailyCapacity"])
+        orders_df = pd.DataFrame(columns= ["OrderID","ProductID","ProductName","Name","Quantity","Deadline"])
+
+        self.getVisualManager().getCaseInfo().value += ">>> save instance.."+"\n" 
+        
+        for name,myprod in self.Products.items():
+            products_df.loc[len(products_df)] = {"ProductID":myprod.getID(), "ProductNumber":myprod.getPN(),"Name":myprod.getName(),"Created":myprod.getCreated()}
+
+            
+            for pred in myprod.getPredecessors():
+                precedences_df.loc[len(precedences_df)] = {"PredecessorID":pred.getID(),"SuccessorID":myprod.getID(),"Multiplier":1}
+ 
+            oprind = 0
+            for opr in myprod.getOperations():
+                self.getVisualManager().getCaseInfo().value += ">>> prod-opr..Opr"+str(opr.getID())+"->Prod"+str(myprod.getID())+"\n" 
+                prodrops_df.loc[len(prodrops_df)] = {"ProductID":myprod.getID(),"OperationID":opr.getID(),"OperationIndex":oprind}
+                oprind+=1
+
+        self.getVisualManager().getCaseInfo().value += ">>>  products done.."+str(len(products_df))+"\n" 
+
+        for opname,opr in self.Operations.items():
+            operations_df.loc[len(operations_df)]= {"OperationID":opr.getID(),"Name":opr.getName(),"ProcessTime":opr.getProcessTime()}
+            
+            for res in opr.getRequiredResources():
+                #self.getVisualManager().getCaseInfo().value += ">>> opr-ress.."+"\n" 
+                opsres_df.loc[len(opsres_df)]= {"OperationID":opr.getID(),"ResourceID":res.getID()}
+                
+
+        self.getVisualManager().getCaseInfo().value += ">>> operations done.."+str(len(operations_df))+"\n" 
+        
+
+        for resname,res in self.Resources.items():
+            resources_df.loc[len(resources_df)] ={"ResourceID":res.getID(),"ResourceType":res.getType(),"Name":res.getName(),"DailyCapacity":res.getDailyCapacity()}
+
+        self.getVisualManager().getCaseInfo().value += ">>> resources done.."+str(len(resources_df))+"\n" 
+        
+        for ordname,ordr in self.CustomerOrders.items():
+            orders_df.loc[len(orders_df)]={"OrderID":ordr.getID(),"ProductID":ordr.getProduct().getID(),"ProductName":ordr.getProduct().getName(),"Name":ordr.getName(),"Quantity":ordr.getQuantity(),"Deadline":ordr.getDeadLine()}
+
+        self.getVisualManager().getCaseInfo().value += ">>> orders done.."+str(len(orders_df))+"\n" 
+
+
+        folder = 'UseCases'; casename = self.getVisualManager().getCOTBcasename().value
+        path = folder+"\\"+casename
+        isExist = os.path.exists(path)
+
+        if not isExist:
+            os.makedirs(path)
+
+ 
+        filename = 'Products.csv'; 
+        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;  
+        fullpath = os.path.join(Path.cwd(), path)
+        self.getVisualManager().getCaseInfo().value += ">>> products save folder.."+str(path)+"\n" 
+        products_df.to_csv(path, index=False)
+      
+        filename = 'Precedences.csv'; path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
+        precedences_df.to_csv(fullpath, index=False)
+        filename = 'ProductsOperations.csv'; path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
+        prodrops_df.to_csv(fullpath, index=False)
+        filename = 'ResourcesOperations.csv'; path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;  fullpath = os.path.join(Path.cwd(), path)
+        opsres_df.to_csv(fullpath, index=False)
+        filename = 'Operations.csv'; path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
+        operations_df.to_csv(fullpath, index=False)
+        filename = 'Resources.csv';  path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;  fullpath = os.path.join(Path.cwd(), path)
+        resources_df.to_csv(fullpath, index=False)
+        filename = 'CustomerOrders.csv';  path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;  fullpath = os.path.join(Path.cwd(), path)
+        orders_df.to_csv(fullpath, index=False)
+        filename = 'OperatorsMachines.csv';  path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
+        oprmch_df.to_csv(fullpath, index=False)
+        
         return
         
     def on_submit_func(self,sender):    
