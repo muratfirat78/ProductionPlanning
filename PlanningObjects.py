@@ -372,19 +372,7 @@ class Operation():
         self.Predecessor = pred
         return
 
-class SimJob():
-    # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
-    def __init__(self,myJob): 
-        self.job = myJob
-        self.MySimProducts = []
 
-
-    def getJob(self):
-        return self.job
-
-    def getSimProducts(self):
-        return self.MySimProducts
-      
 
 
 class SchJob():
@@ -557,7 +545,6 @@ class Job():
         self.ActualStart = None
         self.ActualCompletion = None
         self.SchJob = None
-        self.SimJob = None
         self.MySch = None
 
 
@@ -579,15 +566,10 @@ class Job():
         self.SchJob = SchJob(self)
         return
 
-    def initializeSimJob(self):
-        self.SimJob = SimJob(self)
-        return
-
     def getSchJob(self):
         return self.SchJob
 
-    def getSimJob(self):
-        return self.SimJob
+   
 
     
     def setBatched(self):

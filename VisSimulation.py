@@ -63,9 +63,18 @@ class SimulationTab():
         self.PSchTBsavesch_btn = None
         self.PSchTBschFileName = None
         self.PSchTBaccsch_btn = None
+        self.SimAlgs = None
         
         return
 
+
+    
+    def setSimAlgs(self,myit):
+        self.SimAlgs  = myit
+        return
+        
+    def getSimAlgs(self):
+        return self.SimAlgs
 
     def setPSchTBaccsch_btn(self,myit):
         self.PSchTBaccsch_btn  = myit
@@ -258,6 +267,9 @@ class SimulationTab():
 
     def SetStart(self,event):
 
+        if event['name'] != "value":
+            return
+
         sel_start = self.getPLTBPlanStart().value 
         self.getVisualManager().getSimulationManager().setSimStart(sel_start)
         self.getPSchScheRes().value+="Simulation starts "+str(sel_start)+"\n"
@@ -265,6 +277,9 @@ class SimulationTab():
         return
         
     def SetEnd(self,event):
+
+        if event['name'] != "value":
+            return
 
         sel_end = self.getPLTBPlanEnd().value
         self.getVisualManager().getSimulationManager().setSimEnd(sel_end)
@@ -279,7 +294,7 @@ class SimulationTab():
       
     def StartSimulation(self,b):
 
-        self.getVisualManager().getSimulationManager().RunSimulation()
+        self.getVisualManager().getSimulationManager().StartSimulation(self.getSimAlgs().value)
        
         return
 
@@ -296,12 +311,12 @@ class SimulationTab():
         self.setPSchTBmakesch_btn(widgets.Button(description="Run Simulation", icon = 'fa-gear',disabled = True))
         self.getPSchTBmakesch_btn().on_click(self.StartSimulation)
 
-      
-
 
         schpr = widgets.Label(value ='Simulation progress ')
         schpr.add_class("red_label")
-     
+
+        self.setSimAlgs(widgets.Dropdown(options=["SimCommon","SimM"], description=''))
+        self.getSimAlgs().layout.width = '185px'
        
 
 
@@ -318,7 +333,9 @@ class SimulationTab():
         tab_sch = HBox(children = [ VBox(children = [
            
             HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
+            HBox(children = [self.getSimAlgs()]),
             HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])])])
+        
 
 
        

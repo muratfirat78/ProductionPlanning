@@ -26,40 +26,38 @@ import math
 import datetime
 import time
 from datetime import timedelta,date
+from Simulator import *
+from SimulatorM import *
 
 #######################################################################################################################
 
-class Task(object):
-    def __init__(self,mytype,myname,evtime): 
-        self.type = mytype
-        self.name = myname
+class SimJob(object):
+    def __init__(self,env,job): 
+        self.env = env
+        self.myJob = job
         self.processstime = 0 # to be updated
-        self.plannedtime = evtime
         self.assignedresource = None
+        self.SimProducts = []
+
+    def getJob(self):
+        return self.myJob 
+
+    def getProducts(self):
+        return self.SimProducts
 
     def SampleProcessTime(self):
        processtime = 0
        # use some sampling here
        return processtime
         
-        
 
-def SystemClock(env):
-   
-    while True:
 
-        unit_time = 0.01 # this is one minute 
-        
-        yield env.timeout(unit_time)
-        
-        
-    return 
+
 
 class SimMachine(object):
-    def __init__(self, env, name,speed):
+    def __init__(self, env,machine):
         self.env = env
-        self.name = name
-        self.speed = speed
+        self.machine = machine
         self.location = None 
         self.inputbuffer = None
         self.outputbuffer = None
@@ -209,61 +207,32 @@ class SimulationManager(object):
     def setSimEnd(self,myvm):
         self.SimEnd = myvm
         return
-             
 
+    def createBuffer(self,env,name,cap):
+        return Buffer(env,name,cap)
 
-       
-    def RunSimulation(self):
+    def createMachine(self,env,machine):
+        return SimMachine(env,machine)
 
-        self.getVisualManager().getPSchScheRes().value+="Simulation starts.."+"\n"
+    def createJob(self,env,job):
+        return SimJob(env,job)
 
-        self.getVisualManager().getPSchScheRes().value+="Simulation period"+str(self.getSimStart())+"-"+str(self.getSimEnd())+"\n"
+    def createProduct(self,env,job,SN):
+        return SimProduct(env,job,SN)
+    
+    def StartSimulation(self,simtype):
 
-        env = simpy.Environment()
+        if simtype == "SimCommon":
+            SimLator = Simulator()
+            SimLator.setSimulationManager(self)
+            simreturn = SimLator.RunSimulation() 
+        if simtype == "SimM":
+            SimLator = SimulatorM()
+            SimLator.setSimulationManager(self)
+            simreturn = SimLator.RunSimulation() 
 
-        CentralBuffer = Buffer(env,"CentralBuffer",10000000)
-
-        self.getVisualManager().getPSchScheRes().value+="Central buffer created with cap.."+str(CentralBuffer.getCapacity())+"\n"
-
-        self.getDataManager().getSchedulingManager().CreateShifts(self.getSimStart(),self.getSimEnd(),False)
-
-        self.getVisualManager().getPSchScheRes().value+="Customer orders.."+str(len(self.getDataManager().getCustomerOrders()))+"\n"
-
-        for name,order in self.getDataManager().getCustomerOrders().items():
-            #self.getVisualManager().getPSchScheRes().value+="Customer order.."+str(name)+"\n"
-            for job in order.getMyJobs():
-                #self.getVisualManager().getPSchScheRes().value+="job.."+str(job.getName())+"\n"
-                job.initializeSimJob()
-                #self.getVisualManager().getPSchScheRes().value+="job..Q"+str(job.getQuantity())+"\n"
-                for prd in range(int(job.getQuantity())):
-                    simprod = SimProduct(env,job,self.getProdSN())
-                    job.getSimJob().getSimProducts().append(simprod)
-                    simprod.setLocation(CentralBuffer)
-                    CentralBuffer.getProducts().append(simprod)
-
-
-        
-        self.getVisualManager().getPSchScheRes().value+="Central buffer has "+str(len(CentralBuffer.getProducts()))+" products initially"+"\n"
-            
-           
-
-        st = time.time() # get the start time
-        planninghorizon = (self.getSimEnd() -self.getSimStart()).days  # days
-        weekno = self.getSimStart().isocalendar()[1]
-        #d = "2025-W"+str(weekno)
-        #weekstart = datetime.datetime.strptime(d + '-1', "%Y-W%W-%w")
-
-        self.getVisualManager().getPSchScheRes().value+="Simulation week start "+str(weekno)+", days: "+str(planninghorizon)+"\n"
-
-        completiontime = 1440*planninghorizon   # Sim time in minutes
-
-        env.process(SystemClock(env))
- 
-        # Execute
-        env.run(until = completiontime)
-        self.getVisualManager().getPSchScheRes().value+= '-> Execution time: '+str(round(time.time() - st,2))+' seconds'
      
-        return infotxt
+        return 
 
 
 #------------------------------------------------------------------------------------------        

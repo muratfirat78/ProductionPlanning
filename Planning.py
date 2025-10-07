@@ -359,7 +359,7 @@ class PlanningManager:
 
             if not pd.isna(myord.getComponentAvailable()):
                 if(myord.getComponentAvailable() == "Available") and (myord.getDeadLine() > self.getPHStart()):
-                    if myord.getLatestStart() < self.getPHEnd().date():
+                    #if myord.getLatestStart() < self.getPHEnd().date(): 
                         OrderstoPlan.append(myord)        
 
         self.getVisualManager().getPLTBresult2exp().value+="Orders to plan>>>  "+str(len(OrderstoPlan))+"\n"
