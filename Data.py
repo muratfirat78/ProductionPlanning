@@ -656,9 +656,7 @@ class DataManager:
                 if file == "Products.csv": 
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
-                        newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],r["StockLevel"])
-                        if not np.isnan(r["PrescribedBatchsize"]):
-                            newprod.setBatchsize(r["PrescribedBatchsize"])
+                        newprod = Product(r["ProductID"],r["Name"],r["ProductNumber"],0)
                         self.Products[r["Name"]]= newprod
                     self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
@@ -666,7 +664,6 @@ class DataManager:
                     opr_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in opr_df.iterrows():
                         newopr = Operation(r["OperationID"],r["Name"],r["ProcessTime"])
-                        newopr.setPredecessor(r["Predecessor"])
                         self.Operations[r["Name"]]= newopr
                     self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
        
@@ -681,7 +678,10 @@ class DataManager:
                             
                         newres.setOperatingEffort(r["OperatingEffort"])
                         if r["Shift"] is not None:
-                            newres.setAvailableShift(r["Shift"])
+                            shifts = [int(s) for s in r["Shift"].replace('_', ' ').split()]
+                            
+                            for shft in shifts:
+                                newres.getAvailableShifts().append(shft)
                         self.Resources[r["Name"]]= newres
                         if r['Name'].find("OUT - ") != -1:
                             newres.setOutsource()
@@ -691,7 +691,6 @@ class DataManager:
                 if file == "CustomerOrders.csv": 
                     orders_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in orders_df.iterrows():
-                        #def __init__(self,myid,myname,myprodid,myprodname,myqnty,myddline):
                         neworder = CustomerOrder(r["OrderID"],r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
                         self.CustomerOrders[r["Name"]] = neworder
                     self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
@@ -713,13 +712,15 @@ class DataManager:
         self.getVisualManager().getCaseInfo().value += ">>> CustomerOrders.. "+str(len(self.CustomerOrders))+"\n" 
         for ordname,myord in self.CustomerOrders.items():
             #self.getVisualManager().getCaseInfo().value += ">>> Product"+myord.getProductName()+" in "+str(myord.getProductName() in self.Products)+"\n" 
-            myord.setProduct(self.Products[myord.getProductName()])
-
+            if myord.getProductName() in self.Products:
+                myord.setProduct(self.Products[myord.getProductName()])
+          
        
         #initilize first machine group..
-        self.getVisualManager().getCaseInfo().value += ">>> Machine groups and operating teams.. "+str(len(oprmch_df))+"\n" 
+        #self.getVisualManager().getCaseInfo().value += ">>> Machine groups and operating teams.. "+str(len(oprmch_df))+"\n" 
 
-        operators =[op for op in oprmch_df["OperatorID"].unique()]
+        operators =[]
+        #operators =[op for op in oprmch_df["OperatorID"].unique()]
 
         self.getVisualManager().getCaseInfo().value += ">>> operators "+str(len(operators))+"\n" 
 
@@ -773,11 +774,15 @@ class DataManager:
                              
         self.getVisualManager().getCaseInfo().value += ">>> Precedences.. "+str(len(precmatch_df))+"\n" 
         for i,r in precmatch_df.iterrows():
-    
-            predecessor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["PredecessorID"]] [0]
-            successor = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["SuccessorID"]][0]
 
-            #self.getVisualManager().getCaseInfo().value += "->"+predecessor.getName()+">>> "+successor.getName()+"\n" 
+     
+
+         
+    
+            predecessor = [myprod  for pname,myprod in self.getProducts().items() if str(myprod.getID()) == str(r["PredecessorID"])] [0]
+            successor = [myprod  for pname,myprod in self.getProducts().items() if str(myprod.getID()) == str(r["SuccessorID"])][0]
+
+            
     
             predecessor.setSuccessor(successor)
             successor.getPredecessors().append(predecessor)
@@ -787,11 +792,11 @@ class DataManager:
         self.getVisualManager().getCaseInfo().value += ">>> Product-Operations... "+str(len(prodopmatch_df))+"\n" 
                 
         for i,r in prodopmatch_df.iterrows():
-            prodlst = [myprod  for pname,myprod in self.getProducts().items() if myprod.getID() == r["ProductID"]]
+            prodlst = [myprod  for pname,myprod in self.getProducts().items() if str(myprod.getID()) == str(r["ProductID"])]
 
             if len(prodlst) > 0: 
                 prod = prodlst[0]
-                oprlst = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]]
+                oprlst = [myopr for opname,myopr in self.getOperations().items() if str(myopr.getID()) == str(r["OperationID"])]
                 if len(oprlst) > 0:
                     opr = oprlst[0]
                     opr.setProduct(prod)
@@ -1100,8 +1105,11 @@ class DataManager:
                                                 restype = "Machine"
                                                 if TBRM_df.loc[i,'Work Orders/Work Center'].find("OUT - ") > -1:
                                                     restype = "Outsourced"
+                                               
                                                     
-                                                newres = Resource(nrresources,restype,TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
+                                                newres = Resource(TBRM_df.loc[i,'Work Orders/Work Center/ID'],restype,TBRM_df.loc[i,'Work Orders/Work Center'] ,2)
+                                                for shift in [1,2]:
+                                                    newres.getAvailableShifts().append(int(shift))
                                                 nrresources+=1
                                                 self.Resources[TBRM_df.loc[i,'Work Orders/Work Center']] = newres
                                             else:
@@ -1143,6 +1151,8 @@ class DataManager:
                                                 if TBRM_df.loc[lineno,'Work Orders/Work Center'].find("OUT - ") > -1:
                                                     restype = "Outsourced"    
                                                 newres = Resource(nrresources,restype,TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
+                                                for shift in [1,2]:
+                                                    newres.getAvailableShifts().append(int(shift))
                                                 nrresources+=1
                                                 self.Resources[TBRM_df.loc[lineno,'Work Orders/Work Center']] = newres
                                             else:
@@ -1227,16 +1237,16 @@ class DataManager:
                                     
                                     myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
                                     self.Resources[r['Name']] = myres
-                                    
-                                else:
 
-                                    
+                                else:
                                     myres = matches[0]
                                     
 
+                                self.getVisualManager().getDiagInfo().value += "Automated: "+str(r["Automated"])+"\n" 
                                 if not np.isnan(r["Automated"]):
                                     if str(r["Automated"]) == "True":
                                         myres.setAutomated()
+                                self.getVisualManager().getDiagInfo().value += "Automated: "+str(myres.IsAutomated())+"\n" 
                                 myres.setOperatingEffort(float(r["OperatingEffort"]))
                                 
 
@@ -1318,7 +1328,7 @@ class DataManager:
         prodrops_df = pd.DataFrame(columns= ["ProductID","OperationID","OperationIndex"])
         operations_df = pd.DataFrame(columns= ["OperationID","Name","ProcessTime"])
         opsres_df = pd.DataFrame(columns= ["OperationID","ResourceID"])
-        resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","DailyCapacity"])
+        resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","DailyCapacity","Automated","OperatingEffort","Shift"])
         orders_df = pd.DataFrame(columns= ["OrderID","ProductID","ProductName","Name","Quantity","Deadline"])
 
         self.getVisualManager().getCaseInfo().value += ">>> save instance.."+"\n" 
@@ -1350,7 +1360,7 @@ class DataManager:
         
 
         for resname,res in self.Resources.items():
-            resources_df.loc[len(resources_df)] ={"ResourceID":res.getID(),"ResourceType":res.getType(),"Name":res.getName(),"DailyCapacity":res.getDailyCapacity()}
+            resources_df.loc[len(resources_df)] ={"ResourceID":res.getID(),"ResourceType":res.getType(),"Name":res.getName(),"DailyCapacity":res.getDailyCapacity(),"Automated":res.IsAutomated(),"OperatingEffort":res.getOperatingEffort(),"Shift":'_'.join([str(x) for x in res.getAvailableShifts()])}
 
         self.getVisualManager().getCaseInfo().value += ">>> resources done.."+str(len(resources_df))+"\n" 
         

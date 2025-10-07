@@ -669,7 +669,7 @@ class CustomerOrder():
         self.ComponentAvailable = False
         if not isinstance(myddline,datetime):
             try: 
-                self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d")
+                self.DeadLine = datetime.strptime(myddline,"%Y-%m-%d %H:%M:%S")
             except: 
                 self.DeadLine = datetime.strptime(myddline,"2025-12-31 00:00:00")
         else: 
