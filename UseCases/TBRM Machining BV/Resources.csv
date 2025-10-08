@@ -1,20 +1,20 @@
 ResourceID,ResourceType,Name,DailyCapacity,Automated,OperatingEffort,Shift
-0,Machine,MP1 - Material preparation - automatic sawing (ZGN_01),15.0,False,0.0,1_2
-1,Machine,M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),22.5,True,0.1,1_2_3
-2,Machine,M3-01 - Accuwell - 3axis - Manual (FR3_01),15.0,False,0.3,1_2
-3,Machine,BW - Benchwork (BKW_01),15.0,False,0.0,1_2
-4,Outsourced,OUT - Outsourced activity,15.0,False,0.0,1_2
-5,Machine,PACK - Packaging (VERP_P),15.0,False,0.0,1_2
-6,Machine,M3-02 - Accuwell - 3axis - Manual (FR3_02),15.0,False,0.3,1_2
-7,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),22.5,True,0.1,1_2_3
-8,Machine,MP2 - Material preparation - manual sawing (ZGN_02),15.0,False,0.0,1_2
-9,Machine,M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),22.5,True,0.1,1_2_3
-10,Machine,M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),22.5,True,0.1,1_2_3
-11,Machine,M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),22.5,True,0.1,1_2_3
-12,Machine,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",15.0,False,0.3,1_2
-13,Machine,M5-03 - Haas - 5axis - Manual (UMC750),15.0,False,0.3,1_2
-14,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),15.0,False,0.3,1_2
-15,Machine,CMM - Hexagon - CMM (TIGO SF),15.0,False,0.0,1_2
+__export__.mrp_workcenter_63_98a7a00b,Machine,MP1 - Material preparation - automatic sawing (ZGN_01),15.0,False,0.0,1_2
+__export__.mrp_workcenter_56_d6637dea,Machine,M4-01 - Accuwell -  4axis - Conveyor automation (FR4_01),22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_54_3f0243e1,Machine,M3-01 - Accuwell - 3axis - Manual (FR3_01),15.0,False,0.3,1_2
+__export__.mrp_workcenter_66_9f807a30,Machine,BW - Benchwork (BKW_01),15.0,False,0.0,1_2
+__export__.mrp_workcenter_68_8bff6631,Outsourced,OUT - Outsourced activity,15.0,False,0.0,1_2
+__export__.mrp_workcenter_67_d1ac8ce6,Machine,PACK - Packaging (VERP_P),15.0,False,0.0,1_2
+__export__.mrp_workcenter_55_15609e22,Machine,M3-02 - Accuwell - 3axis - Manual (FR3_02),15.0,False,0.3,1_2
+__export__.mrp_workcenter_62_468a38e5,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_64_95992ef5,Machine,MP2 - Material preparation - manual sawing (ZGN_02),15.0,False,0.0,1_2
+__export__.mrp_workcenter_59_d6deab7b,Machine,M5-01 - Accuwell - 5axis - Pallet automaton (FR5_01),22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_58_a525d5b9,Machine,M5-02 - Accuwell - 5axis - Conveyor automation (FR5_02),22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_57_6faf5319,Machine,M4-02 - Accuwell - 4axis - Conveyor automation (FR4_02),22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_65_c1e1b939,Machine,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",15.0,False,0.3,1_2
+__export__.mrp_workcenter_61_bcb50df3,Machine,M5-03 - Haas - 5axis - Manual (UMC750),15.0,False,0.3,1_2
+__export__.mrp_workcenter_60_6593b576,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),15.0,False,0.3,1_2
+__export__.mrp_workcenter_69_1bd4f659,Machine,CMM - Hexagon - CMM (TIGO SF),15.0,False,0.0,1_2
 0,Operator,Operator 1,7.5,False,0.0,1
 1,Operator,Operator 2,7.5,False,0.0,1
 2,Operator,Operator 3,7.5,False,0.0,2

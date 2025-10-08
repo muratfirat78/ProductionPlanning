@@ -1098,7 +1098,7 @@ class DataManager:
                                                 
 
                                             
-                                            myopr = Operation(TBRM_df.loc[i,'Work Orders/Work Center/ID'] ,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],proctime)
+                                            myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[i,'Work Orders/Work Center'],proctime)
                                             nroprs+=1
                                             newres = None
                                             if not TBRM_df.loc[i,'Work Orders/Work Center'] in self.Resources:
@@ -1140,7 +1140,7 @@ class DataManager:
                                         self.getVisualManager().getDiagInfo().value += "oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n" 
     
                                         
-                                        if not TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
+                                        if not "["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'] in self.Operations:
                                             proctime = TBRM_df.loc[lineno,'Work Orders/Expected Duration']
                                             myopr = Operation(nroprs,"["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'],float(proctime)/float(r['Quantity To Produce']))
                                             nroprs+=1
@@ -1150,7 +1150,7 @@ class DataManager:
                                                 restype = "Machine"
                                                 if TBRM_df.loc[lineno,'Work Orders/Work Center'].find("OUT - ") > -1:
                                                     restype = "Outsourced"    
-                                                newres = Resource(nrresources,restype,TBRM_df.loc[lineno,'Work Orders/Work Center'] ,2)
+                                                newres = Resource(TBRM_df.loc[lineno,'Work Orders/Work Center/ID'],restype,TBRM_df.loc[lineno,'Work Orders/Work Center'],2)
                                                 for shift in [1,2]:
                                                     newres.getAvailableShifts().append(int(shift))
                                                 nrresources+=1
@@ -1171,7 +1171,7 @@ class DataManager:
                                             myprod.getOperations().append(myopr)
                                             
                                         else:
-                                            myopr = self.Operations[TBRM_df.loc[lineno,'Work Orders/Work Center']]
+                                            myopr = self.Operations["["+pnstr+"] "+TBRM_df.loc[lineno,'Work Orders/Work Center'] ]
     
                                        
                                         operations.append(TBRM_df.loc[lineno,'Work Orders/Work Center'])
