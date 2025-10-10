@@ -48,14 +48,28 @@ class Simulator(object):
 
     def SystemClock(self,env):
    
-        while True:
-    
-            unit_time = 0.01 # this is one minute 
+       while True:
+       '''
+        for wcnt in ProdMgr.prodsystem.workcenters:   
             
-            yield env.timeout(unit_time)
-            
-            
-        return 
+            if wcnt.currentShift == None:
+                ProdMgr.StartShift(wcnt,env.now,SupplyMngr,stateinfo)
+            else: 
+               
+                for optr in wcnt.operators:  
+                    
+                    loginfo = optr.proceed(env,execdata,ProdMgr.prodsystem,wcnt.currentShift,display,createlog) 
+                   
+                    
+                if env.now >= wcnt.currentShift.end: 
+                    if wcnt.currentShift != None:
+                        ProdMgr.CompleteShift(wcnt,stateinfo)
+       '''
+        unit_time = 0.01 # this is one minute 
+        
+        yield env.timeout(unit_time)
+           
+        return
  
 
        
