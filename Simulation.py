@@ -61,6 +61,8 @@ class SimMachine(object):
         self.location = None 
         self.inputbuffer = None
         self.outputbuffer = None
+        self.XCoord = 0,0
+        self.YCoord = 0,0
 
     
     def ProcessTask(self,env,task):
@@ -85,22 +87,32 @@ class SimProduct(object):
         return
     def getLocation(self):
         return self.location
-    
 
-    
+class SimSubcontractor(object):
+    def __init__(self,env,res):
+        self.extres = res
 
-class SimOperator(object):
+
+class SimTrolley(object):
     def __init__(self, env,name,myid):
         self.env = env
         self.name = name
         self.ID = myid     
+       
+       
+    
+
+class SimOperator(object):
+    def __init__(self,env,Optr):
+        self.env = env 
+        self.operator = Optr
         self.efficiency = 1
         self.operationexecutions = []
         self.location = None 
         self.status = 'idle'
         self.currentexecution = None
         self.availability = dict() #  key: day, value: activeperiod. 
-        print('name: ',self.name,' comptence ',self.competence)
+        
         
     def StartTask(self,env,task):
         # make status change idle->busy
@@ -129,6 +141,8 @@ class Buffer(object):
         self.name = name
         self.capacity = capacity
         self.products = []
+        self.XCoord = 0,0
+        self.YCoord = 0,0
       
         
         # historical capacity use
@@ -159,13 +173,40 @@ class ProductionManager(object):
         self.ProdPlan = dict() # keys: Shift, values: [(PO,t)]
         self.Operators = dict() # key: Oprtr.ID, val: Operator
 
-
+class Trolley(object): 
+    def __init__(self,env,name):
+        self.env = env
+        self.name = name
+        self.capacity = 100
+        self.products = [] # products
+      
+      
         
 class ProductionSystem(object): 
-    def __init__(self,name):
+    def __init__(self,env,name):
+        self.env = env
         self.name = name
         self.machines = []
         self.operators = []
+        self.subcontractors = []
+        self.trolleys = []
+
+    
+    def getMachines(self):
+        return self.machines
+
+    def getOperators(self):
+        return self.operators
+
+    def getSubcontractors(self):
+        return self.subcontractors
+
+    def getTrolleys(self):
+        return self.trolleys
+
+    def print(self):
+        return "Machines"+str(len(self.machines))+", Ops: "+str(len(self.operators))+", Sub: "+str(len(self.subcontractors))+", Trollys: "+str(len(self.trolleys))
+        
         
 
 
@@ -208,14 +249,28 @@ class SimulationManager(object):
         self.SimEnd = myvm
         return
 
+
+
+    def createProductionSystem(self,env,name):
+        return ProductionSystem(env,name)
+
+    def createSubcontractor(self,env,res):
+        return SimSubcontractor(env,res)
+
     def createBuffer(self,env,name,cap):
         return Buffer(env,name,cap)
 
     def createMachine(self,env,machine):
         return SimMachine(env,machine)
 
+    def createOperator(self,env,res):
+        return SimOperator(env,res)
+
     def createJob(self,env,job):
         return SimJob(env,job)
+
+    def createTrolley(self,env,name):
+        return Trolley(env,name)
 
     def createProduct(self,env,job,SN):
         return SimProduct(env,job,SN)

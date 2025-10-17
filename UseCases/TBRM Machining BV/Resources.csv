@@ -19,5 +19,5 @@ __export__.mrp_workcenter_69_1bd4f659,Machine,CMM - Hexagon - CMM (TIGO SF),,15.
 1,Operator,Operator 2,Metal forming,7.5,False,0.0,1
 2,Operator,Operator 3,Metal forming,7.5,False,0.0,2
 3,Operator,Manual worker 1,Benchwork,7.5,False,0.0,1
-30,Operator,Manual worker 2,Benchwork,7.5,False,0.0,2
+30,Operator,Manual worker 2,Benchwork,7.5,False,0.0,1
 4,Machine,M5-05_(UMC750SS),Metal forming,15.0,False,0.3,1_2

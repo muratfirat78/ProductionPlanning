@@ -3,7 +3,7 @@ ResourceID,ResourceType,Name,ProcessType,DailyCapacity,Automated,Alternatives,Op
 1,Operator,Operator 2,Metal forming,1,False,,0,1
 2,Operator,Operator 3,Metal forming,1,False,,0,2
 3,Operator,Manual worker 1,Benchwork,2,False,,0,1
-30,Operator,Manual worker 2,Benchwork,2,False,,0,2
+30,Operator,Manual worker 2,Benchwork,2,False,,0,1
 4,Machine,M5-05_(UMC750SS),Metal forming,2,False,M5-03~M5-04,0.3,1_2
 6,Manual,MP2_(ZGN_02),Preparation,2,False,,0,1_2
 7,Machine,M3-01_(FR3_01),Metal forming,2,False,,0.3,1_2

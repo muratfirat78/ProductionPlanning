@@ -34,7 +34,7 @@ class Simulator(object):
     
     def __init__(self): 
         self.SimulationManager = None
-        self.Machines = []
+    
   
     def getSimulationManager(self):
         return self.SimulationManager
@@ -43,6 +43,7 @@ class Simulator(object):
         return
 
     def getMachines(self):
+        
         return self.Machines
 
 
@@ -62,9 +63,13 @@ class Simulator(object):
        
     def RunSimulation(self):
 
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Simulation starts.."+"\n"
+        Progress = self.getSimulationManager().getVisualManager().getPSchScheRes()
 
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Simulation period "+str(self.getSimulationManager().getSimStart())+"-"+str(self.getSimulationManager().getSimEnd())+"\n"
+        datamgr = self.getSimulationManager().getDataManager()
+
+        Progress.value+="Simulation starts.."+"\n"
+
+        Progress.value+="Simulation period "+str(self.getSimulationManager().getSimStart())+"-"+str(self.getSimulationManager().getSimEnd())+"\n"
 
         env = simpy.Environment()
 
@@ -72,17 +77,40 @@ class Simulator(object):
 
         CentralBuffer = self.getSimulationManager().createBuffer(env,"CentralBuffer",10000000)
 
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Central buffer created with cap.."+str(CentralBuffer.getCapacity())+"\n"
+        Progress.value+="Central buffer created with cap.."+str(CentralBuffer.getCapacity())+"\n"
 
-        self.getSimulationManager().getDataManager().getSchedulingManager().CreateShifts(self.getSimulationManager().getSimStart(),self.getSimulationManager().getSimEnd(),False)
+              
+        
+        datamgr.getSchedulingManager().CreateShifts(self.getSimulationManager().getSimStart(),self.getSimulationManager().getSimEnd(),False)
 
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Customer orders.."+str(len(self.getSimulationManager().getDataManager().getCustomerOrders()))+"\n"
+        Progress.value+="Customer orders.."+str(len(datamgr.getCustomerOrders()))+"\n"
 
-        for resname,res  in self.getSimulationManager().getDataManager().getResources().items():
+
+        ProdSystem = self.getSimulationManager().createProductionSystem(env,"TBRM_Machine_BV")
+
+        Progress.value+="ress .."+str(len(datamgr.getResources()))+"\n"
+
+        Progress.value+="mahsss .."+str(len(ProdSystem.getMachines()))+"\n"
+
+
+        for resname,res  in datamgr.getResources().items():
             if res.getType() == "Machine":
-                self.getMachines().append(self.getSimulationManager().createMachine(env,res))
+                
+                ProdSystem.getMachines().append(self.getSimulationManager().createMachine(env,res))
+            if res.getType() == "Outsourced":
+               
+                ProdSystem.getSubcontractors().append(self.getSimulationManager().createSubcontractor(env,res))
+            if res.getType() == "Operator":
+               
+                ProdSystem.getOperators().append(self.getSimulationManager().createOperator(env,res))
+      
+    
 
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Production system has "+str(len(self.getMachines()))+" machines."+"\n"
+        for i in range(5):
+            ProdSystem.getTrolleys().append(self.getSimulationManager().createOperator(env,"Trolley_"+str(i)))
+            
+
+        self.getSimulationManager().getVisualManager().getPSchScheRes().value+=ProdSystem.print()+"\n"
 
         for name,order in self.getSimulationManager().getDataManager().getCustomerOrders().items():
             #self.getVisualManager().getPSchScheRes().value+="Customer order.."+str(name)+"\n"
