@@ -1529,7 +1529,7 @@ class VisualManager():
 
             self.getPSTBFinalProd().value = "Product: "+myord.getProduct().getName()
             self.getPSTBQuantity().value = 'Quantity: '+str(myord.getQuantity())
-            self.getPSTBAvailable().value  = 'Component: '+myord.getComponentAvailable()
+            self.getPSTBAvailable().value  = 'Component: '+str(myord.getComponentAvailable())
             self.getPSTBDeadLine().value = 'Deadline: '+str(myord.getDeadLine())
 
             #------------------------------------

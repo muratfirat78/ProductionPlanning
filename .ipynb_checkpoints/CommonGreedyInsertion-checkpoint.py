@@ -10,6 +10,9 @@ class GreedyInsertionAlg:
         if res!= "Machine":
             return True
 
+        if res.getProcessType() != "Metal forming":
+            return True
+
         #Progress.value+="FTE availability check..."+"\n"
 
         curr_time = jobstarttime
@@ -18,9 +21,10 @@ class GreedyInsertionAlg:
       
         while processtime > 0: 
 
-            fte_use = ScheduleMgr.CalculateFTEUse(res,curr_shift)
-            ftecapacity = sum([int(curr_shift in opr.getShiftAvailability()) for opr in res.getMachineGroup().getOperatingTeam().getOperators()])
+            fte_use = ScheduleMgr.CalculateFTEUse(res,curr_shift)  
+            ftecapacity = ScheduleMgr.getDataManager().getFTECapacity(res.getProcessType(),shift)
             
+      
             timeinshift =  curr_shift.getEndTime()+1 - curr_time
             if timeinshift < processtime:
                 processtime = processtime - timeinshift
@@ -37,7 +41,7 @@ class GreedyInsertionAlg:
                 curr_shift=curr_shift.getNext()
                 curr_time = curr_shift.getStartTime()
                 
-                while not res.getShiftAvailability()[curr_shift]: 
+                while not curr_shift.getNumber() in res.getAvailableShifts(): 
                     curr_shift = curr_shift.getNext()
                     if curr_shift == None:
                         return False
@@ -78,10 +82,10 @@ class GreedyInsertionAlg:
                 reasonstr+=" Time > shift end.."
             #Progress.value+=" 1: "+reasonstr+"\n"
             
-            if not (resource.getShiftAvailability()[curr_shift]):
+            if not curr_shift.getNumber() in resource.getAvailableShifts():
                 reasonstr+=" resource not available.."
             #Progress.value+=" 2: "+reasonstr+"\n"
-            proper = (proper) and (resource.getShiftAvailability()[curr_shift])
+            proper = (proper) and (curr_shift.getNumber() in resource.getAvailableShifts())
             if resource.getType() == "Machine": 
                 if (resource.getShiftOperatingModes()[curr_shift] == "Self-Running"):
                     reasonstr+=" self-running, job cannot start.."
@@ -113,9 +117,9 @@ class GreedyInsertionAlg:
                     reasonstr+=" Time > shift end.."
                     continue
                   
-                if not (resource.getShiftAvailability()[curr_shift]):
+                if not curr_shift.getNumber() in resource.getAvailableShifts():
                     reasonstr+="+ resource not available.."
-                proper = (proper) and (resource.getShiftAvailability()[curr_shift])
+                proper = (proper) and (curr_shift.getNumber() in resource.getAvailableShifts())
                         
                 if not proper: 
                     continue 
@@ -174,10 +178,10 @@ class GreedyInsertionAlg:
       
         if res.getName().find("OUT -") != -1:
             
-            Progress.value+=">>> "+str(job.getStartTime())+"  -  "+str(job.getJob().getOperation().getProcessTime())+"\n"
+            #Progress.value+=">>> "+str(job.getStartTime())+"  -  "+str(job.getJob().getOperation().getProcessTime())+"\n"
             job.setCompletionTime(job.getStartTime()+job.getJob().getOperation().getProcessTime())
             
-            Progress.value+=" In Schedule? >>> "+str(emptyslot[1] in res.getCurrentSchedule())+"\n"
+            #Progress.value+=" In Schedule? >>> "+str(emptyslot[1] in res.getCurrentSchedule())+"\n"
             res.getCurrentSchedule()[emptyslot[1]].append(job)
             return
         
@@ -193,6 +197,11 @@ class GreedyInsertionAlg:
 
         Progress.value+="finding completion..."+"\n"
         while processtime > 0: 
+
+            Progress.value+=" currshift in sch of res? "+str(curr_shift in res.getCurrentSchedule())+"\n"
+
+            if not curr_shift in res.getCurrentSchedule():
+                Progress.value+=" currsch of res has "+str(len())+" shifts"+"\n"
               
             res.getCurrentSchedule()[curr_shift].append(job)
             timeinshift =  curr_shift.getEndTime()+1 - curr_time
@@ -206,28 +215,41 @@ class GreedyInsertionAlg:
           
                 schedulesol.getResourceSchedules()[res.getName()][curr_shift][job] = (curr_time,curr_time + processtime)
                 
-                if curr_shift in schedulesol.getResourceSchedules()[res.getName()]:
-                    Progress.value+=" Scheduling filled as job completed, jobs in shift.. "+str(len(schedulesol.getResourceSchedules()[res.getName()][curr_shift]))+"\n"
                 curr_time = curr_time + processtime
                 processtime = 0
 
             if processtime > 0:
-                #Progress.value+=" Scheduling filled as job overflows to next step.. "+"\n"
+                Progress.value+=" process time left "+str(processtime)+"\n"
 
-                
+                Progress.value+=" Scheduling soln has the resource? "+str(res.getName() in schedulesol.getResourceSchedules())+"\n"
+
+                Progress.value+=" Scheduling soln has shift? "+str(curr_shift in schedulesol.getResourceSchedules()[res.getName()])+"\n"
+
                 schedulesol.getResourceSchedules()[res.getName()][curr_shift][job] = (curr_time,curr_shift.getEndTime()+1)
+
+
+                Progress.value+=" curr hisft next? "+str(curr_shift.getNext())+"\n"
                 
             
                 curr_shift=curr_shift.getNext()
                 curr_time = curr_shift.getStartTime()
-                
-                while not res.getShiftAvailability()[curr_shift]: 
+
+
+                Progress.value+=" currshift available? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
+                while not curr_shift.getNumber() in res.getAvailableShifts():
                     curr_shift = curr_shift.getNext()
                     if curr_shift == None:
                         return None
                     curr_time = curr_shift.getStartTime()
 
+                Progress.value+=" Sh:("+str(emptyslot[1].getDay())+","+str(curr_shift.getNumber())+"), hrs: ["+str(curr_shift.getStartTime())+"-"+str(emptyslot[1].getEndTime())+"]\n" 
+                    
+
+                Progress.value+=" currshift in avail of res? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
+                Progress.value+=" currshift in sch of res? "+str(curr_shift in res.getCurrentSchedule())+"\n"
+                
         job.setCompletionTime(curr_time)
+        Progress.value+=" job completiontime "+str(job.getCompletionTime())+"\n"
 
         slotindex = res.getEmptySlots().index(emptyslot)
         if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
@@ -243,7 +265,7 @@ class GreedyInsertionAlg:
         newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime())),curr_shift)
         res.getEmptySlots().insert(slotindex,newmeptyslot)
 
-        #Progress.value+="Done..."+"\n"
+        Progress.value+="Done..."+"\n"
 
         return newmeptyslot
 
@@ -256,8 +278,6 @@ class GreedyInsertionAlg:
             for shift,jobs in res.getCurrentSchedule().items():
                 sch_sol.getResourceSchedules()[resname][shift] = dict()
 
-        
- 
         SchedulableJobs= [] 
 
         Progress.value+=" Simple greedy insertion starts.., all jobs "+str(len(AllJobs))+"\n"  
@@ -265,9 +285,11 @@ class GreedyInsertionAlg:
         for job in AllJobs: 
             if job.IsSchedulable():
                 SchedulableJobs.append(job)
-                
+
+        
 
         while len(SchedulableJobs) >0:
+            Progress.value+=" SchedulableJobs... "+str(len(SchedulableJobs))+"\n"  
             ScheduledJobs = []
             JobsToRemove = []
             nrscheduled = 0
@@ -282,7 +304,8 @@ class GreedyInsertionAlg:
                 myresource = None
                 currentslot = None
                 for resource in j.getJob().getOperation().getRequiredResources():
-                    
+
+                    Progress.value+=" checking slot for job ... "+str(j.getJob().getName())+" in res "+str(resource.getName())+"\n"  
                     slotreturn = self.CheckSlot(resource,j,Progress,ScheduleMgr)
                     
                     if slotreturn != None: 

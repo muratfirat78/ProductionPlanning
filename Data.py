@@ -303,104 +303,9 @@ class DataManager:
         oprmch_df.to_csv(fullpath, index=False)
 
         return
-    def ImportOrders2(self,b):
-
-       
-        if 'new' in b:
-            if 'value' in b['new']:
-                
-                if 'name' in b['new']['value'][0]:
-                   
-                    content = BytesIO(b['new']['value'][0]['content'])
-                    orders_df = pd.read_csv(content)
-                    
-                    
-                    prev_size = len(self.CustomerOrders)
-
-                    for i,r in orders_df.iterrows():
-                        if not r["Name"] in self.CustomerOrders:
-                            neworder = CustomerOrder(len(self.CustomerOrders),r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
-                            if neworder.getProductName() in self.Products:
-                                neworder.setProduct(self.Products[neworder.getProductName()])
-                            else: 
-                                self.getVisualManager().getDiagInfo().value += "Product"+str(neworder.getProductName())+" not found, so being created.."+"\n"
-                                newprod = Product(len(self.Products),neworder.getProductName(),"XXXXXX",0)
-                                self.Products[neworder.getProductName()]= newprod
-                                neworder.setProduct(newprod)
-                                
-                            self.CustomerOrders[r["Name"]] = neworder   
-                    
-                    self.getVisualManager().getPSTBProdList().options = [prname for prname in self.Products.keys()]
-                                
-                    self.getVisualManager().getDiagInfo().value += "Orders updated.."+str(prev_size)+"->"+str(len(self.CustomerOrders))+"\n"     
-            
-                   
-            
-                    self.getVisualManager().getCOTBorders().options =  [myordname for myordname in self.CustomerOrders.keys()]
-
-
-
-        #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
-        #content = input_file['content']
-        #content = io.StringIO(content.decode('utf-8'))
-        #df = pd.read_csv(content)
-
-
-        #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
-        return
-    
-    
+  
    
-    def ImportOrders(self,b):  
-
-        rel_path = self.getVisualManager().getFolderNameTxt().value+'/'+self.getVisualManager().getCasesDrop().value+'/'+'input_files'
-        orders_df = pd.DataFrame()
-
-        if self.onlineversion:
-            self.getVisualManager().getCaseInfo().value += ">>> Online version, aborted... \n"
-            return
-        else:
-            abs_file_path = os.path.join(Path.cwd(), rel_path)
-
-        filefound = False
-
-        for root, dirs, files in os.walk(abs_file_path):
-            for file in files:
-                self.getVisualManager().getDiagInfo().value += ">>> reading file "+file+"... \n"
-                if file.find("OrderDelta") != -1:
-                    orders_df = pd.read_csv(abs_file_path+'/'+file)
-                    self.getVisualManager().getDiagInfo().value += "Orders to imports.."+str(len(orders_df))+"\n"    
-                    filefound = True
-                    break
-            if filefound:
-                break
-
-        prev_size = len(self.CustomerOrders)
-
-        
-        for i,r in orders_df.iterrows():
-            if not r["Name"] in self.CustomerOrders:
-                neworder = CustomerOrder(len(self.CustomerOrders),r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
-                if neworder.getProductName() in self.Products:
-                    neworder.setProduct(self.Products[neworder.getProductName()])
-                else: 
-                    self.getVisualManager().getDiagInfo().value += "Product"+str(neworder.getProductName())+" not found, so being created.."+"\n"
-                    newprod = Product(len(self.Products),neworder.getProductName(),"XXXXXX",0)
-                    self.Products[neworder.getProductName()]= newprod
-                    neworder.setProduct(newprod)
-                    
-                self.CustomerOrders[r["Name"]] = neworder   
-        
-        self.getVisualManager().getPSTBProdList().options = [prname for prname in self.Products.keys()]
-                    
-        self.getVisualManager().getDiagInfo().value += "Orders updated.."+str(prev_size)+"->"+str(len(self.CustomerOrders))+"\n"     
-
-       
-
-        self.getVisualManager().getCOTBorders().options =  [myordname for myordname in self.CustomerOrders.keys()]
-
-
-        return
+  
 
     
     def SaveSchedule(self,b):
@@ -550,6 +455,12 @@ class DataManager:
          
      
         return
+
+    def getFTECapacity(res,shift):
+
+        #
+
+        return
         
         
 
@@ -575,6 +486,7 @@ class DataManager:
         prodopmatch_df = pd.DataFrame()
         precmatch_df = pd.DataFrame()
         oprsresources_df = pd.DataFrame()
+        machalts_df =  pd.DataFrame()
 
         scheduledate = None
         jobdate = None
@@ -647,12 +559,13 @@ class DataManager:
                         jobsfile = file
                         self.getVisualManager().getCaseInfo().value += "jobsfile .."+str(file)+"\n"         
    
-   
 
-                #if file == "OperatorsMachines.csv": 
-                #    oprmch_df = pd.read_csv(abs_file_path+'/'+file)
-                #    self.getVisualManager().getCaseInfo().value += "OperatorsMachines read.."+str(len(oprmch_df))+"\n"            
-                
+                if file == "MachineAlternatives.csv": 
+                    machalts_df = pd.read_csv(abs_file_path+'/'+file)
+                    
+                        
+
+              
                 if file == "Products.csv": 
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in prod_df.iterrows():
@@ -672,6 +585,8 @@ class DataManager:
                     res_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
                         newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
+                        self.getVisualManager().getCaseInfo().value += ">>>.. "+str(r["ProcessType"])+"\n"
+                        newres.setProcessType(r["ProcessType"])
                         if not np.isnan(r["Automated"]):
                             if str(r["Automated"]) == "True":
                                 newres.setAutomated() 
@@ -692,6 +607,10 @@ class DataManager:
                     orders_df = pd.read_csv(abs_file_path+'/'+file)
                     for i,r in orders_df.iterrows():
                         neworder = CustomerOrder(r["OrderID"],r["Name"],r["ProductID"],r["ProductName"],r["Quantity"],r["Deadline"])
+                        neworder.SetComponentAvailable(r["Component"])
+                        
+                        
+                        
                         self.CustomerOrders[r["Name"]] = neworder
                     self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
     
@@ -715,79 +634,24 @@ class DataManager:
             if myord.getProductName() in self.Products:
                 myord.setProduct(self.Products[myord.getProductName()])
           
-       
-        #initilize first machine group..
-        #self.getVisualManager().getCaseInfo().value += ">>> Machine groups and operating teams.. "+str(len(oprmch_df))+"\n" 
-
-        operators =[]
-        #operators =[op for op in oprmch_df["OperatorID"].unique()]
-
-        self.getVisualManager().getCaseInfo().value += ">>> operators "+str(len(operators))+"\n" 
-
-        for operatorID in operators:
-            operator = [myres  for resname,myres in self.getResources().items() if myres.getID() == operatorID][0]
-            oprmachines =[mhid for mhid in oprmch_df[oprmch_df["OperatorID"] == operatorID]["MachineID"]]
-
-            self.getVisualManager().getCaseInfo().value += ">>> operator "+str(operator.getName())+" linked to "+str(oprmachines)+" machines.."+"\n" 
-            
-            mymachgroup = None
-            for machineID in oprmachines:
-                mach = [myres  for resname,myres in self.getResources().items() if myres.getID() == machineID ][0]
-                # check if the machine included in the previously defined ones..
-                commonmachine = False
-                for machgroup in self.getMachineGroups():
-                    if mach in machgroup.getMachines():
-                        commonmachine = True
-                        mymachgroup = machgroup
-                        break
-                if commonmachine:
-                    break
-                    
-            if mymachgroup != None:
-                
-                mymachgroup.getOperatingTeam().getOperators().append(operator)
-                operator.setOperatingTeam(mymachgroup.getOperatingTeam())
-                
-
-            else:
-                machgroup = MachineGroup()
-                operatingteam = OperatingTeam() # assumption every operator is in exactly one team
-                machgroup.setOperatingTeam(operatingteam)
-                operatingteam.setMachineGroup(machgroup)
-
-                
-                for machineID in oprmachines:
-                    mach = [myres  for resname,myres in self.getResources().items() if myres.getID() == machineID ][0]
-                    machgroup.getMachines().append(mach) 
-                    mach.setMachineGroup(machgroup)
-                    
-     
-                operator.setOperatingTeam(operatingteam) 
-                operatingteam.getOperators().append(operator)
-
-                self.getOperatingTeams().append(operatingteam)
-                self.getMachineGroups().append(machgroup)    
-            
-        self.getVisualManager().getCaseInfo().value += ">>> Machine groups.. "+str(len(self.getMachineGroups()))+"\n"                  
-        self.getVisualManager().getCaseInfo().value += ">>> Operating teams.. "+str(len(self.getOperatingTeams()))+"\n"    
-   
-                             
+                            
         self.getVisualManager().getCaseInfo().value += ">>> Precedences.. "+str(len(precmatch_df))+"\n" 
         for i,r in precmatch_df.iterrows():
-
-     
-
-         
-    
             predecessor = [myprod  for pname,myprod in self.getProducts().items() if str(myprod.getID()) == str(r["PredecessorID"])] [0]
             successor = [myprod  for pname,myprod in self.getProducts().items() if str(myprod.getID()) == str(r["SuccessorID"])][0]
 
-            
-    
             predecessor.setSuccessor(successor)
             successor.getPredecessors().append(predecessor)
             successor.getMPredecessors()[predecessor] = r["Multiplier"]
             #self.getVisualManager().getCaseInfo().value += "successor: "+str(successor.getName())+" has "+str(len(successor.getPredecessors()))+"\n" 
+
+        self.getVisualManager().getCaseInfo().value += ">>> Machine alternatvies .. "+str(len(machalts_df))+"\n" 
+        for i,r in machalts_df.iterrows():
+            res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["MachineID"]][0]
+            alt = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["AlternativeID"]][0]
+
+            res.getAlternatives().append(alt)
+            
 
         self.getVisualManager().getCaseInfo().value += ">>> Product-Operations... "+str(len(prodopmatch_df))+"\n" 
                 
@@ -1233,14 +1097,15 @@ class DataManager:
                                 self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
                                 
                                 if len(matches) == 0:
-                                    self.getVisualManager().getDiagInfo().value += "Restpye: "+str(r["ResourceType"])+"\n" 
-                                    
                                     myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
+                                   
                                     self.Resources[r['Name']] = myres
 
                                 else:
                                     myres = matches[0]
-                                    
+
+                                myres.setProcessType(r["ProcessType"])
+                                self.getVisualManager().getDiagInfo().value += "Processtype: "+str(r["ProcessType"])+"\n" 
 
                                 self.getVisualManager().getDiagInfo().value += "Automated: "+str(r["Automated"])+"\n" 
                                 if not np.isnan(r["Automated"]):
@@ -1272,10 +1137,8 @@ class DataManager:
 
                                 self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
                                 
-                                if len(matches) == 0:
-                                    
-                                    myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
-                                    self.Resources[r['Name']] = myres
+                                if len(matches) == 0: 
+                                    self.getVisualManager().getDiagInfo().value += "NOT FOUND: Resource "+str(r['Name'])+"\n"
                                     
                                 else:
                                     myres = matches[0]
@@ -1302,6 +1165,7 @@ class DataManager:
                                  
                                 
                             self.getVisualManager().RefreshViews()
+                            self.getVisualManager().getDiagInfo().value += "SAVINGGGGGGGGGGGGGGGGGGGGGGGGGGG "+"\n" 
 
                             savefile = True
                             
@@ -1322,16 +1186,21 @@ class DataManager:
         
     def SaveTheInstance(self):
 
+        Progress = self.getVisualManager().getDiagInfo()
+
         # Save Products.
         products_df = pd.DataFrame(columns= ["ProductID","ProductNumber","Name","Created"])
         precedences_df = pd.DataFrame(columns= ["PredecessorID","SuccessorID","Multiplier"])
         prodrops_df = pd.DataFrame(columns= ["ProductID","OperationID","OperationIndex"])
         operations_df = pd.DataFrame(columns= ["OperationID","Name","ProcessTime"])
         opsres_df = pd.DataFrame(columns= ["OperationID","ResourceID"])
-        resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","DailyCapacity","Automated","OperatingEffort","Shift"])
-        orders_df = pd.DataFrame(columns= ["OrderID","ProductID","ProductName","Name","Quantity","Deadline"])
+        resources_df = pd.DataFrame(columns= ["ResourceID","ResourceType","Name","ProcessType","DailyCapacity","Automated","OperatingEffort","Shift"])
+        orders_df = pd.DataFrame(columns= ["OrderID","ProductID","ProductName","Name","Quantity","Deadline","Component"])
+        machalters_df =  pd.DataFrame(columns= ["MachineID","AlternativeID"])
 
-        self.getVisualManager().getCaseInfo().value += ">>> save instance.."+"\n" 
+        Progress.value+= ">>> save instance.."+"\n" 
+
+        Progress.value+= ">>>resources_df.."+str(len(resources_df))+"\n" 
         
         for name,myprod in self.Products.items():
             products_df.loc[len(products_df)] = {"ProductID":myprod.getID(), "ProductNumber":myprod.getPN(),"Name":myprod.getName(),"Created":myprod.getCreated()}
@@ -1342,11 +1211,11 @@ class DataManager:
  
             oprind = 0
             for opr in myprod.getOperations():
-                self.getVisualManager().getCaseInfo().value += ">>> prod-opr..Opr"+str(opr.getID())+"->Prod"+str(myprod.getID())+"\n" 
+                #Progress.value+= ">>> prod-opr..Opr"+str(opr.getID())+"->Prod"+str(myprod.getID())+"\n" 
                 prodrops_df.loc[len(prodrops_df)] = {"ProductID":myprod.getID(),"OperationID":opr.getID(),"OperationIndex":oprind}
                 oprind+=1
 
-        self.getVisualManager().getCaseInfo().value += ">>>  products done.."+str(len(products_df))+"\n" 
+        Progress.value+= ">>>  products done.."+str(len(products_df))+"\n" 
 
         for opname,opr in self.Operations.items():
             operations_df.loc[len(operations_df)]= {"OperationID":opr.getID(),"Name":opr.getName(),"ProcessTime":opr.getProcessTime()}
@@ -1356,18 +1225,23 @@ class DataManager:
                 opsres_df.loc[len(opsres_df)]= {"OperationID":opr.getID(),"ResourceID":res.getID()}
                 
 
-        self.getVisualManager().getCaseInfo().value += ">>> operations done.."+str(len(operations_df))+"\n" 
-        
+        Progress.value+= ">>> operations done.."+str(len(operations_df))+"\n" 
+        Progress.value+= ">>> Resources: "+str(len(self.Resources))+"\n" 
 
         for resname,res in self.Resources.items():
-            resources_df.loc[len(resources_df)] ={"ResourceID":res.getID(),"ResourceType":res.getType(),"Name":res.getName(),"DailyCapacity":res.getDailyCapacity(),"Automated":res.IsAutomated(),"OperatingEffort":res.getOperatingEffort(),"Shift":'_'.join([str(x) for x in res.getAvailableShifts()])}
+            Progress.value+= ">>> res.."+str(res.getName())+"\n" 
 
-        self.getVisualManager().getCaseInfo().value += ">>> resources done.."+str(len(resources_df))+"\n" 
+            resources_df.loc[len(resources_df)] ={"ResourceID":res.getID(),"ResourceType":res.getType(),"Name":res.getName(),"ProcessType":res.getProcessType(),"DailyCapacity":res.getDailyCapacity(),"Automated":res.IsAutomated(),"OperatingEffort":res.getOperatingEffort(),"Shift":'_'.join([str(x) for x in res.getAvailableShifts()])}
+
+            for altres in res.getAlternatives():
+                machalters_df.loc[len(machalters_df)] = {"MachineID":res.getID(),"AlternativeID":altres.getID()}
+
+        Progress.value+= ">>> resources done.."+str(len(resources_df))+"\n" 
         
         for ordname,ordr in self.CustomerOrders.items():
-            orders_df.loc[len(orders_df)]={"OrderID":ordr.getID(),"ProductID":ordr.getProduct().getID(),"ProductName":ordr.getProduct().getName(),"Name":ordr.getName(),"Quantity":ordr.getQuantity(),"Deadline":ordr.getDeadLine()}
+            orders_df.loc[len(orders_df)]={"OrderID":ordr.getID(),"ProductID":ordr.getProduct().getID(),"ProductName":ordr.getProduct().getName(),"Name":ordr.getName(),"Quantity":ordr.getQuantity(),"Deadline":ordr.getDeadLine(),"Component":ordr.getComponentAvailable()}
 
-        self.getVisualManager().getCaseInfo().value += ">>> orders done.."+str(len(orders_df))+"\n" 
+        Progress.value+=">>> orders done.."+str(len(orders_df))+"\n" 
 
 
         folder = 'UseCases'; casename = self.getVisualManager().getCOTBcasename().value
@@ -1381,7 +1255,7 @@ class DataManager:
         filename = 'Products.csv'; 
         path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;  
         fullpath = os.path.join(Path.cwd(), path)
-        self.getVisualManager().getCaseInfo().value += ">>> products save folder.."+str(path)+"\n" 
+        Progress.value+= ">>> products save folder.."+str(path)+"\n" 
         products_df.to_csv(path, index=False)
       
         filename = 'Precedences.csv'; path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
@@ -1396,10 +1270,21 @@ class DataManager:
         resources_df.to_csv(fullpath, index=False)
         filename = 'CustomerOrders.csv';  path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;  fullpath = os.path.join(Path.cwd(), path)
         orders_df.to_csv(fullpath, index=False)
-        filename = 'OperatorsMachines.csv';  path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
-        oprmch_df.to_csv(fullpath, index=False)
+        filename = 'MachineAlternatives.csv';  path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename;   fullpath = os.path.join(Path.cwd(), path)
+        machalters_df.to_csv(fullpath, index=False)
         
         return
+
+    def getFTECapacity(processtype,shift):
+
+        sumfte = 0
+        for resname,res in self.Resources.items():
+            if res.getType() == "Operator":
+                if shift in myres.getAvailableShifts():
+                    if res.getProcessType() == processtype:
+                        sumfte+=1
+    
+        return sumfte
         
     def on_submit_func(self,sender):    
 

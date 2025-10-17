@@ -111,43 +111,6 @@ class Product():
         return
 
 
-class MachineGroup():
-    def __init__(self):
-        self.Machines = []  
-        self.OperatingTeam = None
-        
-
-    def getMachines(self):
-        return self.Machines
-        
-    def getOperatingTeam(self):
-        return self.OperatingTeam 
-    def setOperatingTeam(self,opt):
-        self.OperatingTeam = opt
-        return 
-
-class OperatingTeam():
-    
-    def __init__(self):
-        self.Operators = []
-        self.MachineGroup = None
-        self.CapacityUse = dict() #key: Shift, val: fte use. 
-        
-
-
-    def getCapacityUse(self):
-        return self.CapacityUse 
-    def getOperators(self):
-        return self.Operators 
-        
-    def getMachineGroup(self):
-        return self.MachineGroup
-    def setMachineGroup(self,mg):
-        self.MachineGroup = mg
-        return
-
-    
-
 class Resource():
     # Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
     def __init__(self,myid,mytype,myname,mydaycp):
@@ -167,6 +130,7 @@ class Resource():
         self.MachineGroup = None
         self.Alternatives = [] # alternatives that can make the operations of this resource.
         self.AvailableShifts = []
+        self.processtype = None
         
    
         # PlANNING
@@ -185,6 +149,13 @@ class Resource():
         self.ShiftAvailability = dict() #key: shift, val: boolena available/unavailable.  
 
         # SCHEDULING
+
+    def setProcessType(self,prty):
+        self.processtype = prty
+        return
+        
+    def getProcessType(self):
+        return self.processtype
 
     def getAvailableShifts(self):
         return self.AvailableShifts

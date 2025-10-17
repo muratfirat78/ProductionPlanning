@@ -333,7 +333,6 @@ class PlanningManager:
             res.getCapacityUsePlan().clear()
             res.getCapacityReserved().clear()
           
-            
             cumulative_capacity = 0
 
             
@@ -359,6 +358,7 @@ class PlanningManager:
 
             if not pd.isna(myord.getComponentAvailable()):
                 if(myord.getComponentAvailable() == "Available") and (myord.getDeadLine() > self.getPHStart()):
+                    
                     #if myord.getLatestStart() < self.getPHEnd().date(): 
                         OrderstoPlan.append(myord)        
 
