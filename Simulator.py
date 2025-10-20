@@ -51,6 +51,10 @@ class Simulator(object):
    
        while True:
 
+          
+        if env.now in self.getSimulationManager().getEventQueue():
+            for event in self.getSimulationManager().getEventQueue()[env.nov]:
+                
         
       
         unit_time = 0.01 # this is one minute 
@@ -78,25 +82,24 @@ class Simulator(object):
         CentralBuffer = self.getSimulationManager().createBuffer(env,"CentralBuffer",10000000)
 
         Progress.value+="Central buffer created with cap.."+str(CentralBuffer.getCapacity())+"\n"
-
-              
+   
         
-        datamgr.getSchedulingManager().CreateShifts(self.getSimulationManager().getSimStart(),self.getSimulationManager().getSimEnd(),False)
+        self.getSimulationManager().CreateShifts(Progress)
+
+        Progress.value+="Shifts initialized in days: "+str(len(self.getSimulationManager().getMyShifts()))+"\n"  
 
         Progress.value+="Customer orders.."+str(len(datamgr.getCustomerOrders()))+"\n"
 
 
         ProdSystem = self.getSimulationManager().createProductionSystem(env,"TBRM_Machine_BV")
 
-        Progress.value+="ress .."+str(len(datamgr.getResources()))+"\n"
-
-        Progress.value+="mahsss .."+str(len(ProdSystem.getMachines()))+"\n"
-
 
         for resname,res  in datamgr.getResources().items():
             if res.getType() == "Machine":
-                
-                ProdSystem.getMachines().append(self.getSimulationManager().createMachine(env,res))
+
+                simmach = self.getSimulationManager().createMachine(env,res)
+                res.setSimResource(simmach)
+                ProdSystem.getMachines().append(simmach)
             if res.getType() == "Outsourced":
                
                 ProdSystem.getSubcontractors().append(self.getSimulationManager().createSubcontractor(env,res))
@@ -104,7 +107,6 @@ class Simulator(object):
                
                 ProdSystem.getOperators().append(self.getSimulationManager().createOperator(env,res))
       
-    
 
         for i in range(5):
             ProdSystem.getTrolleys().append(self.getSimulationManager().createOperator(env,"Trolley_"+str(i)))
@@ -112,17 +114,26 @@ class Simulator(object):
 
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+=ProdSystem.print()+"\n"
 
+
+       
+
         for name,order in self.getSimulationManager().getDataManager().getCustomerOrders().items():
             #self.getVisualManager().getPSchScheRes().value+="Customer order.."+str(name)+"\n"
             for job in order.getMyJobs():
-                #self.getVisualManager().getPSchScheRes().value+="job.."+str(job.getName())+"\n"
-                simJob = self.getSimulationManager().createJob(env,job)
                 #self.getVisualManager().getPSchScheRes().value+="job..Q"+str(job.getQuantity())+"\n"
-                for prd in range(int(job.getQuantity())):
-                    simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                    simJob.getProducts().append(simprod)
-                    simprod.setLocation(CentralBuffer)
-                    CentralBuffer.getProducts().append(simprod)
+                if len(job.getPredecessors())  == 0:
+                    for prd in range(int(job.getQuantity())):
+                        simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
+                       
+                        simprod.setLocation(CentralBuffer)
+                        firstevent = simprod.setcurrentjob(0,job)
+                        if not 0 in self.getSimulationManager().getEventQueue():
+                            self.getSimulationManager().getEventQueue()[0] = []
+
+                        self.getSimulationManager().getEventQueue()[0].append(firstevent)  
+                        CentralBuffer.getProducts().append(simprod)
+
+        Progress.value+="Event Queue: ."+str(len(self.getSimulationManager().getEventQueue()[0]))+"\n"
 
 
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Central buffer has "+str(len(CentralBuffer.getProducts()))+" products initially"+"\n"

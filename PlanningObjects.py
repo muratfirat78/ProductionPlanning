@@ -148,7 +148,18 @@ class Resource():
         self.EmptySlots = [] # list of tuples ((starttime,length),startshift)
         self.ShiftAvailability = dict() #key: shift, val: boolena available/unavailable.  
 
+
+        self.SimResource = None
+
         # SCHEDULING
+
+    def setSimResource(self,prty):
+        self.SimResource = prty
+        return
+        
+    def getSimResource(self):
+        return self.SimResource
+
 
     def setProcessType(self,prty):
         self.processtype = prty

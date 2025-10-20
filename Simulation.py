@@ -31,28 +31,29 @@ from SimulatorM import *
 
 #######################################################################################################################
 
-class SimJob(object):
-    def __init__(self,env,job): 
-        self.env = env
-        self.myJob = job
-        self.processstime = 0 # to be updated
-        self.assignedresource = None
-        self.SimProducts = []
+class SimEvent(object):
+    def __init__(self, env,regtime,frm,to,mytype):
 
-    def getJob(self):
-        return self.myJob 
+        self.Regtime = regtime
+        self.Type = mytype
+        self.Start = None
+        self.Completed = None
+        self.From = frm
+        self.To = to
+        self.ProcessTime = None
 
-    def getProducts(self):
-        return self.SimProducts
+    def getRegtime(self):
+        return self.Regtime
 
-    def SampleProcessTime(self):
-       processtime = 0
-       # use some sampling here
-       return processtime
+    def setProcessTime(self,mytm):
+        self.ProcessTime = mytm
+        return
+    def getProcessTime(self):
+        return self.ProcessTime
+
+
+   
         
-
-
-
 
 class SimMachine(object):
     def __init__(self, env,machine):
@@ -63,6 +64,10 @@ class SimMachine(object):
         self.outputbuffer = None
         self.XCoord = 0,0
         self.YCoord = 0,0
+
+
+    def getLocation(self):
+        return self.XCoord,self.YCoord
 
     
     def ProcessTask(self,env,task):
@@ -81,12 +86,28 @@ class SimProduct(object):
         self.SN = SN
         self.Tray = None
         self.location = None
+        self.currentjob = None
 
     def setLocation(self,lc):
         self.location = lc
         return
     def getLocation(self):
         return self.location
+
+    def getcurrentjob(self):
+        return self.currentjob
+        
+    def setcurrentjob(self,mytime,myjb):
+        
+        self.currentjob = myjb
+
+        if myjb != None:
+            res = myjb.getOperation().getRequiredResources()[0]
+            simres = res.getSimResource()
+            return SimEvent(self.env,mytime,self.getLocation(),simres,"Transport")
+        else:
+            return None
+
 
 class SimSubcontractor(object):
     def __init__(self,env,res):
@@ -97,7 +118,18 @@ class SimTrolley(object):
     def __init__(self, env,name,myid):
         self.env = env
         self.name = name
-        self.ID = myid     
+        self.ID = myid  
+        self.idle = True
+        self.capacity = 100 # hard coded, funetune it!
+
+    def isIdle(self):
+        return self.idle
+    def setIdle(self,idle):
+        self.idle = idle
+        return
+
+    def getCapacity(self):
+        return self.capacity
        
        
     
@@ -152,6 +184,10 @@ class Buffer(object):
         return self.products
     def getCapacity(self):
         return self.capacity
+
+
+    def getLocation(self):
+        return self.XCoord,self.YCoord
    
 
 
@@ -221,6 +257,23 @@ class SimulationManager(object):
         self.SimEnd = None
         self.TaskList = [] # Tasks are included in the list with some priority ordering
         self.ProdSN = 0
+        self.simshifts = dict()
+        self.EventQueue = dict() # key: simetime, val: Event
+        self.prodsysterm = None
+
+    def setProdSystem(self,systm):
+        self.prodsysterm = systm
+        return
+
+    def getProdSystem(self,systm):
+        return self.prodsysterm
+
+    def getEventQueue(self):
+        return self.EventQueue
+
+    def getMyShifts(self):
+        return self.simshifts
+
 
     def getProdSN(self):
         self.ProdSN+=1
@@ -252,7 +305,9 @@ class SimulationManager(object):
 
 
     def createProductionSystem(self,env,name):
-        return ProductionSystem(env,name)
+        prodsys = ProductionSystem(env,name)
+        self.setProdSystem(prodsys)
+        return prodsys
 
     def createSubcontractor(self,env,res):
         return SimSubcontractor(env,res)
@@ -274,6 +329,110 @@ class SimulationManager(object):
 
     def createProduct(self,env,job,SN):
         return SimProduct(env,job,SN)
+
+    
+    def CreateShifts(self,progress):
+
+        dtstart = self.getSimStart()
+        dtend = self.getSimEnd()
+
+        progress.value+="Start shifts.."+str(dtstart)+str(dtend)+"\n"
+
+        simperiod = pd.date_range(dtstart,dtend)
+        
+        
+        self.getMyShifts().clear()
+
+        progress.value+="period.."+str(simperiod)+"\n"
+    
+        i=1
+        prev_dayshift = None 
+        scheduletimehour = 1
+        
+        for curr_date in simperiod:
+
+            self.getMyShifts()[curr_date] = []
+
+            dayshifts = []
+
+            progress.value+="date.."+str(curr_date)+"\n"
+            
+            shift1=Shift(curr_date,3,prev_dayshift)
+            shift1.setStartTime(scheduletimehour) 
+
+            
+            shift1.setStartHour(curr_date + timedelta(hours=0))
+            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
+          
+            scheduletimehour+=8
+            shift1.setEndTime(scheduletimehour-1)
+            dayshifts.append(shift1)
+
+        
+            self.getMyShifts()[curr_date].append(shift1)   
+            
+         
+            shift2=Shift(curr_date,1,shift1)
+            shift2.setStartTime(scheduletimehour)   
+            scheduletimehour+=8
+            shift2.setEndTime(scheduletimehour-1)
+
+            shift2.setStartHour(curr_date + timedelta(hours=8))
+            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
+
+            self.getMyShifts()[curr_date].append(shift2)   
+                    
+            dayshifts.append(shift2)
+            
+            
+            shift3=Shift(curr_date,2,shift2)
+            shift3.setStartTime(scheduletimehour)
+            scheduletimehour+=8
+            shift3.setEndTime(scheduletimehour-1)
+            shift3.setStartHour(curr_date + timedelta(hours=16))
+            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
+
+            self.getMyShifts()[curr_date].append(shift3)   
+   
+            prev_dayshift=shift3
+
+            dayshifts.append(shift3)
+
+            opno = 0
+
+            progress.value+="resources.."+"\n"
+            
+            for resname, res in self.getDataManager().getResources().items():
+
+                if res.getType() == "Machine":
+                    
+                    for currshift in dayshifts:
+                        
+                        if currshift.getNumber() in res.getAvailableShifts():
+                            res.getCurrentSchedule()[currshift] = []
+
+                            if currshift.getNumber() == 3:
+                                res.getShiftOperatingModes()[currshift] = "Self-Running"
+                            else:
+                                res.getShiftOperatingModes()[currshift] = "Operated"
+
+                if (res.getType() == "Manual") or (res.getType() == "Operator"):     
+                    
+                    for currshift in dayshifts:
+                        if currshift.getNumber() in res.getAvailableShifts():
+                            res.getCurrentSchedule()[currshift] = []
+        
+          
+                if res.getType() == "Outsourced":
+                    for currshift in dayshifts:
+                        if currshift.getNumber() in res.getAvailableShifts():
+                            res.getCurrentSchedule()[currshift] = []
+                
+                    
+            i+=1        
+
+        return 
+
     
     def StartSimulation(self,simtype):
 
