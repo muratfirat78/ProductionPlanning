@@ -53,7 +53,7 @@ class Simulator(object):
 
           
         if env.now in self.getSimulationManager().getEventQueue():
-            for event in self.getSimulationManager().getEventQueue()[env.nov]:
+            for event in self.getSimulationManager().getEventQueue()[env.now]:
                 
         
       

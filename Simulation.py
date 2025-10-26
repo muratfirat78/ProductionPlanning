@@ -51,7 +51,15 @@ class SimEvent(object):
     def getProcessTime(self):
         return self.ProcessTime
 
+    def getType(self):
+        return self.Type
 
+    def ExecuteEvent(self):
+        if self.getType == 'Transport':
+            # Check operator availability
+
+            #if event is done remove it from the queue
+        
    
         
 
