@@ -32,7 +32,7 @@ from SimulatorM import *
 #######################################################################################################################
 
 class SimEvent(object):
-    def __init__(self, env,regtime,frm,to,mytype):
+    def __init__(self, env,regtime,prod,frm,to,mytype):
 
         self.Regtime = regtime
         self.Type = mytype
@@ -41,9 +41,13 @@ class SimEvent(object):
         self.From = frm
         self.To = to
         self.ProcessTime = None
+        self.product = prod
 
     def getRegtime(self):
         return self.Regtime
+
+    def getProduct(self):
+        return self.product
 
     def setProcessTime(self,mytm):
         self.ProcessTime = mytm
@@ -51,23 +55,21 @@ class SimEvent(object):
     def getProcessTime(self):
         return self.ProcessTime
 
+    def getType(self):
+        return self.Type
 
-   
-        
 
 class SimMachine(object):
     def __init__(self, env,machine):
         self.env = env
         self.machine = machine
-        self.location = None 
+        self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
-        self.XCoord = 0,0
-        self.YCoord = 0,0
+  
 
-
-    def getLocation(self):
-        return self.XCoord,self.YCoord
+    def getCoordinates(self):
+        return self.coordinates 
 
     
     def ProcessTask(self,env,task):
@@ -104,7 +106,7 @@ class SimProduct(object):
         if myjb != None:
             res = myjb.getOperation().getRequiredResources()[0]
             simres = res.getSimResource()
-            return SimEvent(self.env,mytime,self.getLocation(),simres,"Transport")
+            return SimEvent(self.env,mytime,self,self.getLocation(),simres,"Transport")
         else:
             return None
 
@@ -114,25 +116,9 @@ class SimSubcontractor(object):
         self.extres = res
 
 
-class SimTrolley(object):
-    def __init__(self, env,name,myid):
-        self.env = env
-        self.name = name
-        self.ID = myid  
-        self.idle = True
-        self.capacity = 100 # hard coded, funetune it!
 
-    def isIdle(self):
-        return self.idle
-    def setIdle(self,idle):
-        self.idle = idle
-        return
+       
 
-    def getCapacity(self):
-        return self.capacity
-       
-       
-    
 
 class SimOperator(object):
     def __init__(self,env,Optr):
@@ -173,10 +159,9 @@ class Buffer(object):
         self.name = name
         self.capacity = capacity
         self.products = []
-        self.XCoord = 0,0
-        self.YCoord = 0,0
-      
-        
+        self.coordinates = (0,0)
+
+    
         # historical capacity use
         #self.capacityuse = [] # list of pairs (time,capacityuse)
         #self.capacityuse.append((env.now,0))
@@ -186,9 +171,9 @@ class Buffer(object):
         return self.capacity
 
 
-    def getLocation(self):
-        return self.XCoord,self.YCoord
-   
+    def getCoordinates(self):
+        return self.coordinates 
+
 
 
 class Box(object):
@@ -211,11 +196,26 @@ class ProductionManager(object):
 
 class Trolley(object): 
     def __init__(self,env,name):
+
         self.env = env
         self.name = name
         self.capacity = 100
-        self.products = [] # products
-      
+        self.products = [] # product
+        self.idle = True
+
+    def IsIdle(self):
+        return self.idle
+
+    def SetStatus(self,myidle):
+        self.idle = myidle
+        return
+    def getName(self):
+        return self.name
+
+    def getProducts(self):
+        return self.products
+    def getCapacity(self):
+        return self.capacity
       
         
 class ProductionSystem(object): 
@@ -259,14 +259,14 @@ class SimulationManager(object):
         self.ProdSN = 0
         self.simshifts = dict()
         self.EventQueue = dict() # key: simetime, val: Event
-        self.prodsysterm = None
+        self.prodsystem = None
 
     def setProdSystem(self,systm):
-        self.prodsysterm = systm
+        self.prodsystem = systm
         return
 
-    def getProdSystem(self,systm):
-        return self.prodsysterm
+    def getProdSystem(self):
+        return self.prodsystem
 
     def getEventQueue(self):
         return self.EventQueue
@@ -329,6 +329,28 @@ class SimulationManager(object):
 
     def createProduct(self,env,job,SN):
         return SimProduct(env,job,SN)
+
+    def CheckEventResource(self,event,Progress):
+
+        if event.getType() == "Transport":
+            # find a trolle that is idle: 
+
+            Progress.value+=" trols: "+str(len(self.getProdSystem().getTrolleys()))+"\n"
+            for trol in self.getProdSystem().getTrolleys():
+                if trol.IsIdle():
+                    Progress.value+=" trol found: "+str(trol.getName())+", used: "+str(len(trol.getProducts()) )+"\n"
+                    if len(trol.getProducts()) < trol.getCapacity():
+                        if len(trol.getProducts()) > 0: 
+                            dest = trol.getProducts()[0].getcurrentjob().getOperation().getRequiredResources()[0]
+                            if dest == event.getProduct().getcurrentjob().getOperation().getRequiredResources()[0]:
+                                trol.getProducts().append(event.getProduct())
+                                return True
+                            else:
+                                continue
+                        else:
+                            trol.getProducts().append(event.getProduct())
+                            return True
+        return False
 
     
     def CreateShifts(self,progress):
