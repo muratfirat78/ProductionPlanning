@@ -254,7 +254,7 @@ class SchedulingManager:
     def MakeSchedule(self,schedulealg,batchingalg):
       
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(batchingalg)+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(schedulealg)+"\n"
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Batching  : "+str(batchingalg)+"\n"
 
@@ -272,28 +272,21 @@ class SchedulingManager:
 
         if pssend.weekday() > 4:
             pssend = pssend-timedelta(days=pssend.weekday()-4)
-      
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="end weekday..."+str(pssend.weekday())+"\n" 
+
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period..."+str(psstart)+"-"+str(pssend)+"\n"
 
         scheduleperiod = pd.date_range(psstart,pssend)
-        
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling period length: "+str(len(scheduleperiod))+"\n"
-
-        
+    
         oprdict = dict()
         nrjobs = 0
         AllJobs = []
 
-        #Determine customer orders with latest start within Scheduling
+        #Determine customer orders with latest start
         SelectedOrders=[]
+        
         for name,order in self.getDataManager().getCustomerOrders().items():
-            
-            if order.getLatestStart() != None: # planned ones..
-              
-                #if order.getLatestStart() < pssend.date():
-                    
+            if order.getPlannedDelivery() != None: # planned ones..
                 nrjobs+=len(order.getMyJobs())
                     
                 for job in order.getMyJobs():
@@ -306,10 +299,9 @@ class SchedulingManager:
                 if len(order.getMyJobs()) > 0: 
                     SelectedOrders.append(order)
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="LS: "+str(order.getLatestStart())+"\n"
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"
-
-                    
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"                    
         #if batchingalg == "Simple Merge":
         #    batchalg = BaselineBatchingAlg()
         #    oprdict = batchalg.SolveBatching(oprdict,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
@@ -421,8 +413,6 @@ class SchedulingManager:
         self.getVisualManager().getSchedulingTab().getPSchResources().layout.visibility  = 'hidden'
         self.getVisualManager().getSchedulingTab().getPSchResources().layout.display = 'none'
 
-        self.getVisualManager().getSchedulingTab().getPSTBResSchOutput().layout.visibility  = 'hidden'
-        self.getVisualManager().getSchedulingTab().getPSTBResSchOutput().layout.display = 'none'
 
         self.getVisualManager().getSchedulingTab().getPSchResources().options = [name for name,myres in self.getDataManager().getResources().items() ]
 

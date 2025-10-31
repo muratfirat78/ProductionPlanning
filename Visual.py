@@ -1247,7 +1247,7 @@ class VisualManager():
 
         if sel_opr!= None:
             self.getPSTBOprName().value = sel_opr.getName()
-            self.getPSTBOprProcTime().value = str(round(sel_opr.getProcessTime(),3))
+            self.getPSTBOprProcTime().value = str(round(sel_opr.getProcessTime('min'),3))
 
             res = None
             for resource in sel_opr.getRequiredResources():
@@ -2158,26 +2158,33 @@ class VisualManager():
         userestree = Tree()
 
         subnodes = []
-         
-        for res,usedict in order.getOrderPlan().items():  
-           
-            ressubnodes = []
-            for mydate,val in usedict.items():
-                usestr = "  > Date: "+str(mydate)+", Val: "+str(val)
-                usenode = Node(usestr,[], icon="cut", icon_style="success") 
-                ressubnodes.append(usenode)
 
-            resnode = Node(">"+res.getName(),ressubnodes, icon="cut", icon_style="success") 
+        for job in order.getMyJobs():
+            ressubnodes = []
+
+            usestr = job.getPlan()[0].getName()
+            usenode = Node(usestr,[], icon="cut", icon_style="success") 
+            ressubnodes.append(usenode)
+
+            usestr = " Date: "+str(job.getPlan()[1])+", Use: "+str(round(job.getOperation().getProcessTime('hour')*job.getQuantity(),2))
+            usenode = Node(usestr,[], icon="cut", icon_style="success") 
+            ressubnodes.append(usenode)
+
+            resnode = Node(">"+job.getName(),ressubnodes, icon="cut", icon_style="success") 
+            resnode.opened = False
             subnodes.append(resnode)
 
+            
+    
          
         nodestr = order.getName()
         rootnode = Node(nodestr,subnodes, icon="cut", icon_style="success") 
+        rootnode.opened = False
         
         userestree.add_node(rootnode)
         self.setUseResTree(userestree)
         self.setUseResTreeRootNode(rootnode)
-        
+       
         with self.getPLTBUseResOutput():
             clear_output()
             display(self.getUseResTree())
@@ -2473,7 +2480,7 @@ class VisualManager():
             self.getDiagInfo().value += ">>>Starting Process time diagnostics... "+"\n"
             self.getDiagInfo().value += ">>>Checking operations without process time... "+"\n"
             for opnam, opr in self.DataManager.getOperations().items():
-                if opr.getProcessTime() == 0 or opr.getProcessTime() is None:
+                if opr.getProcessTime('min') == 0 or opr.getProcessTime('min') is None:
                     check = True
                     count += 1
                     self.getDiagInfo().value += "Operation "+str(opnam)+" has no process time defined. "+ "\n"
@@ -2550,7 +2557,18 @@ class VisualManager():
             
             
                                                                                 
-                    
+"""    
+        for res,usedict in order.getOrderPlan().items():  
+           
+            ressubnodes = []
+            for mydate,val in usedict.items():
+                usestr = "  > Date: "+str(mydate)+", Val: "+str(val)
+                usenode = Node(usestr,[], icon="cut", icon_style="success") 
+                ressubnodes.append(usenode)
+
+            resnode = Node(">"+res.getName(),ressubnodes, icon="cut", icon_style="success") 
+            subnodes.append(resnode)
+"""           
                     
         
 
