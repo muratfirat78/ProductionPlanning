@@ -110,7 +110,7 @@ class PlanningManager:
                 if len(operation.getRequiredResources())>0:
                     resource = operation.getRequiredResources()[0]
                 
-                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime())/60 # in hours
+                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime('min'))/60 # in hours
                     totaltime+=totuse
            
 
@@ -185,16 +185,18 @@ class PlanningManager:
                 # now find the resource that has the most capacity on the needed date.
 
                 alternatives = []
+                
                 for res in operation.getRequiredResources():
                     alternatives.append(res)
                     for alt in res.getAlternatives():
                         if not alt in alternatives:
                             alternatives.append(alt)
-                    
+
+                
                 for resource in alternatives:
 
                     # neded capacity at (mydate)
-                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime())/60 # in hours 
+                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime('min'))/60 # in hours 
                     curr_use = totuse
 
                     prev_val = None
@@ -243,14 +245,14 @@ class PlanningManager:
                     self.getLogData()["Log_"+str(len(self.getLogData()))]="Insufficient capacity for "
                     order.getDelayReasons().append(str(delvdate.date())+ " No res, op "+str(operation.getName()[:min(15,len(operation.getName())-1)]))
                     return False
-                else:
-                    pass
-
+           
 
                 if not myresource in order.getOrderPlan():
                     order.getOrderPlan()[myresource] = dict()
                 order.getOrderPlan()[myresource][mydate.date()] = resource_use
                 self.getLogData()["Log_"+str(len(self.getLogData()))]="Sufficient capacity for "
+
+                self.getVisualManager().getPLTBresult2exp().value+=">Resource to plan: "+str(myresource.getName())+" <--> "+str(operation.getName())+"\n"
 
                 remainedtime = resource_use
 
@@ -266,17 +268,22 @@ class PlanningManager:
                     while mydate.weekday() >= 5:
                         mydate = mydate- timedelta(days = 1)
 
-                    
+
+                
                 jobid = self.getVisualManager().getSchedulingManager().getJobID()
                 
                 curr_job =  Job(jobid,"Job_"+str(jobid),product,operation,quantity,mydate)
+
+                curr_job.setPlan((myresource,mydate))
                             
                 if prev_job!= None:
-                    prev_job.getSuccessors().append(curr_job)
-                    curr_job.getPredecessors().append(prev_job)
+                    curr_job.getSuccessors().append(prev_job)
+                    prev_job.getPredecessors().append(curr_job)
                 prev_job = curr_job
-                curr_job.setCustomerOrder(order)       
-                order.getMyJobs().append(curr_job)
+                curr_job.setCustomerOrder(order)  
+                self.getVisualManager().getPLTBresult2exp().value+=">Job created: "+str(curr_job.getName())+", no.jobs: "+str(len(order.getMyJobs()))+"\n"
+
+                order.getMyJobs().insert(0,curr_job)
                       
         for predecessor,multiplier in product.getMPredecessors().items():
             if not self.PlanProduction(order,delvdate,predecessor,mydate,quantity*multiplier):    
@@ -390,6 +397,8 @@ class PlanningManager:
                     planned+=1
                     myord.setPlannedDelivery(curr_deliverydate)
 
+                    self.getVisualManager().getPLTBresult2exp().value+="Planned: "+myord.getName()+", Jobs "+str(len(myord.getMyJobs()))+", Ops "+str(len(myord.getProduct().getOperations()))+"\n"
+
                     # update the reserved capacitiy values of resources.
                     for res,usedict in myord.getOrderPlan().items(): 
                         res.getCapacityUsePlan()[myord] = usedict
@@ -425,6 +434,8 @@ class PlanningManager:
         for x in OrderstoPlan:
             if x.getPlannedDelivery() != None:
                 ops.append(x.getName()+": "+str((x.getPlannedDelivery().date()-x.getDeadLine().date()).days))
+                self.getVisualManager().getPLTBresult2exp().value+=x.getName()+": Jobs "+str(len(x.getMyJobs()))+"\n"
+
             else:
                 ops.append(x.getName()+": "+"XXXXXX")
         self.getVisualManager().getPLTBOrdlist().options = ops

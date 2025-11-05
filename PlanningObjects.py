@@ -343,8 +343,15 @@ class Operation():
     def setName(self,myint):
         self.Name = myint
         return
-    def getProcessTime(self):
-        return self.ProcessTime
+    def getProcessTime(self,timeunit):
+
+        if timeunit == "min":
+            return self.ProcessTime
+
+        if timeunit == "hour":
+            return self.ProcessTime/60
+
+    
     def getRequiredResources(self):
         return self.RequiredResources
 
@@ -528,6 +535,7 @@ class Job():
         self.ActualCompletion = None
         self.SchJob = None
         self.MySch = None
+        self.MyPlan = None # (resource,date)
 
 
     # SCHEDULING
@@ -535,6 +543,11 @@ class Job():
         
         self.OrderReserves = dict() # key: Order, val: quantity reserved for the order.
 
+    def setPlan(self,pln):
+        self.MyPlan = pln
+        return
+    def getPlan(self):
+        return self.MyPlan
     
     def getMySch(self):
         return self.MySch

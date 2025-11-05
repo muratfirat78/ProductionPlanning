@@ -47,15 +47,22 @@ class Simulator(object):
         return self.Machines
 
 
-    def SystemClock(self,env):
+    def SystemClock(self,env,Progress):
    
        while True:
 
-          
+        Progress.value+=str(self.getSimulationManager().getEventQueue().keys())+", now: "+str(env.now)+"\n"
         if env.now in self.getSimulationManager().getEventQueue():
-            for event in self.getSimulationManager().getEventQueue()[env.now]:
-                
-        
+           for evid in range(len(self.getSimulationManager().getEventQueue()[env.now])):
+               Progress.value+=" evid: "+str(evid)+", events: "+str(len(self.getSimulationManager().getEventQueue()[env.now]))+"\n"
+               event = self.getSimulationManager().getEventQueue()[env.now][evid]
+               if self.getSimulationManager().CheckEventResource(event,Progress):
+                   evid-=1
+                   self.getSimulationManager().getEventQueue()[env.now].remove(event)
+
+        for trol in self.getProdSystem().getTrolleys():
+            Progress.value+="Time: "+str(env.now)+" trolley "+str(trol.getName())+", used-cap: "+str(len(trol.getProducts()))+"\n"
+            
       
         unit_time = 0.01 # this is one minute 
         
@@ -109,31 +116,30 @@ class Simulator(object):
       
 
         for i in range(5):
-            ProdSystem.getTrolleys().append(self.getSimulationManager().createOperator(env,"Trolley_"+str(i)))
+            ProdSystem.getTrolleys().append(self.getSimulationManager().createTrolley(env,"Trolley_"+str(i)))
             
 
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+=ProdSystem.print()+"\n"
 
 
+        self.getSimulationManager().getEventQueue()[env.now] = []
        
-
+        # Product creation for jobs that are first to do. 
         for name,order in self.getSimulationManager().getDataManager().getCustomerOrders().items():
-            #self.getVisualManager().getPSchScheRes().value+="Customer order.."+str(name)+"\n"
+            Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
             for job in order.getMyJobs():
-                #self.getVisualManager().getPSchScheRes().value+="job..Q"+str(job.getQuantity())+"\n"
-                if len(job.getPredecessors())  == 0:
+                Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
+                if len(job.getPredecessors()) == 0:
                     for prd in range(int(job.getQuantity())):
                         simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                       
+                      
                         simprod.setLocation(CentralBuffer)
-                        firstevent = simprod.setcurrentjob(0,job)
-                        if not 0 in self.getSimulationManager().getEventQueue():
-                            self.getSimulationManager().getEventQueue()[0] = []
-
-                        self.getSimulationManager().getEventQueue()[0].append(firstevent)  
+                       
+                        self.getSimulationManager().getEventQueue()[env.now].append(simprod.setcurrentjob(env.now,job))  
+                     
                         CentralBuffer.getProducts().append(simprod)
 
-        Progress.value+="Event Queue: ."+str(len(self.getSimulationManager().getEventQueue()[0]))+"\n"
+        Progress.value+="Event Queue: ."+str(len(self.getSimulationManager().getEventQueue()[env.now]))+"\n"
 
 
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Central buffer has "+str(len(CentralBuffer.getProducts()))+" products initially"+"\n"
@@ -146,7 +152,7 @@ class Simulator(object):
 
         completiontime = 1440*planninghorizon   # Sim time in minutes
 
-        env.process(self.SystemClock(env))
+        env.process(self.SystemClock(env,Progress))
  
         # Execute
         env.run(until = completiontime)

@@ -16,7 +16,7 @@ class CommonGreedyInsertionAlg:
         #Progress.value+="FTE availability check..."+"\n"
 
         curr_time = jobstarttime
-        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime()
+        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour')
         curr_shift = startshift
       
         while processtime > 0: 
@@ -56,6 +56,8 @@ class CommonGreedyInsertionAlg:
         #Progress.value+=" checking slot, job "+str(job.getJob().getName())+"\n"
         time =  job.getLatestPredecessorCompletion()
 
+        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour')
+
 
         if resource.getName().find("OUT -") != -1:
             slot = resource.getEmptySlots()[0]
@@ -63,9 +65,12 @@ class CommonGreedyInsertionAlg:
 
         
         for slot in resource.getEmptySlots():    
-            if slot[0][1] < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime():
+            if slot[0][1] < processtime:
+                Progress.value+=" Process time: "+str(processtime)+"\n"
+                Progress.value+=" continued, "+" Shift: "+str(slot[1].getDay())+"-"+str(slot[1].getNumber())+"\n"
                 continue
             if (slot[1].getNext() == None) and (slot[1].getEndTime() < time):
+                Progress.value+=" returned None due to end of schedule period"+"\n"
                 return None
    
             length = slot[0][1]; curr_shift = slot[1]; curr_time = slot[0][0]
@@ -94,7 +99,8 @@ class CommonGreedyInsertionAlg:
             if not self.CheckFTEAvailability(resource,job,curr_time,curr_shift,ScheduleMgr):
                 reasonstr+="+  fte unavailable.."
             proper = proper and (self.CheckFTEAvailability(resource,job,curr_time,curr_shift,ScheduleMgr))
-            #Progress.value+=" 4: "+reasonstr+", proper: "+str(proper)+"\n"
+            
+            Progress.value+=" 4: "+reasonstr+", proper: "+str(proper)+"\n"
 
                     
             while not proper: 
@@ -107,7 +113,7 @@ class CommonGreedyInsertionAlg:
                 curr_shift = curr_shift.getNext()    
                 curr_time = curr_shift.getStartTime()
 
-                if length < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime(): 
+                if length < processtime: 
                     #Progress.value+="Length did not survive: "+str(length)+"\n"
                     break
 
@@ -137,7 +143,7 @@ class CommonGreedyInsertionAlg:
                 proper = proper and (self.CheckFTEAvailability(resource,job,curr_time,curr_shift,ScheduleMgr))
                 
             if not proper: 
-                if length < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime(): 
+                if length < processtime: 
                     continue 
                     
             unusedtime += max(time-curr_time,0)
@@ -146,7 +152,7 @@ class CommonGreedyInsertionAlg:
 
             #Progress.value+="unused: "+str(unusedtime)+", length "+str(length)+"\n"
         
-            if length < job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime(): 
+            if length < processtime: 
                 continue 
                    
             jobstarttime = max(time, curr_time)
@@ -179,7 +185,7 @@ class CommonGreedyInsertionAlg:
         if res.getName().find("OUT -") != -1:
             
             #Progress.value+=">>> "+str(job.getStartTime())+"  -  "+str(job.getJob().getOperation().getProcessTime())+"\n"
-            job.setCompletionTime(job.getStartTime()+job.getJob().getOperation().getProcessTime())
+            job.setCompletionTime(job.getStartTime()+job.getJob().getOperation().getProcessTime('hour'))
             
             #Progress.value+=" In Schedule? >>> "+str(emptyslot[1] in res.getCurrentSchedule())+"\n"
             res.getCurrentSchedule()[emptyslot[1]].append(job)
@@ -190,7 +196,7 @@ class CommonGreedyInsertionAlg:
        
 
         curr_time = jobstarttime
-        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime()
+        processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour')
         curr_shift = startshift
       
         #find completion time of the job
@@ -219,23 +225,23 @@ class CommonGreedyInsertionAlg:
                 processtime = 0
 
             if processtime > 0:
-                Progress.value+=" process time left "+str(processtime)+"\n"
+                #Progress.value+=" process time left "+str(processtime)+"\n"
 
-                Progress.value+=" Scheduling soln has the resource? "+str(res.getName() in schedulesol.getResourceSchedules())+"\n"
+                #Progress.value+=" Scheduling soln has the resource? "+str(res.getName() in schedulesol.getResourceSchedules())+"\n"
 
-                Progress.value+=" Scheduling soln has shift? "+str(curr_shift in schedulesol.getResourceSchedules()[res.getName()])+"\n"
+                #Progress.value+=" Scheduling soln has shift? "+str(curr_shift in schedulesol.getResourceSchedules()[res.getName()])+"\n"
 
                 schedulesol.getResourceSchedules()[res.getName()][curr_shift][job] = (curr_time,curr_shift.getEndTime()+1)
 
 
-                Progress.value+=" curr hisft next? "+str(curr_shift.getNext())+"\n"
+                #Progress.value+=" curr hisft next? "+str(curr_shift.getNext())+"\n"
                 
             
                 curr_shift=curr_shift.getNext()
                 curr_time = curr_shift.getStartTime()
 
 
-                Progress.value+=" currshift available? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
+                #Progress.value+=" currshift available? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
                 while not curr_shift.getNumber() in res.getAvailableShifts():
                     curr_shift = curr_shift.getNext()
                     if curr_shift == None:
@@ -245,8 +251,8 @@ class CommonGreedyInsertionAlg:
                 Progress.value+=" Sh:("+str(curr_shift.getDay())+","+str(curr_shift.getNumber())+"), hrs: ["+str(curr_shift.getStartTime())+"-"+str(curr_shift.getEndTime())+"]\n" 
                     
 
-                Progress.value+=" currshift in avail of res? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
-                Progress.value+=" currshift in sch of res? "+str(curr_shift in res.getCurrentSchedule())+"\n"
+                #Progress.value+=" currshift in avail of res? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
+                #Progress.value+=" currshift in sch of res? "+str(curr_shift in res.getCurrentSchedule())+"\n"
                 
         job.setCompletionTime(curr_time)
         Progress.value+=" job completiontime "+str(job.getCompletionTime())+"\n"
@@ -262,7 +268,7 @@ class CommonGreedyInsertionAlg:
       
 
         res.getEmptySlots().remove(emptyslot)
-        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime())),curr_shift)
+        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour'))),curr_shift)
         res.getEmptySlots().insert(slotindex,newmeptyslot)
 
         Progress.value+="Done..."+"\n"
@@ -318,6 +324,8 @@ class CommonGreedyInsertionAlg:
                                 currentStarttime = slotreturn[1][0]
                                 myresource = resource
                                 currentslot = slotreturn
+                    else:
+                        Progress.value+=" no slot found for job ... "+str(j.getJob().getName())+" in res "+str(resource.getName())+"\n"  
                
                 if myresource == None: 
                     JobsToRemove.append(j)

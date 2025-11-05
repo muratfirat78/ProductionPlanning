@@ -142,12 +142,6 @@ class ScheduleTab():
       
 
 
-    def setPSTBResSchOutput(self,myit):
-        self.PSTBResSchOutput = myit
-        return
-        
-    def getPSTBResSchOutput(self):
-        return self.PSTBResSchOutput
         
 
     def setPSTBOrdOutput(self,myit):
@@ -200,13 +194,7 @@ class ScheduleTab():
     def getPSchTBsavesch_btn(self):
         return self.PSchTBsavesch_btn
 
-    def setPSchTBschFileName(self,myint):
-        self.PSchTBschFileName = myint
-        return
-
-    def getPSchTBschFileName(self):
-        return self.PSchTBschFileName
-
+    
 
     def setPSchJoblist(self,myitm):
         self.PSchJoblist = myitm
@@ -301,51 +289,12 @@ class ScheduleTab():
         if selectedres == '':
             return
 
-        with self.getPSTBGanttOutput():             
-            clear_output() 
-            display(selectedres)
-            display("In resources: ",selectedres in self.getVisualManager().DataManager.getResources())
         
-
 
         if selectedres in self.getVisualManager().DataManager.getResources():
             selected_res = self.getVisualManager().DataManager.getResources()[selectedres]
 
-            source = pd.DataFrame(columns=["Shift","Job","Start","End"])
-
-            with self.getPSTBGanttOutput():             
-                clear_output() 
-                display(selectedres)
-                display("Shifts: ",len(selected_res.getCurrentSchedule()))
-                display("Jobs: ",[len(j) for j in selected_res.getCurrentSchedule().values()])
-
-            for shift,jobs in selected_res.getCurrentSchedule().items():
-                
-                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":1,"End":1.005}])
-                source = pd.concat([source, row], axis=0, ignore_index=True)
-                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":8.995,"End":9}])
-                source = pd.concat([source, row], axis=0, ignore_index=True)
-                for job in jobs:
-                    starttime = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()+1+0.01
-                    endtime =  min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime()+1-0.01
-                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
-                    source = pd.concat([source, row], axis=0, ignore_index=True)
-
-          
-               
-            with self.getPSTBGanttOutput():
-                
-                clear_output() 
-                display(selected_res.getName())
-                #display("Schedule shifts: ",selected_res.getSchedule())
-      
-                for shift in source["Shift"].unique():
-                    shift_df = source[source["Shift"] == shift]
-                    
-                    bars = alt.Chart(shift_df).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Shift', sort='-x'))
-                    text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
-
-                    display((bars + text).properties(height=100, width=200))
+            
 
             restree = Tree()
          
@@ -373,7 +322,7 @@ class ScheduleTab():
 
             
          
-            with self.getPSTBResSchOutput():
+            with self.getPSTBGanttOutput():
                 clear_output()
                 display(self.getSchTree())
 
@@ -423,8 +372,14 @@ class ScheduleTab():
                     row = pd.DataFrame([{"Job":job.getName(), "Start":job.getSchJob().getStartTime(),"End":job.getSchJob().getCompletionTime()}])
                     source = pd.concat([source, row], axis=0, ignore_index=True)
                     schstr = "st: "+str(round(job.getSchJob().getStartTime(),2))+"-cp: "+str(round(job.getSchJob().getCompletionTime(),2))
-                    
-                jobnode = Node(job.getName()+"> "+schstr,[], icon="cut", icon_style="success") 
+
+                resnodes = []
+                resnode = Node(job.getSchJob().getScheduledResource().getName(),[], icon="cut", icon_style="success") 
+                resnodes.append(resnode)
+                
+                jobnode = Node(job.getName()+"> "+schstr,resnodes, icon="cut", icon_style="success") 
+                jobnode.opened = False
+                
                 jobnodes.append(jobnode)
 
             with self.getPSTBGanttOutput():
@@ -478,8 +433,7 @@ class ScheduleTab():
             self.getPSchResources().layout.visibility  = 'hidden'
             self.getPSchResources().layout.display = 'none'
 
-            self.getPSTBResSchOutput().layout.visibility  = 'hidden'
-            self.getPSTBResSchOutput().layout.display = 'none'
+       
             
             self.getPSchOrderlist().layout.visibility  = 'hidden'
             self.getPSchOrderlist().layout.display = 'none'
@@ -494,9 +448,7 @@ class ScheduleTab():
             
             self.getPSchResources().layout.display = 'block'
             self.getPSchResources().layout.visibility  = 'visible'
-            
-            self.getPSTBResSchOutput().layout.display = 'block'
-            self.getPSTBResSchOutput().layout.visibility  = 'visible'
+
             
             self.getPSchOrderlist().layout.visibility  = 'hidden'
             self.getPSchOrderlist().layout.display = 'none'
@@ -519,8 +471,7 @@ class ScheduleTab():
             self.getPSchResources().layout.visibility  = 'hidden'
             self.getPSchResources().layout.display = 'none'
 
-            self.getPSTBResSchOutput().layout.visibility  = 'hidden'
-            self.getPSTBResSchOutput().layout.display = 'none'
+       
 
             self.getPSchSolProps().layout.visibility  = 'hidden'
             self.getPSchSolProps().layout.display = 'none'
@@ -531,9 +482,7 @@ class ScheduleTab():
         with self.getPSTBOrdOutput():
             clear_output()
           
-        with self.getPSTBResSchOutput():
-            clear_output()
-          
+     
     
         
         return
@@ -572,10 +521,10 @@ class ScheduleTab():
                                 Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
                                 
                     
-        filename = self.getPSchTBschFileName().value+".csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
+        filename = "Schedule_"+self.getScheduleAlgs().value+"_"+str(time.now())+".csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
         Schedule_df.to_csv(fullpath, index=False)  
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule was saved in the file "+str(self.getPSchTBschFileName().value)+".csv. "+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule saved.."+"\n"
                                                                                      
         return 
 
@@ -601,8 +550,7 @@ class ScheduleTab():
         self.getPSchTBaccsch_btn().on_click(self.getVisualManager().DataManager.SaveSchedule)
        
 
-        self.setPSchTBschFileName(widgets.Text(description ='',value='filename..'))
-        self.getPSchTBschFileName().layout.width = '150px'
+
  
         # schfile = widgets.Label(value ='Filename: ')
         # schfile.add_class("red_label")
@@ -654,8 +602,6 @@ class ScheduleTab():
         MySchTree.add_node(rootnode)
         self.setSchTree(MySchTree)
         self.setSchTreeRootNode(rootnode)
-        self.setPSTBResSchOutput(widgets.Output())
-
         self.setPSTBGanttOutput(widgets.Output())
 
         schdes = widgets.Label(value ='Schedule Information')
@@ -685,9 +631,9 @@ class ScheduleTab():
            
             HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
             HBox(children = [schalg,self.getScheduleAlgs(),bchalg,self.getBatchingAlgs()]),
-            HBox(children=[schdes, self.getScheduleVisual(),self.getPSchTBschFileName(),self.getPSchTBsavesch_btn(),self.getPSchTBaccsch_btn()]),
+            HBox(children=[schdes, self.getScheduleVisual(),self.getPSchTBsavesch_btn(),self.getPSchTBaccsch_btn()]),
             HBox(children=[self.getPSchSolProps()]),
-            HBox(children=[VBox(children = [self.getPSchResources()]),VBox(children= [self.getPSTBResSchOutput()])]),
+            HBox(children=[VBox(children = [self.getPSchResources()])]),
             HBox(children=[VBox(children= [self.getPSchOrderlist()]), VBox(children= [self.getPSTBOrdOutput()])]),
             HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])]),self.getPSTBGanttOutput()])
 
@@ -698,9 +644,7 @@ class ScheduleTab():
         with self.getPSTBOrdOutput():
             clear_output()
           
-        with self.getPSTBResSchOutput():
-            clear_output()
-
+        
         self.getPSchSolProps().layout.visibility  = 'hidden'
         self.getPSchSolProps().layout.display = 'none'
           
@@ -714,9 +658,7 @@ class ScheduleTab():
         self.getPSchResources().layout.visibility  = 'hidden'
         self.getPSchResources().layout.display = 'none'
 
-        self.getPSTBResSchOutput().layout.visibility  = 'hidden'
-        self.getPSTBResSchOutput().layout.display = 'none'
-
+    
 
 
 
@@ -729,7 +671,44 @@ class ScheduleTab():
 
 #############################################################################################################################################  
 
+"""
+source = pd.DataFrame(columns=["Shift","Job","Start","End"])
 
+            with self.getPSTBGanttOutput():             
+                clear_output() 
+                display(selectedres)
+                display("Shifts: ",len(selected_res.getCurrentSchedule()))
+                display("Jobs: ",[len(j) for j in selected_res.getCurrentSchedule().values()])
+
+            for shift,jobs in selected_res.getCurrentSchedule().items():
+                
+                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":1,"End":1.005}])
+                source = pd.concat([source, row], axis=0, ignore_index=True)
+                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":8.995,"End":9}])
+                source = pd.concat([source, row], axis=0, ignore_index=True)
+                for job in jobs:
+                    starttime = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()+1+0.01
+                    endtime =  min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime()+1-0.01
+                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
+                    source = pd.concat([source, row], axis=0, ignore_index=True)
+
+          
+               
+            with self.getPSTBGanttOutput():
+                
+                clear_output() 
+                display(selected_res.getName())
+                #display("Schedule shifts: ",selected_res.getSchedule())
+      
+                for shift in source["Shift"].unique():
+                    break
+                    shift_df = source[source["Shift"] == shift]
+                    
+                    bars = alt.Chart(shift_df).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Shift', sort='-x'))
+                    text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
+
+                    display((bars + text).properties(height=100, width=200))
+"""
 
 
 
