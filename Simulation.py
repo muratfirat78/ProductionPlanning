@@ -29,6 +29,7 @@ from datetime import timedelta,date
 from Simulator import *
 from SimulatorM import *
 
+
 #######################################################################################################################
 
 class SimEvent(object):
@@ -66,11 +67,14 @@ class SimMachine(object):
         self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
+        self.Resource = simpy.Resource(env,Capacity=1)
   
 
     def getCoordinates(self):
         return self.coordinates 
 
+    def getResource(self):
+        return self.Resource
     
     def ProcessTask(self,env,task):
         # make status change idle->busy
@@ -114,6 +118,10 @@ class SimProduct(object):
 class SimSubcontractor(object):
     def __init__(self,env,res):
         self.extres = res
+        self.Resource(env, capacity=1000)
+
+    def getResource(self):
+        return self.Resource
 
 
 
@@ -129,7 +137,11 @@ class SimOperator(object):
         self.location = None 
         self.status = 'idle'
         self.currentexecution = None
-        self.availability = dict() #  key: day, value: activeperiod. 
+        self.availability = dict() #  key: day, value: activeperiod.
+        self.Resource = simpy.Resource(env,capacity=1)
+
+    def getResource(self):
+        return self.resource
         
         
     def StartTask(self,env,task):
@@ -160,6 +172,7 @@ class Buffer(object):
         self.capacity = capacity
         self.products = []
         self.coordinates = (0,0)
+        self.Container = simpy.Container(env, capacity=capacity)
 
     
         # historical capacity use
@@ -170,6 +183,8 @@ class Buffer(object):
     def getCapacity(self):
         return self.capacity
 
+    def getContainer(self):
+        return self.Container
 
     def getCoordinates(self):
         return self.coordinates 
@@ -201,10 +216,21 @@ class Trolley(object):
         self.name = name
         self.capacity = 100
         self.products = [] # product
+        self.job = None
         self.idle = True
-
+        self.Resource = simpy.Resource(env, Capacity=5) #This creates the simpy resource
     def IsIdle(self):
         return self.idle
+
+    def getResource(self):
+        return self.Resource
+
+    def getJob(self):
+        return self.job
+
+    def setJob(self,job):
+        self.job = job
+        return        
 
     def SetStatus(self,myidle):
         self.idle = myidle
@@ -259,7 +285,9 @@ class SimulationManager(object):
         self.ProdSN = 0
         self.simshifts = dict()
         self.EventQueue = dict() # key: simetime, val: Event
+        self.AltEventQueue = [] #Jobs that are allowed to be scheduled
         self.prodsystem = None
+        self.FinishedTasks=[] #If job is finished
 
     def setProdSystem(self,systm):
         self.prodsystem = systm
@@ -270,6 +298,9 @@ class SimulationManager(object):
 
     def getEventQueue(self):
         return self.EventQueue
+
+    def getAltEventQueue(self):
+        return self.AltEventQueue
 
     def getMyShifts(self):
         return self.simshifts
@@ -301,6 +332,9 @@ class SimulationManager(object):
     def setSimEnd(self,myvm):
         self.SimEnd = myvm
         return
+
+    def getFinishedTasks(self):
+        return self.FinishedTasks
 
 
 
@@ -352,6 +386,7 @@ class SimulationManager(object):
                             return True
         return False
 
+    def Generate_Machines
     
     def CreateShifts(self,progress):
 

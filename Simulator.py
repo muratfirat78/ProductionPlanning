@@ -52,7 +52,7 @@ class Simulator(object):
        while True:
 
         Progress.value+=str(self.getSimulationManager().getEventQueue().keys())+", now: "+str(env.now)+"\n"
-        if env.now in self.getSimulationManager().getEventQueue():
+        for job in self.getSimulationManager().getAltEventQueue():
            for evid in range(len(self.getSimulationManager().getEventQueue()[env.now])):
                Progress.value+=" evid: "+str(evid)+", events: "+str(len(self.getSimulationManager().getEventQueue()[env.now]))+"\n"
                event = self.getSimulationManager().getEventQueue()[env.now][evid]
@@ -69,7 +69,30 @@ class Simulator(object):
         yield env.timeout(unit_time)
            
         return
- 
+
+    def Trolley_function(env,Trolley,job,end):
+        Trolley.setJob(job)
+        with Trolley.getResource().request() as req:
+            yield req
+            yield env.timeout(1) #Traveltime of trolley
+            Machine_function(env,end,job)
+
+    def Machine_function(env,Mach,job):
+        with Mach.getResource().request() as req:
+            yield req
+            #Set start time
+            yield env.timeout(job.getProcessingTime())
+            #Set job end time
+            self.getSimulationManager().getFinishedTasks().append(job)
+            self.getSimulationManager().getAltEventQueue().remove(job)
+            successor = job.getSuccessor()
+            Sched = True
+            for i in successor.getPredecessors():
+                if i not in self.getSimulationManager().getFinishedTasks():
+                    Sched = False
+            if Sched == True:
+                self.getSimulationManager().getAltEventQueue().append(successor)
+            
 
        
     def RunSimulation(self):
@@ -115,8 +138,8 @@ class Simulator(object):
                 ProdSystem.getOperators().append(self.getSimulationManager().createOperator(env,res))
       
 
-        for i in range(5):
-            ProdSystem.getTrolleys().append(self.getSimulationManager().createTrolley(env,"Trolley_"+str(i)))
+        
+        ProdSystem.getTrolleys().append(self.getSimulationManager().createTrolley(env,"Trolleys")
             
 
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+=ProdSystem.print()+"\n"
@@ -135,7 +158,7 @@ class Simulator(object):
                       
                         simprod.setLocation(CentralBuffer)
                        
-                        self.getSimulationManager().getEventQueue()[env.now].append(simprod.setcurrentjob(env.now,job))  
+                        self.getSimulationManager().getAltEventQueue().append(job)  
                      
                         CentralBuffer.getProducts().append(simprod)
 
