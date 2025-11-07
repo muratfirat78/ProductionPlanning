@@ -59,11 +59,6 @@ class CommonGreedyInsertionAlg:
         processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour')
 
 
-        if resource.getName().find("OUT -") != -1:
-            slot = resource.getEmptySlots()[0]
-            return ((slot,slot[1]),(time,0))
-
-        
         for slot in resource.getEmptySlots():    
             if slot[0][1] < processtime:
                 Progress.value+=" Process time: "+str(processtime)+"\n"
@@ -181,67 +176,33 @@ class CommonGreedyInsertionAlg:
         if emptyslot != None: 
             Progress.value+=" Sh:("+str(emptyslot[1].getDay())+","+str(emptyslot[1].getNumber())+"), hrs: ["+str(emptyslot[1].getStartTime())+"-"+str(emptyslot[1].getEndTime())+"]\n" 
                     
-      
-        if res.getName().find("OUT -") != -1:
-            
-            #Progress.value+=">>> "+str(job.getStartTime())+"  -  "+str(job.getJob().getOperation().getProcessTime())+"\n"
-            job.setCompletionTime(job.getStartTime()+job.getJob().getOperation().getProcessTime('hour'))
-            
-            #Progress.value+=" In Schedule? >>> "+str(emptyslot[1] in res.getCurrentSchedule())+"\n"
-            res.getCurrentSchedule()[emptyslot[1]].append(job)
-            return
+     
         
         curr_time = emptyslot[0][0]
-
-       
 
         curr_time = jobstarttime
         processtime = job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour')
         curr_shift = startshift
       
         #find completion time of the job
-
-        Progress.value+="finding completion..."+"\n"
         while processtime > 0: 
-
-            Progress.value+=" currshift in sch of res? "+str(curr_shift in res.getCurrentSchedule())+"\n"
-
-            if not curr_shift in res.getCurrentSchedule():
-                Progress.value+=" currsch of res has "+str(len())+" shifts"+"\n"
-              
             res.getCurrentSchedule()[curr_shift].append(job)
             timeinshift =  curr_shift.getEndTime()+1 - curr_time
 
-           
-            
             if timeinshift < processtime - 0.00001:
                 processtime = processtime - timeinshift
             else:
-                Progress.value+=" Scheduling filled as job completed.. "+str(curr_shift in schedulesol.getResourceSchedules()[res.getName()])+"\n"
-          
                 schedulesol.getResourceSchedules()[res.getName()][curr_shift][job] = (curr_time,curr_time + processtime)
-                
                 curr_time = curr_time + processtime
                 processtime = 0
 
             if processtime > 0:
-                #Progress.value+=" process time left "+str(processtime)+"\n"
-
-                #Progress.value+=" Scheduling soln has the resource? "+str(res.getName() in schedulesol.getResourceSchedules())+"\n"
-
-                #Progress.value+=" Scheduling soln has shift? "+str(curr_shift in schedulesol.getResourceSchedules()[res.getName()])+"\n"
 
                 schedulesol.getResourceSchedules()[res.getName()][curr_shift][job] = (curr_time,curr_shift.getEndTime()+1)
 
-
-                #Progress.value+=" curr hisft next? "+str(curr_shift.getNext())+"\n"
-                
-            
                 curr_shift=curr_shift.getNext()
                 curr_time = curr_shift.getStartTime()
 
-
-                #Progress.value+=" currshift available? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
                 while not curr_shift.getNumber() in res.getAvailableShifts():
                     curr_shift = curr_shift.getNext()
                     if curr_shift == None:
@@ -251,25 +212,27 @@ class CommonGreedyInsertionAlg:
                 Progress.value+=" Sh:("+str(curr_shift.getDay())+","+str(curr_shift.getNumber())+"), hrs: ["+str(curr_shift.getStartTime())+"-"+str(curr_shift.getEndTime())+"]\n" 
                     
 
-                #Progress.value+=" currshift in avail of res? "+str(curr_shift.getNumber() in res.getAvailableShifts())+"\n"
-                #Progress.value+=" currshift in sch of res? "+str(curr_shift in res.getCurrentSchedule())+"\n"
-                
         job.setCompletionTime(curr_time)
         Progress.value+=" job completiontime "+str(job.getCompletionTime())+"\n"
 
-        slotindex = res.getEmptySlots().index(emptyslot)
-        if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
-            newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
-            res.getEmptySlots().insert(res.getEmptySlots().index(emptyslot),newslot) # insert this just before into the index of empyslot.
-            slotindex+=1
+        if res.getName().find("OUT -") == -1:
+
+            slotindex = res.getEmptySlots().index(emptyslot)
+            if unusedtime > 0: # here a hole occurred in timeline, so create an empty slot
+                newslot = ((emptyslot[0][0], unusedtime),emptyslot[1])
+                res.getEmptySlots().insert(res.getEmptySlots().index(emptyslot),newslot) # insert this just before into the index of empyslot.
+                slotindex+=1
 
 
         job.setScheduledCompShift(curr_shift)
-      
 
-        res.getEmptySlots().remove(emptyslot)
-        newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour'))),curr_shift)
-        res.getEmptySlots().insert(slotindex,newmeptyslot)
+        newmeptyslot = None
+
+        if res.getName().find("OUT -") == -1:
+
+            res.getEmptySlots().remove(emptyslot)
+            newmeptyslot= ((curr_time, emptyslot[0][1] - (unusedtime+job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour'))),curr_shift)
+            res.getEmptySlots().insert(slotindex,newmeptyslot)
 
         Progress.value+="Done..."+"\n"
 
@@ -310,8 +273,10 @@ class CommonGreedyInsertionAlg:
                 myresource = None
                 currentslot = None
                 for resource in j.getJob().getOperation().getRequiredResources():
+                    
+                    processtime = j.getJob().getQuantity()*j.getJob().getOperation().getProcessTime('hour')
 
-                    Progress.value+=" checking slot for job ... "+str(j.getJob().getName())+" in res "+str(resource.getName())+"\n"  
+                    Progress.value+=" checking slot for job ... "+str(j.getJob().getName())+", p: "+str(processtime)+", res "+str(resource.getName())+"\n"  
                     slotreturn = self.CheckSlot(resource,j,Progress,ScheduleMgr)
                     
                     if slotreturn != None: 

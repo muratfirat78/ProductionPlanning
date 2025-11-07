@@ -304,11 +304,26 @@ class ScheduleTab():
                 jobnodes = []
                
                 for job in jobs:
-                    schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
-                    jobnode = Node(job.getJob().getName()+" > "+schstr,[], icon="cut", icon_style="success") 
+                    if job.IsScheduled():
+                        
+                        cpshift = job.getScheduledCompShift()
+                        starttime = shift.getStartHour()+timedelta(hours = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime())
+                        if shift == cpshift:
+                            endtime =  cpshift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
+                        else:
+                            endtime =  shift.getEndHour()
+                        schstr =" {:d}:{:02d}".format(starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)    
+                        if shift != cpshift:
+                            jendtime =  cpshift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
+                            schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour, jendtime.minute)  
+                    else: 
+                        schstr = "not scheduled"
+                    jobnode = Node(job.getJob().getName()+" >> "+schstr,[], icon="cut", icon_style="success") 
                     jobnode.opened = False
                     jobnodes.append(jobnode)
-                shiftnode = Node("Shift: "+str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
+
+                
+                shiftnode = Node("Shift: "+str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+" , {:02d}:{:02d}".format(shift.getStartHour().hour, shift.getStartHour().minute)+"-"+" , {:02d}:{:02d}".format(shift.getEndHour().hour, shift.getEndHour().minute),jobnodes, icon="cut", icon_style="success")   
                 shiftnode.opened = False
                 shiftnodes.append(shiftnode)
         
@@ -352,35 +367,46 @@ class ScheduleTab():
         
         ordname = selectedord[:selectedord.find(":")]
 
+        Progress = self.getVisualManager().getSchedulingTab().getPSchScheRes()
       
         if ordname in self.getVisualManager().DataManager.getCustomerOrders():
             myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
 
             source = pd.DataFrame(columns=["Job","Start","End"])
 
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="order jobs..."+str(len(myord.getMyJobs()))+"\n"
+            Progress.value+="order jobs..."+str(len(myord.getMyJobs()))+"\n"
             
             ordjobtree = Tree()
          
             jobnodes = []
             for job in myord.getMyJobs():
                 schstr = "Unscheduled"
+                resnodes = []
                 if job.getSchJob() is None: 
                     continue
+                Progress.value+=job.getName()+"  "+str(job.getSchJob().IsScheduled())+"\n"
                 if job.getSchJob().IsScheduled():
                     
                     row = pd.DataFrame([{"Job":job.getName(), "Start":job.getSchJob().getStartTime(),"End":job.getSchJob().getCompletionTime()}])
                     source = pd.concat([source, row], axis=0, ignore_index=True)
-                    schstr = "st: "+str(round(job.getSchJob().getStartTime(),2))+"-cp: "+str(round(job.getSchJob().getCompletionTime(),2))
+                    stshift = job.getSchJob().getScheduledShift(); cpshift = job.getSchJob().getScheduledCompShift()
+                    starttime = stshift.getStartHour()+timedelta(hours = max(job.getSchJob().getStartTime(),stshift.getStartTime())-stshift.getStartTime())
+                    jendtime =  cpshift.getStartHour()+timedelta(hours = min(job.getSchJob().getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
+                    schstr =str(starttime.date()) +" / {:02d}:{:02d}".format(starttime.hour, starttime.minute)+">{:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour, jendtime.minute)  
+                    
 
-                resnodes = []
-                resnode = Node(job.getSchJob().getScheduledResource().getName(),[], icon="cut", icon_style="success") 
-                resnodes.append(resnode)
                 
-                jobnode = Node(job.getName()+"> "+schstr,resnodes, icon="cut", icon_style="success") 
+                    resnode = Node(job.getSchJob().getScheduledResource().getName(),[], icon="cut", icon_style="success") 
+                    resnodes.append(resnode)
+                
+                jobnode = Node(job.getName()+"| "+schstr,resnodes, icon="cut", icon_style="success") 
                 jobnode.opened = False
+
+
                 
                 jobnodes.append(jobnode)
+
+                Progress.value+=job.getName()+" done.. "+"\n"
 
             with self.getPSTBGanttOutput():
                 clear_output() 
@@ -490,6 +516,7 @@ class ScheduleTab():
     def MakeSchedule(self,b):
 
         self.getVisualManager().getSchedulingManager().MakeSchedule(self.getScheduleAlgs().value,self.getBatchingAlgs().value)
+        self.getPSchTBmakesch_btn().disabled = True
 
         return
 
@@ -502,6 +529,8 @@ class ScheduleTab():
         
         if not isExist:
             os.makedirs(path)
+
+        
         
         for name,myres in self.getVisualManager().DataManager.getResources().items():
             if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':

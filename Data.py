@@ -43,8 +43,17 @@ class DataManager:
         self.onlineversion = False       
         self.UseCase = None
         self.MyFolder = None
+        self.ScheduleStartWeek = None
+        self.ScheduleEndWeek = None
         
         return
+
+    def getScheduleStartWeek(self):
+        return self.ScheduleStartWeek
+    
+    def getScheduleEndWeek(self):
+        return self.ScheduleEndWeek
+        
         
     def getSchedulingManager(self):
         return self.SchedulingManager
@@ -305,8 +314,6 @@ class DataManager:
         return
   
    
-  
-
     
     def SaveSchedule(self,b):
 
@@ -359,15 +366,22 @@ class DataManager:
                     schedule_df.loc[len(schedule_df)] = {"ResourceID":self.getResources()[resname].getID(),
                                                              "Day":shift.getDay(),
                                                              "ShiftNo":shift.getNumber(),
+                                                         
                                                              "JobID":job.getJob().getID(),
                                                              "SchStart":jobtimes[0],
                                                              "SchCompletion":jobtimes[1]}
-                 
-
+        alldates = []
+        for resname,res_schedule in myschedule.getResourceSchedules().items():
+            alldates = [x.getDay().date() for x in res_schedule.keys()]
+            if len(alldates)>0:
+                break
+            
+            
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>> min shift: "+str(alldates)+"\n"     
 
 
         timestr = time.strftime("%Y%m%d-%H%M%S")
-        filename = myschedule.getName()+"-Schedule_"+timestr+".csv"; 
+        filename = self.getUseCase()+"_Period_"+str(min(alldates))+"_"+str(max(alldates))+"-Schedule_"+str(timestr)+".csv"; 
         path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
         fullpath = os.path.join(Path.cwd(), path)
         schedule_df.to_csv(fullpath, index=False)
@@ -378,83 +392,7 @@ class DataManager:
 
         return
         
-    def SaveTheSchedule(self,event):
-
-        Progress = self.getVisualManager().getSchedulingTab().getPSchScheRes()
-
-        Progress.value += ">>>  saving schedule....."+"\n" 
-        schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
-
-        jobprecs_df = pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
-        
-        for name,order in self.getCustomerOrders().items():
-            Progress.value += ">>>  order....."+str(order.getName())+", jobs: "+str(len(order.getMyJobs()))+"\n" 
-            for job in order.getMyJobs():
-                for pred in job.getPredecessors():
-                    jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
-
-                if job.getSchJob() is None: 
-                    continue
-                    
-                
-                Progress.value += job.getName()+str(job.getSchJob().IsScheduled())+"\n"
-                if job.getSchJob().IsScheduled(): 
-                    schres = job.getSchJob().getScheduledResource().getID()
-                    sdayst = str(job.getSchJob().getScheduledShift().getDay().date())
-                    sshftst = job.getSchJob().getScheduledShift().getNumber()
-                    stst = job.getSchJob().getStartTime()
-                    sdaycp = str(job.getSchJob().getScheduledCompShift().getDay().date())
-                    sshftcp = job.getSchJob().getScheduledCompShift().getNumber()
-                    stcp = job.getSchJob().getCompletionTime()
-                else:
-                    starttime = "NULL"
-                    endtime ="NULL"
-                    schres = "NULL"
-                    sdayst = "NULL"
-                    sshftst = "NULL"
-                    stst = "NULL"
-                    sdaycp = "NULL"
-                    sshftcp = "NULL"
-                    stcp = "NULL"
-                    
-                    
-                schedule_df.loc[len(schedule_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),
-                                                         "Deadline":job.getDeadLine(),
-                                                       "OrderID":job.getCustomerOrder().getID(),
-                                                     "ProductID":job.getProduct().getID(),
-                                                     "OperationID":job.getOperation().getID(),
-                                                     "ResourceID":schres,
-                                                     "SchDaySt":sdayst,
-                                                     "SchShiftSt": sshftst,
-                                                     "SchTimeSt":stst,
-                                                     "SchDayCp":sdaycp,
-                                                     "SchShiftCp":sshftcp,
-                                                     "SchTimeCp":stcp,
-                                                     "ActDaySt":"",
-                                                     "ActShiftSt":"NULL","ActTimeSt":"NULL","ActDayCp":"NULL","ActShiftCp":"NULL","ActTimeCp":"NULL"
-                                                     }
-
-        
-        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
-        if not isExist:
-            os.makedirs(path)
-
-        Progress.value += ">>>..... writing files...."+"\n"
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        filename = "ScheduleJobs_"+timestr+".csv"; 
-        path = folder+"\\"+casename+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        schedule_df.to_csv(fullpath, index=False)
-        filename = "ScheduleJobsPrecs_"+timestr+".csv"; 
-        path = folder+"\\"+casename+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        jobprecs_df.to_csv(fullpath, index=False)
-        Progress.value += ">>>.... DONE....."+"\n"
-         
-     
-        return
+ 
 
     def getFTECapacity(res,shift):
 
@@ -499,7 +437,7 @@ class DataManager:
             
             for file in files: 
                 if (file.find("Schedule") != -1):
-                    filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
+                    filedate = datetime.strptime(file[file.find("Schedule_")+9:-4],"%Y%m%d-%H%M%S")
           
                     if scheduledate == None: 
                         scheduledate = filedate
@@ -563,8 +501,6 @@ class DataManager:
                 if file == "MachineAlternatives.csv": 
                     machalts_df = pd.read_csv(abs_file_path+'/'+file)
                     
-                        
-
               
                 if file == "Products.csv": 
                     prod_df = pd.read_csv(abs_file_path+'/'+file)
@@ -680,26 +616,32 @@ class DataManager:
             res = [myres  for resname,myres in self.getResources().items() if myres.getID() == r["ResourceID"]][0]
 
             opr.getRequiredResources().append(res)
-            
-            # # check if the same type of resource is already in the required resources list of operation. 
-            # resinserted = False
-            # for oprres in opr.getRequiredResources():
-            #     if isinstance(oprres,list): # we expect that this is always true, but for now let is check. 
-            #         if oprres[0].getType() == res.getType():
-            #             oprres.append(res)
-            #             resinserted = True
-            #             break
-            # if not resinserted:
-            #     opr.getRequiredResources().append([res])
-          
-            #if len(opr.getRequiredResources())>1:
-               #self.getVisualManager().getCaseInfo().value += "opr: "+str(opr.getName())+", no.res: "+str(len(opr.getRequiredResources()))+"\n" 
+
         earliest = None
         latest = None
 
         self.getVisualManager().getCaseInfo().value += ">>>> Schedule file.."+str(schfile)+"\n" 
             
         if schfile != None:
+
+            periodind = schfile.find("Period_")
+            self.getVisualManager().getCaseInfo().value += ">>>> Schedule period:"+str(schfile[periodind+7:periodind+17])+"  -  "+str(schfile[periodind+18:periodind+28])+"\n" 
+
+            periodstart = datetime.strptime(schfile[periodind+7:periodind+17],"%Y-%m-%d")
+
+            periodend = datetime.strptime(schfile[periodind+18:periodind+28],"%Y-%m-%d")
+
+            self.getVisualManager().getCaseInfo().value += ">>>> Schedule period:"+str(periodstart)+"  -  "+str(periodend)+"\n" 
+
+            startweek = periodstart.isocalendar()[1]
+            endweek = periodend.isocalendar()[1]
+
+            self.getVisualManager().getCaseInfo().value += ">>>> Schedule period weeks:"+str(startweek)+"  -  "+str(endweek)+"\n" 
+
+            self.ScheduleStartWeek = startweek
+            self.ScheduleEndWeek = endweek
+
+            self.getSchedulingManager().CreateShifts(periodstart,periodend,True)
             
             schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
             self.getVisualManager().getCaseInfo().value += ">>>> Schedules.."+str(len(schedule_df))+"\n" 
@@ -739,30 +681,9 @@ class DataManager:
                         job.getPredecessors().append(predjob)
                     else: 
                         self.getVisualManager().getCaseInfo().value += ">>>> pred of job "+str(job.getID())+" not in jobs.."+"\n" 
-                
-                
-            # now create shifts of resources    
-            for i,r in schedule_df.iterrows():
-                stdate = datetime.strptime(r["Day"],'%Y-%m-%d')
-               #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(stdate)+"\n" 
-                if earliest == None:
-                    earliest = stdate
-                else:
-                    if earliest > stdate:
-                        earliest = stdate
-                #self.getVisualManager().getCaseInfo().value += ">>>> SchDayCp.."+str(r["SchDayCp"])+"\n" 
-                if latest == None:
-                    latest = stdate
-                else:
-                    if latest < stdate:
-                        latest = stdate
 
-            if (earliest!= None) and (latest!= None):
-                self.getVisualManager().getCaseInfo().value += ">>>> Schedule earliest - latest .."+str(earliest)+":"+str(latest)+"\n" 
-                self.getSchedulingManager().setCurrentscheduleEnd(latest)
-                
-                self.getSchedulingManager().CreateShifts(earliest,latest,True)
 
+           
            
             self.getVisualManager().getCaseInfo().value += ">>>> shifts created .."+"\n"     
             insertedshifts = 0
@@ -795,8 +716,7 @@ class DataManager:
 
                     if startime == None:
                         startime = r["SchStart"]
-                        
-                      
+           
                     else:
                         if r["SchStart"] < startime:
                             startime = r["SchStart"]

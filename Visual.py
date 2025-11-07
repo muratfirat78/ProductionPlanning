@@ -183,6 +183,8 @@ class VisualManager():
 
         self.UpdStocks_btn = None
         self.NewRes_btn = None
+
+        
  
 
         return
@@ -2319,8 +2321,13 @@ class VisualManager():
         self.getPSTBProdList().options = [opname for opname in self.DataManager.getProducts().keys()]
         self.getPSTBProdList2().options = [opname for opname in self.DataManager.getProducts().keys()]
         self.getCOTBorders().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
-        self.getProductionProgressTab().getCustomerOrderList().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
-        self.getProductionProgressTab().getResourceList().options = [resname for resname in self.DataManager.getResources().keys()]
+        if self.getProductionProgressTab().getInfoType() == "Customer Orders":
+            self.getProductionProgressTab().getCustomerOrderList().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
+        else:
+            self.getProductionProgressTab().getCustomerOrderList().options = [resname for resname in self.DataManager.getResources().keys()]
+        #self.getProductionProgressTab().getResourceList().options = [resname for resname in self.DataManager.getResources().keys()]
+        #self.getProductionProgressTab().setInfoType("Customer Orders")
+        #self.getProductionProgressTab().getResords().value = "Customer Orders"
         
         return
     def CreateResource(self,event):
