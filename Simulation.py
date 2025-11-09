@@ -63,11 +63,12 @@ class SimEvent(object):
 class SimMachine(object):
     def __init__(self, env,machine):
         self.env = env
+        self.name = machine.getName()
         self.machine = machine
         self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
-        self.Resource = simpy.Resource(env,Capacity=1)
+        self.Resource = simpy.Resource(env,capacity=1)
   
 
     def getCoordinates(self):
@@ -82,6 +83,9 @@ class SimMachine(object):
         # determine/sample task process time
         # register completion of task
         return
+
+    def getName(self):
+        return self.name
 
 
 
@@ -118,7 +122,7 @@ class SimProduct(object):
 class SimSubcontractor(object):
     def __init__(self,env,res):
         self.extres = res
-        self.Resource(env, capacity=1000)
+        self.Resource= simpy.Resource(env, capacity=1000)
 
     def getResource(self):
         return self.Resource
@@ -218,7 +222,8 @@ class Trolley(object):
         self.products = [] # product
         self.job = None
         self.idle = True
-        self.Resource = simpy.Resource(env, Capacity=5) #This creates the simpy resource
+        self.Resource = simpy.Resource(env, capacity=1) #This creates the simpy resource
+        
     def IsIdle(self):
         return self.idle
 
@@ -232,7 +237,7 @@ class Trolley(object):
         self.job = job
         return        
 
-    def SetStatus(self,myidle):
+    def setStatus(self,myidle):
         self.idle = myidle
         return
     def getName(self):
@@ -287,6 +292,7 @@ class SimulationManager(object):
         self.EventQueue = dict() # key: simetime, val: Event
         self.AltEventQueue = [] #Jobs that are allowed to be scheduled
         self.prodsystem = None
+        self.buffer = None
         self.FinishedTasks=[] #If job is finished
 
     def setProdSystem(self,systm):
@@ -295,6 +301,13 @@ class SimulationManager(object):
 
     def getProdSystem(self):
         return self.prodsystem
+
+    def setBuffer(self,bffr):
+        self.buffer = bffr
+        return
+
+    def getBuffer(self):
+        return self.buffer
 
     def getEventQueue(self):
         return self.EventQueue
@@ -347,7 +360,9 @@ class SimulationManager(object):
         return SimSubcontractor(env,res)
 
     def createBuffer(self,env,name,cap):
-        return Buffer(env,name,cap)
+        buffer = Buffer(env,name,cap)
+        self.setBuffer(buffer)
+        return buffer
 
     def createMachine(self,env,machine):
         return SimMachine(env,machine)
@@ -386,7 +401,6 @@ class SimulationManager(object):
                             return True
         return False
 
-    def Generate_Machines
     
     def CreateShifts(self,progress):
 
