@@ -26,6 +26,7 @@ import math
 import datetime
 import time
 from Simulation import *
+from itertools import islice
 
 #######################################################################################################################
 
@@ -50,32 +51,14 @@ class Simulator(object):
     def SystemClock(self,env,Progress):
    
        while True:
-
-        Progress.value+=str(self.getSimulationManager().getAltEventQueue())+", now: "+str(env.now)+"\n"
-        
-        for job in self.getSimulationManager().getAltEventQueue():
-            Machine = job.getOperation().getRequiredResources()[0].getSimResource()
-            Trolley_check = False
-            while Trolley_check is False:
-                prodsystem = self.getSimulationManager().getProdSystem()
-                trolleys = prodsystem.getTrolleys()
-                for trolley in trolleys:
-                    if trolley.IsIdle() == True:
-                        Chosen_Trolley = trolley
-                        Trolley_check = True
-                        break
-                if Trolley_check == False:
-                    yield env.timeout(0.01) #Waiting because there is no trolley available
-            event = self.Trolley_function(env,trolley,job,Machine)
-            env.process(event)
+            for prod in self.getSimulationManager().getAltEventQueue():
+                Machine = prod.getJob().getOperation().getRequiredResources()[0].getSimResource()            
+                event = self.Product_Proces(env,prod,Machine,Progress)
+                env.process(event)
+                yield env.timeout(0.01)
+    
            
-            
-      
-        unit_time = 0.01 # this is one minute 
         
-        yield env.timeout(unit_time)
-           
-        return
 
     def Trolley_function(self,env,Trolley,job,end):
         Trolley.setStatus(False)
@@ -98,52 +81,16 @@ class Simulator(object):
                 Trolley.setStatus(True)
                 env.process(self.Machine_function(env,end,job))
 
-    def Machine_function(self,env,Mach,job):
-        with Mach.getResource().request() as req:
+    def Product_Proces(self,env,product,Machine, Progress):
+        with Machine.getResource().request() as req:
             yield req
             #Set start time
-            job.setActualStart(env.now())
-            yield env.timeout(job.getProcessingTime()*job.getQuantity())
-            #Set job end time
-            job.setActualCompletion(env.now())            
-            self.getSimulationManager().getFinishedTasks().append(job)
-            self.getSimulationManager().getAltEventQueue().remove(job)
-            if job.getSuccessor() != '': #This means that we need to move the product to a next machine
-                successor = job.getSuccessor()
-                Sched = True
-                for i in successor.getPredecessors():
-                    if i not in self.getSimulationManager().getFinishedTasks():
-                        Sched = False
-                if Sched == True:
-                    self.getSimulationManager().getAltEventQueue().append(successor)
-                NextMachine = successor.getOperation().getRequiredResources()[0].getSimResource()
-                Trolley_check = False
-                while Trolley_check is False:
-                    prodsystem = self.getSimulationManager().getProdSystem()
-                    trolleys = prodsystem.getTrolleys()
-                    for trolley in trolleys:
-                        if trolley.IsIdle() == True:
-                            Chosen_Trolley = trolley
-                            Trolley_check = True
-                            break
-                    if Trolley_check == False:
-                        yield env.timeout(0.01) #Waiting because there is no trolley available                   
-                env.process(self.Trolley_function(env,Chosen_Trolley,successor,NextMachine))
-            else:
-                #We now move the product to the central buffer
-                Trolley_check = False
-                while Trolley_check is False:
-                    prodsystem = self.getSimulationManager().getProdSystem()
-                    trolleys = prodsystem.getTrolleys()
-                    for trolley in trolleys:
-                        if trolley.IsIdle() == True:
-                            Chosen_Trolley = trolley
-                            Trolley_check = True
-                            break
-                    if Trolley_check == False:
-                        yield env.timeout(0.01) #Waiting because there is no trolley available
-                Next = self.getSimulationManager().getBuffer() #Product is finished --> Move to buffer
-                env.process(self.Trolley_function(env,Chosen_Trolley,job,Next))
+            Progress.value+="Processing product "+str(product.getSN()) +" at time: "+str(env.now)+ "\n"
+            yield env.timeout(product.getJob().getOperation().getProcessTime("hour"))
+            Progress.value+="Done Processing product "+str(product.getSN()) +" at time: "+str(env.now)+"\n"
+            
+            self.getSimulationManager().getProdSystem().getBuffer().getProducts().append(product) #Product is finished --> Move to buffer
+            Progress.value+="Moved product "+str(product.getSN()) +" to buffer at time: "+str(env.now)+"\n"
             
 
        
@@ -175,6 +122,7 @@ class Simulator(object):
 
         ProdSystem = self.getSimulationManager().createProductionSystem(env,"TBRM_Machine_BV")
 
+        
 
         for resname,res  in datamgr.getResources().items():
             if res.getType() == "Machine":
@@ -199,21 +147,28 @@ class Simulator(object):
 
 
         self.getSimulationManager().getEventQueue()[env.now] = []
+
+        ####HERE ARE THE PARAMETERS WE SET FOR THE ENVIRONMENT######
+
+        num_orders = 122
+        num_jobs = 1
        
         # Product creation for jobs that are first to do. 
-        for name,order in self.getSimulationManager().getDataManager().getCustomerOrders().items():
+        for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
             Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
-            for job in order.getMyJobs():
+            for i in range(0,num_jobs):
+                if len(order.getMyJobs()) == 0:
+                    continue
+                job = order.getMyJobs()[i]
                 Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
-                if len(job.getPredecessors()) == 0:
-                    self.getSimulationManager().getAltEventQueue().append(job)
-                    for prd in range(int(job.getQuantity())):
-                        simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())                      
-                        simprod.setLocation(CentralBuffer)                      
-                          
-                     
-                        CentralBuffer.getProducts().append(simprod)
-
+                #if len(job.getPredecessors()) == 0: ### FOR NOW WE DO NOT CHECK PREDECESSORS                    
+                for prd in range(int(job.getQuantity())):
+                    simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
+                    self.getSimulationManager().getAltEventQueue().append(simprod)
+                    simprod.setLocation(CentralBuffer)                                                                 
+                    CentralBuffer.getProducts().append(simprod)
+                    
+        ProdSystem.setBuffer(CentralBuffer)
         Progress.value+="Event Queue: ."+str(len(self.getSimulationManager().getAltEventQueue()))+"\n"
 
 
@@ -227,13 +182,20 @@ class Simulator(object):
 
         completiontime = 1440*planninghorizon   # Sim time in minutes
 
-        env.process(self.SystemClock(env,Progress))
+        
+
+        #env.process(self.SystemClock(env,Progress))
+
+        for prod in self.getSimulationManager().getAltEventQueue():
+                Machine = prod.getJob().getOperation().getRequiredResources()[0].getSimResource()            
+                event = self.Product_Proces(env,prod,Machine,Progress)
+                env.process(event)
  
         # Execute
         env.run(until = completiontime)
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+= '-> Execution time: '+str(round(time.time() - st,2))+' seconds'
      
-        return infotxt
+        return 
 
 
 #------------------------------------------------------------------------------------------        

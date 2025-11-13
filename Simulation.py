@@ -68,7 +68,7 @@ class SimMachine(object):
         self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
-        self.Resource = simpy.Resource(env,capacity=1)
+        self.Resource = simpy.Resource(env,capacity=50)
   
 
     def getCoordinates(self):
@@ -103,6 +103,12 @@ class SimProduct(object):
         return
     def getLocation(self):
         return self.location
+
+    def getJob(self):
+        return self.Job
+
+    def getSN(self):
+        return self.SN
 
     def getcurrentjob(self):
         return self.currentjob
@@ -253,6 +259,7 @@ class ProductionSystem(object):
     def __init__(self,env,name):
         self.env = env
         self.name = name
+        self.buffer = None
         self.machines = []
         self.operators = []
         self.subcontractors = []
@@ -270,6 +277,13 @@ class ProductionSystem(object):
 
     def getTrolleys(self):
         return self.trolleys
+
+    def setBuffer(self,bffr):
+        self.buffer = bffr
+        return
+
+    def getBuffer(self):
+        return self.buffer
 
     def print(self):
         return "Machines"+str(len(self.machines))+", Ops: "+str(len(self.operators))+", Sub: "+str(len(self.subcontractors))+", Trollys: "+str(len(self.trolleys))
