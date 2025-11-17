@@ -85,14 +85,26 @@ class Simulator(object):
         with Machine.getResource().request() as req:
             yield req
             #Set start time
-            Progress.value+="Processing product "+str(product.getSN()) +" at time: "+str(env.now)+ "\n"
-            yield env.timeout(product.getJob().getOperation().getProcessTime("hour"))
-            Progress.value+="Done Processing product "+str(product.getSN()) +" at time: "+str(env.now)+"\n"
+            Progress.value+="Processing product "+str(product.getSN()) +" at time: "+str(env.now)+ " on machine: " + str(Machine.getName())+ "\n"
+            yield env.timeout(product.getcurrentjob().getOperation().getProcessTime("hour"))
+            Progress.value+="Done Processing product "+str(product.getSN()) +" at time: "+str(env.now)+ " on machine: " + str(Machine.getName())+ "\n"
+            successor = self.SuccessorCheck(product)
+            if successor == False:
+                self.getSimulationManager().getProdSystem().getBuffer().getProducts().append(product) #Product is finished --> Move to buffer
+                Progress.value+="This was the final job of the product, moving finished product to buffer" + "\n" 
+                Progress.value+="Moved product "+str(product.getSN()) +" to buffer at time: "+str(env.now)+"\n" + "\n"
+            else:
+                product.setcurrentjob(successor)                
+                Machine = product.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()                
+                Progress.value+="Moving product "+ str(product.getSN())+" to machine "+ str(Machine.getName()) +" for next operation. " + "\n" + "\n"
+                event = self.Product_Proces(env,product,Machine,Progress)
+                env.process(event)
             
-            self.getSimulationManager().getProdSystem().getBuffer().getProducts().append(product) #Product is finished --> Move to buffer
-            Progress.value+="Moved product "+str(product.getSN()) +" to buffer at time: "+str(env.now)+"\n"
-            
-
+    def SuccessorCheck(self, product):
+        if len(product.getcurrentjob().getSuccessors()) == 0:
+            return False
+        else:
+            return product.getcurrentjob().getSuccessors()[0]
        
     def RunSimulation(self):
 
@@ -131,11 +143,16 @@ class Simulator(object):
                 res.setSimResource(simmach)
                 ProdSystem.getMachines().append(simmach)
             if res.getType() == "Outsourced":
-               
-                ProdSystem.getSubcontractors().append(self.getSimulationManager().createSubcontractor(env,res))
+
+                simsub = self.getSimulationManager().createSubcontractor(env,res)
+                res.setSimResource(simsub)
+                ProdSystem.getSubcontractors().append(simsub)               
+                
             if res.getType() == "Operator":
-               
-                ProdSystem.getOperators().append(self.getSimulationManager().createOperator(env,res))
+                simop = self.getSimulationManager().createOperator(env,res)
+                res.setSimResource(simop)
+                ProdSystem.getOperators().append(simop)   
+                
       
 
         
@@ -150,23 +167,24 @@ class Simulator(object):
 
         ####HERE ARE THE PARAMETERS WE SET FOR THE ENVIRONMENT######
 
-        num_orders = 122
-        num_jobs = 1
+        num_orders = 117
+        
        
         # Product creation for jobs that are first to do. 
         for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
-            Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
-            for i in range(0,num_jobs):
-                if len(order.getMyJobs()) == 0:
-                    continue
-                job = order.getMyJobs()[i]
-                Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
-                #if len(job.getPredecessors()) == 0: ### FOR NOW WE DO NOT CHECK PREDECESSORS                    
-                for prd in range(int(job.getQuantity())):
-                    simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                    self.getSimulationManager().getAltEventQueue().append(simprod)
-                    simprod.setLocation(CentralBuffer)                                                                 
-                    CentralBuffer.getProducts().append(simprod)
+            if len(order.getMyJobs()) == 0:
+                continue
+            else:
+                Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
+                for job in order.getMyJobs():                    
+                    Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
+                    if len(job.getPredecessors()) == 0: #This means it is a schedulable first job                    
+                        for prd in range(int(job.getQuantity())):
+                            simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
+                            simprod.setcurrentjob(job)
+                            simprod.setLocation(CentralBuffer)
+                            self.getSimulationManager().getAltEventQueue().append(simprod)                                                                         
+                            CentralBuffer.getProducts().append(simprod)
                     
         ProdSystem.setBuffer(CentralBuffer)
         Progress.value+="Event Queue: ."+str(len(self.getSimulationManager().getAltEventQueue()))+"\n"
@@ -192,7 +210,8 @@ class Simulator(object):
                 env.process(event)
  
         # Execute
-        env.run(until = completiontime)
+        env.run(until=completiontime)
+        
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+= '-> Execution time: '+str(round(time.time() - st,2))+' seconds'
      
         return 

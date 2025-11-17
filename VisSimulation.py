@@ -304,8 +304,8 @@ class SimulationTab():
 
         self.setPSchScheRes(widgets.Textarea(value='', placeholder='',description='',disabled=True))
      
-        self.getPSchScheRes().layout.height = '150px'
-        self.getPSchScheRes().layout.width = '700px'
+        self.getPSchScheRes().layout.height = '250px'
+        self.getPSchScheRes().layout.width = '1100px'
 
         self.setPSchTBmakesch_btn(widgets.Button(description="Run Simulation", icon = 'fa-gear'))
         self.getPSchTBmakesch_btn().on_click(self.StartSimulation)

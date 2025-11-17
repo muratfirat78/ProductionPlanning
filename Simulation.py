@@ -113,25 +113,24 @@ class SimProduct(object):
     def getcurrentjob(self):
         return self.currentjob
         
-    def setcurrentjob(self,mytime,myjb):
+    def setcurrentjob(self,myjb):
         
         self.currentjob = myjb
+        return
 
-        if myjb != None:
-            res = myjb.getOperation().getRequiredResources()[0]
-            simres = res.getSimResource()
-            return SimEvent(self.env,mytime,self,self.getLocation(),simres,"Transport")
-        else:
-            return None
 
 
 class SimSubcontractor(object):
     def __init__(self,env,res):
         self.extres = res
+        self.name = res.getName()
         self.Resource= simpy.Resource(env, capacity=1000)
 
     def getResource(self):
         return self.Resource
+
+    def getName(self):
+        return self.name
 
 
 
@@ -140,7 +139,8 @@ class SimSubcontractor(object):
 
 class SimOperator(object):
     def __init__(self,env,Optr):
-        self.env = env 
+        self.env = env
+        self.name = Optr.getName()
         self.operator = Optr
         self.efficiency = 1
         self.operationexecutions = []
@@ -152,7 +152,9 @@ class SimOperator(object):
 
     def getResource(self):
         return self.resource
-        
+
+    def getName(self):
+        return self.name
         
     def StartTask(self,env,task):
         # make status change idle->busy
