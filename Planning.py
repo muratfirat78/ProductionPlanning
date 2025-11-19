@@ -375,14 +375,23 @@ class PlanningManager:
 
             exp_date = self.getPHStart().date()
 
+            self.getVisualManager().getPLTBresult2exp().value+=">Order: "+str(myord.getName())+"\n"
+
             if myord.getComponentAvailable().find("Exp") != -1:
+                
                 expected_date = myord.getComponentAvailable()
                 expected_date = expected_date[expected_date.find("Exp")+4:]
+
+                
+                self.getVisualManager().getPLTBresult2exp().value+=">compav: "+str(myord.getComponentAvailable())+"\n"
                 
                 try: 
                     exp_date = datetime.strptime(expected_date,"%d/%m/%Y").date()
                 except: 
                     pass
+
+            self.getVisualManager().getPLTBresult2exp().value+=">deadline: "+str(myord.getDeadLine())+"\n"
+               
 
             mindeliverydate = max(myord.getDeadLine().date(),exp_date)
 
@@ -439,6 +448,8 @@ class PlanningManager:
             else:
                 ops.append(x.getName()+": "+"XXXXXX")
         self.getVisualManager().getPLTBOrdlist().options = ops
+
+        #self.getDataManager().SavePlanning()
 
         reslist = [res.getName() for res in self.getDataManager().getResources().values()] 
         self.getVisualManager().getPLTBrawlist().options = reslist

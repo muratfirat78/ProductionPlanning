@@ -536,6 +536,7 @@ class Job():
         self.SchJob = None
         self.MySch = None
         self.MyPlan = None # (resource,date)
+        self.status = None
 
 
     # SCHEDULING
@@ -552,6 +553,25 @@ class Job():
     def getMySch(self):
         return self.MySch
 
+    def getStatus(self):
+
+        if len (self.Predecessors)> 0:
+            pred = self.Predecessors[0]
+            if pred.getActualStart() == None:
+                return "Predecessor not started"
+            else:
+                if pred.getActualCompletion() == None:
+                    return "Predecessor in production"
+                
+        if self.getActualStart() == None:
+            return "Pending"
+        else:
+            if self.getActualCompletion() == None:
+                return "In production"
+            else:
+                return "Completed"
+     
+       
    
     def initializeMySch(self):
         self.MySch = SchJob(self)

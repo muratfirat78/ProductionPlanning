@@ -407,17 +407,20 @@ class ProductionProgressTab():
         
             
         if self.infotype == "Resources":
+            
             if self.getVisualManager().DataManager.getScheduleStartWeek() != None:
                 stweek = self.getVisualManager().DataManager.getScheduleStartWeek()
                 edweek = self.getVisualManager().DataManager.getScheduleEndWeek()
 
+                self.getPProgReport().value+="Selected: "+str(selected)+"\n"
+
                 for resname,res in self.getVisualManager().DataManager.getResources().items():
                     if resname == selected:
                         self.setSelectedResource(res)
-                        self.getPProgReport().value+="Selected res: "+str(res.getName())+"\n"
                         break
                         
 
+                self.getPProgReport().value+="sweek : "+str(stweek)+", endweek: "+str(edweek)+"\n"
                 if stweek > edweek:
                     weeks = [x for x in range(stweek,52+1)]
                     weeks += [x for x in range(1,edweek+1)]
@@ -430,7 +433,78 @@ class ProductionProgressTab():
 
                 self.resshifts.layout.display = 'block'
                 self.resshifts.layout.visibility = 'visible'
-                self.resshifts.options = []
+             
+
+        if self.infotype == "Active Jobs":
+
+            if self.getJobInfo().layout.display == 'none':
+                self.getJobInfo().layout.display = 'block'
+                self.getJobInfo().layout.visibility = 'visible'
+                self.getJobInfo2().layout.display = 'block'
+                self.getJobInfo2().layout.visibility = 'visible'
+                self.getJobInfo3().layout.display = 'block'
+                self.getJobInfo3().layout.visibility = 'visible'
+                self.getJobInfo4().layout.display = 'block'
+                self.getJobInfo4().layout.visibility = 'visible'
+                self.getJobInfo5().layout.display = 'block'
+                self.getJobInfo5().layout.visibility = 'visible'
+
+
+            self.getJobInfo().value =""
+            self.getJobInfo2().value =""
+            self.getJobInfo3().value =""
+            self.getJobInfo4().value =""
+            self.getJobInfo5().value =""
+            
+            myjob = None
+            for ordname,ordr in self.getVisualManager().DataManager.getCustomerOrders().items():
+                for job in ordr.getMyJobs():
+                    if job.getName() == selected:
+                        myjob = job
+                        break
+                if myjob != None:
+                    break
+            if myjob != None:
+                self.getJobInfo().value ="PN: "+str(myjob.getOperation().getProduct().getPN())
+                self.getJobInfo2().value ="Operation: "+str(myjob.getOperation().getName())
+                self.getJobInfo3().value ="Quantity: "+str(myjob.getQuantity())
+                self.getJobInfo5().value ="Product: "+str(myjob.getOperation().getProduct().getName())
+
+                self.setCurrentJob(myjob)
+                
+                if myjob.getMySch() != None:
+                    startshift = myjob.getMySch().getScheduledShift()
+                    self.getPProgReport().value+= "startshift none? "+str(startshift == None)+"\n"
+                    cpshift = myjob.getMySch().getScheduledCompShift()
+                    self.getPProgReport().value+= "cpshift none? "+str(cpshift == None)+"\n"
+    
+    
+                    starttime = startshift.getStartHour()+timedelta(hours = max(myjob.getMySch().getStartTime(),startshift.getStartTime())-startshift.getStartTime())
+                    endtime =  startshift.getStartHour()+timedelta(hours = min(myjob.getMySch().getCompletionTime(),startshift.getEndTime()+1)-startshift.getStartTime())
+
+                   
+    
+                    schstr ="{:d}-{:02d}-{:02d} / {:d}:{:02d}".format(starttime.year,starttime.month, starttime.day,starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)    
+                    
+                    if startshift != cpshift:
+                        jendtime = cpshift.getStartHour()+timedelta(hours = min(myjob.getMySch().getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
+                        schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour, jendtime.minute) 
+                    
+                    self.getJobInfo4().value ="Schedule: "+schstr
+
+                    if myjob.getStatus() == "Pending":
+                        self.getJobStartBtn().layout.display  = 'block'
+                        self.getJobStartBtn().layout.visibility  = 'visible'
+                        self.getJobCompleteBtn().layout.visibility  = 'hidden'
+                        self.getJobCompleteBtn().layout.display  = 'none'
+                        
+                    if myjob.getStatus() == "In production":
+                        self.getJobCompleteBtn().layout.display  = 'block'
+                        self.getJobCompleteBtn().layout.visibility  = 'visible'
+                        self.getJobStartBtn().layout.visibility  = 'hidden'
+                        self.getJobStartBtn().layout.display  = 'none'
+                        
+            
                 
         
         
@@ -482,19 +556,8 @@ class ProductionProgressTab():
 
                 
                 self.getJobList().options = [job.getJob().getName() for job in jobs]
-                self.getJobList().selectedindex = 0
+                self.getJobList().selectedindex = -1
 
-                self.getJobInfo().value ="PN: "+str(jobs[0].getJob().getOperation().getProduct().getPN())
-                self.getJobInfo2().value ="Operation: "+str(jobs[0].getJob().getOperation().getName())
-                self.getJobInfo3().value ="Quantity: "+str(jobs[0].getJob().getQuantity())
-                self.getJobInfo4().value ="Start: "+str(jobs[0].getStartTime())
-                self.getJobInfo5().value ="Product: "+str(jobs[0].getJob().getOperation().getProduct().getName())
-                if jobs[0].getJob().getActualStart() == None:
-                    self.getJobStartBtn().layout.visibility  = 'visible'
-                    self.getJobCompleteBtn().layout.visibility  = 'hidden'
-                else:
-                    self.getJobStartBtn().layout.visibility  = 'hidden'
-                    self.getJobCompleteBtn().layout.visibility  = 'visible'
                
 
                 with self.getPPrgOrdOutput():
@@ -626,6 +689,27 @@ class ProductionProgressTab():
             else:
                 return
 
+        self.weekradio.layout.visibility = 'hidden'
+        self.weekradio.layout.display = 'none'
+        self.resshifts.layout.visibility = 'hidden'
+        self.resshifts.layout.display = 'none'
+        self.getJobList().layout.visibility = 'hidden'
+        self.getJobList().layout.display = 'none'
+        self.getJobInfo().layout.visibility  = 'hidden'
+        self.getJobInfo().layout.display = 'none'
+        self.getJobInfo2().layout.visibility  = 'hidden'
+        self.getJobInfo2().layout.display = 'none'
+        self.getJobInfo3().layout.visibility  = 'hidden'
+        self.getJobInfo3().layout.display = 'none'
+        self.getJobInfo4().layout.visibility  = 'hidden'
+        self.getJobInfo4().layout.display = 'none'
+        self.getJobInfo5().layout.visibility  = 'hidden'
+        self.getJobInfo5().layout.display = 'none'
+        self.getJobStartBtn().layout.visibility  = 'hidden'
+        self.getJobStartBtn().layout.display = 'none'
+        self.getJobCompleteBtn().layout.visibility  = 'hidden'
+        self.getJobCompleteBtn().layout.display = 'none'
+
 
         self.getPProgReport().value +="Selected: "+selected+", current info: "+str(self.infotype)+"\n"
       
@@ -633,62 +717,29 @@ class ProductionProgressTab():
 
             self.getPProgReport().value +="visibility: "+str(self.weekradio.layout.visibility)+"\n"
             if self.infotype != selected:
-                self.weekradio.layout.visibility = 'hidden'
-                self.weekradio.layout.display = 'none'
-                self.resshifts.layout.visibility = 'hidden'
-                self.resshifts.layout.display = 'none'
-                self.getJobList().layout.visibility = 'hidden'
-                self.getJobList().layout.display = 'none'
-                self.getJobInfo().layout.visibility  = 'hidden'
-                self.getJobInfo().layout.display = 'none'
-                self.getJobInfo2().layout.visibility  = 'hidden'
-                self.getJobInfo2().layout.display = 'none'
-                self.getJobInfo3().layout.visibility  = 'hidden'
-                self.getJobInfo3().layout.display = 'none'
-                self.getJobInfo4().layout.visibility  = 'hidden'
-                self.getJobInfo4().layout.display = 'none'
-                self.getJobInfo5().layout.visibility  = 'hidden'
-                self.getJobInfo5().layout.display = 'none'
-                self.getJobStartBtn().layout.visibility  = 'hidden'
-                self.getJobStartBtn().layout.display = 'none'
-                self.getJobCompleteBtn().layout.visibility  = 'hidden'
-                self.getJobCompleteBtn().layout.display = 'none'
-
-                self.getJobList().options = []
-              
                 self.infotype = selected
                 self.getCustomerOrderList().options = [resname for resname in self.getVisualManager().DataManager.getResources().keys()]
                 
-            
-        
         
         if selected == 'Customer Orders':
 
             self.getPProgReport().value +="visibility: "+str(self.weekradio.layout.visibility)+"\n"
             if self.infotype != selected:
                 self.infotype = selected
-                self.weekradio.layout.visibility = 'hidden'
-                self.weekradio.layout.display = 'none'
-                self.resshifts.layout.visibility = 'hidden'
-                self.resshifts.layout.display = 'none'
-                self.getJobList().layout.visibility = 'hidden'
-                self.getJobList().layout.display = 'none'
-                self.getJobInfo().layout.visibility  = 'hidden'
-                self.getJobInfo().layout.display = 'none'
-                self.getJobInfo2().layout.visibility  = 'hidden'
-                self.getJobInfo2().layout.display = 'none'
-                self.getJobInfo3().layout.visibility  = 'hidden'
-                self.getJobInfo3().layout.display = 'none'
-                self.getJobInfo4().layout.visibility  = 'hidden'
-                self.getJobInfo4().layout.display = 'none'
-                self.getJobInfo5().layout.visibility  = 'hidden'
-                self.getJobInfo5().layout.display = 'none'
-                self.getJobStartBtn().layout.visibility  = 'hidden'
-                self.getJobStartBtn().layout.display = 'none'
-                self.getJobCompleteBtn().layout.visibility  = 'hidden'
-                self.getJobCompleteBtn().layout.display = 'none'
-                self.getJobList().options = []
                 self.getCustomerOrderList().options = [ordname for ordname in self.getVisualManager().DataManager.getCustomerOrders().keys()] 
+
+        if selected == 'Active Jobs':
+
+            if self.infotype != selected:
+                self.infotype = selected
+            joblist = []
+            for ordname,ordr in self.getVisualManager().DataManager.getCustomerOrders().items():
+                self.getPProgReport().value +="ordr: "+str(ordname)+": "+str(len(ordr.getMyJobs()))+"\n"
+                for job in ordr.getMyJobs():
+                    if job.getStatus() in ["Pending","In production"]:
+                        joblist.append(job.getName())
+        
+            self.getCustomerOrderList().options = [jname for jname in joblist]                                
                
             
      
@@ -706,7 +757,14 @@ class ProductionProgressTab():
     def ShowShifts(self,event):
 
 
+        self.getPProgReport().value +="event: "+str(event)+"\n"
+
         weekstr = self.weekradio.value
+
+        if self.weekradio.value == "Week":
+            return
+
+        self.getPProgReport().value +="selected week : "+str(self.weekradio.value)+"\n"
 
         weekstr = weekstr[weekstr.find("Week")+5:]
 
@@ -724,9 +782,12 @@ class ProductionProgressTab():
 
         self.getPProgReport().value +="current shifts: "+str(len(self.currentshifts))+"\n"
 
+        self.resshifts.layout.display = 'block' 
+        self.resshifts.layout.visibility  = 'visible'
         self.resshifts.options = [s for s in myshifts]
+        
 
-        self.getJobList().options = []
+       
         self.getJobInfo().layout.visibility  = 'hidden'
         self.getJobInfo().layout.display = 'none'
         self.getJobInfo2().layout.visibility  = 'hidden'
@@ -749,7 +810,8 @@ class ProductionProgressTab():
     def ShowJobs(self,event):
 
         self.currentshift = None
-   
+
+        self.getPProgReport().value +="event: "+str(event)+"\n"
 
         if self.getJobList().layout.display == 'none':
             self.getJobList().layout.display = 'block'
@@ -771,7 +833,7 @@ class ProductionProgressTab():
                 jobs = self.getSelectedResource().getSchedule()[self.currentshift]
                 self.getPProgReport().value+="Selected found.. , Jobs: "+str(len(jobs))+"\n"
                 self.getJobList().options = [job.getJob().getName() for job in jobs]
-                self.getJobList().selectedindex = 0
+                self.getJobList().selectedindex = -1
               
                 
         self.getJobInfo().layout.visibility  = 'hidden'
@@ -796,6 +858,11 @@ class ProductionProgressTab():
     def ShowJobInfo(self,event):
         
         jobname = self.getJobList().value
+
+        self.getPProgReport().value +=" job info event?? "+str(event)+"\n"
+
+        if jobname == None:
+            return
 
         self.getJobStartBtn().layout.visibility  = 'hidden'
         self.getJobStartBtn().layout.display = 'none'
@@ -846,19 +913,22 @@ class ProductionProgressTab():
                 self.getJobInfo2().value ="Operation: "+str(job.getJob().getOperation().getName())
                 self.getJobInfo3().value ="Quantity: "+str(job.getJob().getQuantity())
                 self.getJobInfo4().value ="Scheduled: "+str(schstr)
-                if job.getJob().getActualStart() == None:
-                    self.getJobInfo5().value ="Status: Pending"
+
+                self.getJobInfo5().value ="Status: "+job.getJob().getStatus()
+                
+                if job.getJob().getStatus() == "Pending": 
                     self.getJobStartBtn().layout.display = 'block'
                     self.getJobStartBtn().layout.visibility  = 'visible'
     
                 else:
-                    if job.getJob().getActualCompletion() == None:
-                        self.getJobInfo5().value ="Status: Started "+str(job.getJob().getActualStart())
+                    if job.getJob().getStatus() == "In production": 
+                        self.getJobInfo5().value +=", Started: "+str(job.getJob().getActualStart())
                         self.getJobCompleteBtn().layout.display = 'block'
                         self.getJobCompleteBtn().layout.visibility  = 'visible'
                
                     else:
-                        self.getJobInfo5().value ="Status: Completed "+str(job.getJob().getActualCompletion())
+                        if job.getJob().getStatus() == "Completed": 
+                            self.getJobInfo5().value ="Completed: "+str(job.getJob().getActualCompletion())
                         
                 self.getPProgReport().value+="done.. "+"\n"
                 break
@@ -937,6 +1007,7 @@ class ProductionProgressTab():
         self.getJobStartBtn().layout.visibility  = 'hidden'
         self.getJobStartBtn().layout.display  = 'none'
 
+        
         self.getJobCompleteBtn().layout.display  = 'block'
         self.getJobCompleteBtn().layout.visibility  = 'visible'
 
@@ -946,6 +1017,9 @@ class ProductionProgressTab():
     def SetJobCompleted(self,event):
 
         self.getCurrentJob().setActualCompletion(datetime.now())
+
+        self.getJobCompleteBtn().layout.visibility  = 'hidden'
+        self.getJobCompleteBtn().layout.display  = 'none'
 
         
         return
@@ -979,7 +1053,6 @@ class ProductionProgressTab():
         
 
         self.getJobList().layout.height = "90%"
-        self.getJobList().options = ["Jobs.."]
         self.getJobList().observe(self.ShowJobInfo)
         
        
@@ -997,17 +1070,8 @@ class ProductionProgressTab():
         self.setJobCompleteBtn(widgets.Button(description = "SetCompleted",icon = 'fa-check-square'))
         self.getJobCompleteBtn().on_click(self.SetJobCompleted)
 
-        self.resords = widgets.ToggleButtons(options=['Resources', 'Customer Orders'],description='',disabled=False, button_style='', 
-                                             # 'success', 'info', 'warning', 'danger' or ''
-
-                                             #     icons=['check'] * 3
-                                  )
-
-        check1  =  widgets.Checkbox(value=False,description='Resources', disabled=False)
-        check2  =  widgets.Checkbox(value=False,description='Customer Orders', disabled=False)
-
-        self.resords.index = 1
-        
+        self.resords = widgets.ToggleButtons(options=['Resources', 'Customer Orders','Active Jobs'],description='',disabled=False, button_style='')
+        self.resords.index = 1   
         self.resords.observe(self.ShowDescriptives2)
 
      
