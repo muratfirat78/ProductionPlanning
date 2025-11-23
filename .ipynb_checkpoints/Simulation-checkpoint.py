@@ -68,7 +68,8 @@ class SimMachine(object):
         self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
-        self.Resource = simpy.Resource(env,capacity=50)
+        self.open = True
+        self.Resource = simpy.Resource(env,capacity=1)
   
 
     def getCoordinates(self):
@@ -87,7 +88,8 @@ class SimMachine(object):
     def getName(self):
         return self.name
 
-
+    def getOpen(self):
+        return self.open
 
 class SimProduct(object):   
     def __init__(self,env,Job,SN):
@@ -117,6 +119,46 @@ class SimProduct(object):
         
         self.currentjob = myjb
         return
+
+class SimBatch(object):   
+    def __init__(self,env,Job,SN):
+        self.env = env
+        self.Job = Job
+        self.SN = SN
+        self.products=[]
+        self.processtime=Job.getOperation().getProcessTime("min") #Processtime of 1 item in the batch
+        self.capacity=10000
+        self.Tray = None
+        self.location = None
+        self.currentjob = None
+
+    def setLocation(self,lc):
+        self.location = lc
+        return
+    def getLocation(self):
+        return self.location
+
+    def getJob(self):
+        return self.Job
+
+    def getSN(self):
+        return self.SN
+
+    def getcurrentjob(self):
+        return self.currentjob
+        
+    def setcurrentjob(self,myjb):        
+        self.currentjob = myjb
+        return
+
+    def getProducts(self):
+        return self.products
+
+    def getCapacity(self):
+        return self.capacity
+
+    def getProcessTime(self):
+        return self.processtime
 
 
 
@@ -290,7 +332,19 @@ class ProductionSystem(object):
     def print(self):
         return "Machines"+str(len(self.machines))+", Ops: "+str(len(self.operators))+", Sub: "+str(len(self.subcontractors))+", Trollys: "+str(len(self.trolleys))
         
-        
+class FloorShopManager(object):
+    def __init__(self, env):
+        self.env = env
+        self.queue = []
+
+    def add_batch(self,env,batch,Progress):
+        Progress.value+= "Manager receives batch " + str(batch.getSN()) + " at "+ str(env.now)+ "\n"
+        self.queue.append(batch)
+
+    def getQueue(self):
+        return self.queue
+
+            
 
 
 class SimulationManager(object):
@@ -298,7 +352,7 @@ class SimulationManager(object):
 
         self.DataManager = None
         self.VisualManager = None
-        self.PlanningManager = None
+        self.FloorShopManager = None
         self.SchedulingManager = None
         self.SimStart = None
         self.SimEnd = None
@@ -339,6 +393,13 @@ class SimulationManager(object):
         self.ProdSN+=1
         return self.ProdSN
 
+    def getFloorShopManager(self):
+        return self.FloorShopManager
+        
+    def setFloorShopManager(self,myvm):
+        self.FloorShopManager = myvm
+        return
+
     def getVisualManager(self):
         return self.VisualManager
     def setVisualManager(self,myvm):
@@ -365,8 +426,14 @@ class SimulationManager(object):
     def getFinishedTasks(self):
         return self.FinishedTasks
 
+    def createBatch(self,env,job,SN):
+        return SimBatch(env,job,SN)
 
-
+    def createFloorShopManager(self,env):
+        fsm = FloorShopManager(env)
+        self.setFloorShopManager(fsm)
+        return fsm
+    
     def createProductionSystem(self,env,name):
         prodsys = ProductionSystem(env,name)
         self.setProdSystem(prodsys)
