@@ -31,10 +31,19 @@ class PlanningManager:
         self.logdata = dict()
         self.PHStart = None
         self.PHEnd = None
+        self.planningdone = False 
         self.Weeks = dict() #key week no, val: list of days
     
     
-   
+
+    def IsPlanningDone(self):
+        return self.planningdone 
+
+    def SetPlanningDone(self):
+        self.planningdone = True
+        return 
+
+    
     def setDataManager(self,DataMgr):
         self.DataManager = DataMgr 
         return
@@ -163,6 +172,101 @@ class PlanningManager:
 
         return
 
+    def ApplyPlan(self,order):
+
+        
+        for job in order.getMyJobs():
+            mydate = None
+            if job.getMySch() == None: # apply at the date of deadline
+                mydate = job.getDeadLine()
+            else:  # apply at scheduled date
+                mydate = job.getMySch().getScheduledShift().getDay().date()
+
+            quantity = job.getQuantity()
+            self.getVisualManager().getPLTBresult2exp().value+="Job: "+str(job.getName())+", mydate: "+str(mydate)+"\n"
+
+            self.getVisualManager().getPLTBresult2exp().value+=" Operation: "+str(job.getOperation().getName())+"\n"
+
+            myresource = None # now choose the resource that has most capacity
+            avlcapacity = 0
+            resource_use = 0
+                
+            alternatives = []
+            for res in job.getOperation().getRequiredResources():
+                alternatives.append(res)
+                self.getVisualManager().getPLTBresult2exp().value+=" alternative: "+str(res.getName())+"\n"
+
+                for alt in res.getAlternatives():
+                    if not alt in alternatives:
+                        alternatives.append(alt)
+                        self.getVisualManager().getPLTBresult2exp().value+=" alternative: "+str(alt.getName())+"\n"
+
+            self.getVisualManager().getPLTBresult2exp().value+="Job: "+str(job.getName())+", alternatives: "+str(len(alternatives))+"\n"
+
+            for resource in alternatives:
+
+                # neded capacity at (mydate)
+                totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*job.getOperation().getProcessTime('min'))/60 # in hours 
+                curr_use = totuse
+
+                self.getVisualManager().getPLTBresult2exp().value+="totuse: "+str(totuse)+"\n"
+
+
+
+
+                prev_val = None
+                new_val = 0
+
+                alldates = [d for d in resource.getCapacityReserved().keys()] 
+                allvalues = [v for v in resource.getCapacityReserved().values()]
+                
+                if len(resource.getCapacityReserved()) > 0:
+                    dtindex = -1
+                    prevval = 0 
+ 
+                    if mydate >=  min(alldates): 
+                         
+                        maxmindate = max([d for d in alldates if d <= mydate])
+                        if maxmindate == mydate: 
+                            allvalues = [allvalues[i] if alldates[i] < mydate else allvalues[i]+totuse for i in range(len(alldates))]
+                        else: 
+                            dtindex = alldates.index(maxmindate)+1
+                            prevval = allvalues[alldates.index(maxmindate)]
+                    else: 
+                        dtindex = 0
+
+                    if dtindex > -1:   
+                        alldates.insert(dtindex,mydate)
+                        allvalues.insert(dtindex,prevval)
+                        allvalues = [allvalues[i] if i < dtindex else allvalues[i]+totuse for i in range(len(alldates))]
+                else: 
+                    allvalues.append(totuse)
+                    alldates.append(mydate)
+
+
+                # now find the min diff
+                mindiff = min([resource.getCapacityLevels()[alldates[i]]-allvalues[i] for i in range(len(alldates)) ])
+
+                if mindiff < 0:
+                    continue
+                else: 
+                        
+                    if avlcapacity <= mindiff:
+                        myresource = resource
+                        avlcapacity = mindiff
+                        resource_use = curr_use
+            
+            if myresource == None:
+                self.getVisualManager().getPLTBresult2exp().value+="ERROR: No resource for planned job: "+str(job.getName())+"\n"
+            else:
+                if not myresource in order.getOrderPlan():
+                    order.getOrderPlan()[myresource] = dict()
+                order.getOrderPlan()[myresource][mydate] = resource_use
+                self.getVisualManager().getPLTBresult2exp().value+=">Resource "+str(myresource.getName())+" reserved for planned job"+str(job.getName())+"\n"
+    
+
+        return
+
     def PlanProduction(self,order,delvdate,product,mydate,quantity):
 
         #calculate use of resource for production for every operation
@@ -258,7 +362,6 @@ class PlanningManager:
 
                 daycapacity = myresource.getDailyCapacity()
 
-                
                 while remainedtime > daycapacity: 
                     if mydate < self.getPHStart():
                         order.getDelayReasons().append(str(delvdate.date())+ "Lead time goes to past")
@@ -290,7 +393,44 @@ class PlanningManager:
                 return False
     
         return True
-        
+
+#######################################################################################
+    def GetOrdersToPlan(self,plstart):
+
+        OrderstoPlan = [] 
+
+        for ordname,myord in self.getDataManager().getCustomerOrders().items():
+           
+            self.FindLS(myord)
+
+            if myord.getStatus() == "UnPlanned":
+                if not pd.isna(myord.getComponentAvailable()):
+                    if(myord.getComponentAvailable() == "Available") and (myord.getDeadLine() > plstart):
+                        OrderstoPlan.append(myord) 
+            else:
+                if myord.getStatus() == "Completed":
+                    continue
+                else:
+                    OrderstoPlan.append(myord)
+
+        self.getVisualManager().getPLTBresult2exp().value+="Orders to plan >>>  "+str(len(OrderstoPlan))+"\n"
+
+
+        return OrderstoPlan
+###########################################################################################
+    def GetPlanningStart(self):
+
+         # determine planning horizon
+        phstart = self.getPHStart()
+
+        if phstart.weekday() > 0:
+            phstart = phstart+timedelta(days=7-phstart.weekday())
+
+        self.getVisualManager().getPLTBresult2exp().value+=">Planning start: "+str(phstart)+"\n"
+ 
+        self.setPHStart(phstart) 
+
+        return self.getPHStart() 
 
     
 
@@ -308,21 +448,15 @@ class PlanningManager:
             
         '''
 
-        
         mydict = self.getDataManager().getCustomerOrders()
         sortedtuples = sorted(mydict.items(), key=lambda item: item[1].getDeadLine())
         mydict = {k: v for k, v in sortedtuples}
         self.getDataManager().setCustomerOrders(mydict)
 
         # determine planning horizon
-        phstart = self.getPHStart()
+        phstart = self.GetPlanningStart()
 
-        if phstart.weekday() > 0:
-            phstart = phstart+timedelta(days=7-phstart.weekday())
-
-        self.getVisualManager().getPLTBresult2exp().value+=">Planning start: "+str(phstart)+"\n"
- 
-        self.setPHStart(phstart) 
+        self.getVisualManager().getPLTBresult2exp().value+=">Planning start: "+str(self.getPHStart())+"\n"
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
  
@@ -357,19 +491,23 @@ class PlanningManager:
         self.getVisualManager().getPLTBresult2exp().value+=">> Start planning orders..  "+str(len(self.getDataManager().getCustomerOrders()))+"\n"
 
         planned = 0
-        OrderstoPlan = []
+        OrderstoPlan = self.GetOrdersToPlan(self.getPHStart())
 
-        for ordname,myord in self.getDataManager().getCustomerOrders().items():
-           
-            self.FindLS(myord)
+        self.getVisualManager().getPLTBresult2exp().value+=">> Orders to plan..  "+str(len(OrderstoPlan))+"\n"
 
-            if not pd.isna(myord.getComponentAvailable()):
-                if(myord.getComponentAvailable() == "Available") and (myord.getDeadLine() > self.getPHStart()):
-                    
-                    #if myord.getLatestStart() < self.getPHEnd().date(): 
-                        OrderstoPlan.append(myord)        
+        for myord in OrderstoPlan:
+            if len(myord.getMyJobs()) > 0:
+                self.getVisualManager().getPLTBresult2exp().value+="Applying plan for order: "+str(myord.getName())+"\n"
+                self.ApplyPlan(myord)
+            self.getVisualManager().getPLTBresult2exp().value+="______________________________________________"+"\n"   
 
-        self.getVisualManager().getPLTBresult2exp().value+="Orders to plan>>>  "+str(len(OrderstoPlan))+"\n"
+        self.getVisualManager().getPLTBresult2exp().value+="All previous plans are applied!!!!"+"\n"
+
+        return
+
+
+        
+
         
         for myord in OrderstoPlan:
 
@@ -394,6 +532,7 @@ class PlanningManager:
                
 
             mindeliverydate = max(myord.getDeadLine().date(),exp_date)
+            
 
             delay = 0
             for curr_deliverydate in pd.date_range(mindeliverydate,self.getPHEnd()):
@@ -442,14 +581,16 @@ class PlanningManager:
         
         for x in OrderstoPlan:
             if x.getPlannedDelivery() != None:
-                ops.append(x.getName()+": "+str((x.getPlannedDelivery().date()-x.getDeadLine().date()).days))
+                ops.append(x.getName()+": Planned with delay"+str((x.getPlannedDelivery().date()-x.getDeadLine().date()).days))
                 self.getVisualManager().getPLTBresult2exp().value+=x.getName()+": Jobs "+str(len(x.getMyJobs()))+"\n"
 
             else:
-                ops.append(x.getName()+": "+"XXXXXX")
+                ops.append(x.getName()+": "+"UnPlanned")
         self.getVisualManager().getPLTBOrdlist().options = ops
 
-        #self.getDataManager().SavePlanning()
+        self.SetPlanningDone()
+
+        self.getDataManager().SavePlanning()
 
         reslist = [res.getName() for res in self.getDataManager().getResources().values()] 
         self.getVisualManager().getPLTBrawlist().options = reslist

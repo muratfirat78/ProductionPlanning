@@ -39,6 +39,7 @@ class DataManager:
         self.MachineGroups = [] 
         self.OperatingTeams = []
         self.VisualManager = None
+        self.PlanningManager = None
         self.SimulationManager = None
         self.SchedulingManager = None
         
@@ -50,6 +51,14 @@ class DataManager:
         self.ScheduleEndWeek = None
         
         return
+
+    def getPlanningManager(self):
+        return self.PlanningManager
+
+    def setPlanningManager(self,myitm):
+        self.PlanningManager = myitm
+        return 
+    
 
     def getProductsID(self):
         return self.ProductsID
@@ -329,41 +338,7 @@ class DataManager:
         myschedule = self.getSchedulingManager().getMyCurrentSchedule() 
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+str(len(myschedule.getResourceSchedules()))+"\n" 
-        schjobs_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID"])
-        jobpreds_df =  pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
-        
-        for name,order in self.getCustomerOrders().items():
-            for job in order.getMyJobs():
-                schjobs_df.loc[len(schjobs_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),"Deadline":job.getDeadLine(),
-                                                    "OrderID":job.getCustomerOrder().getID(),"ProductID":job.getProduct().getID(),
-                                                    "OperationID":job.getOperation().getID()}
-                for pred in job.getPredecessors():
-                    jobpreds_df.loc[len(jobpreds_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID(),}
-                    
-
-   
-
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  folder "+str(self.getMyFolder())+", usecase "+str(self.getUseCase())+"\n" 
-
-  
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        filename = myschedule.getName()+"-Jobs_"+timestr+".csv"; 
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  filename "+str(filename)+"\n" 
-
-        
-        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        schjobs_df.to_csv(fullpath, index=False)
-
-        filename = myschedule.getName()+"-Jobpreds_"+timestr+".csv"; 
-        #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  filename "+str(filename)+"\n" 
-
-        path = self.getMyFolder()+"\\"+self.getUseCase()+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        jobpreds_df.to_csv(fullpath, index=False)
-
-        
-        
+    
 
         schedule_df = pd.DataFrame(columns= ["ResourceID","Day","ShiftNo","JobID","SchStart", "SchCompletion"])
         for resname,res_schedule in myschedule.getResourceSchedules().items():
@@ -774,7 +749,12 @@ class DataManager:
         self.getVisualManager().getUSTBProducts().value = str(len(self.getProducts()))
         self.getVisualManager().getUSTBRawMaterials().value = str(len([prod for prod in self.getProducts().values() if len(prod.getMPredecessors()) == 0]))
         self.getVisualManager().getUSTBRawResources().value = str(len(self.getResources()))
-                
+
+        ordstoplan = self.getPlanningManager().GetOrdersToPlan(self.getPlanningManager().GetPlanningStart())
+
+        self.getVisualManager().getPLTBOrdlist().options =[ordr.getName()+": "+ordr.getStatus() for ordr in ordstoplan]
+
+        
         return
 
     def UpdateData(self,b):
@@ -1146,6 +1126,10 @@ class DataManager:
                                 
                             self.getVisualManager().RefreshViews()
                             self.getVisualManager().getDiagInfo().value += "SAVINGGGGGGGGGGGGGGGGGGGGGGGGGGG "+"\n" 
+
+                            ordstoplan = self.getPlanningManager().GetOrdersToPlan(self.getPlanningManager().GetPlanningStart())
+
+                            self.getVisualManager().getPLTBOrdlist().options =[ordr.getName()+": "+ordr.getStatus() for ordr in ordstoplan]
 
                             savefile = True
                             

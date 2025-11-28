@@ -1455,6 +1455,9 @@ class VisualManager():
             
         if event['new']['index'] < 0:
             return
+
+        if not self.getPlanningManager().IsPlanningDone():
+            return
             
         #self.getPLTBOrdProd().value = "order..index>> "+str(event['new']['index'])+"\n"
         
@@ -2322,7 +2325,7 @@ class VisualManager():
         self.getPSTBProdList2().options = [opname for opname in self.DataManager.getProducts().keys()]
         self.getCOTBorders().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
         if self.getProductionProgressTab().getInfoType() == "Customer Orders":
-            self.getProductionProgressTab().getCustomerOrderList().options = [ordname for ordname in self.DataManager.getCustomerOrders().keys()]
+            self.getProductionProgressTab().getCustomerOrderList().options = [ordname+": Status | "+myord.getStatus() for ordname,myord in self.DataManager.getCustomerOrders().items()]
         else:
             self.getProductionProgressTab().getCustomerOrderList().options = [resname for resname in self.DataManager.getResources().keys()]
         #self.getProductionProgressTab().getResourceList().options = [resname for resname in self.DataManager.getResources().keys()]

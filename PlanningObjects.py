@@ -713,18 +713,25 @@ class CustomerOrder():
     def getStatus(self):
 
         nojobscompleted  = 0
-        
-        for jb in order.getMyJobs():
-            if jb.getSchJob().IsScheduled():
-                nojobscompleted+=1
-    
-        if nojobscompleted == len(self.getMyJobs()):
-            return "Scheduled"
+
+        if len (self.getMyJobs()) == 0:
+            return "UnPlanned"
         else:
-            if nojobscompleted == 0:
-                return "Unscheduled"
-            else:
-                return "Partly scheduled"
+            if sum([int(j.getMySch() != None) for j in self.getMyJobs()]) ==  0:
+                return "UnScheduled"
+            else: 
+                # all planned, check if all scheduled:
+                if sum([int(j.getMySch() != None) for j in self.getMyJobs()]) < len(self.getMyJobs()):
+                    return "Partially Scheduled" # some but not all jobs scheduled..
+                else: # all scheduled, check actual starts
+                    if sum([int(j.getActualStart() != None) for j in self.getMyJobs()]) > 0: 
+                        if sum([int(j.getActualCompletion() != None) for j in self.getMyJobs()]) == len(self.getMyJobs()): 
+                            return "Completed" # all jobs completed..
+                        else:
+                            return "In Production" # some jobs started, not all completed..
+                    else:
+                        return "Scheduled"  # all scheduled, but no job has actually started being processed
+                       
         
     def getMyJobs(self):
         return self.MyJobs

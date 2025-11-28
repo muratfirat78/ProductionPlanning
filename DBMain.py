@@ -47,9 +47,11 @@ DataMgr.setVisualManager(VisMgr)
 DataMgr.setSimulationManager(SimMgr)
 
 
+
 PlanningMgr = PlanningManager()
 PlanningMgr.setDataManager(DataMgr)
 PlanningMgr.setVisualManager(VisMgr)
+DataMgr.setPlanningManager(PlanningMgr)
 VisMgr.setPlanningManager(PlanningMgr)
 SchedulingMgr = SchedulingManager()
 SchedulingMgr.setDataManager(DataMgr)

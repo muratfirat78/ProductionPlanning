@@ -201,11 +201,6 @@ class SchedulingManager:
                             if applied:
                                 res.getSchedule()[currshift] = []
                             else:
-                                if res.getName() == "M5-03 - Haas - 5axis - Manual (UMC750)":
-                                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=", res.. "+str(res.getName())+"\n"
-                                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Sh:("+str(currshift.getDay())+","+str(currshift.getNumber())+"), hrs: ["+str(currshift.getStartTime())+"-"+str(currshift.getEndTime())+"]\n" 
-                    
-
                                 res.getCurrentSchedule()[currshift] = []
 
                             if currshift.getNumber() == 3:
@@ -286,7 +281,11 @@ class SchedulingManager:
         SelectedOrders=[]
         
         for name,order in self.getDataManager().getCustomerOrders().items():
+            if len(order.getMyJobs()) > 0:
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order planned delivery none?: "+str(name)+": "+str(order.getPlannedDelivery() == None)+"\n"
             if order.getPlannedDelivery() != None: # planned ones..
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Planned order: "+str(name)+"\n"
+
                 nrjobs+=len(order.getMyJobs())
                     
                 for job in order.getMyJobs():
