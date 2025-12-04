@@ -1176,35 +1176,7 @@ class VisualManager():
 
         return
   
-        
-   
-    def ShowJobs(self,event):
-
-        selectedopr = self.getPSchResources().value
-
-        if selectedopr == None:
-            return
-
-        if selectedopr == '':
-            return
-
-        
-    
-        joblist = [selectedopr,"hoi"]
-        for prname,prod in self.DataManager.getProducts().items():
-            if prod.getName() == selectedopr:
-                for opr in prod.getOperations():
-                    joblist.append("> Opr: "+opr.getName())
-                    for job in opr.getJobs():
-                        joblist.append(" >> "+job.getName()+", q: "+str(job.getQuantity())+", d: "+str(job.getDeadLine()))
-                break
-    
-        
-        self.getPSchJoblist().options = [j for j in joblist]   
-       
-        return
-
-   
+      
 
     def ShowOperation2(self,event):
         if event['type'] == 'change' and event['name'] == 'value':
@@ -1237,11 +1209,12 @@ class VisualManager():
 
         if curr_prod!= None:
             self.getPLTBresult2exp().value+=" Product->"+str(curr_prod.getName())+"\n"
-   
-        for operation in prod.getOperations():
-            if operation.getName() == selectedopr:
-                sel_opr = operation
-                break
+
+        for myord,oprseq in prod.getOperationSequences().items():
+            for operation in oprseq:
+                if operation.getName() == selectedopr:
+                    sel_opr = operation
+                    break
                
 
         
@@ -1327,7 +1300,17 @@ class VisualManager():
         else:
             self.getPSTBProdBatch().value = "-"
         self.getPSTBProdStocklvl().value = str(sel_prod.getStockLevel())
-        self.getPSTBoperations().options = [opr.getName() for opr in sel_prod.getOperations()]
+
+        if len(sel_prod.getOperationSequences()) > 0:
+            orderseqs = [x for x in sel_prod.getOperationSequences().values()] 
+
+            if max ([len(x) for x in orderseqs]) == 0:
+                self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+            else:
+                self.getPSTBoperations().options = [opr.getName() for opr in orderseqs[-1]]
+                
+        else:
+            self.getPSTBoperations().options  = ["Raw material"]
         
         return
 
@@ -1372,7 +1355,18 @@ class VisualManager():
         else:
             self.getPSTBProdBatch().value = "-"
         self.getPSTBProdStocklvl().value = str(sel_prod.getStockLevel())
-        self.getPSTBoperations().options = [opr.getName() for opr in sel_prod.getOperations()]
+
+
+        if len(sel_prod.getOperationSequences()) > 0:
+            orderseqs = [x for x in sel_prod.getOperationSequences().values()] 
+
+            if max ([len(x) for x in orderseqs]) == 0:
+                self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+            else:
+                self.getPSTBoperations().options = [opr.getName() for opr in orderseqs[-1]]
+                
+        else:
+            self.getPSTBoperations().options  = ["Raw material"]
         
         return
    
@@ -1487,7 +1481,11 @@ class VisualManager():
             self.getPSTBProdName().value = myord.getProduct().getName()
             self.getPSTBProdPN().value = myord.getProduct().getPN()
             self.getPSTBProdStocklvl().value = str(myord.getProduct().getStockLevel())
-            self.getPSTBoperations().options = [opr.getName() for opr in myord.getProduct().getOperations()]
+
+            if myord in myord.getProduct().getOperationSequences():
+                self.getPSTBoperations().options = [opr.getName() for opr in myord.getProduct().getOperationSequences()[myord]]
+            else:
+                self.getPSTBoperations().options = ["No operation sequence is defined.."]
 
             self.MakeBOMTree(myord.getProduct())
 
@@ -1557,8 +1555,20 @@ class VisualManager():
             else:
                 self.getPSTBProdBatch().value = "-"
             self.getPSTBProdStocklvl().value = str(myord.getProduct().getStockLevel())
-            self.getPSTBoperations().options = [opr.getName() for opr in myord.getProduct().getOperations()]
 
+
+            if myord in myord.getProduct().getOperationSequences():
+                orderseq = myord.getProduct().getOperationSequences()[myord]
+
+                if len(orderseq) == 0:
+                    self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+                else:
+                    self.getPSTBoperations().options = [opr.getName() for opr in orderseq]
+                
+            else:
+                self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+ 
+             
             self.MakeBOMTree(myord.getProduct())
        
             
@@ -1797,6 +1807,7 @@ class VisualManager():
                 
              
         return
+        
     def SearchProd(self,sender):
 
         itemstoshow = [self.getPSTBProdName(),self.getPSTBProdPN(),self.getPSTBProdStocklvl(),self.getPSTBeditprd_btn()]
@@ -1818,10 +1829,49 @@ class VisualManager():
                         else:
                             self.getPSTBProdBatch().value = "-"
                         self.getPSTBProdStocklvl().value = str(p.getStockLevel())
-                        self.getPSTBoperations().options = [opr.getName() for opr in p.getOperations()]  
+
+                        if len(p.getOperationSequences()) > 0:
+                            orderseqs = [x for x in p.getOperationSequences().values()] 
+                
+                            if max ([len(x) for x in orderseqs]) == 0:
+                                self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+                            else:
+                                self.getPSTBoperations().options = [opr.getName() for opr in orderseqs[-1]]
+                                
+                        else:
+                            self.getPSTBoperations().options  = ["Raw material"]
+                       
             else:
                 self.getPSTBProdName().value = myprodname[:-1]+" not found.." 
         else:
+            # make PN search
+            self.getDiagInfo().value += ">> Search string  "+myprodname+"\n"
+            for prodname,prod in self.DataManager.getProducts().items():
+                self.getDiagInfo().value += ">> Search pn  "+prod.getPN()+"\n"
+                if prod.getPN() == myprodname:
+                    self.getPSTBProdName().value = prod.getName()
+                    self.getPSTBProdPN().value = prod.getPN()
+                    if prod.getBatchsize()!= None: 
+                        self.getPSTBProdBatch().value = str(prod.getBatchsize())
+                    else:
+                        self.getPSTBProdBatch().value = "-"
+                    self.getPSTBProdStocklvl().value = str(prod.getStockLevel())
+
+                    if len(prod.getOperationSequences()) > 0:
+                        orderseqs = [x for x in prod.getOperationSequences().values()] 
+                
+                        if max ([len(x) for x in orderseqs]) == 0:
+                            self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+                        else:
+                            self.getPSTBoperations().options = [opr.getName() for opr in orderseqs[-1]]
+                                
+                    else:
+                        self.getPSTBoperations().options  = ["Raw material"]
+                        
+    
+                    return
+
+           # make name check 
             if myprodname in self.DataManager.getProducts():
                 prod = self.DataManager.getProducts()[myprodname]
                 self.getPSTBProdName().value = prod.getName()
@@ -1831,7 +1881,19 @@ class VisualManager():
                 else:
                     self.getPSTBProdBatch().value = "-"
                 self.getPSTBProdStocklvl().value = str(prod.getStockLevel())
-                self.getPSTBoperations().options = [opr.getName() for opr in prod.getOperations()]
+
+
+                if len(prod.getOperationSequences()) > 0:
+                    orderseqs = [x for x in prod.getOperationSequences().values()] 
+                
+                    if max ([len(x) for x in orderseqs]) == 0:
+                        self.getPSTBoperations().options  = ["No operation sequence is defined.."]
+                    else:
+                        self.getPSTBoperations().options = [opr.getName() for opr in orderseqs[-1]]
+                                
+                else:
+                    self.getPSTBoperations().options  = ["Raw material"]
+
             else:
                 self.getPSTBProdName().value = myprodname+" not found.." 
                 
@@ -2483,84 +2545,22 @@ class VisualManager():
             return
 
         if selected == 'Process time diagnostics':
-            
-            # diag_df = pd.DataFrame(columns = ["Operation name"])
-            check = False
-            count = 0
+     
             self.getDiagInfo().value += ">>>Starting Process time diagnostics... "+"\n"
             self.getDiagInfo().value += ">>>Checking operations without process time... "+"\n"
-            for opnam, opr in self.DataManager.getOperations().items():
-                if opr.getProcessTime('min') == 0 or opr.getProcessTime('min') is None:
-                    check = True
-                    count += 1
-                    self.getDiagInfo().value += "Operation "+str(opnam)+" has no process time defined. "+ "\n"
-                    # diag_df.loc[len(diag_df)] = {"Operation name":opnam}
-            if check == True:
-                self.getDiagInfo().value +="There are "+str(count)+" out of "+str(len(self.DataManager.getOperations().items()))+" operations without a process time. "+ "\n"
-                self.getDiagInfo().value +=">>>Process time diagnostics finished... "+ "\n"
-            if check == False:
-                self.getDiagInfo().value +="All operations have a processtime defined. "+ "\n"
-                self.getDiagInfo().value +=">>>Process time diagnostics finished... "+ "\n"
-
-            # filename = "Process_time_diagnostics.csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-            # diag_df.to_csv(fullpath, index=False)  
-
+           
         if selected == 'Product operation diagnostics':
 
-            # diag_df = pd.DataFrame(columns = ["Product name"])
-            check = False
-            count = 0
-            total = 0
             self.getDiagInfo().value +=">>>Starting Product operations diagnostics... "+"\n"
             self.getDiagInfo().value +=">>>Checking (non raw material) products without operations... "+"\n"
 
-            for prodname, prod in self.DataManager.getProducts().items():
-                if len(prod.getPredecessors()) > 0:
-                    total +=1
-                    if len(prod.getOperations()) == 0:
-                        check = True
-                        count +=1
-                        self.getDiagInfo().value +="Product "+str(prodname)+" has no operations defined. "+"\n"
-                        # diag_df.loc[len(diag_df)] = {"Product name":prodname}
-
-            if check == True:
-                self.getDiagInfo().value+="There are "+str(count)+" out of "+str(len(self.DataManager.getProducts().items()))+" products without an operation defined. "+ "\n"
-                self.getDiagInfo().value +=">>>Product operations diagnostics finished... "+ "\n"
-            if check == False:
-                self.getDiagInfo().value +="All products have an operation defined. "+ "\n"
-                self.getDiagInfo().value +=">>>Product operations diagnostics finished... "+ "\n"
-
-            # filename = "Product_operation_diagnostics.csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-            # diag_df.to_csv(fullpath, index=False)
 
         if selected == 'Operation resource diagnostics':
 
-            # diag_df = pd.DataFrame(columns = ["Operation name"])
-            check = False
-            count = 0
-            MillingOps = []
             self.getDiagInfo().value+=">>>Starting Milling operations diagnostics... "+"\n"
             self.getDiagInfo().value+=">>>Checking milling operations with only one resource... "+"\n"
-            for opnam,opr in self.DataManager.getOperations().items():
-                if 'Milling' in str(opnam) or 'milling' in str(opnam):
-                    MillingOps.append(opnam)
-                    if len(opr.getRequiredResources()) == 1:
-                        check = True
-                        count += 1
-                        self.getDiagInfo().value += "Operation "+str(opnam)+" has only one resource defined. "+ "\n"                        
-                        self.getDiagInfo().value += "This is resource "+ str(opr.getRequiredResources()[0][0].getName())+"."+ "\n"
-                        # diag_df.loc[len(diag_df)] = {"Operation name":opnam}
-
-            if check == True:
-                self.getDiagInfo().value +="There are "+str(count)+" out of "+str(len(MillingOps))+" milling operations with only one resource defined. "+ "\n"
-                self.getDiagInfo().value +=">>>Milling operations diagnostics finished... "+ "\n"
-            if check == False:
-                self.getDiagInfo().value +="All milling operations have more that one resource defined. "+ "\n"
-                self.getDiagInfo().value +=">>>Milling operations diagnostics finished... "+ "\n"
-
-            # filename = "Operation_resource_diagnostics.csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-            # diag_df.to_csv(fullpath, index=False)
-
+         
+         
         return
                         
             

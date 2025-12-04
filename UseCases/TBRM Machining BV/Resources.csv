@@ -1,0 +1,22 @@
+ResourceID,ResourceType,Name,ProcessType,DailyCapacity,Automated,OperatingEffort,Shift
+__export__.mrp_workcenter_55_15609e22,Machine,M3-02 - Accuway - 3axis - Manual (FR3_02),Metal forming,15.0,False,0.3,1_2
+__export__.mrp_workcenter_62_468a38e5,Machine,M5-04 - Haas - 5axis  - Manual (UMC750SS),Metal forming,22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_63_98a7a00b,Machine,MP1 - Material preparation - automatic sawing (ZGN_01),Preparation,15.0,False,0.0,1_2
+__export__.mrp_workcenter_59_d6deab7b,Machine,M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),Metal forming,22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_58_a525d5b9,Machine,M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01),Metal forming,22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_66_9f807a30,Machine,BW - Benchwork (BKW_01),Benchwork,15.0,False,0.0,1_2
+__export__.mrp_workcenter_67_d1ac8ce6,Machine,PACK - Packaging (VERP_P),Packaging,15.0,False,0.0,1_2
+__export__.mrp_workcenter_54_3f0243e1,Machine,M3-01 - Accuway - 3axis - Manual (FR3_01),Metal forming,15.0,False,0.3,1_2
+__export__.mrp_workcenter_57_6faf5319,Machine,M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02),Metal forming,22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_68_8bff6631,Outsourced,OUT - Outsourced activity,External,15.0,False,0.0,1_2
+__export__.mrp_workcenter_65_c1e1b939,Machine,"MP3 - Material preparation - pre-cutted, only picking (UITG_M)",Preparation,15.0,False,0.3,1_2
+__export__.mrp_workcenter_60_6593b576,Machine,M3-03 - Haas - 3axis - Manual (VF2SS),Metal forming,15.0,False,0.3,1_2
+__export__.mrp_workcenter_61_bcb50df3,Machine,M5-03 - Haas - 5axis - Manual (UMC750),Metal forming,15.0,False,0.3,1_2
+__export__.mrp_workcenter_56_d6637dea,Machine,M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),Metal forming,22.5,True,0.1,1_2_3
+__export__.mrp_workcenter_64_95992ef5,Machine,MP2 - Material preparation - manual sawing (ZGN_02),Preparation,15.0,False,0.0,1_2
+0,Operator,Operator 1,Metal forming,7.5,False,0.0,1
+1,Operator,Operator 2,Metal forming,7.5,False,0.0,1
+2,Operator,Operator 3,Metal forming,7.5,False,0.0,2
+3,Operator,Manual worker 1,Benchwork,7.5,False,0.0,1
+30,Operator,Manual worker 2,Benchwork,7.5,False,0.0,1
+4,Machine,M5-05_(UMC750SS),Metal forming,15.0,False,0.3,1_2

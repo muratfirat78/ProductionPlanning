@@ -37,7 +37,10 @@ class Product():
         self.DemandingOrders = dict() #key: order,  #val: quantity
         self.Created = None # First date entered into planning system
         self.Updated = None # Last date an update is made
+        self.OperationSequences = dict() #key: productionorder, val: list of operations
 
+    def getOperationSequences(self):
+        return self.OperationSequences
 
     def getCreated(self):
         return self.Created
@@ -316,6 +319,11 @@ class Operation():
         self.Predecessor = dict()
         self.Product = None
         self.OperationIndex = None
+        self.SequenceIndices = dict()  # key: order, value the index in the sequence
+
+
+    def getSequenceIndices(self):
+        return self.SequenceIndices
 
     def getProduct(self):
         return self.Product 
@@ -789,6 +797,9 @@ class CustomerOrder():
         return self.Product
     def getDeadLine(self):
         return self.DeadLine
+    def updateDeadLine(self,mydln):
+        self.DeadLine = mydln
+        return 
     def getProductName(self):
         return self.ProductName
 

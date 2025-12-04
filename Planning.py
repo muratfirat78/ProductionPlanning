@@ -109,9 +109,10 @@ class PlanningManager:
         if len(product.getMPredecessors()) > 0: # bom 
 
             #self.getVisualManager().getPLTBresult2exp().value+=" In checking operations.. "+order.getName()+"\n"
+
             
-            prodoprs = [p for p in product.getOperations()]
-            reversedoprs = prodoprs[::-1]
+            oprslist = product.getOperationSequences()[order]
+            reversedoprs = oprslist[::-1]
             totaltime = 0  
    
             for operation in reversedoprs:
@@ -276,8 +277,9 @@ class PlanningManager:
         
         if len(product.getMPredecessors()) > 0: # bom case
             prev_job = None
-            prodoprs = [p for p in product.getOperations()]
-            reversedoprs = prodoprs[::-1]
+
+            oprslist = product.getOperationSequences()[order]
+            reversedoprs = oprslist[::-1]
 
             
             for operation in reversedoprs: 
@@ -499,11 +501,13 @@ class PlanningManager:
             if len(myord.getMyJobs()) > 0:
                 self.getVisualManager().getPLTBresult2exp().value+="Applying plan for order: "+str(myord.getName())+"\n"
                 self.ApplyPlan(myord)
+           
+                
             self.getVisualManager().getPLTBresult2exp().value+="______________________________________________"+"\n"   
 
         self.getVisualManager().getPLTBresult2exp().value+="All previous plans are applied!!!!"+"\n"
 
-        return
+        #return
 
 
         
@@ -511,16 +515,16 @@ class PlanningManager:
         
         for myord in OrderstoPlan:
 
+            if len(myord.getMyJobs()) > 0:
+                continue
+
             exp_date = self.getPHStart().date()
 
             self.getVisualManager().getPLTBresult2exp().value+=">Order: "+str(myord.getName())+"\n"
 
-            if myord.getComponentAvailable().find("Exp") != -1:
-                
+            if myord.getComponentAvailable().find("Exp") != -1:     
                 expected_date = myord.getComponentAvailable()
                 expected_date = expected_date[expected_date.find("Exp")+4:]
-
-                
                 self.getVisualManager().getPLTBresult2exp().value+=">compav: "+str(myord.getComponentAvailable())+"\n"
                 
                 try: 
@@ -545,7 +549,7 @@ class PlanningManager:
                     planned+=1
                     myord.setPlannedDelivery(curr_deliverydate)
 
-                    self.getVisualManager().getPLTBresult2exp().value+="Planned: "+myord.getName()+", Jobs "+str(len(myord.getMyJobs()))+", Ops "+str(len(myord.getProduct().getOperations()))+"\n"
+                    self.getVisualManager().getPLTBresult2exp().value+="Planned: "+myord.getName()+", Jobs "+str(len(myord.getMyJobs()))+", Ops "+str(len(myord.getProduct().getOperationSequences()[myord]))+"\n"
 
                     # update the reserved capacitiy values of resources.
                     for res,usedict in myord.getOrderPlan().items(): 
