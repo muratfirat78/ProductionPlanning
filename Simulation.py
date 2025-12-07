@@ -65,10 +65,13 @@ class SimMachine(object):
         self.env = env
         self.name = machine.getName()
         self.machine = machine
+        self.type = 'Machine'
+        self.FTERequirement = machine.FTERequirement
         self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
-        self.open = True
+        self.Automated = machine.Automated
+        self.SchedulableWindow = [(480,960),(960,1440)] #This is the window that allows jobs to start each day
         self.Resource = simpy.Resource(env,capacity=1)
   
 
@@ -88,8 +91,15 @@ class SimMachine(object):
     def getName(self):
         return self.name
 
-    def getOpen(self):
-        return self.open
+    def IsOpen(self,now):
+        time = now % 1440 #Each day has 1440 minutes            
+        return any(start<= time < end for start,end in self.SchedulableWindow)
+
+    def getFTERequirement(self):
+        if self.Automated == True:
+            return 0.1
+        else:
+            return 0.3
 
 class SimProduct(object):   
     def __init__(self,env,Job,SN):
@@ -131,6 +141,10 @@ class SimBatch(object):
         self.Tray = None
         self.location = None
         self.currentjob = None
+        self.timeremaining = 0
+        self.process = None
+        self.initialstarttime = None
+        self.internalstarttime = None
 
     def setLocation(self,lc):
         self.location = lc
@@ -160,20 +174,56 @@ class SimBatch(object):
     def getProcessTime(self):
         return self.processtime
 
+    def setProcessTime(self,time):
+        self.processtime = time
+        return
 
+    def setTimeRemaining(self,time):
+        self.timeremaining = time
+        return
+
+    def getTimeRemaining(self):
+        return self.timeremaining
+
+    def getProcess(self):
+        return self.process
+
+    def setProcess(self,proc):
+        self.process = proc
+        return
+
+    def getInitialStartTime(self):
+        return self.initialstarttime
+
+    def setInitialStartTime(self,time):
+        self.initialstarttime = time
+        return
+
+    def getInternalStartTime(self):
+        return self.internalstarttime
+
+    def setInternalStartTime(self,time):
+        self.internalstarttime = time
+        return
 
 class SimSubcontractor(object):
     def __init__(self,env,res):
         self.extres = res
         self.name = res.getName()
+        self.type = 'Subcontractr'
+        self.SchedulableWindow = [(480,960),(960,1440)]
         self.Resource= simpy.Resource(env, capacity=1000)
+        self.Automated = res.Automated
 
     def getResource(self):
         return self.Resource
 
     def getName(self):
         return self.name
-
+        
+    def IsOpen(self,now):
+        time = now % 1440 #Each day has 1440 minutes            
+        return any(start<= time < end for start,end in self.SchedulableWindow)
 
 
        
@@ -183,6 +233,7 @@ class SimOperator(object):
     def __init__(self,env,Optr):
         self.env = env
         self.name = Optr.getName()
+        self.type = 'Operator'
         self.operator = Optr
         self.efficiency = 1
         self.operationexecutions = []
@@ -337,8 +388,8 @@ class FloorShopManager(object):
         self.env = env
         self.queue = []
 
-    def add_batch(self,env,batch,Progress):
-        Progress.value+= "Manager receives batch " + str(batch.getSN()) + " at "+ str(env.now)+ "\n"
+    def add_batch(self,env,batch,Progress, envstart):
+        Progress.value+= "Manager receives batch " + str(batch.getSN()) + " at "+ str(envstart[0] + env.now * envstart[1])+ "\n"
         self.queue.append(batch)
 
     def getQueue(self):

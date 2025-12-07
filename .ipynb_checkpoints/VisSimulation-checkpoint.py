@@ -320,13 +320,13 @@ class SimulationTab():
 
 
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
-        self.getPLTBPlanStart().value = datetime.now()
+        self.getPLTBPlanStart().value = datetime.now().date()
         self.getVisualManager().getSimulationManager().setSimStart(self.getPLTBPlanStart().value)
         self.getPLTBPlanStart().observe(self.SetStart)
 
         
         self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
-        self.getPLTBPlanEnd().value = datetime.now()+timedelta(days= 14)
+        self.getPLTBPlanEnd().value = datetime.now().date()+timedelta(days= 14)
         self.getVisualManager().getSimulationManager().setSimEnd(self.getPLTBPlanEnd().value)
         self.getPLTBPlanEnd().observe(self.SetEnd)
      

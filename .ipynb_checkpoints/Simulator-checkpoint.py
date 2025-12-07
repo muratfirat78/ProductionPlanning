@@ -60,58 +60,126 @@ class Simulator(object):
            
         
 
-    def Trolley_function(self,env,Trolley,job,end):
-        Trolley.setStatus(False)
-        if end.getName() == 'CentralBuffer':
-            product = job.getProduct()
-            quantity = job.getQuantity()            
-            with Trolley.getResource().request() as req:
-                yield req
-                yield env.timeout(0.01) #Travel time to central buffer
-                Trolley.setStatus(True)
-                for prd in range(quantity):
-                    simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())                      
-                    simprod.setLocation(CentralBuffer)                    
-                    CentralBuffer.getProducts().append(simprod)                
-        else:
-            Trolley.setJob(job)
-            with Trolley.getResource().request() as req:
-                yield req
-                yield env.timeout(0.01) #Traveltime of trolley
-                Trolley.setStatus(True)
-                env.process(self.Machine_function(env,end,job))
+    # def Trolley_function(self,env,Trolley,job,end):
+    #     Trolley.setStatus(False)
+    #     if end.getName() == 'CentralBuffer':
+    #         product = job.getProduct()
+    #         quantity = job.getQuantity()            
+    #         with Trolley.getResource().request() as req:
+    #             yield req
+    #             yield env.timeout(0.01) #Travel time to central buffer
+    #             Trolley.setStatus(True)
+    #             for prd in range(quantity):
+    #                 simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())                      
+    #                 simprod.setLocation(CentralBuffer)                    
+    #                 CentralBuffer.getProducts().append(simprod)                
+    #     else:
+    #         Trolley.setJob(job)
+    #         with Trolley.getResource().request() as req:
+    #             yield req
+    #             yield env.timeout(0.01) #Traveltime of trolley
+    #             Trolley.setStatus(True)
+    #             env.process(self.Machine_function(env,end,job))
 
-    def FloorShopManagerExecutes(self,env,FSM,Progress,envstart):
+    def FloorShopManagerExecutes(self,env,FSM,operators,Progress,envstart):
             while True:
+                while not (env.now%1440) >= 480 and FSM.queue !=[]:
+                    
+                    for batch in FSM.queue:
+                        if batch.process is not None and batch.getTimeRemaining() > 0 and batch.getcurrentjob().getOperation().getRequiredResources()[0].Automated == False:                            
+                            batch.process.interrupt()
+                            batch.process = None
+                    Progress.value+= "\n" + "Machines are closed for receiving new jobs. Manager is waiting for the new day to dispatch the batches " + "\n"
+                    yield env.timeout(480 - (env.now%1440))                    
+                    
                 if FSM.queue:
-                    # Decision rule: pick shortest job first
-                    batch = min(FSM.getQueue(), key=lambda b: b.getProcessTime())
-                    FSM.queue.remove(batch)
-                    Progress.value+= "Manager dispatches batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + "\n"
-                    Machine = batch.getJob().getOperation().getRequiredResources()[0].getSimResource()
-                    env.process(self.Batch_Proces(env,batch,Machine,Progress,envstart))
-                yield env.timeout(1)  # check every time unit
+                    
+                    for batch in FSM.queue:
+                        if batch.getTimeRemaining() == 0:
+                            FSM.queue.remove(batch)
+                        if batch.process is None and batch.getTimeRemaining() > 0:                            
+                            
+                            Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()
+                            Progress.value+= "Manager dispatches batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " to machine "+str(Machine.getName())+ "\n"
+                            batch.setProcess(env.process(self.Batch_Proces(env,batch,Machine,operators,Progress,envstart)))
+                            yield env.timeout(1) # check every time unit
+                yield env.timeout(1)
+                    
+                     
+                             
+                            
+
+
+                    
+                    # Decision rule: pick shortest batch first
+                    # batch = min(FSM.getQueue(), key=lambda b: b.getProcessTime())
+                    #FSM.queue.remove(batch)
+                    # Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()
+                    ## Manager only dispatches jobs in the morning and evening shift, not the nightshift. For now we simulate a waittime of
+                #     while not Machine.IsOpen(env.now):
+                #         Progress.value+= "Machines are closed for receiving new jobs. Manager is waiting for the new day to dispatch the batches " + "\n"
+                #         yield env.timeout(480 - (env.now%1440))
+                #     Progress.value+= "Manager dispatches batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " to machine "+str(Machine.getName())+ "\n"
+                    
+                #     batch.process = env.process(self.Batch_Proces(env,batch,Machine,Progress,envstart))
+                # yield env.timeout(1)  # check every time unit
+
+
+                
     
-    def Batch_Proces(self,env,batch,Machine,Progress,envstart):
-        with Machine.getResource().request() as req:
-            yield req
-            #Set start time
-            Progress.value+="Processing Batch "+str(batch.getSN()) +" at time: "+str(envstart[0] + env.now * envstart[1])+ " on machine: " + str(Machine.getName())+ "\n"
-            yield env.timeout(batch.getProcessTime()*len(batch.getProducts()))
-            Progress.value+="Done Processing products from batch "+str(batch.getSN()) +" at time: "+str(envstart[0] + env.now * envstart[1])+ " on machine: " + str(Machine.getName())+ "\n"
-            successor = self.SuccessorCheck(batch)
-            if successor == False:                
-                Progress.value+="This was the final job of the batch, moving finished products to buffer" + "\n"
-                for product in batch.getProducts():
-                    self.getSimulationManager().getProdSystem().getBuffer().getProducts().append(product) #Product is finished --> Move to buffer
-                Progress.value+="Moved products from batch "+str(batch.getSN()) +" to buffer at time: "+str(envstart[0] + env.now * envstart[1])+"\n" + "\n"
-            else:
-                batch.setcurrentjob(successor)                
-                Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()                
-                Progress.value+="Moving batch "+ str(batch.getSN())+" to machine "+ str(Machine.getName()) +" for next operation. " + "\n" + "\n"
-                event = self.Batch_Proces(env,batch,Machine,Progress,envstart)
-                env.process(event)
+    def Batch_Proces(self,env,batch,Machine,operators,Progress,envstart):
+        fte_set = False
+        try:            
+            while not Machine.IsOpen(env.now):
+                yield env.timeout(480-(env.now % 1440)) #Check again when new day starts
             
+            with Machine.getResource().request() as req:                
+                yield req
+                if Machine.type == 'Machine':
+                    yield operators.get(Machine.getFTERequirement()) # This is the fraction of FTE that gets consumed during the request
+                    fte_set = True
+                #Set start time
+                if batch.initialstarttime == None:
+                    batch.setInitialStartTime(env.now * envstart[1])
+                    batch.setInternalStartTime(env.now)
+                else:
+                   batch.setInternalStartTime(env.now) 
+                Progress.value+="Processing Batch "+str(batch.getSN()) +" at time: "+str(envstart[0] + env.now * envstart[1])+ " on machine: " + str(Machine.getName())+ "\n"    
+                
+                
+                #This means that this batch can be finished on
+                
+                yield env.timeout(batch.getTimeRemaining())
+                batch.setTimeRemaining(0) # This will only update if there is a successor job.
+                batch.setProcess(None) #The operation is complete. The current process does no longer need to be able to be interrupted
+    
+                    
+                Progress.value+="Done Processing products from batch "+str(batch.getSN()) +" at time: "+str(envstart[0] + env.now * envstart[1])+ " on machine: " + str(Machine.getName())+ "\n"
+                
+                successor = self.SuccessorCheck(batch)
+                if successor == False:                
+                    Progress.value+="This was the final job of the batch, moving finished products to buffer" + "\n"
+                    for product in batch.getProducts():
+                        self.getSimulationManager().getProdSystem().getBuffer().getProducts().append(product) #Product is finished --> Move to buffer
+                    Progress.value+="Moved products from batch "+str(batch.getSN()) +" to buffer at time: "+str(envstart[0] + env.now * envstart[1])+"\n" + "\n"
+                else:
+                    batch.setcurrentjob(successor)
+                    batch.setProcessTime(successor.getOperation().getProcessTime("min"))
+                    Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()                
+                    Progress.value+="Moving batch "+ str(batch.getSN())+" to Floorshopmanager for next operation. " + "\n" + "\n"
+                    batch.setTimeRemaining(batch.getProcessTime()*len(batch.getProducts()))
+                    self.getSimulationManager().getFloorShopManager().add_batch(env,batch,Progress,envstart)
+                    # event = self.Batch_Proces(env,batch,Machine,Progress,envstart)
+                    # env.process(event)
+        except simpy.Interrupt:
+            Progress.value+= "Manager interrupting batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " on machine "+str(Machine.getName())+ " due to schop closing."+ "\n"
+            elapsed = env.now - batch.getInternalStartTime()
+            batch.timeremaining -= elapsed
+        finally:
+            if fte_set and Machine.type=='Machine':
+                operators.put(Machine.getFTERequirement())
+
+        
     def SuccessorCheck(self, batch):
         if len(batch.getcurrentjob().getSuccessors()) == 0:
             return False
@@ -180,7 +248,12 @@ class Simulator(object):
         ####HERE ARE THE PARAMETERS WE SET FOR THE ENVIRONMENT######
 
         num_orders = 122
-        
+
+        ## This sets parameters for visualisation feedback to user
+        start = datetime.datetime.combine(self.getSimulationManager().getSimStart(), datetime.datetime.min.time())
+        scale = timedelta(minutes=1)
+        eventStart = [start,scale]
+        ######
        
         # Product creation for jobs that are first to do. 
         for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
@@ -200,13 +273,14 @@ class Simulator(object):
                                 CentralBuffer.getProducts().append(simprod)
                                 Batch.getProducts().append(simprod)
                             else:
-                                FloorShopManager.add_batch(env,Batch,Progress)
+                                FloorShopManager.add_batch(env,Batch,Progress,eventStart)
                                 Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
                                 Batch.setcurrentjob(job)
                                 simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
                                 simprod.setLocation(CentralBuffer)                                                                                              
                                 CentralBuffer.getProducts().append(simprod)
-                        FloorShopManager.add_batch(env,Batch,Progress)
+                        Batch.setTimeRemaining(Batch.getProcessTime()*len(Batch.getProducts()))
+                        FloorShopManager.add_batch(env,Batch,Progress,eventStart)
         ProdSystem.setBuffer(CentralBuffer)
         Progress.value+="Event Queue: ."+str(len(FloorShopManager.getQueue()))+"\n"
 
@@ -214,33 +288,33 @@ class Simulator(object):
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Central buffer has "+str(len(CentralBuffer.getProducts()))+" products initially"+"\n"
             
         st = time.time() # get the start time
-        planninghorizon = (self.getSimulationManager().getSimEnd() -self.getSimulationManager().getSimStart()).days+1  # days
+        Progress.value+="Start time: ."+str(self.getSimulationManager().getSimStart())+"\n"
+        Progress.value+="End time: ."+str(self.getSimulationManager().getSimEnd())+"\n"
+        planninghorizon = (self.getSimulationManager().getSimEnd() - self.getSimulationManager().getSimStart()).days+1  # days
         weekno = self.getSimulationManager().getSimStart().isocalendar()[1]
         
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Simulation week start "+str(weekno)+", days: "+str(planninghorizon)+"\n"
 
        
-        start = datetime.datetime.combine(self.getSimulationManager().getSimStart(), datetime.datetime.min.time())
-        scale = timedelta(minutes=1)
-        eventStart = [start,scale]
+        
         completiontime = 1440*planninghorizon   # Sim time in minutes
 
-        # def shift_scheduler(env, machine):
-        #     """Weekly calendar: 3 shifts per day, jobs only allowed in first 2."""
-        #     day_length = 24
-        #     shifts = [(0, 8), (8, 16), (16, 24)]  # three shifts per day
+        def shift_scheduler(env, machine):
+            """Weekly calendar: 3 shifts per day, jobs only allowed in first 2."""
+            day_length = 24
+            shifts = [(8, 16), (16, 24),(0, 8)]  # three shifts per day
         
-        #     while True:
-        #         for start, end in shifts:
-        #             # Only allow jobs in first two shifts
-        #             if end <= 16:
-        #                 machine.open = True
+            while True:
+                for start, end in shifts:
+                    # Only allow jobs in first two shifts
+                    if start >= 8:
+                        machine.open = True
 
-        #             else:
-        #                 machine.open = False
+                    else:
+                        machine.open = False
 
         
-        #             yield env.timeout(end - start)        
+                    yield env.timeout(end - start)        
 
         #env.process(self.SystemClock(env,Progress))
 
@@ -248,8 +322,9 @@ class Simulator(object):
         #         Machine = batch.getJob().getOperation().getRequiredResources()[0].getSimResource()            
         #         event = self.Batch_Proces(env,batch,Machine,Progress,eventStart)
         #         env.process(event)
-            
-        env.process(self.FloorShopManagerExecutes(env,FloorShopManager,Progress,eventStart))
+
+        Operatorpool = simpy.Container(env,init=100)
+        env.process(self.FloorShopManagerExecutes(env,FloorShopManager,Operatorpool,Progress,eventStart))
         # Execute
         env.run(until=completiontime)
         
