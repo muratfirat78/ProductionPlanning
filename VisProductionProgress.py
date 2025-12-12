@@ -1020,7 +1020,9 @@ class ProductionProgressTab():
 
         
         else:
-            
+            self.getPProgReport().value+="job scheduled shift"+" Sh:("+str(currshift)+"\n"
+            self.getPProgReport().value+="job scheduled shift"+" Sh:("+str(currshift.getDay())+","+str(currshift.getNumber())+"), hrs: ["+str(currshift.getStartTime())+"-"+str(currshift.getEndTime())+"\n"
+            self.getPProgReport().value+=" is job scheduled shift is schedule of resource? "+str(currshift in jobresource.getSchedule())+"\n"
             for job in jobresource.getSchedule()[currshift]:
                 if job.getJob().getName() == jobname:
                     

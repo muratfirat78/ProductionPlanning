@@ -9,7 +9,7 @@ ResourceID,ResourceType,Name,ProcessType,DailyCapacity,Automated,Alternatives,Op
 7,Machine,M3-01_(FR3_01),Metal forming,2,False,,0.3,1_2
 8,Manual,BW_(BKW_01),Benchwork,2,False,,0,1_2
 9,Manual,PACK_(VERP_P),Packaging,2,False,,0,1_2
-10,Outsourced,OUT_Outsourced activity,External,1250,False,,0,1_2
+10,Outsourced,OUT_Outsourced activity,External,1250,False,,0,1
 11,Manual,MP1_(ZGN_01),Preparation,2,False,,0,1_2
 12,Machine,M5-01_(FR5_01),Metal forming,3,True,,0.1,1_2_3
 13,Machine,M4-01_(FR4_01),Metal forming,3,True,FR4_02,0.1,1_2_3

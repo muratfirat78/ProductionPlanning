@@ -52,8 +52,13 @@ class DataManager:
         self.MyFolder = None
         self.ScheduleStartWeek = None
         self.ScheduleEndWeek = None
+
+        self.updatelog = pd.DataFrame(columns=['Info'])
         
         return
+
+    def getUpdateLog(self):
+        return self.updatelog
 
     def getPlanningManager(self):
         return self.PlanningManager
@@ -172,7 +177,7 @@ class DataManager:
 
         name,mytype,daycap = info
         # (self,myid,mytype,myname,mydaycp)
-        self.Resources[name]=Resource(len(self.Resources),mytype,name,daycap)
+        self.Resources[name]=Resource(len(self.Resources),mytype,name,[1,2])
         reslist.options = [resname for resname in self.Resources.keys()]
         
         return
@@ -518,8 +523,13 @@ class DataManager:
                     
                 if file == "Resources.csv": 
                     res_df = pd.read_csv(abs_file_path+'/'+file)
+                    
                     for i,r in res_df.iterrows():  #(self,myid,mytype,myname,mydaycp)
-                        newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
+                        shifts = [1]
+                        if r["Shift"] is not None:
+                            shifts = [int(s) for s in r["Shift"].replace('_', ' ').split()]
+                        
+                        newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],shifts)
                         self.getVisualManager().getCaseInfo().value += ">>>.. "+str(r["ProcessType"])+"\n"
                         newres.setProcessType(r["ProcessType"])
                         if not np.isnan(r["Automated"]):
@@ -527,15 +537,11 @@ class DataManager:
                                 newres.setAutomated() 
                             
                         newres.setOperatingEffort(r["OperatingEffort"])
-                        if r["Shift"] is not None:
-                            shifts = [int(s) for s in r["Shift"].replace('_', ' ').split()]
-                            
-                            for shft in shifts:
-                                newres.getAvailableShifts().append(shft)
+
+                        
                         self.Resources[r["Name"]]= newres
                         self.getResourcesID()[r["ResourceID"]] = newres
-                        if r['Name'].find("OUT - ") != -1:
-                            newres.setOutsource()
+                      
 
                     self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
                     
@@ -704,11 +710,19 @@ class DataManager:
             # initialize jobs
             for i,r in jobs_df.iterrows():
                 opr = [myopr for opname,myopr in self.getOperations().items() if myopr.getID() == r["OperationID"]][0]
-                newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],r["Deadline"])   
+                mydeadline = None
+                try:
+                    mydeadline = datetime.strptime(r["Deadline"],"%Y-%m-%d") 
+                except: 
+                    mydeadline = datetime.now()
+                    
+                newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],mydeadline)   
                 alljobs[newjob.getID()]= newjob
+                
                 ords = [myord  for oname,myord in self.getCustomerOrders().items() if myord.getID() == r["OrderID"]] 
                 if len(ords) > 0:
                     ords[0].getMyJobs().append(newjob)
+                    newjob.setCustomerOrder(ords[0])
                     
 
             self.getVisualManager().getCaseInfo().value += "#### no jobs.."+str(len(alljobs))+"\n" 
@@ -836,16 +850,27 @@ class DataManager:
                     
                     if  self.getVisualManager().getNewCustOrdrs_btn().description == "Import orders":
 
+                        
+                        self.getUpdateLog().drop(self.getUpdateLog().index, inplace=True)
+
+                        
                         self.getVisualManager().getNewCustOrdrs_btn().description = "Import resources"
                         self.getVisualManager().getNewCustOrdrs_btn().accept='.csv'
                       
                         TBRM_df = pd.read_excel(content)
     
-                        self.getVisualManager().getDiagInfo().value += "No data lines to import "+str(len(TBRM_df))+"\n"  
-           
-                        self.getVisualManager().getDiagInfo().value += "Nan ID values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["ID"]]))+"\n" 
-                        self.getVisualManager().getDiagInfo().value += "Nan Product values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Product"]]))+"\n"  
-                        self.getVisualManager().getDiagInfo().value += "Nan Operation values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Work Orders/Work Center"]]))+"\n"  
+                        #self.getVisualManager().getDiagInfo().value += "No data lines to import "+str(len(TBRM_df))+"\n"  
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"No data lines to import "+str(len(TBRM_df))}
+                        
+                        #self.getVisualManager().getDiagInfo().value += "Nan ID values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["ID"]]))+"\n" 
+
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Nan ID values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["ID"]]))}
+                        
+                        #self.getVisualManager().getDiagInfo().value += "Nan Product values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Product"]]))+"\n"
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Nan Product values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Product"]]))}
+                        
+                        #self.getVisualManager().getDiagInfo().value += "Nan Operation values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Work Orders/Work Center"]]))+"\n"  
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Nan Operation values: "+str(sum([int(pd.isna(x)) for x in TBRM_df["Work Orders/Work Center"]]))}
 
                         neworders=0;newproducts = 0;newoperations = 0;newresources=0;
                         noorders = 0
@@ -860,10 +885,16 @@ class DataManager:
                         for i,r in TBRM_df.iterrows():
 
                             myprod = None
-                            self.getVisualManager().getDiagInfo().value += " line "+str(i)+"\n"  
+                            #self.getVisualManager().getDiagInfo().value += " line "+str(i)+"\n"  
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" line "+str(i)}
 
-                            self.getVisualManager().getDiagInfo().value += " part1  "+str((not pd.isna(r['Product'])))+"\n"
-                            self.getVisualManager().getDiagInfo().value += " part2  "+str((not (pd.isna(r['Components/Product']))))+"\n" 
+                            #self.getVisualManager().getDiagInfo().value += " part1  "+str((not pd.isna(r['Product'])))+"\n"
+
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" part1  "+str((not pd.isna(r['Product'])))}
+                            
+                            #self.getVisualManager().getDiagInfo().value += " part2  "+str((not (pd.isna(r['Components/Product']))))+"\n" 
+
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" part2  "+str((not (pd.isna(r['Components/Product']))))}
                             
                             if (not pd.isna(r['Product'])) and (not (pd.isna(r['Components/Product']))):
                             
@@ -871,13 +902,19 @@ class DataManager:
                                 noorders+=1
                                 myorder = None
 
-                                self.getVisualManager().getDiagInfo().value += " line "+str(i)+" product "+str(r['Product'])+", raw "+r['Components/Product']+"\n" 
+                                #self.getVisualManager().getDiagInfo().value += " line "+str(i)+" product "+str(r['Product'])+", raw "+r['Components/Product']+"\n" 
+
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" line "+str(i)+" product "+str(r['Product'])+", raw "+r['Components/Product']}
+                           
           
                                 pnstr = r['Product'][r['Product'].find("[")+1:]
                                 namestr = pnstr[pnstr.find("]")+1:]
                                 pnstr =  pnstr[:pnstr.find("]")]
     
-                                self.getVisualManager().getDiagInfo().value += "pn... "+str(pnstr)+"\n" 
+                                #self.getVisualManager().getDiagInfo().value += "pn... "+str(pnstr)+"\n" 
+
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"pn... "+str(pnstr)}
+                           
     
                                 pname =  "["+pnstr+"] "+namestr
 
@@ -899,7 +936,8 @@ class DataManager:
                                     myprod = self.getProductsID()[prodid]
 
                             
-                                self.getVisualManager().getDiagInfo().value += "prod handled... "+str(not pd.isna(r['Components/Product']))+"\n"   
+                                #self.getVisualManager().getDiagInfo().value += "prod handled... "+str(not pd.isna(r['Components/Product']))+"\n" 
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"prod handled... "+str(not pd.isna(r['Components/Product']))}
                                 ###### FINAL PRODUCT #####
                                     
     
@@ -910,7 +948,9 @@ class DataManager:
                                     rawnamestr = rawpnstr[rawpnstr.find("]")+1:]
                                     rawpnstr =  rawpnstr[:rawpnstr.find("]")]
 
-                                    self.getVisualManager().getDiagInfo().value += "raw 1... "+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "raw 1... "+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"raw 1... "}
+                        
     
                                     myrawprod = None
 
@@ -935,7 +975,8 @@ class DataManager:
     
                                     if not myrawprod in myprod.getPredecessors():
                                         myprod.getPredecessors().append(myrawprod)
-                                        self.getVisualManager().getDiagInfo().value += "raw added to predecesors... "+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "raw added to predecesors... "+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"raw added to predecesors... "}
                                         if int(r['Components/Quantity To Consume']) == 0:
                                             myprod.getMPredecessors()[myrawprod] = 1
                                         else:
@@ -950,12 +991,14 @@ class DataManager:
                                      
 
                                     if (pd.isna(TBRM_df.loc[nextline,'Product'])) and (not (pd.isna(TBRM_df.loc[nextline,'Components/Product']))):
-                                        self.getVisualManager().getDiagInfo().value += "second raw product!!... "+"\n"
+                                        #self.getVisualManager().getDiagInfo().value += "second raw product!!... "+"\n"
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"second raw product!!... "}
                                         raw2pnstr = TBRM_df.loc[nextline,'Components/Product'][TBRM_df.loc[nextline,'Components/Product'].find("[")+1:]
                                         raw2namestr = raw2pnstr[raw2pnstr.find("]")+1:]
                                         raw2pnstr =  raw2pnstr[:raw2pnstr.find("]")]
 
-                                        self.getVisualManager().getDiagInfo().value += "secraw 1... "+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "secraw 1... "+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"secraw 1... "}
         
                                         myraw2prod = None
                                         secondraw = True
@@ -977,7 +1020,8 @@ class DataManager:
                                             myraw2prod = self.getProductsID()[raw2id]
                                         
     
-                                        self.getVisualManager().getDiagInfo().value += "secraw 2... "+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "secraw 2... "+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"secraw 2... "}
         
                                         if not myraw2prod in myprod.getPredecessors():
                                             myprod.getPredecessors().append(myraw2prod)
@@ -986,14 +1030,17 @@ class DataManager:
                                             else:
                                                 myprod.getMPredecessors()[myraw2prod] = int(TBRM_df.loc[nextline,'Components/Quantity To Consume'])
                                     else:
-                                        self.getVisualManager().getDiagInfo().value += "no second raw product... "+"\n"
+                                        #self.getVisualManager().getDiagInfo().value += "no second raw product... "+"\n"
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"no second raw product... "}
+                                        
                                         
                                      ###### RAW PRODUCT #####
 
                                 resid = r['Work Orders/Work Center/ID']
                                 resname = r['Work Orders/Work Center']
 
-                                self.getVisualManager().getDiagInfo().value += "resid: "+str(resid)+", resname: "+str(resname)+"\n"   
+                                #self.getVisualManager().getDiagInfo().value += "resid: "+str(resid)+", resname: "+str(resname)+"\n" 
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"resid: "+str(resid)+", resname: "+str(resname)}
                             
                                 operationlist = []
                                 # creation of operations: start
@@ -1003,15 +1050,17 @@ class DataManager:
                                     oprind = 0
                                     myopr = None
 
-                                    self.getVisualManager().getDiagInfo().value += "prod id: "+str(myprod.getID())+"\n"   
-                                    self.getVisualManager().getDiagInfo().value += "prodp pn: "+str(myprod.getPN())+"\n"   
-
+                                    #self.getVisualManager().getDiagInfo().value += "prod id: "+str(myprod.getID())+"\n"   
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"prod id: "+str(myprod.getID())}
+                                    #self.getVisualManager().getDiagInfo().value += "prodp pn: "+str(myprod.getPN())+"\n"   
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"prodp pn: "+str(myprod.getPN())}
 
                                     opid = myprod.getID()+"-_-"+resid
                                     opname = "["+myprod.getPN()+"] "+resname
 
 
-                                    self.getVisualManager().getDiagInfo().value += " operation id... "+str(opid)+"\n"   
+                                    #self.getVisualManager().getDiagInfo().value += " operation id... "+str(opid)+"\n"   
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" operation id... "+str(opid)}
 
                                     # create the very first operation..
 
@@ -1023,7 +1072,8 @@ class DataManager:
                                         
                                         if not opid in self.getOperationsID():
 
-                                            self.getVisualManager().getDiagInfo().value += " operation will be created.."+"\n"   
+                                            #self.getVisualManager().getDiagInfo().value += " operation will be created.."+"\n" 
+                                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" operation will be created.."}
 
                                             proctime = TBRM_df.loc[i,'Work Orders/Expected Duration']
 
@@ -1042,15 +1092,11 @@ class DataManager:
      
                                             if not resid in self.getResourcesID():
 
-                                                self.getVisualManager().getDiagInfo().value += " resource not found.."+"\n"   
-                                                restype = "Machine"
-                                                if resname.find("OUT - ") > -1:
-                                                    restype = "Outsourced"
- 
-                                                newres = Resource(resid,restype,resname,2)
+                                                #self.getVisualManager().getDiagInfo().value += " resource not found.."+"\n"   
+                                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" resource not found.."}
+
+                                                newres = Resource(resid,"Machine",resname,[1,2])
                                                 newresources+=1
-                                                for shift in [1,2]:
-                                                    newres.getAvailableShifts().append(int(shift))
                                                 nrresources+=1
                                                 self.Resources[resname] = newres
                                                 self.getResourcesID()[resid] = newres
@@ -1060,10 +1106,14 @@ class DataManager:
                                                 # check name change: 
                                                 if newres.getName() != resname:
                                                        
-                                                    self.getVisualManager().getDiagInfo().value += "**************************"+"\n" 
-                                                    self.getVisualManager().getDiagInfo().value += "curr_name: "+str(newres.getName())+"\n"
-                                                    self.getVisualManager().getDiagInfo().value += "input name: "+str(resname)+"\n"
-                                                    self.getVisualManager().getDiagInfo().value += "**************************"+"\n"  
+                                                    #self.getVisualManager().getDiagInfo().value += "**************************"+"\n" 
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"**************************"}
+                                                    #self.getVisualManager().getDiagInfo().value += "curr_name: "+str(newres.getName())+"\n"
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"curr_name: "+str(newres.getName())}
+                                                    #self.getVisualManager().getDiagInfo().value += "input name: "+str(resname)+"\n"
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"input name: "+str(resname)}
+                                                    #self.getVisualManager().getDiagInfo().value += "**************************"+"\n"  
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"**************************"}
                                             
                                                     newres.setName(resname)
 
@@ -1087,14 +1137,16 @@ class DataManager:
                                     operationlist.append(myopr) 
 
                                     
-                                    self.getVisualManager().getDiagInfo().value += "first operation passed... "+"\n"   
+                                    #self.getVisualManager().getDiagInfo().value += "first operation passed... "+"\n"   
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"first operation passed... "}
                                     lineno = i+1+int(secondraw)
                                     operations = [r['Work Orders/Work Center']]
     
                                   
                                     while pd.isna(TBRM_df.loc[lineno,'Product']) and (not pd.isna(TBRM_df.loc[lineno,'Work Orders/Work Center'])):
                                         
-                                        self.getVisualManager().getDiagInfo().value += "oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"oprtn "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])}
 
 
                                         resid = TBRM_df.loc[lineno,'Work Orders/Work Center/ID']
@@ -1106,10 +1158,16 @@ class DataManager:
                                         opid = myprod.getID()+"-_-"+resid
                                         
                                         if not opid in self.getOperationsID():
+                                            
                                             proctime = TBRM_df.loc[lineno,'Work Orders/Expected Duration']
                                             while nroprs in oprids:
                                                 nroprs+=1
-                                            myopr = Operation(opid,opname,float(proctime)/float(r['Quantity To Produce']))
+
+                                            if TBRM_df.loc[lineno,'Work Orders/Work Center'].find("OUT -")== -1:
+                                                proctime = float(proctime)/float(TBRM_df.loc[i,'Quantity To Produce'])
+                                                
+                                            myopr = Operation(opid,opname,proctime)
+                                            
                                             nroprs+=1
                                             newoperations+=1
                                             newres = None
@@ -1117,14 +1175,8 @@ class DataManager:
                                             
                                             if not resid in self.getResourcesID():
 
-                                                restype = "Machine"
-                                                if resname.find("OUT - ") > -1:
-                                                    restype = "Outsourced"    
-                                                newres = Resource(resid,restype,resname,2)
-                                                
-                                                for shift in [1,2]:
-                                                    newres.getAvailableShifts().append(int(shift))
-                                                    
+                                                newres = Resource(resid,"Machine",resname,[1,2])
+                            
                                                 nrresources+=1
                                                 newresources+=1
                                                 self.Resources[resname] = newres
@@ -1135,10 +1187,18 @@ class DataManager:
                                                 
                                                 if newres.getName() != resname:
                                                        
-                                                    self.getVisualManager().getDiagInfo().value += "**************************"+"\n" 
-                                                    self.getVisualManager().getDiagInfo().value += "curr_name: "+str(newres.getName())+"\n"
-                                                    self.getVisualManager().getDiagInfo().value += "input name: "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n"
-                                                    self.getVisualManager().getDiagInfo().value += "**************************"+"\n"  
+                                                    #self.getVisualManager().getDiagInfo().value += "**************************"+"\n" 
+                                                    #self.getVisualManager().getDiagInfo().value += "curr_name: "+str(newres.getName())+"\n"
+                                                    #self.getVisualManager().getDiagInfo().value += "input name: "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])+"\n"
+                                                    #self.getVisualManager().getDiagInfo().value += "**************************"+"\n"
+
+                                                    
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"**************************"}
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"curr_name: "+str(newres.getName())}
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"input name: "+str(TBRM_df.loc[lineno,'Work Orders/Work Center'])}
+                                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"**************************"}
+
+                                                    
                                                     newres.setName(TBRM_df.loc[lineno,'Work Orders/Work Center'])
                                             
     
@@ -1169,7 +1229,8 @@ class DataManager:
                                             break
                                             
                                    
-                                    self.getVisualManager().getDiagInfo().value += "No operations "+str(len(operations))+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "No operations "+str(len(operations))+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"No operations "+str(len(operations))}
                                 # creation of operations: end
 
                 
@@ -1178,19 +1239,25 @@ class DataManager:
 
                                 ordid = str(r['ID'])
                                 ordname = str(myprod.getName())+"_"+str(r['Quantity To Produce'])+"["+str(ordid[len(ordid)-4:])+"]"
-                                self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
-                                self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
-                                self.getVisualManager().getDiagInfo().value += "ordid.."+str(ordid)+"\n"
+                                #self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
+                                #self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
+                                #self.getVisualManager().getDiagInfo().value += "ordid.."+str(ordid)+"\n"
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"ordname..."+str(ordname)}
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"line "+str(i)}
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"ordid.."+str(ordid)}
 
                                 neworder = False
                                 
                                 if not ordid in self.getCustomerOrdersID():
                                     myDeadLine = datetime.strptime("2025-12-31 00:00:00","%Y-%m-%d %H:%M:%S")
-                                    self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline null?..."+str(pd.isnull(r['Deadline']))}
                                     if not pd.isnull(r['Deadline']) :
-                                        self.getVisualManager().getDiagInfo().value += "deadline..."+str(r['Deadline'])+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "deadline..."+str(r['Deadline'])+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline..."+str(r['Deadline'])}
                                         myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S") 
-                                        self.getVisualManager().getDiagInfo().value += "deadline formatted..."+str(myDeadLine)+"\n"
+                                        #self.getVisualManager().getDiagInfo().value += "deadline formatted..."+str(myDeadLine)+"\n"
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline formatted..."+str(myDeadLine)}
                                         
                                         
                                     myorder = CustomerOrder(ordid,ordname,myprod.getID(),myprod.getName(),int(r['Quantity To Produce']),myDeadLine)
@@ -1202,18 +1269,22 @@ class DataManager:
                                     self.getCustomerOrdersID()[ordid] = myorder
                                     self.getCustomerOrders()[ordname] = myorder
 
-                                    self.getVisualManager().getDiagInfo().value += "order created and add with id "+str(ordid)+", total "+str(len(self.getCustomerOrdersID()))+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "order created and add with id "+str(ordid)+", total "+str(len(self.getCustomerOrdersID()))+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"order created and add with id "+str(ordid)+", total "+str(len(self.getCustomerOrdersID()))}
                                 else:
                                     myorder = self.getCustomerOrdersID()[ordid]
 
                                 
 
                                 myDeadLine = datetime.strptime("2025-12-31 00:00:00","%Y-%m-%d %H:%M:%S")
-                                self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                #self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline null?..."+str(pd.isnull(r['Deadline']))}
                                 if not pd.isnull(r['Deadline']) :
-                                    self.getVisualManager().getDiagInfo().value += "deadline..."+str(r['Deadline'])+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "deadline..."+str(r['Deadline'])+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline..."+str(r['Deadline'])}
                                     myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S") 
-                                    self.getVisualManager().getDiagInfo().value += "deadline formatted..."+str(myDeadLine)+"\n"
+                                    #self.getVisualManager().getDiagInfo().value += "deadline formatted..."+str(myDeadLine)+"\n"
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline formatted..."+str(myDeadLine)}
                                     
                                     if not neworder:
                                         myorder.updateDeadLine(myDeadLine)
@@ -1221,14 +1292,16 @@ class DataManager:
                                 myprod.getOperationSequences()[myorder] = operationlist
                                 myorder.SetComponentAvailable(r['Component Status'])
                             else:
-                                self.getVisualManager().getDiagInfo().value += " line "+str(i)+""+"\n" 
+                                #self.getVisualManager().getDiagInfo().value += " line "+str(i)+""+"\n" 
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" line "+str(i)+""}
                                 if (not pd.isna(r['Product'])) and (not pd.isna(r['Product/ID'])):
                                     
                                     pnstr = r['Product'][r['Product'].find("[")+1:]
                                     namestr = pnstr[pnstr.find("]")+1:]
                                     pnstr =  pnstr[:pnstr.find("]")]
         
-                                    self.getVisualManager().getDiagInfo().value += "no raw- pn... "+str(pnstr)+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "no raw- pn... "+str(pnstr)+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"no raw- pn... "+str(pnstr)}
         
                                     pname =  "["+pnstr+"] "+namestr
     
@@ -1253,17 +1326,24 @@ class DataManager:
 
                                     ordid = str(r['ID'])
                                     ordname = str(myprod.getName())+"_"+str(r['Quantity To Produce'])+"["+str(ordid[len(ordid)-4:])+"]"
-                                    self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
-                                    self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
-                                    self.getVisualManager().getDiagInfo().value += "ordid.."+str(ordid)+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "ordname..."+str(ordname)+"\n" 
+                                    #self.getVisualManager().getDiagInfo().value += "line "+str(i)+"\n"  
+                                    #self.getVisualManager().getDiagInfo().value += "ordid.."+str(ordid)+"\n" 
+
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"ordname..."+str(ordname)}
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"line "+str(i)}
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"ordid.."+str(ordid)}
                                     
                                     if not ordid in self.getCustomerOrdersID():
                                         myDeadLine = datetime.strptime("2025-12-31 00:00:00","%Y-%m-%d %H:%M:%S")
-                                        self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "deadline null?..."+str(pd.isnull(r['Deadline']))+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline null?..."+str(pd.isnull(r['Deadline']))}
                                         if not pd.isnull(r['Deadline']) :
-                                            self.getVisualManager().getDiagInfo().value += "deadline..."+str(r['Deadline'])+"\n" 
+                                            #self.getVisualManager().getDiagInfo().value += "deadline..."+str(r['Deadline'])+"\n" 
+                                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline..."+str(r['Deadline'])}
                                             myDeadLine = datetime.strptime(str(r['Deadline']),"%Y-%m-%d %H:%M:%S") 
-                                            self.getVisualManager().getDiagInfo().value += "deadline formatted..."+str(myDeadLine)+"\n"
+                                            #self.getVisualManager().getDiagInfo().value += "deadline formatted..."+str(myDeadLine)+"\n"
+                                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"deadline formatted..."+str(myDeadLine)}
                                             
                                             
                                         myorder = CustomerOrder(ordid,ordname,myprod.getID(),myprod.getName(),int(r['Quantity To Produce']),myDeadLine)
@@ -1275,7 +1355,8 @@ class DataManager:
                                         self.getCustomerOrdersID()[ordid] = myorder
                                         self.getCustomerOrders()[ordname] = myorder
     
-                                        self.getVisualManager().getDiagInfo().value += "order created and add with id "+str(ordid)+", total "+str(len(self.getCustomerOrdersID()))+"\n" 
+                                        #self.getVisualManager().getDiagInfo().value += "order created and add with id "+str(ordid)+", total "+str(len(self.getCustomerOrdersID()))+"\n" 
+                                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"order created and add with id "+str(ordid)+", total "+str(len(self.getCustomerOrdersID()))}
                                     else:
                                         myorder = self.getCustomerOrdersID()[ordid]
 
@@ -1285,10 +1366,15 @@ class DataManager:
 
                   
 
-                        self.getVisualManager().getDiagInfo().value += "New orders:  "+str(neworders)+"\n" 
-                        self.getVisualManager().getDiagInfo().value += "New products:  "+str(newproducts)+"\n"                 
-                        self.getVisualManager().getDiagInfo().value += "New operations:  "+str(newoperations)+"\n"   
-                        self.getVisualManager().getDiagInfo().value += "New resources:  "+str(newresources)+"\n"     
+                        #self.getVisualManager().getDiagInfo().value += "New orders:  "+str(neworders)+"\n" 
+                        #self.getVisualManager().getDiagInfo().value += "New products:  "+str(newproducts)+"\n"                 
+                        #self.getVisualManager().getDiagInfo().value += "New operations:  "+str(newoperations)+"\n"   
+                        #self.getVisualManager().getDiagInfo().value += "New resources:  "+str(newresources)+"\n"
+
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"New orders:  "+str(neworders)}
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"New products:  "+str(newproducts)}
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"New operations:  "+str(newoperations)}
+                        self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"New resources:  "+str(newresources)}
                         
                             
                         self.getVisualManager().RefreshViews()  
@@ -1312,15 +1398,38 @@ class DataManager:
 
                                 matches = [r for rn,r in self.Resources.items() if (res_code in rn) and (res_model in rn)]
 
-                                self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
+                                #self.getVisualManager().getDiagInfo().value += "res_code"+str(res_code)+", "+str(res_model)+"\n" 
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"res_code"+str(res_code)+", "+str(res_model)}
+                              
+                                avshifts = []
+
+                                if str(r["AvailableShifts"]).find("_") != -1: 
+                                    avshifts = [int(x) for x in str(r["AvailableShifts"]).split("_")]   
+                                    #self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+str(avshifts)+"\n" 
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Matches"+str(len(matches))+str(avshifts)+", data: "+str(r["AvailableShifts"])}
+                                else:
+                                    avshifts.append(int(r["AvailableShifts"]))
                                 
                                 if len(matches) == 0:
-                                    myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])  
-                                   
+                                    
+                                    myres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],avshifts)  
                                     self.Resources[r['Name']] = myres
 
                                 else:
                                     myres = matches[0]
+                                    
+                                    #self.getVisualManager().getDiagInfo().value += " res "+str(myres.getName())+"\n"
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":" res "+str(myres.getName())}
+
+
+                                #self.getVisualManager().getDiagInfo().value += "Shifts: "+str(myres.getAvailableShifts())+"\n" 
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Shifts: "+str(myres.getAvailableShifts())}
+
+                                for x in avshifts:
+                                    if not x in myres.getAvailableShifts():
+                                        myres.getAvailableShifts().append(x)
+
+                                
 
                                 myres.setProcessType(r["ProcessType"])
                                 #self.getVisualManager().getDiagInfo().value += "Processtype: "+str(r["ProcessType"])+"\n" 
@@ -1331,59 +1440,57 @@ class DataManager:
                                         myres.setAutomated()
                                 #self.getVisualManager().getDiagInfo().value += "Automated: "+str(myres.IsAutomated())+"\n" 
                                 myres.setOperatingEffort(float(r["OperatingEffort"]))
-                                
 
-                                if not r["AvailableShifts"] == None:
-                                    myres.getAvailableShifts().clear()
-                                    if str(r["AvailableShifts"]).find("_") != -1: 
-                                        shifts = str(r["AvailableShifts"]).split("_")
-                                        for shift in shifts:
-                                            myres.getAvailableShifts().append(int(shift))
-                                    else:
-                                        myres.getAvailableShifts().append(int(r["AvailableShifts"]))
+                           #self.getVisualManager().getDiagInfo().value += "First pass done.."+"\n" 
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"First pass done.."}
 
-                                
+                            
                             for i,r in resources_df.iterrows():
                                 myres = None
 
                                 res_code = r['Name'][:r['Name'].find("_")]
                                 res_model = r['Name'][r['Name'].find("_")+1:]
 
-                                #self.getVisualManager().getDiagInfo().value += "Resource "+str(r['Name'])+"\n" 
-
                                 matches = [r for rn,r in self.Resources.items() if (res_code in rn) and (res_model in rn)]
-
-                                #self.getVisualManager().getDiagInfo().value += "Matches"+str(len(matches))+"\n" 
                                 
                                 if len(matches) == 0: 
-                                    self.getVisualManager().getDiagInfo().value += "NOT FOUND: Resource "+str(r['Name'])+"\n"
+                                    #self.getVisualManager().getDiagInfo().value += "NOT FOUND: Resource "+str(r['Name'])+"\n"
+                                    self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"NOT FOUND: Resource "+str(r['Name'])}
                                     
                                 else:
                                     myres = matches[0]
 
+                                #self.getVisualManager().getDiagInfo().value += "Alternatives of res "+str(r['Name'])+str(r["Alternatives"])+"\n"
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Alternatives of res "+str(r['Name'])+str(r["Alternatives"])}
+
                                 if not pd.isnull(r["Alternatives"]):
-                                    #self.getVisualManager().getDiagInfo().value += "Alternatives"+str(r["Alternatives"])+" >> "+str(str(r["Alternatives"]).find("~"))+"\n" 
                                     if str(r["Alternatives"]).find("~") != -1:
                                         alters = str(r["Alternatives"]).split("~")
                                         for alter in alters:
                                             resources = [rs for rn,rs in self.Resources.items() if rn.find(alter) != -1]
                                             if len(resources) > 0:
-                                                myres.getAlternatives().append(resources[0])
-                                            #else:
-                                            #    self.getVisualManager().getDiagInfo().value += "XXX alter not found >>> "+str(alter)+"\n" 
+                                                myres.getAlternatives().append(resources[0]) 
                                     else:
                                         resources = [rs for rn,rs in self.Resources.items() if r["Alternatives"] in rn]
-                                        #self.getVisualManager().getDiagInfo().value += "resurces>>> "+str(len(resources))+"\n" 
                                         if len(resources) > 0:
                                             myres.getAlternatives().append(resources[0])
-                                        #else:
-                                        #    self.getVisualManager().getDiagInfo().value += "XhhhhhXX alter not found >>> "+str(r["Alternatives"])+"\n" 
-                                #self.getVisualManager().getDiagInfo().value += "Resource "+str(r['Name'])+" has "+str(len(myres.getAlternatives()))+" alternatives "+"\n" 
 
-                                 
-                                
+
+                            for rn,rs in self.Resources.items():
+                                #$self.getVisualManager().getDiagInfo().value += "++ res... "+rs.getName()+" >>>> "+str(rs.getAvailableShifts())+"\n"
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"++ res... "+rs.getName()+" >>>> "+str(rs.getAvailableShifts())}
+                                       
+
+                            #self.getVisualManager().getDiagInfo().value += "Second pass done.."+"\n"
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Second pass done.."}
+                            
                             self.getVisualManager().RefreshViews()
-                            #self.getVisualManager().getDiagInfo().value += "SAVINGGGGGGGGGGGGGGGGGGGGGGGGGGG "+"\n" 
+
+                            #self.getVisualManager().getDiagInfo().value += "refreshing done.."+"\n"
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"refreshing done.."}
+
+                            #self.getVisualManager().getDiagInfo().value += "planning start.."+str(self.getPlanningManager().GetPlanningStart())+"\n"
+                            self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"planning start.."+str(self.getPlanningManager().GetPlanningStart())}
 
                             ordstoplan = self.getPlanningManager().GetOrdersToPlan(self.getPlanningManager().GetPlanningStart())
 
@@ -1392,8 +1499,14 @@ class DataManager:
                             savefile = True
                             
                             if savefile: 
+                                #self.getVisualManager().getDiagInfo().value += "Saving file starts.."+"\n"
+                                self.getUpdateLog().loc[len(self.getUpdateLog())] = {"Info":"Saving file starts.."}
+
                                 self.SaveTheInstance()
-                                
+
+                            
+                            timestr = time.strftime("%Y%m%d-%H%M%S")
+                            self.getUpdateLog().to_csv("UpdateLog_"+timestr+".csv")  
 
         #input_file = list(self.getVisualManager().getNewCustOrdrs_btn().value.values())[0]
         #content = input_file['content']
@@ -1410,9 +1523,14 @@ class DataManager:
       
         jobs_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID"])
         jobpreds_df =  pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
+
+        self.getVisualManager().getPLTBresult2exp().value+="in saving planning..."+"\n"
         
         for name,order in self.getCustomerOrders().items():
+
+            self.getVisualManager().getPLTBresult2exp().value+=name+" jobs "+str(len(order.getMyJobs()))+"\n"
             for job in order.getMyJobs():
+                self.getVisualManager().getPLTBresult2exp().value+=str(job.getID())+", Quantity "+str(job.getQuantity())+", Deadline"+str(job.getDeadLine())+", OrderID "+str(job.getCustomerOrder())+", ProductID "+str(job.getProduct())+", OperationID "+str(job.getOperation())+"\n"
                 jobs_df.loc[len(jobs_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),"Deadline":job.getDeadLine(),
                                                     "OrderID":job.getCustomerOrder().getID(),"ProductID":job.getProduct().getID(),
                                                     "OperationID":job.getOperation().getID()}
@@ -1488,22 +1606,23 @@ class DataManager:
             operations_df.loc[len(operations_df)]= {"OperationID":opr.getID(),"Name":opr.getName(),"ProcessTime":opr.getProcessTime('min')}
             
             for res in opr.getRequiredResources():
-                Progress.value += ">>> ress.."+str(res.getName())+"\n"
                 opsres_df.loc[len(opsres_df)]= {"OperationID":opr.getID(),"ResourceID":res.getID()}
                 
 
-        #Progress.value+= ">>> operations done.."+str(len(operations_df))+"\n" 
-        #Progress.value+= ">>> Resources: "+str(len(self.Resources))+"\n" 
+        Progress.value+= ">>> operations done.."+str(len(operations_df))+"\n" 
+        Progress.value+= ">>> Resources: "+str(len(self.Resources))+"\n" 
 
         for resname,res in self.Resources.items():
-            #Progress.value+= ">>> res.."+str(res.getName())+"\n" 
+            Progress.value+= ">>> rrrres.."+str(res.getName())+", alts: "+str(len(res.getAlternatives()))+"\n" 
+
+            Progress.value+= ">>> rrrres.."+str(res.getName())+", shifts: "+str(res.getAvailableShifts())+"\n" 
 
             resources_df.loc[len(resources_df)] ={"ResourceID":res.getID(),"ResourceType":res.getType(),"Name":res.getName(),"ProcessType":res.getProcessType(),"DailyCapacity":res.getDailyCapacity(),"Automated":res.IsAutomated(),"OperatingEffort":res.getOperatingEffort(),"Shift":'_'.join([str(x) for x in res.getAvailableShifts()])}
 
             for altres in res.getAlternatives():
                 machalters_df.loc[len(machalters_df)] = {"MachineID":res.getID(),"AlternativeID":altres.getID()}
 
-        #Progress.value+= ">>> resources done.."+str(len(resources_df))+"\n" 
+        Progress.value+= ">>> resources done.."+str(len(resources_df))+"\n" 
         
         for ordname,ordr in self.CustomerOrders.items():
             orders_df.loc[len(orders_df)]={"OrderID":ordr.getID(),"ProductID":ordr.getProduct().getID(),"ProductName":ordr.getProduct().getName(),"Name":ordr.getName(),"Quantity":ordr.getQuantity(),"Deadline":ordr.getDeadLine(),"Component":ordr.getComponentAvailable()}

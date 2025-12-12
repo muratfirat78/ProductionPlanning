@@ -113,6 +113,8 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
+#######################################################################################################################################
+
     def CreateShifts(self,psstart,pssend,applied):
 
         scheduleperiod = pd.date_range(psstart,pssend)
@@ -127,6 +129,9 @@ class SchedulingManager:
         
         for curr_date in scheduleperiod:
 
+            if curr_date.date().weekday()>= 5:
+                continue
+                
             dayshifts = []
             
             shift1=Shift(curr_date,3,prev_dayshift)
@@ -152,7 +157,10 @@ class SchedulingManager:
                 if curr_date in self.getMyShifts():
                     shift1 = self.getMyShifts()[curr_date][0]
                 else:
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" not applied and date is not in shifts: "+str(curr_date)+"\n" 
+                    self.getMyShifts()[curr_date] = []
+                    self.getMyShifts()[curr_date].append(shift1)     
+                    
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 1 not applied and date is not in shifts: "+str(curr_date)+"\n" 
 
             
             shift2=Shift(curr_date,1,shift1)
@@ -167,7 +175,15 @@ class SchedulingManager:
                 self.getMyShifts()[curr_date].append(shift2)   
             else:
                 if curr_date in self.getMyShifts():
-                    shift2 = self.getMyShifts()[curr_date][1]
+                    if len(self.getMyShifts()[curr_date]) > 1:
+                        shift2 = self.getMyShifts()[curr_date][1]
+                    else:
+                        self.getMyShifts()[curr_date].append(shift2)  
+                else:
+                    self.getMyShifts()[curr_date] = []
+  
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 2 not applied and date is not in shifts: "+str(curr_date)+"\n" 
+
                     
             dayshifts.append(shift2)
             
@@ -183,7 +199,16 @@ class SchedulingManager:
                 self.getMyShifts()[curr_date].append(shift3)   
             else:
                 if curr_date in self.getMyShifts():
-                    shift3 = self.getMyShifts()[curr_date][2]
+                    if len(self.getMyShifts()[curr_date]) > 2:
+                        shift2 = self.getMyShifts()[curr_date][2]
+                    else:
+                        self.getMyShifts()[curr_date].append(shift3)  
+                    
+                else:
+                    self.getMyShifts()[curr_date] = []
+       
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 3 not applied and date is not in shifts: "+str(curr_date)+"\n" 
+
    
             prev_dayshift=shift3
 
@@ -221,7 +246,10 @@ class SchedulingManager:
                 if res.getType() == "Outsourced":
                     for currshift in dayshifts:
                         if currshift.getNumber() in res.getAvailableShifts():
-                            res.getCurrentSchedule()[currshift] = []
+                            if applied:
+                                res.getSchedule()[currshift] = []
+                            else:
+                                res.getCurrentSchedule()[currshift] = []
                 
                     
             i+=1        
@@ -245,6 +273,9 @@ class SchedulingManager:
                             totalfte+=manhourprocesstime/(shift.getEndTime()-shift.getStartTime()+1)
 
         return totalfte
+
+############################################################################################################################
+############################################################################################################################
 
     def MakeSchedule(self,schedulealg,batchingalg):
       
@@ -279,7 +310,8 @@ class SchedulingManager:
 
         #Determine customer orders with latest start
         SelectedOrders=[]
-        
+
+        existings = 0
         for name,order in self.getDataManager().getCustomerOrders().items():
             if len(order.getMyJobs()) > 0:
                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order planned delivery none?: "+str(name)+": "+str(order.getPlannedDelivery() == None)+"\n"
@@ -289,8 +321,15 @@ class SchedulingManager:
                 nrjobs+=len(order.getMyJobs())
                     
                 for job in order.getMyJobs():
-                    job.initializeSchJob()
+                    if job.getMySch() == None:
+                        job.initializeSchJob()
+                       
+                    else:
+                        existings+=1
+                        job.setSchJob(job.getMySch())
+
                     AllJobs.append(job.getSchJob())
+                    
                     if not job.getOperation() in oprdict:
                         oprdict[job.getOperation()] = []
                     oprdict[job.getOperation()].append(job.getSchJob())
@@ -300,21 +339,7 @@ class SchedulingManager:
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="LS: "+str(order.getLatestStart())+"\n"
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"\n"                    
-        #if batchingalg == "Simple Merge":
-        #    batchalg = BaselineBatchingAlg()
-        #    oprdict = batchalg.SolveBatching(oprdict,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
-
-        #    nrjobs = 0
-    
-        #    for opr,jobs in oprdict.items():
-        #        nrjobs+=len(jobs)
-                
-        #    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (batched) jobs: "+str(nrjobs)+"\n"
-            
-            
-        #self.CreateJobs(psstart,ScheduleWeeks,SelectedOrders)
-
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"("+str(existings)+")"+"\n"                    
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Orders in scheduling: "+str(len(SelectedOrders))+"\n"
 
         for resname,res in self.getDataManager().getResources().items():
@@ -323,11 +348,18 @@ class SchedulingManager:
    
         self.CreateShifts(psstart,pssend,False)
 
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shifts created.."+"\n"
+            
+
+        for mydate,shifts in self.getMyShifts().items():
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Day"+str(mydate)+", shifts: "+str([x.getNumber() for x in shifts])+"\n"
+
+        
         for resname, res in self.getDataManager().getResources().items():
             res.InitializeEmptySlot()
     
         #Create Schedule; we start by checking if there are still jobs that can be scheduled  
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Applying shceduling algorithm... "+"\n"  
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Applying scheduling algorithm... "+"\n"  
       
 
         if schedulealg == "Simple Greedy Insertion (Fixed)":
@@ -414,45 +446,7 @@ class SchedulingManager:
 
 
         self.getVisualManager().getSchedulingTab().getPSchResources().options = [name for name,myres in self.getDataManager().getResources().items() ]
-
-
-        #self.getVisualManager().getProductionProgressTab().getResourceList().options = [name for name,myres in self.getDataManager().getResources().items() ]
-
-        #self.getVisualManager().getProductionProgressTab().getCustomerOrderList().options = Orderstatus
-
-        # Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
-        # folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
-        # path = folder+"\\"+casename
-        # isExist = os.path.exists(path)
-        
-        # if not isExist:
-        #     os.makedirs(path)
-        
-        # for name,myres in self.getDataManager().getResources().items():
-        #     if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
-        #         for shift, jobs in myres.getSchedule().items():
-        #             if jobs == []:
-        #                 continue
-        #             else: 
-        #                 jobs.sort(key=lambda x: x.getStartTime())
-        #                 for job in jobs:
-        #                     if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-        #                         Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":job.getCompletionTime()}
-        #                     if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-        #                         Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":job.getCompletionTime()}
-        #                     if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-        #                         Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":shift.getEndTime()}
-        #                     if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-        #                         Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
-                    
-        # filename = 'Schedules.csv'; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-        # Schedule_df.to_csv(fullpath, index=False)                
-        
-        
             
-        
-                    
-                       
                 
         return 
 

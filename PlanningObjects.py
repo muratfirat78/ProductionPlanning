@@ -113,16 +113,22 @@ class Product():
         self.Batchsize = size
         return
 
+################################################################################################################################################
+################################################################################################################################################
 
 class Resource():
     # Resource(r["ResourceID"],r["ResourceType"],r["Name"],r["DailyCapacity"])
-    def __init__(self,myid,mytype,myname,mydaycp):
+    def __init__(self,myid,mytype,myname,myshifts):
         self.ID = myid
         self.Name = myname
+        
+        if myname.find("OUT - ") > -1:
+            mytype = "Outsourced" 
+            myshifts = [1]
+            
         self.Type = mytype
-        self.DayCapacity= int(mydaycp%8>0)+mydaycp//8
+        #self.DayCapacity= int(mydaycp%8>0)+mydaycp//8
         self.Operations = []
-        self.Outsource = False
         self.Automated = False  #Boolean Yes or No if Type is Machine, None if Type is Manual
         self.FTERequirement = 0.0 # per unit operating time. Mostly applied to machines. 
         # PlANNING
@@ -132,7 +138,7 @@ class Resource():
         self.OperatingTeam = None
         self.MachineGroup = None
         self.Alternatives = [] # alternatives that can make the operations of this resource.
-        self.AvailableShifts = []
+        self.AvailableShifts = myshifts
         self.processtype = None
         
    
@@ -209,11 +215,8 @@ class Resource():
         return self.FTERequirement
     
 
-    def setOutsource(self):
-        self.Outsource = True
-        return
     def IsOutsource(self):
-        return self.Outsource
+        return self.getName().find("OUT - ") != -1
 
     def setName(self,name):
         self.Name = name
@@ -255,7 +258,7 @@ class Resource():
     def getType(self):
         return self.Type
     def getDailyCapacity(self):
-        return 7.5*(len(self.getAvailableShifts()))
+        return 8*(len(self.getAvailableShifts()))
     def getOperations(self):
         return self.Operations
     def IsAutomated(self):
@@ -304,7 +307,8 @@ class Resource():
         return 
           
 
-    
+################################################################################################################################################
+################################################################################################################################################    
 
 class Operation():
     # Operation(r["OperationID"],r["Name"],r["ProcessTime"])
@@ -370,7 +374,8 @@ class Operation():
         return
 
 
-
+################################################################################################################################################
+################################################################################################################################################
 
 class SchJob():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
@@ -518,8 +523,8 @@ class SchJob():
 
         return maxcomptime
 
-
-
+################################################################################################################################################
+################################################################################################################################################
 
 class Job():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
@@ -592,7 +597,10 @@ class Job():
     def getSchJob(self):
         return self.SchJob
 
-   
+    def setSchJob(self,schjb):
+        self.SchJob = schjb
+        return 
+
 
     
     def setBatched(self):
@@ -678,7 +686,8 @@ class Job():
         return self.Successors 
     def getOrderReserves(self):
         return self.OrderReserves
-    
+################################################################################################################################################
+################################################################################################################################################    
     
 class CustomerOrder():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
@@ -803,6 +812,8 @@ class CustomerOrder():
     def getProductName(self):
         return self.ProductName
 
+################################################################################################################################################
+################################################################################################################################################
 class Shift():
     def __init__(self,myday,number,previous):
         self.Day = myday
@@ -862,7 +873,8 @@ class Shift():
     def getNumber(self):
         return self.Number
         
-
+################################################################################################################################################
+################################################################################################################################################
 class ScheduleSolution():
     def __init__(self,myname):
         self.name = myname

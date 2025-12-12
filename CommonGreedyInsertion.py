@@ -49,7 +49,8 @@ class CommonGreedyInsertionAlg:
  
         return True
 
-
+##################################################################################################################################################
+##################################################################################################################################################
 
     def CheckSlot(self,resource,job,Progress,ScheduleMgr):
 
@@ -238,6 +239,9 @@ class CommonGreedyInsertionAlg:
 
         return newmeptyslot
 
+#######################################################################################################################################################
+#######################################################################################################################################################
+
     def SolveScheduling(self,AllJobs,ScheduleMgr,Progress):
 
         #initialize schedule solution object
@@ -249,11 +253,73 @@ class CommonGreedyInsertionAlg:
 
         SchedulableJobs= [] 
 
-        Progress.value+=" Simple greedy insertion starts.., all jobs "+str(len(AllJobs))+"\n"  
+        Progress.value+=" Simple greedy insertion starts.., all jobs "+str(len(AllJobs))+"\n"
+
+        PreviouslyScheduled = []
+
+      
+        for job in AllJobs: 
+            if job.getScheduledResource() != None:
+                PreviouslyScheduled.append(job)
+     
+            
+        Progress.value+=" Simple greedy previously scheduled jobs "+str(len(PreviouslyScheduled))+"\n" 
+
+        prev_size = len(PreviouslyScheduled)
+
+        for j in PreviouslyScheduled:
+            
+            currentStarttime = None
+            myresource = None
+            currentslot = None
+
+            Progress.value+="  job ... "+str(j.getJob().getName())+"\n"  
+           
+            slotreturn = self.CheckSlot(j.getScheduledResource(),j,Progress,ScheduleMgr)
+
+            Progress.value+=" checking slot.. "+str(slotreturn)+"\n"
+                    
+            if slotreturn != None: 
+                if currentStarttime is None:
+                    currentStarttime = slotreturn[1][0]
+                    myresource = j.getScheduledResource()
+                    currentslot = slotreturn
+                else:
+                    if slotreturn[1][0] < currentStarttime:
+                        currentStarttime = slotreturn[1][0]
+                        myresource = resource
+                        currentslot = slotreturn
+                schreturn = currentslot
+                if schreturn == None:  
+                    continue
+                else: 
+                    slotinfo,scheinfo = schreturn 
+                    slot,startshift = slotinfo
+                    jobstarttime, unusedtime = scheinfo 
+                    
+                    newslot = self.ScheduleJob(myresource,j,jobstarttime,unusedtime,slot,startshift,Progress,sch_sol)
+
+                    Progress.value+=" scheduling previously schd job ... "+str(j.getJob().getName())+" in res "+str(myresource.getName())+"\n"  
+                    PreviouslyScheduled.remove(j)
+
+            else:
+                Progress.value+="ERROR: no slot found for schd job ... "+str(j.getJob().getName())+" in res "+str(job.getScheduledResource().getName())+"\n"  
+               
+           
+        Progress.value+=" Simple greedy previously scheduled jobs that could not be scheduled... "+str(len(PreviouslyScheduled))+"\n" 
+  
+ 
+        if prev_size > 0:
+            return
+            
+       
 
         for job in AllJobs: 
             if job.IsSchedulable():
                 SchedulableJobs.append(job)
+
+        
+
 
         
 
