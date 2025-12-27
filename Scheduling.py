@@ -244,12 +244,27 @@ class SchedulingManager:
         return 
 #################################################################################################################################
     def CheckScheduleFeasibility(self,myschedule):
-
+        """
+        Feasibility points checked:
+        1- No job start in shift 3
+        2- Machines process at most one job at any time
+        3- A job is processed by at most one job, if scheduled. 
+        4- Jobs are processed at compatible machines
+        5- Job processings should respect FTE capacity in Shifts 1 and 2 
+               
+        """
         infeasibilities = [] # feasibility explanations
         jobassignnments = dict() #key: job, val: [resources] musdt be only one
-        
+        shiftjobs = dict() # key: shift, val: [jobs]
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Feasibility check starts.."+"\n"  
+        selectedtype = self.getDataManager().getProcessTypes()[0]
+
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Feasibility check starts.."+"\n" 
+
+        for currdate, shifts in self.getMyShifts().items():
+            for shift in shifts: 
+                shiftjobs[shift] = []
 
         # reset job properties
         for name,order in self.getDataManager().getCustomerOrders().items():
@@ -264,6 +279,10 @@ class SchedulingManager:
             res_schedule = myschedule.getResourceSchedules()[resname]
             for shift in res.getSchedule().keys():
                 for job,timetuple in res_schedule[shift].items():
+                    
+                    shiftjobs[shift].append(job)
+                    if (shift.getNumber() == 3) and (job.getStartTime() >= shift.getStartTime()):
+                        infeasibilities.append(">>Infeasibility 1: "+job.getJob().getName()+"("+str(timetuple)+")"+" starts in shift3 "+shift.String("shift3 ")+" at resource "+resname)
                     if not res in jobassignnments[job]:
                         jobassignnments[job].append(res)
                     for job2,timetuple2 in res_schedule[shift].items():
@@ -271,20 +290,36 @@ class SchedulingManager:
                             continue
                         if timetuple[1] <= timetuple2[0] or timetuple2[1] <= timetuple[0]:
                             continue
-                        infeasibilities.append(">>"+job.getJob().getName()+"("+str(timetuple)+")"+" processing has overlap with "+job2.getJob().getName()+"("+str(timetuple2)+")"+" in resource "+resname)
+                        infeasibilities.append(">>Infeasibility 2: "+job.getJob().getName()+"("+str(timetuple)+")"+" processing has overlap with "+job2.getJob().getName()+"("+str(timetuple2)+")"+" in resource "+resname)
                         
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Feasibility check done.."+"\n"  
    
         for job,resources in jobassignnments.items():
             if len(resources) > 1: 
-                infeasibilities.append(">> Job"+job.getJob().getName()+" is assigned to multiple resources: "+str(resources))
+                infeasibilities.append(">>Infeasibility 3: Job"+job.getJob().getName()+" is assigned to multiple resources: "+str(resources))
             else:
                 if len(resources) == 1:
                     alternatives = self.getAlternativeResources(job)
                     machine = resources[0]
                     if not machine in alternatives:
-                        infeasibilities.append(">>"+job.getJob().getName()+" with op "+job.getJob().getOperation().getName()+"  is assigned to incompatible resource "+str(machine.getName()))
+                        infeasibilities.append(">>Infeasibility 4:"+job.getJob().getName()+" with op "+job.getJob().getOperation().getName()+"  is assigned to incompatible resource "+str(machine.getName()))
+
+        for shift,jobsofshift in shiftjobs.items():
+            if shift.getNumber() == 3:
+                continue
+           
+            ftecapacity = self.getDataManager().getFTECapacity(selectedtype,shift) # no.man
+            ftecapacity*=(shift.getEndTime()-shift.getStartTime()+1) # no. man-halfhour
+
+            fteuse = 0
+
+            for job in jobsofshift:
+                shstarttime = max(shift.getStartTime(),job.getStartTime())
+                shendtime = min(shift.getEndTime(),job.getCompletionTime())
+                fteuse+= job.getScheduledResource().getOperatingEffort()*(shendtime-shstarttime)
+            if fteuse > ftecapacity:
+                infeasibilities.append(">>Infeasibility 5: Shift"+shift.String(" fte shift ")+" has fteuse "+str(fteuse)+" > ftecapacity "+str(ftecapacity))
+            
 
         return infeasibilities
 ##################################################################################################################################
@@ -307,6 +342,56 @@ class SchedulingManager:
         return totalfte
 
 ############################################################################################################################
+    def ScheduleJob(self,job,res,starttime,completiontime,schsol,Progress):
+
+        Progress.value+= "Job: "+job.getJob().getName()+", scheduled on mach "+res.getName()+" st/cp "+str(starttime)+"/"+str(completiontime)+"\n" 
+        job.SetScheduled()
+        job.setScheduledResource(res)
+
+                
+        job.setStartTime(starttime) 
+        stshift = self.getShiftofTime(starttime)
+        Progress.value+=stshift.String("Start sh")+"\n" 
+                
+        job.setScheduledShift(stshift)
+        job.setCompletionTime(completiontime)
+
+        Progress.value+="finding comp shift.."+"\n"
+            
+        try: 
+            cpshift = self.getShiftofTime(completiontime)
+        except Exception as e: 
+            Progress.value+="error.."+str(e)+"\n"
+
+                    
+        Progress.value+=cpshift.String("Comp sh")+"\n"
+
+        curr_shift = stshift
+        while curr_shift!= None: 
+            #matchtuple[0].getCurrentSchedule()[curr_shift].append(job)
+            shiftst = max(starttime,curr_shift.getStartTime())
+                    
+            shiftcp = min(completiontime,curr_shift.getEndTime())
+            Progress.value+=curr_shift.String("Current sh")+str(shiftst)+"-"+str(shiftcp)+"\n"
+
+            Progress.value+=" >>>"+str(shiftst)+"-"+str(shiftcp)+"\n"
+
+                    
+            schsol.getResourceSchedules()[res.getName()][curr_shift][job] = (shiftst,shiftcp)
+                    
+            Progress.value+=" done...."+"\n"
+            if curr_shift == cpshift:
+                break
+            try: 
+                Progress.value+=" next......"+str(curr_shift.getNext())+"\n"
+                curr_shift = curr_shift.getNext()
+            except Exception as e: 
+                Progress.value+="error.."+str(e)+"\n"
+                
+        job.setScheduledCompShift(cpshift)
+                    
+
+        return
 ############################################################################################################################
     def MakeSchedule(self,schedulealg,batchingalg):
       

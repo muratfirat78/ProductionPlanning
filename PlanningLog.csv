@@ -1,7 +1,7 @@
 ,Info
 0,Order __export__.mrp_production_1104_d3ae4426 not planned/scheduled.
 1,Order __export__.mrp_production_1104_d3ae4426 has deadline 2025-12-31 00:00:00
-2,Order __export__.mrp_production_1104_d3ae4426 has planning horizon 2025-12-31  -  2026-06-27 15:41:06.808292
+2,Order __export__.mrp_production_1104_d3ae4426 has planning horizon 2025-12-31  -  2026-06-27 20:40:14.685370
 3,Checking date 2025-12-31 00:00:00
 4,Order __export__.mrp_production_1104_d3ae4426 has fprod with preds 1
 5, curr opr [4022-651-55002A] PACK - Packaging (VERP_P)
@@ -55,7 +55,7 @@
 53,+++ Order __export__.mrp_production_1104_d3ae4426 planned on 2026-01-01 00:00:00
 54,Order __export__.mrp_production_1197_849443cd not planned/scheduled.
 55,Order __export__.mrp_production_1197_849443cd has deadline 2025-12-31 00:00:00
-56,Order __export__.mrp_production_1197_849443cd has planning horizon 2025-12-31  -  2026-06-27 15:41:06.808292
+56,Order __export__.mrp_production_1197_849443cd has planning horizon 2025-12-31  -  2026-06-27 20:40:14.685370
 57,Checking date 2025-12-31 00:00:00
 58,Order __export__.mrp_production_1197_849443cd has fprod with preds 1
 59, curr opr [1082700B] PACK - Packaging (VERP_P)
@@ -104,7 +104,7 @@
 102,+++ Order __export__.mrp_production_1197_849443cd planned on 2026-01-01 00:00:00
 103,Order __export__.mrp_production_4967_3148a862 not planned/scheduled.
 104,Order __export__.mrp_production_4967_3148a862 has deadline 2025-12-31 00:00:00
-105,Order __export__.mrp_production_4967_3148a862 has planning horizon 2025-12-31  -  2026-06-27 15:41:06.808292
+105,Order __export__.mrp_production_4967_3148a862 has planning horizon 2025-12-31  -  2026-06-27 20:40:14.685370
 106,Checking date 2025-12-31 00:00:00
 107,Order __export__.mrp_production_4967_3148a862 has fprod with preds 1
 108, curr opr [4598-008-08901B POS 1] PACK - Packaging (VERP_P)
@@ -1016,7 +1016,7 @@
 1014,+++ Order __export__.mrp_production_4967_3148a862 planned on 2026-03-17 00:00:00
 1015,Order __export__.mrp_production_5127_c4b6d523 not planned/scheduled.
 1016,Order __export__.mrp_production_5127_c4b6d523 has deadline 2026-01-05 01:00:00
-1017,Order __export__.mrp_production_5127_c4b6d523 has planning horizon 2026-01-05  -  2026-06-27 15:41:06.808292
+1017,Order __export__.mrp_production_5127_c4b6d523 has planning horizon 2026-01-05  -  2026-06-27 20:40:14.685370
 1018,Checking date 2026-01-05 00:00:00
 1019,Order __export__.mrp_production_5127_c4b6d523 has fprod with preds 1
 1020, curr opr [4022.632.63021] M5-03 - Haas - 5axis - Manual (UMC750)
@@ -1244,7 +1244,7 @@
 1242,+++ Order __export__.mrp_production_5127_c4b6d523 planned on 2026-02-18 00:00:00
 1243,Order __export__.mrp_production_5139_6ec4ad82 not planned/scheduled.
 1244,Order __export__.mrp_production_5139_6ec4ad82 has deadline 2026-01-05 01:00:00
-1245,Order __export__.mrp_production_5139_6ec4ad82 has planning horizon 2026-01-05  -  2026-06-27 15:41:06.808292
+1245,Order __export__.mrp_production_5139_6ec4ad82 has planning horizon 2026-01-05  -  2026-06-27 20:40:14.685370
 1246,Checking date 2026-01-05 00:00:00
 1247,Order __export__.mrp_production_5139_6ec4ad82 has fprod with preds 1
 1248, curr opr [4022-637-68442] PACK - Packaging (VERP_P)
@@ -1276,7 +1276,7 @@
 1274,+++ Order __export__.mrp_production_5139_6ec4ad82 planned on 2026-01-05 00:00:00
 1275,Order __export__.mrp_production_5168_bf7bb95a not planned/scheduled.
 1276,Order __export__.mrp_production_5168_bf7bb95a has deadline 2026-01-08 01:00:00
-1277,Order __export__.mrp_production_5168_bf7bb95a has planning horizon 2026-01-08  -  2026-06-27 15:41:06.808292
+1277,Order __export__.mrp_production_5168_bf7bb95a has planning horizon 2026-01-08  -  2026-06-27 20:40:14.685370
 1278,Checking date 2026-01-08 00:00:00
 1279,Order __export__.mrp_production_5168_bf7bb95a has fprod with preds 1
 1280, curr opr [4022-637-24142] PACK - Packaging (VERP_P)
@@ -1308,7 +1308,7 @@
 1306,+++ Order __export__.mrp_production_5168_bf7bb95a planned on 2026-01-08 00:00:00
 1307,Order __export__.mrp_production_5169_605d6f4a not planned/scheduled.
 1308,Order __export__.mrp_production_5169_605d6f4a has deadline 2026-01-08 01:00:00
-1309,Order __export__.mrp_production_5169_605d6f4a has planning horizon 2026-01-08  -  2026-06-27 15:41:06.808292
+1309,Order __export__.mrp_production_5169_605d6f4a has planning horizon 2026-01-08  -  2026-06-27 20:40:14.685370
 1310,Checking date 2026-01-08 00:00:00
 1311,Order __export__.mrp_production_5169_605d6f4a has fprod with preds 1
 1312, curr opr [4022-637-24191] PACK - Packaging (VERP_P)

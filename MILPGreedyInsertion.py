@@ -98,7 +98,7 @@ class MILPGreedyInsertionAlg:
                 ftecapacity = ScheduleMgr.getDataManager().getFTECapacity(selectedtype,shift) # no.man
                 Progress.value+="shift FTE capacity: "+str(ftecapacity)+"\n"
                
-                ftecapacity*=shift.getEndTime()-shift.getStartTime()+1 # no. man-halfhour
+                ftecapacity*=(shift.getEndTime()-shift.getStartTime()+1) # no. man-halfhour
                 Progress.value+="FTE capacity: "+str(ftecapacity)+"\n"
                 shift_fte_cons[shift] = solver.Constraint(0,ftecapacity,str(shift.getDay())+'_'+str(shift.getNumber())+'_cons')
              
@@ -317,7 +317,7 @@ class MILPGreedyInsertionAlg:
                 scheduledjobs.append(job)
                 starttime,completiontime = startcomps[matchtuple]
 
-                self.ScheduleJob(job,machine,starttime,completiontime,schedulesol,ScheduleMgr,Progress)
+                ScheduleMgr.ScheduleJob(job,machine,starttime,completiontime,schedulesol,Progress)
 
                 matchtuple[0].UpdateLatestJobCompletion(job,completiontime)
                 matchtuple[0].UpdateTotalJobProcessing(job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('hour'))
@@ -325,56 +325,7 @@ class MILPGreedyInsertionAlg:
         return scheduledjobs
 
 #######################################################################################################################################################
-    def ScheduleJob(self,job,res,starttime,completiontime,schsol,ScheduleMgr,Progress):
 
-        Progress.value+= "Job: "+job.getJob().getName()+", scheduled on mach "+res.getName()+" st/cp "+str(starttime)+"/"+str(completiontime)+"\n" 
-        job.SetScheduled()
-        job.setScheduledResource(res)
-
-                
-        job.setStartTime(starttime) 
-        stshift = ScheduleMgr.getShiftofTime(starttime)
-        Progress.value+=stshift.String("Start sh")+"\n" 
-                
-        job.setScheduledShift(stshift)
-        job.setCompletionTime(completiontime)
-
-        Progress.value+="finding comp shift.."+"\n"
-            
-        try: 
-            cpshift = ScheduleMgr.getShiftofTime(completiontime)
-        except Exception as e: 
-            Progress.value+="error.."+str(e)+"\n"
-
-                    
-        Progress.value+=cpshift.String("Comp sh")+"\n"
-
-        curr_shift = stshift
-        while curr_shift!= None: 
-            #matchtuple[0].getCurrentSchedule()[curr_shift].append(job)
-            shiftst = max(starttime,curr_shift.getStartTime())
-                    
-            shiftcp = min(completiontime,curr_shift.getEndTime())
-            Progress.value+=curr_shift.String("Current sh")+str(shiftst)+"-"+str(shiftcp)+"\n"
-
-            Progress.value+=" >>>"+str(shiftst)+"-"+str(shiftcp)+"\n"
-
-                    
-            schsol.getResourceSchedules()[res.getName()][curr_shift][job] = (shiftst,shiftcp)
-                    
-            Progress.value+=" done...."+"\n"
-            if curr_shift == cpshift:
-                break
-            try: 
-                Progress.value+=" next......"+str(curr_shift.getNext())+"\n"
-                curr_shift = curr_shift.getNext()
-            except Exception as e: 
-                Progress.value+="error.."+str(e)+"\n"
-                
-        job.setScheduledCompShift(cpshift)
-                    
-
-        return
 #######################################################################################################################################################
 
     def SolveScheduling(self,AllJobs,ScheduleMgr,Progress,psstart,pssend):
