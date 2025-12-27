@@ -17,7 +17,6 @@ import math as mth
 from PlanningObjects import *
 from Visual import *
 from Data import *
-from GreedyInsertion import *
 import simpy
 from numpy import random
 import pandas as pd 

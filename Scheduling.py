@@ -17,11 +17,9 @@ import math as mth
 from PlanningObjects import *
 from Visual import *
 from Data import *
-from GreedyInsertion import *
-from CommonGreedyInsertion import *
 from MILPGreedyInsertion import *
 from SimpleBatching import *
-from AdvancedAlgorithmBryan import *
+
 
 #######################################################################################################################
 
