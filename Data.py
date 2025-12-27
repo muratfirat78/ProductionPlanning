@@ -76,9 +76,18 @@ class DataManager:
 
     def getScheduleStartWeek(self):
         return self.ScheduleStartWeek
+
+    def setScheduleStartWeek(self,mywk):
+        self.ScheduleStartWeek = mywk
+        return 
     
     def getScheduleEndWeek(self):
         return self.ScheduleEndWeek
+
+    def setScheduleEndWeek(self,mywk):
+        self.ScheduleEndWeek = mywk
+        return 
+        
         
         
     def getSchedulingManager(self):
@@ -351,8 +360,13 @@ class DataManager:
     
     def SaveSchedule(self,b):
 
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+"\n" 
+    
         myschedule = self.getSchedulingManager().getMyCurrentSchedule() 
 
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  current schedule....."+str(myschedule)+"\n"  
+        
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+str(len(myschedule.getResourceSchedules()))+"\n" 
     
 
@@ -689,7 +703,7 @@ class DataManager:
             self.ScheduleStartWeek = startweek
             self.ScheduleEndWeek = endweek
 
-            self.getSchedulingManager().CreateShifts(periodstart,periodend,True)
+            self.getSchedulingManager().CreateShifts(periodstart,periodend)
             
             schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
             self.getVisualManager().getCaseInfo().value += ">>>> Schedules.."+str(len(schedule_df))+"\n" 
@@ -1661,16 +1675,25 @@ class DataManager:
         
         return
 
-    def getFTECapacity(processtype,shift):
+    def getFTECapacity(self,processtype,shift):
 
         sumfte = 0
         for resname,res in self.Resources.items():
             if res.getType() == "Operator":
-                if shift in myres.getAvailableShifts():
-                    if res.getProcessType() == processtype:
+                if res.getProcessType() == processtype:
+                    if shift.getNumber() in res.getAvailableShifts():
                         sumfte+=1
     
         return sumfte
+        
+    def getProcessTypes(self):
+        types = []
+        for resname,res in self.Resources.items():
+            if res.getType() == "Machine":
+                if not res.getProcessType() in types:
+                    types.append(res.getProcessType())
+    
+        return types
         
     def on_submit_func(self,sender):    
 

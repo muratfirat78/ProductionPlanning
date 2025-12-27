@@ -156,11 +156,40 @@ class Resource():
         self.AvailableShift = None; #This is 1 or 2 for operator and All for Machines
         self.EmptySlots = [] # list of tuples ((starttime,length),startshift)
         self.ShiftAvailability = dict() #key: shift, val: boolena available/unavailable.  
+        self.LatestJobCompletion = 8 # shift 2 starts defaultly at this time
+        self.TotalJobProcessing = 0
+        self.LatestJob = None
 
 
         self.SimResource = None
 
         # SCHEDULING
+
+ 
+
+    def UpdateLatestJobCompletion(self,job,comp):
+        if self.LatestJob == None: 
+            self.LatestJob = job
+        else: 
+            if self.LatestJobCompletion < comp:
+                self.LatestJob = job
+                
+        self.LatestJobCompletion = max(self.LatestJobCompletion,comp)
+        return
+
+    def getLatestJobCompletion(self):
+        return self.LatestJobCompletion 
+
+    def getLatestJob(self):
+        return self.LatestJob
+        
+    def UpdateTotalJobProcessing(self,ptime):
+        self.TotalJobProcessing += ptime
+        return
+
+    def getTotalJobProcessing(self):
+        return self.TotalJobProcessing 
+          
 
     def setSimResource(self,prty):
         self.SimResource = prty
@@ -404,6 +433,35 @@ class SchJob():
     def setStartTime(self,myst):
         self.StartTime = myst
         return
+    def resetSchedule(self):
+        self.setScheduledShift(None)
+        self.setStartTime(None) 
+        self.setCompletionTime(None)
+        self.setScheduledCompShift(None)
+        return
+        
+    def updateStartTime(self,shift,myst):
+        if self.getStartTime() == None: 
+            self.setStartTime(myst)
+            self.setScheduledShift(shift)           
+        else:
+            if self.getStartTime() > myst:
+                self.setStartTime(myst)
+                self.setScheduledShift(shift)
+                       
+        return
+        
+    def updateCompletionTime(self,shift,myst):
+        
+        if self.getCompletionTime() == None: 
+            self.setCompletionTime(myst)
+            self.setScheduledCompShift(shift)           
+        else:
+            if self.getCompletionTime() < myst:
+                self.setCompletionTime(myst)
+                self.setScheduledCompShift(shift)
+                       
+        return
 
     def getCompletionTime(self):
         return self.CompletionTime
@@ -416,13 +474,13 @@ class SchJob():
             maxcomp = 0
             allscheduled = True
             for bjob in self.getJob().getBatchJobs():
-                if bjob.getSchJob().IsScheduled():
-                    maxcomp = max(maxcomp,bjob.getSchJob().getCompletionTime())
+                if bjob.getMySch().IsScheduled():
+                    maxcomp = max(maxcomp,bjob.getMySch().getCompletionTime())
                 else: 
                     allscheduled = False
 
             if allscheduled and len(self.getJob().getBatchJobs()) > 0:
-                job.getSchJob().setCompletionTime(myst)
+                job.getMySch().setCompletionTime(myst)
        
         return
 
@@ -459,18 +517,7 @@ class SchJob():
         return self.Scheduled
         
     def SetScheduled(self):
-        if len(self.getJob().getOrderJobs()) > 0:
-            self.Scheduled = True
-        else: 
-            if self.getJob().IsBatched():
-                bscheduled = True
-                for bjob in self.getJob().getBatchJobs():
-                    bscheduled = bscheduled and bjob.getSchJob().IsScheduled()
-                self.Scheduled = bscheduled
-   
-            else: 
-                self.Scheduled = True
-            
+        self.Scheduled = True
         return 
 
     def getScheduledTime(self):
@@ -503,7 +550,7 @@ class SchJob():
                 continue
 
               
-            if not pred.getSchJob().IsScheduled():
+            if not pred.getMySch().IsScheduled():
                 return False
         return True
 
@@ -512,14 +559,11 @@ class SchJob():
         maxcomptime = 0
 
         for pred in self.getJob().getPredecessors():
-            
-            if pred.IsBatched():
-                continue
-
-            if not pred.getSchJob().IsScheduled():
-                return -1 # not applicable to start
+    
+            if not pred.getMySch().IsScheduled():
+                return -1 
             else: 
-                maxcomptime = max(maxcomptime,pred.getSchJob().getCompletionTime())
+                maxcomptime = max(maxcomptime,pred.getMySch().getCompletionTime())
 
         return maxcomptime
 
@@ -546,7 +590,7 @@ class Job():
        
         self.ActualStart = None
         self.ActualCompletion = None
-        self.SchJob = None
+     
         self.MySch = None
         self.MyPlan = None # (resource,date)
         self.status = None
@@ -590,18 +634,8 @@ class Job():
         self.MySch = SchJob(self)
         return
 
-    def initializeSchJob(self):
-        self.SchJob = SchJob(self)
-        return
-
-    def getSchJob(self):
-        return self.SchJob
-
-    def setSchJob(self,schjb):
-        self.SchJob = schjb
-        return 
-
-
+   
+  
     
     def setBatched(self):
         self.batched = True
@@ -828,6 +862,9 @@ class Shift():
         
         self.previous = previous
 
+    def String(self,mystr):
+        return mystr+" :("+str(self.getDay())+", no."+str(self.getNumber())+"), hrs: ["+str(self.getStartTime())+"-"+str(self.getEndTime())+"]"
+
     def setEndHour(self,time):
         self.EndHour = time
         return 
@@ -879,7 +916,20 @@ class ScheduleSolution():
     def __init__(self,myname):
         self.name = myname
         self.resources_sch = dict()  #key: resname, #val: schdule: dict key: Shift, val: [(jobid,st,cp)]
-        
+        self.startweek = None
+        self.endweek = None
+
+    def setStartWeek(self,mywk):
+        self.startweek = mywk
+        return
+    def getStartWeek(self):
+        return self.startweek 
+
+    def setEndWeek(self,mywk):
+        self.endweek = mywk
+        return
+    def getEndWeek(self):
+        return self.endweek 
 
     def getName(self):
         return self.name

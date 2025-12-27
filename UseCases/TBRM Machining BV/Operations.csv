@@ -1,0 +1,172 @@
+OperationID,Name,ProcessTime
+15889.0-_-__export__.mrp_workcenter_55_15609e22,[7005-2480-0090] M3-02 - Accuway - 3axis - Manual (FR3_02),382.5
+15889.0-_-__export__.mrp_workcenter_62_468a38e5,[7005-2480-0090] M5-04 - Haas - 5axis  - Manual (UMC750SS),715.0
+14975.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-651-55002A] MP1 - Material preparation - automatic sawing (ZGN_01),1.5555555555555556
+14975.0-_-__export__.mrp_workcenter_59_d6deab7b,[4022-651-55002A] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),63.333333333333336
+14975.0-_-__export__.mrp_workcenter_58_a525d5b9,[4022-651-55002A] M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01),38.333333333333336
+14975.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-651-55002A] BW - Benchwork (BKW_01),4.0
+14975.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-651-55002A] PACK - Packaging (VERP_P),1.0
+16893.0-_-__export__.mrp_workcenter_63_98a7a00b,[1508130 B] MP1 - Material preparation - automatic sawing (ZGN_01),1.1071428571428572
+16893.0-_-__export__.mrp_workcenter_59_d6deab7b,[1508130 B] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),50.642857142857146
+16893.0-_-__export__.mrp_workcenter_54_3f0243e1,[1508130 B] M3-01 - Accuway - 3axis - Manual (FR3_01),5.642857142857143
+16893.0-_-__export__.mrp_workcenter_66_9f807a30,[1508130 B] BW - Benchwork (BKW_01),5.0
+16893.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[1508130 B] PACK - Packaging (VERP_P),1.0
+15889.0-_-__export__.mrp_workcenter_54_3f0243e1,[7005-2480-0090] M3-01 - Accuway - 3axis - Manual (FR3_01),382.5
+14910.0-_-__export__.mrp_workcenter_63_98a7a00b,[216121-0006] MP1 - Material preparation - automatic sawing (ZGN_01),2.5
+14910.0-_-__export__.mrp_workcenter_59_d6deab7b,[216121-0006] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),9.0
+14910.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[216121-0006] PACK - Packaging (VERP_P),1.0
+14961.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-637-24142] MP1 - Material preparation - automatic sawing (ZGN_01),1.3409090909090908
+14961.0-_-__export__.mrp_workcenter_58_a525d5b9,[4022-637-24142] M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01),32.04545454545455
+14961.0-_-__export__.mrp_workcenter_57_6faf5319,[4022-637-24142] M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02),12.045454545454545
+14961.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-637-24142] BW - Benchwork (BKW_01),3.0
+14961.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-637-24142] PACK - Packaging (VERP_P),1.0
+14907.0-_-__export__.mrp_workcenter_59_d6deab7b,[1082700B] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),37.3235294117647
+14907.0-_-__export__.mrp_workcenter_54_3f0243e1,[1082700B] M3-01 - Accuway - 3axis - Manual (FR3_01),6.323529411764706
+14907.0-_-__export__.mrp_workcenter_66_9f807a30,[1082700B] BW - Benchwork (BKW_01),5.0
+14907.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[1082700B] PACK - Packaging (VERP_P),1.0
+14908.0-_-__export__.mrp_workcenter_68_8bff6631,[216121-0005] OUT - Outsourced activity,4500.0
+14908.0-_-__export__.mrp_workcenter_65_c1e1b939,"[216121-0005] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",0.0
+14908.0-_-__export__.mrp_workcenter_59_d6deab7b,[216121-0005] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),26.836734693877553
+14908.0-_-__export__.mrp_workcenter_54_3f0243e1,[216121-0005] M3-01 - Accuway - 3axis - Manual (FR3_01),7.836734693877551
+14908.0-_-__export__.mrp_workcenter_66_9f807a30,[216121-0005] BW - Benchwork (BKW_01),8.0
+14908.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[216121-0005] PACK - Packaging (VERP_P),1.0
+15021.0-_-__export__.mrp_workcenter_65_c1e1b939,"[4522-980-37891] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",0.0
+15021.0-_-__export__.mrp_workcenter_55_15609e22,[4522-980-37891] M3-02 - Accuway - 3axis - Manual (FR3_02),8.447761194029852
+15021.0-_-__export__.mrp_workcenter_66_9f807a30,[4522-980-37891] BW - Benchwork (BKW_01),1.0
+15021.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4522-980-37891] PACK - Packaging (VERP_P),1.0
+7366.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022.622.61092] MP1 - Material preparation - automatic sawing (ZGN_01),1.4411764705882353
+7366.0-_-__export__.mrp_workcenter_62_468a38e5,[4022.622.61092] M5-04 - Haas - 5axis  - Manual (UMC750SS),21.764705882352942
+7366.0-_-__export__.mrp_workcenter_60_6593b576,[4022.622.61092] M3-03 - Haas - 3axis - Manual (VF2SS),33.76470588235294
+7366.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.622.61092] OUT - Outsourced activity,2250.0
+7366.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022.622.61092] PACK - Packaging (VERP_P),1.0
+14895.0-_-__export__.mrp_workcenter_63_98a7a00b,[00429-00-662-B] MP1 - Material preparation - automatic sawing (ZGN_01),1.0375
+14895.0-_-__export__.mrp_workcenter_57_6faf5319,[00429-00-662-B] M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02),14.225
+14895.0-_-__export__.mrp_workcenter_66_9f807a30,[00429-00-662-B] BW - Benchwork (BKW_01),2.0
+14895.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00429-00-662-B] PACK - Packaging (VERP_P),1.0
+15022.0-_-__export__.mrp_workcenter_63_98a7a00b,[4598-008-08901B POS 1] MP1 - Material preparation - automatic sawing (ZGN_01),1.1724137931034482
+15022.0-_-__export__.mrp_workcenter_57_6faf5319,[4598-008-08901B POS 1] M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02),26.03448275862069
+15022.0-_-__export__.mrp_workcenter_54_3f0243e1,[4598-008-08901B POS 1] M3-01 - Accuway - 3axis - Manual (FR3_01),5.0344827586206895
+15022.0-_-__export__.mrp_workcenter_66_9f807a30,[4598-008-08901B POS 1] BW - Benchwork (BKW_01),3.0
+15022.0-_-__export__.mrp_workcenter_68_8bff6631,[4598-008-08901B POS 1] OUT - Outsourced activity,9000.0
+15022.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4598-008-08901B POS 1] PACK - Packaging (VERP_P),1.0
+18212.0-_-__export__.mrp_workcenter_65_c1e1b939,"[100160036] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+7034.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022.632.63021] MP1 - Material preparation - automatic sawing (ZGN_01),1.029296875
+7034.0-_-__export__.mrp_workcenter_61_bcb50df3,[4022.632.63021] M5-03 - Haas - 5axis - Manual (UMC750),13.6171875
+18304.0-_-__export__.mrp_workcenter_65_c1e1b939,"[22203901] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+18304.0-_-__export__.mrp_workcenter_68_8bff6631,[22203901] OUT - Outsourced activity,2250.0
+14892.0-_-__export__.mrp_workcenter_63_98a7a00b,[00385-00-346-A] MP1 - Material preparation - automatic sawing (ZGN_01),1.0455927051671732
+14892.0-_-__export__.mrp_workcenter_56_d6637dea,[00385-00-346-A] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),8.27355623100304
+14892.0-_-__export__.mrp_workcenter_54_3f0243e1,[00385-00-346-A] M3-01 - Accuway - 3axis - Manual (FR3_01),4.27355623100304
+14892.0-_-__export__.mrp_workcenter_66_9f807a30,[00385-00-346-A] BW - Benchwork (BKW_01),2.0
+14892.0-_-__export__.mrp_workcenter_68_8bff6631,[00385-00-346-A] OUT - Outsourced activity,2250.0
+14892.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00385-00-346-A] PACK - Packaging (VERP_P),1.0
+14886.0-_-__export__.mrp_workcenter_63_98a7a00b,[00385-00-102-C] MP1 - Material preparation - automatic sawing (ZGN_01),1.025
+14886.0-_-__export__.mrp_workcenter_57_6faf5319,[00385-00-102-C] M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02),8.15
+14886.0-_-__export__.mrp_workcenter_54_3f0243e1,[00385-00-102-C] M3-01 - Accuway - 3axis - Manual (FR3_01),3.15
+14886.0-_-__export__.mrp_workcenter_68_8bff6631,[00385-00-102-C] OUT - Outsourced activity,9000.0
+14886.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00385-00-102-C] PACK - Packaging (VERP_P),1.0
+17481.0-_-__export__.mrp_workcenter_65_c1e1b939,"[4022.689.94931] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",60.0
+17481.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022.689.94931] M3-01 - Accuway - 3axis - Manual (FR3_01),259.0
+17481.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.689.94931] OUT - Outsourced activity,2250.0
+17484.0-_-__export__.mrp_workcenter_65_c1e1b939,"[4022.689.94981] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+17484.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022.689.94981] M3-01 - Accuway - 3axis - Manual (FR3_01),237.0
+17484.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.689.94981] OUT - Outsourced activity,2250.0
+17465.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022.693.44221] MP1 - Material preparation - automatic sawing (ZGN_01),2.0
+17465.0-_-__export__.mrp_workcenter_60_6593b576,[4022.693.44221] M3-03 - Haas - 3axis - Manual (VF2SS),208.0
+17465.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.693.44221] OUT - Outsourced activity,4500.0
+17477.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022.693.44241] MP1 - Material preparation - automatic sawing (ZGN_01),2.0
+17477.0-_-__export__.mrp_workcenter_60_6593b576,[4022.693.44241] M3-03 - Haas - 3axis - Manual (VF2SS),208.0
+17477.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.693.44241] OUT - Outsourced activity,4500.0
+17459.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022.623.82781] MP1 - Material preparation - automatic sawing (ZGN_01),1.9375
+17459.0-_-__export__.mrp_workcenter_60_6593b576,[4022.623.82781] M3-03 - Haas - 3axis - Manual (VF2SS),48.75
+17459.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.623.82781] OUT - Outsourced activity,4500.0
+18475.0-_-__export__.mrp_workcenter_63_98a7a00b,[7001-2540-0010] MP1 - Material preparation - automatic sawing (ZGN_01),4.75
+17519.0-_-__export__.mrp_workcenter_65_c1e1b939,"[E06581] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+17519.0-_-__export__.mrp_workcenter_56_d6637dea,[E06581] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),4.225
+14976.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-656-73531] MP1 - Material preparation - automatic sawing (ZGN_01),1.1744186046511629
+14976.0-_-__export__.mrp_workcenter_57_6faf5319,[4022-656-73531] M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02),5.046511627906977
+14976.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-656-73531] BW - Benchwork (BKW_01),2.0
+14976.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-656-73531] PACK - Packaging (VERP_P),1.0
+14958.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-635-87291] MP1 - Material preparation - automatic sawing (ZGN_01),1.2
+14958.0-_-__export__.mrp_workcenter_56_d6637dea,[4022-635-87291] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),9.2
+14958.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-635-87291] M3-01 - Accuway - 3axis - Manual (FR3_01),2.2
+14958.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-635-87291] BW - Benchwork (BKW_01),1.0
+14958.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-635-87291] PACK - Packaging (VERP_P),1.0
+14954.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-631-99701] MP1 - Material preparation - automatic sawing (ZGN_01),1.1153846153846154
+14954.0-_-__export__.mrp_workcenter_59_d6deab7b,[4022-631-99701] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),38.69230769230769
+14954.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-631-99701] M3-01 - Accuway - 3axis - Manual (FR3_01),5.6923076923076925
+14954.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-631-99701] BW - Benchwork (BKW_01),5.0
+14954.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-631-99701] PACK - Packaging (VERP_P),1.0
+15041.0-_-__export__.mrp_workcenter_63_98a7a00b,[M0216-01-091-A] MP1 - Material preparation - automatic sawing (ZGN_01),1.0075
+15041.0-_-__export__.mrp_workcenter_54_3f0243e1,[M0216-01-091-A] M3-01 - Accuway - 3axis - Manual (FR3_01),0.045
+15041.0-_-__export__.mrp_workcenter_66_9f807a30,[M0216-01-091-A] BW - Benchwork (BKW_01),1.0
+15041.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[M0216-01-091-A] PACK - Packaging (VERP_P),1.0
+14888.0-_-__export__.mrp_workcenter_63_98a7a00b,[00385-00-274-D] MP1 - Material preparation - automatic sawing (ZGN_01),1.0421348314606742
+14888.0-_-__export__.mrp_workcenter_56_d6637dea,[00385-00-274-D] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),8.252808988764045
+14888.0-_-__export__.mrp_workcenter_54_3f0243e1,[00385-00-274-D] M3-01 - Accuway - 3axis - Manual (FR3_01),3.252808988764045
+14888.0-_-__export__.mrp_workcenter_66_9f807a30,[00385-00-274-D] BW - Benchwork (BKW_01),1.0
+14888.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00385-00-274-D] PACK - Packaging (VERP_P),1.0
+14890.0-_-__export__.mrp_workcenter_63_98a7a00b,[00385-00-321-A] MP1 - Material preparation - automatic sawing (ZGN_01),1.075
+14890.0-_-__export__.mrp_workcenter_56_d6637dea,[00385-00-321-A] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),8.45
+14890.0-_-__export__.mrp_workcenter_54_3f0243e1,[00385-00-321-A] M3-01 - Accuway - 3axis - Manual (FR3_01),4.45
+14890.0-_-__export__.mrp_workcenter_66_9f807a30,[00385-00-321-A] BW - Benchwork (BKW_01),2.0
+14890.0-_-__export__.mrp_workcenter_68_8bff6631,[00385-00-321-A] OUT - Outsourced activity,2250.0
+14890.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00385-00-321-A] PACK - Packaging (VERP_P),1.0
+14891.0-_-__export__.mrp_workcenter_63_98a7a00b,[00385-00-329-A] MP1 - Material preparation - automatic sawing (ZGN_01),1.0317124735729386
+14891.0-_-__export__.mrp_workcenter_54_3f0243e1,[00385-00-329-A] M3-01 - Accuway - 3axis - Manual (FR3_01),3.190274841437632
+14891.0-_-__export__.mrp_workcenter_66_9f807a30,[00385-00-329-A] BW - Benchwork (BKW_01),1.0
+14891.0-_-__export__.mrp_workcenter_68_8bff6631,[00385-00-329-A] OUT - Outsourced activity,2250.0
+14891.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00385-00-329-A] PACK - Packaging (VERP_P),1.0
+17087.0-_-__export__.mrp_workcenter_63_98a7a00b,[000750458] MP1 - Material preparation - automatic sawing (ZGN_01),1.234375
+17087.0-_-__export__.mrp_workcenter_61_bcb50df3,[000750458] M5-03 - Haas - 5axis - Manual (UMC750),19.9375
+18142.0-_-__export__.mrp_workcenter_63_98a7a00b,[7005-2580-0017] MP1 - Material preparation - automatic sawing (ZGN_01),2.25
+18142.0-_-__export__.mrp_workcenter_61_bcb50df3,[7005-2580-0017] M5-03 - Haas - 5axis - Manual (UMC750),120.0
+18142.0-_-__export__.mrp_workcenter_68_8bff6631,[7005-2580-0017] OUT - Outsourced activity,2250.0
+16257.0-_-__export__.mrp_workcenter_64_95992ef5,[7005-2580-0005] MP2 - Material preparation - manual sawing (ZGN_02),1.0
+16257.0-_-__export__.mrp_workcenter_60_6593b576,[7005-2580-0005] M3-03 - Haas - 3axis - Manual (VF2SS),10.0
+14923.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-335-71012] MP1 - Material preparation - automatic sawing (ZGN_01),1.375
+14923.0-_-__export__.mrp_workcenter_56_d6637dea,[4022-335-71012] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),8.25
+14923.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-335-71012] M3-01 - Accuway - 3axis - Manual (FR3_01),4.25
+14923.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-335-71012] BW - Benchwork (BKW_01),2.0
+14923.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-335-71012] PACK - Packaging (VERP_P),1.0
+17993.0-_-__export__.mrp_workcenter_65_c1e1b939,"[7005-2580-0015] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+17993.0-_-__export__.mrp_workcenter_60_6593b576,[7005-2580-0015] M3-03 - Haas - 3axis - Manual (VF2SS),157.0
+17993.0-_-__export__.mrp_workcenter_68_8bff6631,[7005-2580-0015] OUT - Outsourced activity,2250.0
+18484.0-_-__export__.mrp_workcenter_65_c1e1b939,"[7007-2500-0005] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+18484.0-_-__export__.mrp_workcenter_60_6593b576,[7007-2500-0005] M3-03 - Haas - 3axis - Manual (VF2SS),127.0
+18484.0-_-__export__.mrp_workcenter_68_8bff6631,[7007-2500-0005] OUT - Outsourced activity,4500.0
+14210.0-_-__export__.mrp_workcenter_65_c1e1b939,"[4022.704.19282] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+14210.0-_-__export__.mrp_workcenter_61_bcb50df3,[4022.704.19282] M5-03 - Haas - 5axis - Manual (UMC750),482.0689655172414
+14210.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.704.19282] OUT - Outsourced activity,2250.0
+14894.0-_-__export__.mrp_workcenter_63_98a7a00b,[00429-00-249-A] MP1 - Material preparation - automatic sawing (ZGN_01),1.0344036697247707
+14894.0-_-__export__.mrp_workcenter_56_d6637dea,[00429-00-249-A] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),6.206422018348624
+14894.0-_-__export__.mrp_workcenter_66_9f807a30,[00429-00-249-A] BW - Benchwork (BKW_01),1.0
+14894.0-_-__export__.mrp_workcenter_68_8bff6631,[00429-00-249-A] OUT - Outsourced activity,2250.0
+14894.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[00429-00-249-A] PACK - Packaging (VERP_P),1.0
+14932.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-456-08803] MP1 - Material preparation - automatic sawing (ZGN_01),2.0
+14932.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-456-08803] M3-01 - Accuway - 3axis - Manual (FR3_01),7.0
+14932.0-_-__export__.mrp_workcenter_58_a525d5b9,[4022-456-08803] M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01),26.0
+14932.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-456-08803] BW - Benchwork (BKW_01),1.0
+14932.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-456-08803] PACK - Packaging (VERP_P),1.0
+16115.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.622.61941] OUT - Outsourced activity,1290.0
+16115.0-_-__export__.mrp_workcenter_61_bcb50df3,[4022.622.61941] M5-03 - Haas - 5axis - Manual (UMC750),813.0
+14985.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-666-3837-1] M3-01 - Accuway - 3axis - Manual (FR3_01),5.45
+14985.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-666-3837-1] BW - Benchwork (BKW_01),2.0
+14985.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-666-3837-1] PACK - Packaging (VERP_P),1.0
+14969.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-637-68442] MP1 - Material preparation - automatic sawing (ZGN_01),1.1363636363636365
+14969.0-_-__export__.mrp_workcenter_59_d6deab7b,[4022-637-68442] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),8.818181818181818
+14969.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-637-68442] M3-01 - Accuway - 3axis - Manual (FR3_01),3.8181818181818183
+14969.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-637-68442] BW - Benchwork (BKW_01),2.0
+14969.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-637-68442] PACK - Packaging (VERP_P),1.0
+14918.0-_-__export__.mrp_workcenter_65_c1e1b939,"[4022-333-19505] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",0.0
+14918.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-333-19505] M3-01 - Accuway - 3axis - Manual (FR3_01),10.9
+14918.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-333-19505] BW - Benchwork (BKW_01),3.0
+14918.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-333-19505] PACK - Packaging (VERP_P),1.0
+14962.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-637-24191] MP1 - Material preparation - automatic sawing (ZGN_01),1.3191489361702127
+14962.0-_-__export__.mrp_workcenter_59_d6deab7b,[4022-637-24191] M5-02 - Accuway - 5axis - Pallet Automation (FR5_02),26.914893617021278
+14962.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-637-24191] BW - Benchwork (BKW_01),2.0
+14962.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-637-24191] PACK - Packaging (VERP_P),1.0
+18078.0-_-__export__.mrp_workcenter_65_c1e1b939,"[4022.706.05882] MP3 - Material preparation - pre-cutted, only picking (UITG_M)",1.0
+18078.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022.706.05882] M3-01 - Accuway - 3axis - Manual (FR3_01),176.5
+18078.0-_-__export__.mrp_workcenter_61_bcb50df3,[4022.706.05882] M5-03 - Haas - 5axis - Manual (UMC750),47.0
+18078.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.706.05882] OUT - Outsourced activity,4500.0

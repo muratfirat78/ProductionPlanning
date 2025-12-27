@@ -477,10 +477,10 @@ class ProductionProgressTab():
                 self.setSelectedOrder(None)
     
 
-                
-        
             
         if self.infotype == "Resources":
+
+            self.getPProgReport().value+="start week: "+str(self.getVisualManager().DataManager.getScheduleStartWeek())+"\n"
             
             if self.getVisualManager().DataManager.getScheduleStartWeek() != None:
                 stweek = self.getVisualManager().DataManager.getScheduleStartWeek()
@@ -556,6 +556,8 @@ class ProductionProgressTab():
                 self.getJobInfo3().value ="Quantity: "+str(myjob.getQuantity())
                 self.getJobInfo5().value ="Product: "+str(myjob.getOperation().getProduct().getName())
 
+                self.getPProgReport().value+="SCHJOB none ?  "+str(myjob.getMySch() == None)+"\n"
+
                 self.setCurrentJob(myjob)
                 
                 if myjob.getMySch() != None:
@@ -563,17 +565,16 @@ class ProductionProgressTab():
                     self.getPProgReport().value+= "startshift none? "+str(startshift == None)+"\n"
                     cpshift = myjob.getMySch().getScheduledCompShift()
                     self.getPProgReport().value+= "cpshift none? "+str(cpshift == None)+"\n"
-    
-    
-                    starttime = startshift.getStartHour()+timedelta(hours = max(myjob.getMySch().getStartTime(),startshift.getStartTime())-startshift.getStartTime())
-                    endtime =  startshift.getStartHour()+timedelta(hours = min(myjob.getMySch().getCompletionTime(),startshift.getEndTime()+1)-startshift.getStartTime())
 
-                   
+                    starttime,endtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(myjob.getMySch(),startshift)
+    
+    
     
                     schstr ="{:d}-{:02d}-{:02d} / {:d}:{:02d}".format(starttime.year,starttime.month, starttime.day,starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)    
                     
                     if startshift != cpshift:
-                        jendtime = cpshift.getStartHour()+timedelta(hours = min(myjob.getMySch().getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
+                        jstrttime,jendtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(myjob.getMySch(),cpshift)
+    
                         schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour, jendtime.minute) 
                     
                     self.getJobInfo4().value ="Schedule: "+schstr
@@ -657,8 +658,9 @@ class ProductionProgressTab():
 
                     for job in jobs:
                         self.getPProgReport().value+=str(shift.getStartHour())+"-"+str(job.getStartTime())+"-"+str(shift.getStartTime())+"\n"
-                        starttime = shift.getStartHour()+timedelta(hours = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime())
-                        endtime =  shift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime())
+
+
+                        starttime,endtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(job,shift)
                         row = pd.DataFrame([{"Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
                         source = pd.concat([source, row], axis=0, ignore_index=True)
                   
@@ -1042,27 +1044,25 @@ class ProductionProgressTab():
                         self.getJobInfo5().layout.display = 'block'       
                         self.getJobInfo5().layout.visibility  = 'visible'
                         
-    
-                    
-                    starttime = currshift.getStartHour()+timedelta(hours = max(job.getStartTime(),currshift.getStartTime())-currshift.getStartTime())
+
+                    self.getPProgReport().value+=" curr shift. "+currshift.String(" Curr sh ")+"\n"
+                   
+                    starttime,endtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(job,currshift)
+
+                    self.getPProgReport().value+=" times "+str(starttime)+" : "+str(endtime)+"\n"
     
                     cpshift = job.getScheduledCompShift()
-    
-                    if currshift == cpshift:
-                        endtime =  cpshift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
-                    else:
-                        endtime =  currshift.getEndHour()
-    
-                    
+               
                     
                     schstr =" {:d}:{:02d}".format(starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)
 
                     if self.infotype != "Resources":
                         schstr = str(currshift.getDay().date())+" | "+str(currshift.getNumber())+schstr
     
-                    if currshift  != cpshift:
-                        jendtime =  cpshift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
-                        schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour,jendtime.minute)  
+                    if currshift != cpshift:
+                        jstarttime,jendtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(job,cpshift)
+                        schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month,
+                                                                                         jendtime.day,jendtime.hour,jendtime.minute)  
                       
                         
                     self.getJobInfo().value ="PN: "+str(job.getJob().getOperation().getProduct().getPN())

@@ -17,6 +17,7 @@ from PlanningObjects import *
 from Visual import *
 from Data import *
 import collections
+import math
 
 
 #######################################################################################################################
@@ -333,7 +334,7 @@ class PlanningManager:
         #assume: all production is done sequential in operations, no batch concept
 
         self.getLogInfo().loc[len(self.getLogInfo())] = {"Info":"Order "+str(order.getID())+" has fprod with preds "+str(len(product.getMPredecessors()))}
-        #self.getVisualManager().getPLTBresult2exp().value+="Order "+str(order.getID())+" has fprod with preds "+str(len(product.getMPredecessors()))+"\n"
+        self.getVisualManager().getPLTBresult2exp().value+="Order "+str(order.getID())+" has fprod with preds "+str(len(product.getMPredecessors()))+"\n"
 
         
         if len(product.getMPredecessors()) > 0: # bom case
@@ -353,7 +354,7 @@ class PlanningManager:
 
                 alternatives = []
                 self.getLogInfo().loc[len(self.getLogInfo())] = {"Info":" curr opr "+str(operation.getName())}
-                #self.getVisualManager().getPLTBresult2exp().value+=" curr opr "+str(operation.getName())+"\n"
+                self.getVisualManager().getPLTBresult2exp().value+=" curr opr "+str(operation.getName())+"\n"
 
                 for res in operation.getRequiredResources():
                     alternatives.append(res)
@@ -363,17 +364,18 @@ class PlanningManager:
 
 
                 self.getLogInfo().loc[len(self.getLogInfo())] = {"Info":"Alternative resources: "+str(len(alternatives))}
-                #self.getVisualManager().getPLTBresult2exp().value+="Alternative resources: "+str(len(alternatives))+"\n"
+                self.getVisualManager().getPLTBresult2exp().value+="Alternative resources: "+str(len(alternatives))+"\n"
                 for resource in alternatives:
 
                     # neded capacity at (mydate)
-                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime('min'))/60 # in hours
+                    totuse = ((int(resource.IsOutsource())+quantity*(1-int(resource.IsOutsource())))*operation.getProcessTime('min'))/30 # in half-hours
+                    totuse = math.ceil(totuse)
+
+                    self.getVisualManager().getPLTBresult2exp().value+="resource totuse: "+str(totuse)+"\n"
                    
                     curr_use = totuse
 
                     prev_val = None
-                    new_val = 0
-
                     alldates = [d for d in resource.getCapacityReserved().keys()] 
                     allvalues = [v for v in resource.getCapacityReserved().values()]
                     if len(resource.getCapacityReserved()) > 0:
@@ -383,12 +385,12 @@ class PlanningManager:
                         if mydate.date() >=  min(alldates): 
                          
                             maxmindate = max([d for d in alldates if d <= mydate.date()])
-                            if maxmindate == mydate: 
+                            if maxmindate == mydate:  #directly add the value to exsiting and all later
                                 allvalues = [allvalues[i] if alldates[i] < mydate.date() else allvalues[i]+totuse for i in range(len(alldates))]
-                            else: 
+                            else: # here we need to create the date in dictionary and with the cumulative value. 
                                 dtindex = alldates.index(maxmindate)+1
                                 prevval = allvalues[alldates.index(maxmindate)]
-                        else: 
+                        else: # smallest date: place in front of the list, value is itself
                             dtindex = 0
 
                         if dtindex > -1:   
@@ -405,8 +407,7 @@ class PlanningManager:
 
                     if mindiff < 0:
                         continue
-                    else: 
-                        
+                    else: # this tells that the resource can handle the required capacity use. 
                         if avlcapacity <= mindiff:
                             myresource = resource
                             avlcapacity = mindiff
@@ -540,13 +541,9 @@ class PlanningManager:
         phstart = self.GetPlanningStart()
 
         self.getVisualManager().getPLTBresult2exp().value+=">Planning start: "+str(self.getPHStart())+"\n"
-
         self.getVisualManager().getPLTBresult2exp().value+=">Planning Horizon: "+str(self.getPHStart())+" <--> "+str(self.getPHEnd())+"\n"
- 
         self.getVisualManager().getPLTBmakeplan_btn().disabled = True
-        # Create time-dependant lists: Capacity levels of resources, stock levels of raw materials
 
-        #self.getVisualManager().getPLTBresult2exp().value+=">> Resources capacities.. "+str(len(self.getDataManager().getResources().items()))+"\n"
         daterange = pd.date_range(self.getPHStart(),self.getPHEnd())
    
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
@@ -572,7 +569,9 @@ class PlanningManager:
                 for job in jobs: # schedule jobs
                     starttime = shift.getStartHour()+timedelta(hours = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime())
                     endtime =  shift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime())
-                    shiftuse+=(endtime-starttime).total_seconds()/3600
+                    shiftuse+=math.ceil(2*((endtime-starttime).total_seconds()/3600)) # half-hour granularity
+                    
+                    
 
                 if shiftuse > 0:
                     if not shift.getDay().date() in scheduleuse:
@@ -592,7 +591,7 @@ class PlanningManager:
                     if resname.find("OUT - ") != -1:
                         cumulative_capacity+= int(100000)
                     else:
-                        cumulative_capacity+= res.getDailyCapacity()
+                        cumulative_capacity+= 2*res.getDailyCapacity() # half-hour granularity
                 else:
                     if curr_date.date() in scheduleuse:
                         self.getVisualManager().getPLTBresult2exp().value+=res.getName()+" weekend in schedule!!!! \n" 
@@ -658,7 +657,8 @@ class PlanningManager:
                                         if mydtm >= mydt:
                                             res.getCapacityReserved()[mydtm]+=myval
 
-        self.getVisualManager().getPLTBresult2exp().value+="All previous plans are applied!!!!"+"\n"
+        if len(OrderstoPlan) > 0: 
+            self.getVisualManager().getPLTBresult2exp().value+="All previous plans are applied!!!!"+"\n"
 
         #return
 
@@ -666,16 +666,16 @@ class PlanningManager:
         # ORDERS NOT PLANNED/SCHEDULED BEFORE
         ####################################################################################################
         for myord in OrderstoPlan:
-
+            
             if len(myord.getMyJobs()) > 0:
                 continue
 
             exp_date = self.getPHStart().date()
 
             self.getVisualManager().getPLTBresult2exp().value+=">Order: "+str(myord.getName())+"\n"
-
             
-
+            self.getVisualManager().getPLTBresult2exp().value+=">Available: "+str( myord.getComponentAvailable())+"\n"
+    
             if myord.getComponentAvailable().find("Exp") != -1:     
                 expected_date = myord.getComponentAvailable()
                 expected_date = expected_date[expected_date.find("Exp")+4:]
@@ -686,8 +686,10 @@ class PlanningManager:
                 except: 
                     pass
 
-          
+            
             mindeliverydate = max(myord.getDeadLine().date(),exp_date)
+
+            self.getVisualManager().getPLTBresult2exp().value+=">mindeliverydate: "+str(mindeliverydate)+"\n"
 
             self.getLogInfo().loc[len(self.getLogInfo())] = {"Info":"Order "+str(myord.getID())+" not planned/scheduled."}
             
@@ -703,7 +705,7 @@ class PlanningManager:
                     continue
 
                 self.getLogInfo().loc[len(self.getLogInfo())] = {"Info":"Checking date "+str(curr_deliverydate)}
-                #self.getVisualManager().getPLTBresult2exp().value+="Checking date "+str(curr_deliverydate)+"\n"
+                self.getVisualManager().getPLTBresult2exp().value+="Checking date "+str(curr_deliverydate)+"\n"
     
                 if self.PlanProduction(myord,curr_deliverydate,myord.getProduct(),curr_deliverydate,myord.getQuantity()):
                    

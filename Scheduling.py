@@ -19,6 +19,7 @@ from Visual import *
 from Data import *
 from GreedyInsertion import *
 from CommonGreedyInsertion import *
+from MILPGreedyInsertion import *
 from SimpleBatching import *
 from AdvancedAlgorithmBryan import *
 
@@ -40,7 +41,11 @@ class SchedulingManager:
         self.CurrentscheduleEnd = None
         self.MyShifts = dict()  # key: date, val: [shifts] 
         self.MyCurrentSchedule = None
+        self.myschedules = []
 
+
+    def getMySchedules(self):
+        return self.myschedules
 
     def setMyCurrentSchedule(self,myitm):
         self.MyCurrentSchedule = myitm 
@@ -113,149 +118,178 @@ class SchedulingManager:
     def getVisualManager(self):
         return self.VisualManager
 
-#######################################################################################################################################
+    def getShiftofTime(self,time):
 
-    def CreateShifts(self,psstart,pssend,applied):
+        for date,shifts in self.getMyShifts().items(): 
+            for shift in shifts:
+                if (time >= shift.getStartTime()) and (time <= shift.getEndTime()):
+                    return shift
+
+        return None
+    def getShiftofTime(self,time):
+
+        for date,shifts in self.getMyShifts().items():
+            
+            for shift in shifts:
+                #Progress.value+=" check date  "+str(date)+", shft st "+str(shift.getStartTime())+", end "+str(shift.getEndTime())+"\n"
+                if (time >= shift.getStartTime()) and (time <= shift.getEndTime()):
+                    return shift
+
+        return None 
+    def getJobStartEndinShift(self,job,shift):
+
+        starttime = shift.getStartHour()+timedelta(minutes = 30*(max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()))
+        endtime = None
+        if job.getCompletionTime() > shift.getEndTime():
+            endtime = shift.getEndHour()
+        else:
+            endtime =  shift.getStartHour()+timedelta(minutes = 30*(min(job.getCompletionTime(),shift.getEndTime())-shift.getStartTime()))
+
+        return starttime,endtime
+        
+
+#######################################################################################################################################
+#######################################################################################################################################
+    def CreateShifts(self,psstart,pssend):
 
         scheduleperiod = pd.date_range(psstart,pssend)
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shift creating starts... "+"\n"
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" applied... "+str(applied)+"\n"
-        
-        i=1
+        Progress = self.getVisualManager().getSchedulingTab().getPSchScheRes()
+
         prev_dayshift = None 
-        scheduletimehour = 1
+        scheduletimehour = 16 # time 08:00 in half hour granularity..
         
         for curr_date in scheduleperiod:
 
             if curr_date.date().weekday()>= 5:
                 continue
+
+            Progress.value+=str(curr_date)+"\n"
+
+            if not curr_date in self.getMyShifts():
+                curr_hour = 8
+                self.getMyShifts()[curr_date] = [] 
                 
-            dayshifts = []
-            
-            shift1=Shift(curr_date,3,prev_dayshift)
-            shift1.setStartTime(scheduletimehour) 
+                for i in range(1,4):
+                    currenshift = Shift(curr_date,i,prev_dayshift)
+                    currenshift.setStartTime(scheduletimehour) 
+                    currenshift.setStartHour(curr_date + timedelta(hours=curr_hour))
+                    currenshift.setEndHour(curr_date + timedelta(hours=curr_hour+7)+ timedelta(minutes=59))
 
-            
-            shift1.setStartHour(curr_date + timedelta(hours=0))
-            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
-          
-            scheduletimehour+=8
-            shift1.setEndTime(scheduletimehour-1)
-            dayshifts.append(shift1)
-
-            
-            if applied:
-                if not curr_date in self.getMyShifts():
-                    self.getMyShifts()[curr_date] = []
-                else:
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" applied but date is in shifts: "+str(curr_date)+"\n"
-
-                self.getMyShifts()[curr_date].append(shift1)     
-            else:
-                if curr_date in self.getMyShifts():
-                    shift1 = self.getMyShifts()[curr_date][0]
-                else:
-                    self.getMyShifts()[curr_date] = []
-                    self.getMyShifts()[curr_date].append(shift1)     
-                    
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 1 not applied and date is not in shifts: "+str(curr_date)+"\n" 
-
-            
-            shift2=Shift(curr_date,1,shift1)
-            shift2.setStartTime(scheduletimehour)   
-            scheduletimehour+=8
-            shift2.setEndTime(scheduletimehour-1)
-
-            shift2.setStartHour(curr_date + timedelta(hours=8))
-            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
-
-            if applied:
-                self.getMyShifts()[curr_date].append(shift2)   
-            else:
-                if curr_date in self.getMyShifts():
-                    if len(self.getMyShifts()[curr_date]) > 1:
-                        shift2 = self.getMyShifts()[curr_date][1]
-                    else:
-                        self.getMyShifts()[curr_date].append(shift2)  
-                else:
-                    self.getMyShifts()[curr_date] = []
+                    scheduletimehour+=15
+                    currenshift.setEndTime(scheduletimehour)
+                    self.getMyShifts()[curr_date].append(currenshift)  
+                    prev_dayshift = currenshift
+                 
+                    curr_hour+=8
+                    scheduletimehour+=1
   
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 2 not applied and date is not in shifts: "+str(curr_date)+"\n" 
-
                     
-            dayshifts.append(shift2)
-            
-            
-            shift3=Shift(curr_date,2,shift2)
-            shift3.setStartTime(scheduletimehour)
-            scheduletimehour+=8
-            shift3.setEndTime(scheduletimehour-1)
-            shift3.setStartHour(curr_date + timedelta(hours=16))
-            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
-
-            if applied:
-                self.getMyShifts()[curr_date].append(shift3)   
-            else:
-                if curr_date in self.getMyShifts():
-                    if len(self.getMyShifts()[curr_date]) > 2:
-                        shift2 = self.getMyShifts()[curr_date][2]
-                    else:
-                        self.getMyShifts()[curr_date].append(shift3)  
-                    
-                else:
-                    self.getMyShifts()[curr_date] = []
-       
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" 3 not applied and date is not in shifts: "+str(curr_date)+"\n" 
-
-   
-            prev_dayshift=shift3
-
-            dayshifts.append(shift3)
-
-            opno = 0
-            for resname, res in self.getDataManager().getResources().items():
-
+                    for resname, res in self.getDataManager().getResources().items():
+                        if currenshift.getNumber() in res.getAvailableShifts():
+                            res.getSchedule()[currenshift] = []
+                        if res.getType() == "Machine":
+                            if currenshift.getNumber() == 3:
+                                res.getShiftOperatingModes()[currenshift] = "Self-Running"
+                            else:
+                                res.getShiftOperatingModes()[currenshift] = "Operated"
            
-                if res.getType() == "Machine":
+            else:
+                prev_dayshift = self.getMyShifts()[curr_date][-1]
+
+            Progress.value+=str(curr_date)+", day shifts: "+str(len(self.getMyShifts()[curr_date]))+"\n"
+
+       
+       
+        return 
+###############################################################################################################################
+    def getAlternativeResources(self,job):
+
+        alternatives = []
+
+        for res in job.getJob().getOperation().getRequiredResources():
+            alternatives.append(res) 
+            for alt in res.getAlternatives():
+                if not alt in alternatives:
+                    alternatives.append(alt)
+
+        return alternatives
+##################################################################################################################################
+    def ApplySchedule(self,myschedule):
+
+        # reset job properties
+        for name,order in self.getDataManager().getCustomerOrders().items():
+            for job in order.getMyJobs():
+                if job.getMySch() != None:
+                    job.getMySch().resetSchedule()
+              
+        # empty the current schedule..
+        for resname, res in self.getDataManager().getResources().items():
+            # get the schedule solution for this resource
+            res_schedule = myschedule.getResourceSchedules()[resname]
+            for shift in res.getSchedule().keys():
+                #reset jobs in the shift
+                res.getSchedule()[shift].clear()
+                # get the jobs in the current shift of the schedule
+                for job,timetuple in res_schedule[shift].items():
+                    res.getSchedule()[shift].append(job)
+                    job.updateStartTime(shift,timetuple[0])
+                    job.updateCompletionTime(shift,timetuple[1])
                     
-                    for currshift in dayshifts:
-                        
-                        if currshift.getNumber() in res.getAvailableShifts():
-                            if applied:
-                                res.getSchedule()[currshift] = []
-                            else:
-                                res.getCurrentSchedule()[currshift] = []
-
-                            if currshift.getNumber() == 3:
-                                res.getShiftOperatingModes()[currshift] = "Self-Running"
-                            else:
-                                res.getShiftOperatingModes()[currshift] = "Operated"
-
-
-                if (res.getType() == "Manual") or (res.getType() == "Operator"):                   
-                    for currshift in dayshifts:
-                        if currshift.getNumber() in res.getAvailableShifts():
-                            if applied:
-                                res.getSchedule()[currshift] = []
-                            else:
-                                res.getCurrentSchedule()[currshift] = []
-        
-          
-                if res.getType() == "Outsourced":
-                    for currshift in dayshifts:
-                        if currshift.getNumber() in res.getAvailableShifts():
-                            if applied:
-                                res.getSchedule()[currshift] = []
-                            else:
-                                res.getCurrentSchedule()[currshift] = []
-                
-                    
-            i+=1        
+       
+        self.getDataManager().setScheduleStartWeek(myschedule.getStartWeek())
+        self.getDataManager().setScheduleEndWeek(myschedule.getEndWeek())
+        self.setMyCurrentSchedule(myschedule) 
 
         return 
+#################################################################################################################################
+    def CheckScheduleFeasibility(self,myschedule):
 
+        infeasibilities = [] # feasibility explanations
+        jobassignnments = dict() #key: job, val: [resources] musdt be only one
+        
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Feasibility check starts.."+"\n"  
+
+        # reset job properties
+        for name,order in self.getDataManager().getCustomerOrders().items():
+            for job in order.getMyJobs():
+                if job.getMySch() != None:
+                    if not job in jobassignnments:
+                        jobassignnments[job.getMySch()] = []
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="job assignments initialized.."+"\n"  
+
+        for resname, res in self.getDataManager().getResources().items():
+            # get the schedule solution for this resource
+            res_schedule = myschedule.getResourceSchedules()[resname]
+            for shift in res.getSchedule().keys():
+                for job,timetuple in res_schedule[shift].items():
+                    if not res in jobassignnments[job]:
+                        jobassignnments[job].append(res)
+                    for job2,timetuple2 in res_schedule[shift].items():
+                        if job == job2: 
+                            continue
+                        if timetuple[1] <= timetuple2[0] or timetuple2[1] <= timetuple[0]:
+                            continue
+                        infeasibilities.append(">>"+job.getJob().getName()+"("+str(timetuple)+")"+" processing has overlap with "+job2.getJob().getName()+"("+str(timetuple2)+")"+" in resource "+resname)
+                        
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Feasibility check done.."+"\n"  
+   
+        for job,resources in jobassignnments.items():
+            if len(resources) > 1: 
+                infeasibilities.append(">> Job"+job.getJob().getName()+" is assigned to multiple resources: "+str(resources))
+            else:
+                if len(resources) == 1:
+                    alternatives = self.getAlternativeResources(job)
+                    machine = resources[0]
+                    if not machine in alternatives:
+                        infeasibilities.append(">>"+job.getJob().getName()+" with op "+job.getJob().getOperation().getName()+"  is assigned to incompatible resource "+str(machine.getName()))
+
+        return infeasibilities
+##################################################################################################################################
     def CalculateFTEUse(self,res,shift):
 
         totalfte = 0
@@ -276,14 +310,11 @@ class SchedulingManager:
 
 ############################################################################################################################
 ############################################################################################################################
-
     def MakeSchedule(self,schedulealg,batchingalg):
       
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Scheduling  : "+str(schedulealg)+"\n"
-
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Batching  : "+str(batchingalg)+"\n"
-
         
         psstart = self.getSHStart()
         psstart = psstart.replace(hour=0, minute=0, second=0, microsecond=0)+ timedelta(days=1)
@@ -322,17 +353,16 @@ class SchedulingManager:
                     
                 for job in order.getMyJobs():
                     if job.getMySch() == None:
-                        job.initializeSchJob()
+                        job.initializeMySch()
                        
                     else:
                         existings+=1
-                        job.setSchJob(job.getMySch())
 
-                    AllJobs.append(job.getSchJob())
+                    AllJobs.append(job.getMySch())
                     
                     if not job.getOperation() in oprdict:
                         oprdict[job.getOperation()] = []
-                    oprdict[job.getOperation()].append(job.getSchJob())
+                    oprdict[job.getOperation()].append(job.getMySch())
 
                 if len(order.getMyJobs()) > 0: 
                     SelectedOrders.append(order)
@@ -346,7 +376,7 @@ class SchedulingManager:
             res.getCurrentSchedule().clear()
 
    
-        self.CreateShifts(psstart,pssend,False)
+        self.CreateShifts(psstart,pssend)
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shifts created.."+"\n"
             
@@ -355,27 +385,29 @@ class SchedulingManager:
             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Day"+str(mydate)+", shifts: "+str([x.getNumber() for x in shifts])+"\n"
 
         
-        for resname, res in self.getDataManager().getResources().items():
-            res.InitializeEmptySlot()
+        #for resname, res in self.getDataManager().getResources().items():
+        #    res.InitializeEmptySlot()
     
         #Create Schedule; we start by checking if there are still jobs that can be scheduled  
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Applying scheduling algorithm... "+"\n"  
       
 
-        if schedulealg == "Simple Greedy Insertion (Fixed)":
-            greedyalg = GreedyInsertionAlg()
-            self.setMyCurrentSchedule(greedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes()))
- 
-        if schedulealg == "Common Greedy Insertion":
-            commongreedyalg = CommonGreedyInsertionAlg()
-            self.setMyCurrentSchedule(commongreedyalg.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes()))
-
-        if schedulealg == "MILP Schedule":
-            algorithm = AdvancedMILPAlg()
-            sch_sol = algorithm.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes())
-
+        sch_sol = None
+        if schedulealg == "MILP-based Greedy Insertion":
+            algorithm = MILPGreedyInsertionAlg()
+            sch_sol = algorithm.SolveScheduling(AllJobs,self,self.getVisualManager().getSchedulingTab().getPSchScheRes(),psstart,pssend)
+            self.getMySchedules().append(sch_sol) 
+            infeasibles = self.CheckScheduleFeasibility(sch_sol)
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Feasibility check: Infeasibles "+str(len(infeasibles))+"\n" 
+            for reason in infeasibles:
+                 self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=reason+"\n" 
+            
+            if len(infeasibles) == 0:
+                self.ApplySchedule(sch_sol)
         
 
+        self.getVisualManager().getSchedulingTab().getPSchTBaccsch_btn().disabled = False
+        
         Orderstatus = []
         scheduledords = 0
         scheduledjobs = 0
@@ -383,7 +415,7 @@ class SchedulingManager:
            
             jobsdone = 0
             for jb in order.getMyJobs():
-                if jb.getSchJob().IsScheduled():
+                if jb.getMySch().IsScheduled():
                     jobsdone+=1
                     scheduledjobs+=1
       
@@ -399,13 +431,8 @@ class SchedulingManager:
             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=str(order.getName())+": "+str(status)+"\n"
         
             Orderstatus.append(str(order.getName())+": "+str(status))
-        #myops =  [i.getName() for i in oprdict.keys()]
-        #myres = [i for i in self.getDataManager().getResources().keys()]
-        #self.getVisualManager().getSchedulingTab().getPSchOperations().options = myops
+
         self.getVisualManager().getSchedulingTab().getPSchOrderlist().options = Orderstatus
-        #self.getVisualManager().getSchedulingTab().getPSchResources().options = myres
-
-
         self.getVisualManager().getSchedulingTab().getPSchSolProps().value = "Scheduled jobs: "+str(scheduledjobs)+"/"+str(len(AllJobs))+"\n"
         self.getVisualManager().getSchedulingTab().getPSchSolProps().value += "Scheduled orders: "+str(scheduledords)+"/"+str(len(SelectedOrders))+"\n"
         
@@ -415,7 +442,7 @@ class SchedulingManager:
             if res.getType() == "Machine":
                 avg_util = 0
                 nr_shfits = 0
-                for shift,jobs in res.getCurrentSchedule().items():
+                for shift,jobs in res.getSchedule().items():
                     job_process = 0
                     for job in jobs:
                         shiftprocess =  min(job.getCompletionTime(),shift.getEndTime()+1)-max(job.getStartTime(),shift.getStartTime())
