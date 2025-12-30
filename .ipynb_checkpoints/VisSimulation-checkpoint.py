@@ -33,11 +33,12 @@ display(HTML("<style>.red_label { color:red }</style>"))
 display(HTML("<style>.blue_label { color:blue }</style>"))
 
 
-class ScheduleTab():
+class SimulationTab():
 
     def __init__(self):  
         
         self.VisualManager = None
+    
         self.PSchScheRes = None
         self.PSchTBmakesch_btn = None
         self.PSchJoblist = None
@@ -62,8 +63,18 @@ class ScheduleTab():
         self.PSchTBsavesch_btn = None
         self.PSchTBschFileName = None
         self.PSchTBaccsch_btn = None
+        self.SimAlgs = None
         
         return
+
+
+    
+    def setSimAlgs(self,myit):
+        self.SimAlgs  = myit
+        return
+        
+    def getSimAlgs(self):
+        return self.SimAlgs
 
     def setPSchTBaccsch_btn(self,myit):
         self.PSchTBaccsch_btn  = myit
@@ -256,521 +267,82 @@ class ScheduleTab():
 
     def SetStart(self,event):
 
+        if event['name'] != "value":
+            return
+
         sel_start = self.getPLTBPlanStart().value 
-        self.getVisualManager().getSchedulingManager().setSHStart(sel_start)
+        self.getVisualManager().getSimulationManager().setSimStart(sel_start)
+        self.getPSchScheRes().value+="Simulation starts "+str(sel_start)+"\n"
       
         return
         
     def SetEnd(self,event):
 
+        if event['name'] != "value":
+            return
+
         sel_end = self.getPLTBPlanEnd().value
-        self.getVisualManager().getSchedulingManager().setSHEnd(sel_end)
+        self.getVisualManager().getSimulationManager().setSimEnd(sel_end)
+        self.getPSchScheRes().value+="Simulation ends "+str(sel_end)+"\n"
+
+       
        
         return
-    def RecFindSelected(self,node,parent):
-        
-        selected = None 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="in recfindnode..."+node.name+"\n"
-        if node.selected:
-            selected = node  
-        else: 
-            for subnode in node.nodes: 
-                selected = self.RecFindSelected(subnode) 
-                if selected != None:
-                    break       
-        return selected
-
-
+ 
   
-    
-
-    def ShowShiftJobs(self,event):
-
-
-        if not "new" in event:
-            return
-    
-        if not "index" in event['new']:
-            return
-
-        selectedres = self.getPSchResources().options[event["new"]["index"]]
-        
-        if selectedres == None:
-            return
-
-        if selectedres == '':
-            return
-
-
-        if selectedres in self.getVisualManager().DataManager.getResources():
-            selected_res = self.getVisualManager().DataManager.getResources()[selectedres]
-
-            source = pd.DataFrame(columns=["Shift","Job","Start","End"])
-
-            for shift,jobs in selected_res.getSchedule().items():
-                
-                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":1,"End":1.005}])
-                source = pd.concat([source, row], axis=0, ignore_index=True)
-                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":8.995,"End":9}])
-                source = pd.concat([source, row], axis=0, ignore_index=True)
-                for job in jobs:
-
-                    starttime = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()+1+0.01
-                    endtime =  min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime()+1-0.01
-                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getName(), "Start":starttime,"End":endtime}])
-                    source = pd.concat([source, row], axis=0, ignore_index=True)
-               
-            with self.getPSTBGanttOutput():
-                
-                clear_output() 
-                display(selected_res.getName())
       
-                for shift in source["Shift"].unique():
-                    shift_df = source[source["Shift"] == shift]
-                    
-                    bars = alt.Chart(shift_df).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Shift', sort='-x'))
-                    text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
+    def StartSimulation(self,b):
 
-                    display((bars + text).properties(height=100, width=200))
-
-            restree = Tree()
-         
-            shiftnodes = []
-
-            for shift,jobs in selected_res.getSchedule().items():
-                jobnodes = []
-               
-                for job in jobs:
-                    schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
-                    jobnode = Node(job.getName()+" > "+schstr,[], icon="cut", icon_style="success") 
-                    jobnode.opened = False
-                    jobnodes.append(jobnode)
-                shiftnode = Node("Shift: "+str(shift.getDay().date())+" | "+str(shift.getNumber())+": "+str(shift.getStartTime())+"-"+str(shift.getEndTime()),jobnodes, icon="cut", icon_style="success")   
-                shiftnode.opened = False
-                shiftnodes.append(shiftnode)
-        
-            rootnode = Node(selected_res.getName(),shiftnodes, icon="cut", icon_style="success") 
-
-            rootnode.opened = False
-            restree.add_node(rootnode)
-
-            self.setSchTree(restree)
-            self.setSchTreeRootNode(restree)
-
-            
-         
-            with self.getPSTBResSchOutput():
-                clear_output()
-                display(self.getSchTree())
-
-
-       
-        return
-    
-    def ShowOrderStatus(self,event):
-
-        #self.getPSchOrdProd().value = "Selected Order >>"+str(event)+"\n"
-
-        if not "new" in event:
-            return
-    
-        if not "index" in event['new']:
-            return
-
-        selectedord = self.getPSchOrderlist().options[event["new"]["index"]]
-
-       
-        if selectedord == None:
-            return
-
-        if selectedord == '':
-            return
-
-        
-        ordname = selectedord[:selectedord.find(":")]
-
-      
-        if ordname in self.getVisualManager().DataManager.getCustomerOrders():
-            myord = self.getVisualManager().DataManager.getCustomerOrders()[ordname]
-
-            source = pd.DataFrame(columns=["Job","Start","End"])
-
-            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="order jobs..."+str(len(myord.getMyJobs()))+"\n"
-            
-            ordjobtree = Tree()
-         
-            jobnodes = []
-            for job in myord.getMyJobs():
-                schstr = "Unscheduled"
-                if job.IsScheduled():
-                    
-                    row = pd.DataFrame([{"Job":job.getName(), "Start":job.getStartTime(),"End":job.getCompletionTime()}])
-                    source = pd.concat([source, row], axis=0, ignore_index=True)
-                    schstr = "st: "+str(round(job.getStartTime(),2))+"-cp: "+str(round(job.getCompletionTime(),2))
-                    
-                jobnode = Node(job.getName()+"> "+schstr,[], icon="cut", icon_style="success") 
-                jobnodes.append(jobnode)
-
-            with self.getPSTBGanttOutput():
-                clear_output() 
-                display(ordname)
-                bars = alt.Chart(source).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Job', sort='-x'))
-                text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
-                     
-                display((bars + text).properties(height=100, width=200))
-                
-      
-
-           
-            rootnode = Node(myord.getName(),jobnodes, icon="cut", icon_style="success") 
-
-            ordjobtree.add_node(rootnode)
-
-            self.setMyOrdTree(ordjobtree)
-            self.setOrdTreeRootNode(rootnode)
-    
-         
-            with self.getPSTBOrdOutput():
-                clear_output()
-                display(self.getMyOrdTree())
-
+        self.getVisualManager().getSimulationManager().StartSimulation(self.getSimAlgs().value)
        
         return
 
-    def ShowDescriptives(self,event):
-
-        if not 'index' in event['new']:
-            return
-            
-        if event['new']['index'] < 0:
-            return
+   
     
-        selected = self.getScheduleVisual().options[event['new']['index']]
-
-        if selected == None:
-            return
-
-        if selected == '':
-            return
-
-        if selected == 'Solution Properties':
-
-            self.getPSchSolProps().layout.display = 'block'
-            self.getPSchSolProps().layout.visibility  = 'visible'
-            
-            
-            self.getPSchResources().layout.visibility  = 'hidden'
-            self.getPSchResources().layout.display = 'none'
-
-            self.getPSTBResSchOutput().layout.visibility  = 'hidden'
-            self.getPSTBResSchOutput().layout.display = 'none'
-            
-            self.getPSchOrderlist().layout.visibility  = 'hidden'
-            self.getPSchOrderlist().layout.display = 'none'
-            
-            self.getPSTBOrdOutput().layout.visibility  = 'hidden'
-            self.getPSTBOrdOutput().layout.display = 'none'
-
-         
-
-      
-        if selected == 'Resources':
-            
-            self.getPSchResources().layout.display = 'block'
-            self.getPSchResources().layout.visibility  = 'visible'
-            
-            self.getPSTBResSchOutput().layout.display = 'block'
-            self.getPSTBResSchOutput().layout.visibility  = 'visible'
-            
-            self.getPSchOrderlist().layout.visibility  = 'hidden'
-            self.getPSchOrderlist().layout.display = 'none'
-            
-            self.getPSTBOrdOutput().layout.visibility  = 'hidden'
-            self.getPSTBOrdOutput().layout.display = 'none'
-
-            self.getPSchSolProps().layout.visibility  = 'hidden'
-            self.getPSchSolProps().layout.display = 'none'
-
-        
-        if selected == 'Customer Orders':
-
-            self.getPSchOrderlist().layout.display = 'block'
-            self.getPSchOrderlist().layout.visibility  = 'visible'
-
-            self.getPSTBOrdOutput().layout.display = 'block'
-            self.getPSTBOrdOutput().layout.visibility  = 'visible'
-            
-            self.getPSchResources().layout.visibility  = 'hidden'
-            self.getPSchResources().layout.display = 'none'
-
-            self.getPSTBResSchOutput().layout.visibility  = 'hidden'
-            self.getPSTBResSchOutput().layout.display = 'none'
-
-            self.getPSchSolProps().layout.visibility  = 'hidden'
-            self.getPSchSolProps().layout.display = 'none'
-
-        with self.getPSTBGanttOutput():
-            clear_output()
-       
-        with self.getPSTBOrdOutput():
-            clear_output()
-          
-        with self.getPSTBResSchOutput():
-            clear_output()
-          
-    
-        
-        return
-        
-    def MakeSchedule(self,b):
-
-        self.getVisualManager().getSchedulingManager().MakeSchedule(self.getScheduleAlgs().value,self.getBatchingAlgs().value)
-
-        return
-
-    def SaveSchedule(self,b):
-
-        Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
-        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
-        
-        if not isExist:
-            os.makedirs(path)
-        
-        for name,myres in self.getVisualManager().DataManager.getResources().items():
-            if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
-                for shift, jobs in myres.getSchedule().items():
-                    if jobs == []:
-                        continue
-                    else: 
-                        jobs.sort(key=lambda x: x.getStartTime())
-                        for job in jobs:
-                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":job.getCompletionTime()}
-                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":job.getCompletionTime()}
-                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":shift.getEndTime()}
-                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
-                                
-                    
-        filename = self.getPSchTBschFileName().value+".csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-        Schedule_df.to_csv(fullpath, index=False)  
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule was saved in the file "+str(self.getPSchTBschFileName().value)+".csv. "+"\n"
-                                                                                     
-        return 
-
-
-    def SaveTheSchedule(self,event):
-
-        self.getVisualManager().getCaseInfo().value += ">>>  saving schedule....."+"\n" 
-        schedule_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","ResourceID","SchDaySt","SchShiftSt","SchTimeSt","SchDayCp","SchShiftCp","SchTimeCp","ActDaySt","ActShiftSt","ActTimeSt","ActDayCp","ActShiftCp","ActTimeCp"])
-
-        jobprecs_df = pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
-        
-        for name,order in self.getVisualManager().DataManager.getCustomerOrders().items():
-            self.getVisualManager().getCaseInfo().value += ">>>  jobbb....."+"\n" 
-            for job in order.getMyJobs():
-                for pred in job.getPredecessors():
-                    jobprecs_df.loc[len(jobprecs_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID()}
-
-
-                self.getVisualManager().getCaseInfo().value += job.getName()+str(job.IsScheduled())+"\n"
-                if job.IsScheduled(): 
-                    schres = job.getScheduledResource().getID()
-                    sdayst = str(job.getScheduledShift().getDay().date())
-                    sshftst = job.getScheduledShift().getNumber()
-                    stst = job.getStartTime()
-                    sdaycp = str(job.getScheduledCompShift().getDay().date())
-                    sshftcp = job.getScheduledCompShift().getNumber()
-                    stcp = job.getCompletionTime()
-                else:
-                    starttime = "NULL"
-                    endtime ="NULL"
-                    schres = "NULL"
-                    sdayst = "NULL"
-                    sshftst = "NULL"
-                    stst = "NULL"
-                    sdaycp = "NULL"
-                    sshftcp = "NULL"
-                    stcp = "NULL"
-                    
-                    
-                schedule_df.loc[len(schedule_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),
-                                                         "Deadline":job.getDeadLine(),
-                                                       "OrderID":job.getCustomerOrder().getID(),
-                                                     "ProductID":job.getProduct().getID(),
-                                                     "OperationID":job.getOperation().getID(),
-                                                     "ResourceID":schres,
-                                                     "SchDaySt":sdayst,
-                                                     "SchShiftSt": sshftst,
-                                                     "SchTimeSt":stst,
-                                                     "SchDayCp":sdaycp,
-                                                     "SchShiftCp":sshftcp,
-                                                     "SchTimeCp":stcp,
-                                                     "ActDaySt":"",
-                                                     "ActShiftSt":"NULL","ActTimeSt":"NULL","ActDayCp":"NULL","ActShiftCp":"NULL","ActTimeCp":"NULL"
-                                                     }
-
-        
-        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
-        if not isExist:
-            os.makedirs(path)
-
-        self.getVisualManager().getCaseInfo().value += ">>>..... writing files...."+"\n"
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-        filename = "ScheduleJobs_"+timestr+".csv"; 
-        path = folder+"\\"+casename+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        schedule_df.to_csv(fullpath, index=False)
-        filename = "ScheduleJobsPrecs_"+timestr+".csv"; 
-        path = folder+"\\"+casename+"\\"+filename
-        fullpath = os.path.join(Path.cwd(), path)
-        jobprecs_df.to_csv(fullpath, index=False)
-        self.getVisualManager().getCaseInfo().value += ">>>.... DONE....."+"\n"
-         
-     
-        return
-        
-        
-        
-    
-    def generatePSschTAB(self):
+    def generateSimTAB(self):
     
 
         self.setPSchScheRes(widgets.Textarea(value='', placeholder='',description='',disabled=True))
      
-        self.getPSchScheRes().layout.height = '150px'
-        self.getPSchScheRes().layout.width = '700px'
+        self.getPSchScheRes().layout.height = '250px'
+        self.getPSchScheRes().layout.width = '1100px'
 
-        self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule", icon = 'fa-gear'))
-        self.getPSchTBmakesch_btn().on_click(self.MakeSchedule)
-
-        self.setPSchTBsavesch_btn(widgets.Button(description="Export Schedule",icon = 'fa-file-excel-o'))
-        self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
-
-        self.setPSchTBaccsch_btn(widgets.Button(description="Accept Schedule",icon = 'fa-check-square'))
-        self.getPSchTBaccsch_btn().on_click(self.SaveTheSchedule)
-       
-
-        self.setPSchTBschFileName(widgets.Text(description ='',value='filename..'))
-        self.getPSchTBschFileName().layout.width = '150px'
- 
-        # schfile = widgets.Label(value ='Filename: ')
-        # schfile.add_class("red_label")
+        self.setPSchTBmakesch_btn(widgets.Button(description="Run Simulation", icon = 'fa-gear'))
+        self.getPSchTBmakesch_btn().on_click(self.StartSimulation)
 
 
-        schpr = widgets.Label(value ='Scheduling procedure progress ')
+        schpr = widgets.Label(value ='Simulation progress ')
         schpr.add_class("red_label")
-     
-        self.setPSchOrderlist(widgets.Select(options=[],description = ''))
-        self.getPSchOrderlist().layout.height = '145px'
-        self.getPSchOrderlist().layout.width = '400px'
-        self.getPSchOrderlist().observe(self.ShowOrderStatus)
+
+        self.setSimAlgs(widgets.Dropdown(options=["SimCommon","SimM"], description=''))
+        self.getSimAlgs().layout.width = '185px'
+       
 
 
         self.setPLTBPlanStart(widgets.DatePicker(description='Start',disabled=False))
+        self.getPLTBPlanStart().value = datetime.now().date()
+        self.getVisualManager().getSimulationManager().setSimStart(self.getPLTBPlanStart().value)
         self.getPLTBPlanStart().observe(self.SetStart)
 
         
         self.setPLTBPlanEnd(widgets.DatePicker(description='End',disabled=False))
+        self.getPLTBPlanEnd().value = datetime.now().date()+timedelta(days= 14)
+        self.getVisualManager().getSimulationManager().setSimEnd(self.getPLTBPlanEnd().value)
         self.getPLTBPlanEnd().observe(self.SetEnd)
      
-        self.setPSchResources(widgets.Select(options=[], description=''))
-        self.getPSchResources().layout.height = '145px'
-        self.getPSchResources().layout.width = '400px'
-        self.getPSchResources().observe(self.ShowShiftJobs)
-
-        self.setPSchSolProps(widgets.Textarea(value='', placeholder='',description='',disabled=True))
-     
-        self.getPSchSolProps().layout.height = '150px'
-        self.getPSchSolProps().layout.width = '500px'
-
-        
-        OrdSchTree = Tree()
-        rootnode = Node("Order Jobs",[], icon="cut", icon_style="success") 
-        OrdSchTree.add_node(rootnode)
-        self.setMyOrdTree(OrdSchTree)
-        self.setOrdTreeRootNode(rootnode)
-        self.setPSTBOrdOutput(widgets.Output())
-
-        self.setPSTBOrdOutput(widgets.Output())
-
-        MySchTree = Tree()
-        rootnode = Node("Resource Shifts",[], icon="cut", icon_style="success") 
-        MySchTree.add_node(rootnode)
-        self.setSchTree(MySchTree)
-        self.setSchTreeRootNode(rootnode)
-        self.setPSTBResSchOutput(widgets.Output())
-
-        self.setPSTBGanttOutput(widgets.Output())
-
-        schdes = widgets.Label(value ='Schedule Information')
-        schdes.add_class("red_label")
-
-         
-
-        schalg = widgets.Label(value ='Scheduling Algorithm')
-        schalg.add_class("blue_label")
-
-        
-        bchalg = widgets.Label(value ='Batching Method')
-        bchalg.add_class("blue_label")
-        self.setScheduleAlgs(widgets.Dropdown(options=["Simple Greedy Insertion","Advanced Greedy Insertion"], description=''))
-        self.getScheduleAlgs().layout.width = '185px'
-        self.setBatchingAlgs(widgets.Dropdown(options=["Order size based","Simple Merge"], description=''))
-        self.getBatchingAlgs().layout.width = '150px'
-
-
-        self.setScheduleVisual(widgets.Dropdown(options=["Solution Properties","Resources", "Customer Orders"], description=''))
-        self.getScheduleVisual().layout.width = '150px'
-        self.getScheduleVisual().observe(self.ShowDescriptives)
-
-        
+      
+   
         
         tab_sch = HBox(children = [ VBox(children = [
            
             HBox(children = [self.getPLTBPlanStart(),self.getPLTBPlanEnd(),self.getPSchTBmakesch_btn()]),
-            HBox(children = [schalg,self.getScheduleAlgs(),bchalg,self.getBatchingAlgs()]),
-            HBox(children=[schdes, self.getScheduleVisual(),self.getPSchTBschFileName(),self.getPSchTBsavesch_btn(),self.getPSchTBaccsch_btn()]),
-            HBox(children=[self.getPSchSolProps()]),
-            HBox(children=[VBox(children = [self.getPSchResources()]),VBox(children= [self.getPSTBResSchOutput()])]),
-            HBox(children=[VBox(children= [self.getPSchOrderlist()]), VBox(children= [self.getPSTBOrdOutput()])]),
-            HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])]),self.getPSTBGanttOutput()])
+            HBox(children = [self.getSimAlgs()]),
+            HBox(children=[VBox(children= [schpr,self.getPSchScheRes()])])])])
+        
 
 
-        with self.getPSTBGanttOutput():
-            clear_output()
        
-        with self.getPSTBOrdOutput():
-            clear_output()
-          
-        with self.getPSTBResSchOutput():
-            clear_output()
-
-        self.getPSchSolProps().layout.visibility  = 'hidden'
-        self.getPSchSolProps().layout.display = 'none'
-          
-
-        self.getPSchOrderlist().layout.visibility  = 'hidden'
-        self.getPSchOrderlist().layout.display = 'none'
-            
-        self.getPSTBOrdOutput().layout.visibility  = 'hidden'
-        self.getPSTBOrdOutput().layout.display = 'none'
-
-        self.getPSchResources().layout.visibility  = 'hidden'
-        self.getPSchResources().layout.display = 'none'
-
-        self.getPSTBResSchOutput().layout.visibility  = 'hidden'
-        self.getPSTBResSchOutput().layout.display = 'none'
-
-
-
+        
 
         tab_sch.layout.height = '600px'
           
