@@ -28,6 +28,7 @@ from datetime import timedelta,date
 from Simulator import *
 from SimulatorM import *
 
+
 #######################################################################################################################
 
 class SimEvent(object):
@@ -61,15 +62,23 @@ class SimEvent(object):
 class SimMachine(object):
     def __init__(self, env,machine):
         self.env = env
+        self.name = machine.getName()
         self.machine = machine
+        self.type = 'Machine'
+        self.FTERequirement = machine.FTERequirement
         self.coordinates = (0,0)
         self.inputbuffer = None
         self.outputbuffer = None
+        self.Automated = machine.Automated
+        self.SchedulableWindow = [(480,960),(960,1440)] #This is the window that allows jobs to start each day
+        self.Resource = simpy.Resource(env,capacity=1)
   
 
     def getCoordinates(self):
         return self.coordinates 
 
+    def getResource(self):
+        return self.Resource
     
     def ProcessTask(self,env,task):
         # make status change idle->busy
@@ -78,7 +87,18 @@ class SimMachine(object):
         # register completion of task
         return
 
+    def getName(self):
+        return self.name
 
+    def IsOpen(self,now):
+        time = now % 1440 #Each day has 1440 minutes            
+        return any(start<= time < end for start,end in self.SchedulableWindow)
+
+    def getFTERequirement(self):
+        if self.Automated == True:
+            return 0.1
+        else:
+            return 0.3
 
 class SimProduct(object):   
     def __init__(self,env,Job,SN):
@@ -95,25 +115,114 @@ class SimProduct(object):
     def getLocation(self):
         return self.location
 
+    def getJob(self):
+        return self.Job
+
+    def getSN(self):
+        return self.SN
+
     def getcurrentjob(self):
         return self.currentjob
         
-    def setcurrentjob(self,mytime,myjb):
+    def setcurrentjob(self,myjb):
         
         self.currentjob = myjb
+        return
 
-        if myjb != None:
-            res = myjb.getOperation().getRequiredResources()[0]
-            simres = res.getSimResource()
-            return SimEvent(self.env,mytime,self,self.getLocation(),simres,"Transport")
-        else:
-            return None
+class SimBatch(object):   
+    def __init__(self,env,Job,SN):
+        self.env = env
+        self.Job = Job
+        self.SN = SN
+        self.products=[]
+        self.processtime=Job.getOperation().getProcessTime("min") #Processtime of 1 item in the batch
+        self.capacity=10000
+        self.Tray = None
+        self.location = None
+        self.currentjob = None
+        self.timeremaining = 0
+        self.process = None
+        self.initialstarttime = None
+        self.internalstarttime = None
 
+    def setLocation(self,lc):
+        self.location = lc
+        return
+    def getLocation(self):
+        return self.location
+
+    def getJob(self):
+        return self.Job
+
+    def getSN(self):
+        return self.SN
+
+    def getcurrentjob(self):
+        return self.currentjob
+        
+    def setcurrentjob(self,myjb):        
+        self.currentjob = myjb
+        return
+
+    def getProducts(self):
+        return self.products
+
+    def getCapacity(self):
+        return self.capacity
+
+    def getProcessTime(self):
+        return self.processtime
+
+    def setProcessTime(self,time):
+        self.processtime = time
+        return
+
+    def setTimeRemaining(self,time):
+        self.timeremaining = time
+        return
+
+    def getTimeRemaining(self):
+        return self.timeremaining
+
+    def getProcess(self):
+        return self.process
+
+    def setProcess(self,proc):
+        self.process = proc
+        return
+
+    def getInitialStartTime(self):
+        return self.initialstarttime
+
+    def setInitialStartTime(self,time):
+        self.initialstarttime = time
+        return
+
+    def getInternalStartTime(self):
+        return self.internalstarttime
+
+    def setInternalStartTime(self,time):
+        self.internalstarttime = time
+        return
 
 class SimSubcontractor(object):
     def __init__(self,env,res):
         self.extres = res
+        self.name = res.getName()
+        self.type = 'Subcontractr'
+        self.SchedulableWindow = [(480,960),(960,1440)]
+        self.Resource= simpy.Resource(env, capacity=1000)
+        self.Automated = res.Automated
 
+    def getResource(self):
+        return self.Resource
+
+    def getName(self):
+        return self.name
+        
+    def IsOpen(self,now):
+        time = now % 1440 #Each day has 1440 minutes            
+        return any(start<= time < end for start,end in self.SchedulableWindow)
 
 
        
@@ -121,15 +230,23 @@ class SimSubcontractor(object):
 
 class SimOperator(object):
     def __init__(self,env,Optr):
-        self.env = env 
+        self.env = env
+        self.name = Optr.getName()
+        self.type = 'Operator'
         self.operator = Optr
         self.efficiency = 1
         self.operationexecutions = []
         self.location = None 
         self.status = 'idle'
         self.currentexecution = None
-        self.availability = dict() #  key: day, value: activeperiod. 
-        
+        self.availability = dict() #  key: day, value: activeperiod.
+        self.Resource = simpy.Resource(env,capacity=1)
+
+    def getResource(self):
+        return self.resource
+
+    def getName(self):
+        return self.name
         
     def StartTask(self,env,task):
         # make status change idle->busy
@@ -159,6 +276,7 @@ class Buffer(object):
         self.capacity = capacity
         self.products = []
         self.coordinates = (0,0)
+        self.Container = simpy.Container(env, capacity=capacity)
 
     
         # historical capacity use
@@ -169,6 +287,8 @@ class Buffer(object):
     def getCapacity(self):
         return self.capacity
 
+    def getContainer(self):
+        return self.Container
 
     def getCoordinates(self):
         return self.coordinates 
@@ -200,12 +320,24 @@ class Trolley(object):
         self.name = name
         self.capacity = 100
         self.products = [] # product
+        self.job = None
         self.idle = True
-
+        self.Resource = simpy.Resource(env, capacity=1) #This creates the simpy resource
+        
     def IsIdle(self):
         return self.idle
 
-    def SetStatus(self,myidle):
+    def getResource(self):
+        return self.Resource
+
+    def getJob(self):
+        return self.job
+
+    def setJob(self,job):
+        self.job = job
+        return        
+
+    def setStatus(self,myidle):
         self.idle = myidle
         return
     def getName(self):
@@ -221,6 +353,7 @@ class ProductionSystem(object):
     def __init__(self,env,name):
         self.env = env
         self.name = name
+        self.buffer = None
         self.machines = []
         self.operators = []
         self.subcontractors = []
@@ -239,10 +372,29 @@ class ProductionSystem(object):
     def getTrolleys(self):
         return self.trolleys
 
+    def setBuffer(self,bffr):
+        self.buffer = bffr
+        return
+
+    def getBuffer(self):
+        return self.buffer
+
     def print(self):
         return "Machines"+str(len(self.machines))+", Ops: "+str(len(self.operators))+", Sub: "+str(len(self.subcontractors))+", Trollys: "+str(len(self.trolleys))
         
-        
+class FloorShopManager(object):
+    def __init__(self, env):
+        self.env = env
+        self.queue = []
+
+    def add_batch(self,env,batch,Progress, envstart):
+        Progress.value+= "Manager receives batch " + str(batch.getSN()) + " at "+ str(envstart[0] + env.now * envstart[1])+ "\n"
+        self.queue.append(batch)
+
+    def getQueue(self):
+        return self.queue
+
+            
 
 
 class SimulationManager(object):
@@ -250,7 +402,7 @@ class SimulationManager(object):
 
         self.DataManager = None
         self.VisualManager = None
-        self.PlanningManager = None
+        self.FloorShopManager = None
         self.SchedulingManager = None
         self.SimStart = None
         self.SimEnd = None
@@ -258,7 +410,10 @@ class SimulationManager(object):
         self.ProdSN = 0
         self.simshifts = dict()
         self.EventQueue = dict() # key: simetime, val: Event
+        self.AltEventQueue = [] #Jobs that are allowed to be scheduled
         self.prodsystem = None
+        self.buffer = None
+        self.FinishedTasks=[] #If job is finished
 
     def setProdSystem(self,systm):
         self.prodsystem = systm
@@ -267,8 +422,18 @@ class SimulationManager(object):
     def getProdSystem(self):
         return self.prodsystem
 
+    def setBuffer(self,bffr):
+        self.buffer = bffr
+        return
+
+    def getBuffer(self):
+        return self.buffer
+
     def getEventQueue(self):
         return self.EventQueue
+
+    def getAltEventQueue(self):
+        return self.AltEventQueue
 
     def getMyShifts(self):
         return self.simshifts
@@ -277,6 +442,13 @@ class SimulationManager(object):
     def getProdSN(self):
         self.ProdSN+=1
         return self.ProdSN
+
+    def getFloorShopManager(self):
+        return self.FloorShopManager
+        
+    def setFloorShopManager(self,myvm):
+        self.FloorShopManager = myvm
+        return
 
     def getVisualManager(self):
         return self.VisualManager
@@ -301,8 +473,17 @@ class SimulationManager(object):
         self.SimEnd = myvm
         return
 
+    def getFinishedTasks(self):
+        return self.FinishedTasks
 
+    def createBatch(self,env,job,SN):
+        return SimBatch(env,job,SN)
 
+    def createFloorShopManager(self,env):
+        fsm = FloorShopManager(env)
+        self.setFloorShopManager(fsm)
+        return fsm
+    
     def createProductionSystem(self,env,name):
         prodsys = ProductionSystem(env,name)
         self.setProdSystem(prodsys)
@@ -312,7 +493,9 @@ class SimulationManager(object):
         return SimSubcontractor(env,res)
 
     def createBuffer(self,env,name,cap):
-        return Buffer(env,name,cap)
+        buffer = Buffer(env,name,cap)
+        self.setBuffer(buffer)
+        return buffer
 
     def createMachine(self,env,machine):
         return SimMachine(env,machine)
