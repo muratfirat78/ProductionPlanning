@@ -17,7 +17,6 @@ import math as mth
 from PlanningObjects import *
 from Visual import *
 from Data import *
-from GreedyInsertion import *
 import simpy
 from numpy import random
 import pandas as pd 
@@ -536,106 +535,59 @@ class SimulationManager(object):
         return False
 
     
-    def CreateShifts(self,progress):
+    def CreateShifts(self,psstart,pssend,Progress):
 
-        dtstart = self.getSimStart()
-        dtend = self.getSimEnd()
+        scheduleperiod = pd.date_range(psstart,pssend)
 
-        progress.value+="Start shifts.."+str(dtstart)+str(dtend)+"\n"
+        Progress.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shift creating starts... "+"\n"
 
-        simperiod = pd.date_range(dtstart,dtend)
-        
-        
-        self.getMyShifts().clear()
+        Progress = self.getVisualManager().getSchedulingTab().getPSchScheRes()
 
-        progress.value+="period.."+str(simperiod)+"\n"
-    
-        i=1
         prev_dayshift = None 
-        scheduletimehour = 1
+        scheduletimehour = 16 # time 08:00 in half hour granularity..
         
-        for curr_date in simperiod:
+        for curr_date in scheduleperiod:
 
-            self.getMyShifts()[curr_date] = []
+            if curr_date.date().weekday()>= 5:
+                continue
 
-            dayshifts = []
+            Progress.value+=str(curr_date)+"\n"
 
-            progress.value+="date.."+str(curr_date)+"\n"
-            
-            shift1=Shift(curr_date,3,prev_dayshift)
-            shift1.setStartTime(scheduletimehour) 
-
-            
-            shift1.setStartHour(curr_date + timedelta(hours=0))
-            shift1.setEndHour(curr_date + timedelta(hours=7)+ timedelta(minutes=59))
-          
-            scheduletimehour+=8
-            shift1.setEndTime(scheduletimehour-1)
-            dayshifts.append(shift1)
-
-        
-            self.getMyShifts()[curr_date].append(shift1)   
-            
-         
-            shift2=Shift(curr_date,1,shift1)
-            shift2.setStartTime(scheduletimehour)   
-            scheduletimehour+=8
-            shift2.setEndTime(scheduletimehour-1)
-
-            shift2.setStartHour(curr_date + timedelta(hours=8))
-            shift2.setEndHour(curr_date + timedelta(hours=15)+timedelta(minutes=59))
-
-            self.getMyShifts()[curr_date].append(shift2)   
-                    
-            dayshifts.append(shift2)
-            
-            
-            shift3=Shift(curr_date,2,shift2)
-            shift3.setStartTime(scheduletimehour)
-            scheduletimehour+=8
-            shift3.setEndTime(scheduletimehour-1)
-            shift3.setStartHour(curr_date + timedelta(hours=16))
-            shift3.setEndHour(curr_date + timedelta(hours=23)+ timedelta(minutes=59))
-
-            self.getMyShifts()[curr_date].append(shift3)   
-   
-            prev_dayshift=shift3
-
-            dayshifts.append(shift3)
-
-            opno = 0
-
-            progress.value+="resources.."+"\n"
-            
-            for resname, res in self.getDataManager().getResources().items():
-
-                if res.getType() == "Machine":
-                    
-                    for currshift in dayshifts:
-                        
-                        if currshift.getNumber() in res.getAvailableShifts():
-                            res.getCurrentSchedule()[currshift] = []
-
-                            if currshift.getNumber() == 3:
-                                res.getShiftOperatingModes()[currshift] = "Self-Running"
-                            else:
-                                res.getShiftOperatingModes()[currshift] = "Operated"
-
-                if (res.getType() == "Manual") or (res.getType() == "Operator"):     
-                    
-                    for currshift in dayshifts:
-                        if currshift.getNumber() in res.getAvailableShifts():
-                            res.getCurrentSchedule()[currshift] = []
-        
-          
-                if res.getType() == "Outsourced":
-                    for currshift in dayshifts:
-                        if currshift.getNumber() in res.getAvailableShifts():
-                            res.getCurrentSchedule()[currshift] = []
+            if not curr_date in self.getMyShifts():
+                curr_hour = 8
+                self.getMyShifts()[curr_date] = [] 
                 
-                    
-            i+=1        
+                for i in range(1,4):
+                    currenshift = Shift(curr_date,i,prev_dayshift)
+                    currenshift.setStartTime(scheduletimehour) 
+                    currenshift.setStartHour(curr_date + timedelta(hours=curr_hour))
+                    currenshift.setEndHour(curr_date + timedelta(hours=curr_hour+7)+ timedelta(minutes=59))
 
+                    scheduletimehour+=15
+                    currenshift.setEndTime(scheduletimehour)
+                    self.getMyShifts()[curr_date].append(currenshift)  
+                    prev_dayshift = currenshift
+                 
+                    curr_hour+=8
+                    scheduletimehour+=1
+  
+                    
+                    for resname, res in self.getDataManager().getResources().items():
+                        if currenshift.getNumber() in res.getAvailableShifts():
+                            res.getSchedule()[currenshift] = []
+                        if res.getType() == "Machine":
+                            if currenshift.getNumber() == 3:
+                                res.getShiftOperatingModes()[currenshift] = "Self-Running"
+                            else:
+                                res.getShiftOperatingModes()[currenshift] = "Operated"
+           
+            else:
+                prev_dayshift = self.getMyShifts()[curr_date][-1]
+
+            Progress.value+=str(curr_date)+", day shifts: "+str(len(self.getMyShifts()[curr_date]))+"\n"
+
+       
+       
         return 
 
     
