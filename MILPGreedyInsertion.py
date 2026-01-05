@@ -74,8 +74,9 @@ class MILPGreedyInsertionAlg:
         Progress.value+="  processtime."+str(processtime)+"\n"
 
         for slot in sch_sol.getResourceSlots()[mach]:   
-            if slot[1]-slot[0] >= processtime:
-                start = slot[0]
+            sttime = max(slot[0],job_lpc)
+            if slot[1]-sttime >= processtime:
+                start = sttime
                 break
                 
         if start == None:
