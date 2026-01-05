@@ -251,6 +251,7 @@ class SchedulingManager:
         3- A job is processed by at most one job, if scheduled. 
         4- Jobs are processed at compatible machines
         5- Job processings should respect FTE capacity in Shifts 1 and 2 
+        6- Job precedences 
                
         """
         infeasibilities = [] # feasibility explanations
@@ -268,8 +269,21 @@ class SchedulingManager:
 
         # reset job properties
         for name,order in self.getDataManager().getCustomerOrders().items():
+          
             for job in order.getMyJobs():
                 if job.getMySch() != None:
+                    if job.getMySch().IsScheduled():
+                        for pred in job.getPredecessors():
+                            if pred.getMySch() == None:
+                                infeasibilities.append(">>Infeasibility 6: "+job.getName()+" has predecessor "+pred.getName()+" not schedule job intialized")
+                            else:
+                                if not pred.getMySch().IsScheduled():
+                                    infeasibilities.append(">>Infeasibility 6: "+job.getName()+" has predecessor "+pred.getName()+" not scheduled")
+                                else: 
+                                    if pred.getMySch().getCompletionTime() > job.getMySch().getStartTime():
+                                        infeasibilities.append(">>Infeasibility 6: "+job.getName()+" has predecessor completion  "+str(pred.getMySch().getCompletionTime())+" > job start "+str(job.getMySch().getStartTime()))
+                                        
+                            
                     if not job in jobassignnments:
                         jobassignnments[job.getMySch()] = []
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="job assignments initialized.."+"\n"  
