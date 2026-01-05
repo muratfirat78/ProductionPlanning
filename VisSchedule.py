@@ -625,45 +625,6 @@ class ScheduleTab():
 
 #############################################################################################################################################  
 
-"""
-source = pd.DataFrame(columns=["Shift","Job","Start","End"])
-
-            with self.getPSTBGanttOutput():             
-                clear_output() 
-                display(selectedres)
-                display("Shifts: ",len(selected_res.getCurrentSchedule()))
-                display("Jobs: ",[len(j) for j in selected_res.getCurrentSchedule().values()])
-
-            for shift,jobs in selected_res.getCurrentSchedule().items():
-                
-                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":1,"End":1.005}])
-                source = pd.concat([source, row], axis=0, ignore_index=True)
-                row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":".", "Start":8.995,"End":9}])
-                source = pd.concat([source, row], axis=0, ignore_index=True)
-                for job in jobs:
-                    starttime = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime()+1+0.01
-                    endtime =  min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime()+1-0.01
-                    row = pd.DataFrame([{"Shift": str(shift.getDay().date())+" | "+str(shift.getNumber()), "Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
-                    source = pd.concat([source, row], axis=0, ignore_index=True)
-
-          
-               
-            with self.getPSTBGanttOutput():
-                
-                clear_output() 
-                display(selected_res.getName())
-                #display("Schedule shifts: ",selected_res.getSchedule())
-      
-                for shift in source["Shift"].unique():
-                    break
-                    shift_df = source[source["Shift"] == shift]
-                    
-                    bars = alt.Chart(shift_df).mark_bar(color='tan').encode(x='Start',x2='End',y=alt.Y('Shift', sort='-x'))
-                    text = bars.mark_text(align='left',baseline='middle', dx=3).encode( text='Job')
-
-                    display((bars + text).properties(height=100, width=200))
-"""
-
 
 
 

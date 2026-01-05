@@ -1,0 +1,2761 @@
+,Info
+0,No data lines to import 259
+1,Nan ID values: 174
+2,Nan Product values: 174
+3,Nan Operation values: 30
+4, line 0
+5, part1  True
+6, part2  True
+7," line 0 product [7005-2480-0090] METROFRAME BODY V02-00-B / 0119073001 , raw [5601-0000-0155] ALU 5083 gegoten gzgd plaat 590x460x150"
+8,pn... 7005-2480-0090
+9,prod handled... True
+10,raw 1... 
+11,raw added to predecesors... 
+12,no second raw product... 
+13,"resid: __export__.mrp_workcenter_55_15609e22, resname: M3-02 - Accuway - 3axis - Manual (FR3_02)"
+14,prod id: 15889.0
+15,prodp pn: 7005-2480-0090
+16, operation id... 15889.0-_-__export__.mrp_workcenter_55_15609e22
+17, operation will be created..
+18, resource not found..
+19,first operation passed... 
+20,oprtn M5-04 - Haas - 5axis  - Manual (UMC750SS)
+21,No operations 2
+22,ordname...[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 _4.0[92e1]
+23,line 0
+24,ordid..__export__.mrp_production_1064_688e92e1
+25,deadline null?...False
+26,deadline...2025-02-28 01:00:00
+27,deadline formatted...2025-02-28 01:00:00
+28,"order created and add with id __export__.mrp_production_1064_688e92e1, total 1"
+29,deadline null?...False
+30,deadline...2025-02-28 01:00:00
+31,deadline formatted...2025-02-28 01:00:00
+32, line 1
+33, part1  False
+34, part2  False
+35, line 1
+36, line 2
+37, part1  True
+38, part2  True
+39," line 2 product [4022-651-55002A] Gpas preamp CB Box + cover assy, raw [5602-0000-0023] RVS 316L wgw vk 80"
+40,pn... 4022-651-55002A
+41,prod handled... True
+42,raw 1... 
+43,raw added to predecesors... 
+44,no second raw product... 
+45,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+46,prod id: 14975.0
+47,prodp pn: 4022-651-55002A
+48, operation id... 14975.0-_-__export__.mrp_workcenter_63_98a7a00b
+49, operation will be created..
+50, resource not found..
+51,first operation passed... 
+52,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+53,oprtn M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01)
+54,oprtn BW - Benchwork (BKW_01)
+55,oprtn PACK - Packaging (VERP_P)
+56,No operations 5
+57,ordname...[4022-651-55002A]  Gpas preamp CB Box + cover assy_27.0[4426]
+58,line 2
+59,ordid..__export__.mrp_production_1104_d3ae4426
+60,deadline null?...True
+61,"order created and add with id __export__.mrp_production_1104_d3ae4426, total 2"
+62,deadline null?...True
+63, line 3
+64, part1  False
+65, part2  False
+66, line 3
+67, line 4
+68, part1  False
+69, part2  False
+70, line 4
+71, line 5
+72, part1  False
+73, part2  False
+74, line 5
+75, line 6
+76, part1  False
+77, part2  False
+78, line 6
+79, line 7
+80, part1  True
+81, part2  False
+82, line 7
+83,no raw- pn... 7351522
+84,ordname...[7351522]  Impact cover-6_rev-0 alleen base voor export-AP214.step_1.0[1dc3]
+85,line 7
+86,ordid..__export__.mrp_production_3892_cec21dc3
+87,deadline null?...False
+88,deadline...2025-04-14 02:00:00
+89,deadline formatted...2025-04-14 02:00:00
+90,"order created and add with id __export__.mrp_production_3892_cec21dc3, total 3"
+91, line 8
+92, part1  True
+93, part2  True
+94," line 8 product [1508130 B] [Q] excenter housing z, raw [5601-0000-0012] ALU 6082 T6 plat 60x40"
+95,pn... 1508130 B
+96,prod handled... True
+97,raw 1... 
+98,raw added to predecesors... 
+99,no second raw product... 
+100,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+101,prod id: 16893.0
+102,prodp pn: 1508130 B
+103, operation id... 16893.0-_-__export__.mrp_workcenter_63_98a7a00b
+104, operation will be created..
+105,first operation passed... 
+106,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+107,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+108,oprtn BW - Benchwork (BKW_01)
+109,oprtn PACK - Packaging (VERP_P)
+110,No operations 5
+111,ordname...[1508130 B]  [Q] excenter housing z_140.0[34f8]
+112,line 8
+113,ordid..__export__.mrp_production_4738_6a3434f8
+114,deadline null?...False
+115,deadline...2025-05-14 13:28:22
+116,deadline formatted...2025-05-14 13:28:22
+117,"order created and add with id __export__.mrp_production_4738_6a3434f8, total 4"
+118,deadline null?...False
+119,deadline...2025-05-14 13:28:22
+120,deadline formatted...2025-05-14 13:28:22
+121, line 9
+122, part1  False
+123, part2  False
+124, line 9
+125, line 10
+126, part1  False
+127, part2  False
+128, line 10
+129, line 11
+130, part1  False
+131, part2  False
+132, line 11
+133, line 12
+134, part1  False
+135, part2  False
+136, line 12
+137, line 13
+138, part1  True
+139, part2  True
+140," line 13 product [7005-2480-0090] METROFRAME BODY V02-00-B / 0119073001 , raw [5601-0000-0155] ALU 5083 gegoten gzgd plaat 590x460x150"
+141,pn... 7005-2480-0090
+142,prod handled... True
+143,raw 1... 
+144,no second raw product... 
+145,"resid: __export__.mrp_workcenter_54_3f0243e1, resname: M3-01 - Accuway - 3axis - Manual (FR3_01)"
+146,prod id: 15889.0
+147,prodp pn: 7005-2480-0090
+148, operation id... 15889.0-_-__export__.mrp_workcenter_54_3f0243e1
+149, operation will be created..
+150,first operation passed... 
+151,oprtn M5-04 - Haas - 5axis  - Manual (UMC750SS)
+152,No operations 2
+153,ordname...[7005-2480-0090]  METROFRAME BODY V02-00-B / 0119073001 _4.0[7a5a]
+154,line 13
+155,ordid..__export__.mrp_production_1065_d70e7a5a
+156,deadline null?...False
+157,deadline...2025-05-30 02:00:00
+158,deadline formatted...2025-05-30 02:00:00
+159,"order created and add with id __export__.mrp_production_1065_d70e7a5a, total 5"
+160,deadline null?...False
+161,deadline...2025-05-30 02:00:00
+162,deadline formatted...2025-05-30 02:00:00
+163, line 14
+164, part1  False
+165, part2  False
+166, line 14
+167, line 15
+168, part1  True
+169, part2  True
+170," line 15 product [216121-0006] fixing block, actuator, raw [5602-0000-0037] RVS 304/304L wgw plat 25x20"
+171,pn... 216121-0006
+172,prod handled... True
+173,raw 1... 
+174,raw added to predecesors... 
+175,no second raw product... 
+176,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+177,prod id: 14910.0
+178,prodp pn: 216121-0006
+179, operation id... 14910.0-_-__export__.mrp_workcenter_63_98a7a00b
+180, operation will be created..
+181,first operation passed... 
+182,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+183,oprtn PACK - Packaging (VERP_P)
+184,No operations 3
+185,"ordname...[216121-0006]  fixing block, actuator_10.0[c1a8]"
+186,line 15
+187,ordid..__export__.mrp_production_4371_a96fc1a8
+188,deadline null?...False
+189,deadline...2025-07-09 02:00:00
+190,deadline formatted...2025-07-09 02:00:00
+191,"order created and add with id __export__.mrp_production_4371_a96fc1a8, total 6"
+192,deadline null?...False
+193,deadline...2025-07-09 02:00:00
+194,deadline formatted...2025-07-09 02:00:00
+195, line 16
+196, part1  False
+197, part2  False
+198, line 16
+199, line 17
+200, part1  False
+201, part2  False
+202, line 17
+203, line 18
+204, part1  True
+205, part2  True
+206," line 18 product [4022-637-24142] HINGE BLOCK FIXED RF, raw [5602-0000-0003] RVS 304/304L wgw plat 40x30"
+207,pn... 4022-637-24142
+208,prod handled... True
+209,raw 1... 
+210,raw added to predecesors... 
+211,no second raw product... 
+212,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+213,prod id: 14961.0
+214,prodp pn: 4022-637-24142
+215, operation id... 14961.0-_-__export__.mrp_workcenter_63_98a7a00b
+216, operation will be created..
+217,first operation passed... 
+218,oprtn M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01)
+219,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+220,oprtn BW - Benchwork (BKW_01)
+221,oprtn PACK - Packaging (VERP_P)
+222,No operations 5
+223,ordname...[4022-637-24142]  HINGE BLOCK FIXED RF_44.0[bbb0]
+224,line 18
+225,ordid..__export__.mrp_production_4315_9685bbb0
+226,deadline null?...False
+227,deadline...2025-07-11 02:00:00
+228,deadline formatted...2025-07-11 02:00:00
+229,"order created and add with id __export__.mrp_production_4315_9685bbb0, total 7"
+230,deadline null?...False
+231,deadline...2025-07-11 02:00:00
+232,deadline formatted...2025-07-11 02:00:00
+233, line 19
+234, part1  False
+235, part2  False
+236, line 19
+237, line 20
+238, part1  False
+239, part2  False
+240, line 20
+241, line 21
+242, part1  False
+243, part2  False
+244, line 21
+245, line 22
+246, part1  False
+247, part2  False
+248, line 22
+249, line 23
+250, part1  True
+251, part2  True
+252," line 23 product [1082700B] Block cooling water TMP, raw [5602-0000-0024] RVS 316L wgw plat 40x25"
+253,pn... 1082700B
+254,prod handled... True
+255,raw 1... 
+256,raw added to predecesors... 
+257,no second raw product... 
+258,"resid: __export__.mrp_workcenter_59_d6deab7b, resname: M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)"
+259,prod id: 14907.0
+260,prodp pn: 1082700B
+261, operation id... 14907.0-_-__export__.mrp_workcenter_59_d6deab7b
+262, operation will be created..
+263,first operation passed... 
+264,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+265,oprtn BW - Benchwork (BKW_01)
+266,oprtn PACK - Packaging (VERP_P)
+267,No operations 4
+268,ordname...[1082700B]  Block cooling water TMP_68.0[43cd]
+269,line 23
+270,ordid..__export__.mrp_production_1197_849443cd
+271,deadline null?...True
+272,"order created and add with id __export__.mrp_production_1197_849443cd, total 8"
+273,deadline null?...True
+274, line 24
+275, part1  False
+276, part2  False
+277, line 24
+278, line 25
+279, part1  False
+280, part2  False
+281, line 25
+282, line 26
+283, part1  False
+284, part2  False
+285, line 26
+286, line 27
+287, part1  True
+288, part2  True
+289," line 27 product [216121-0005] base wet stem quatro, raw [5601-0000-0107] ALU 5754 H111 gzgd plaat 60x50x50"
+290,pn... 216121-0005
+291,prod handled... True
+292,raw 1... 
+293,raw added to predecesors... 
+294,no second raw product... 
+295,"resid: __export__.mrp_workcenter_68_8bff6631, resname: OUT - Outsourced activity"
+296,prod id: 14908.0
+297,prodp pn: 216121-0005
+298, operation id... 14908.0-_-__export__.mrp_workcenter_68_8bff6631
+299, operation will be created..
+300, resource not found..
+301,first operation passed... 
+302,"oprtn MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+303,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+304,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+305,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+306,oprtn BW - Benchwork (BKW_01)
+307,oprtn OUT - Outsourced activity
+308,oprtn BW - Benchwork (BKW_01)
+309,oprtn PACK - Packaging (VERP_P)
+310,No operations 9
+311,ordname...[216121-0005]  base wet stem quatro_49.0[5248]
+312,line 27
+313,ordid..__export__.mrp_production_4370_ea015248
+314,deadline null?...False
+315,deadline...2025-07-09 02:00:00
+316,deadline formatted...2025-07-09 02:00:00
+317,"order created and add with id __export__.mrp_production_4370_ea015248, total 9"
+318,deadline null?...False
+319,deadline...2025-07-09 02:00:00
+320,deadline formatted...2025-07-09 02:00:00
+321, line 28
+322, part1  False
+323, part2  False
+324, line 28
+325, line 29
+326, part1  False
+327, part2  False
+328, line 29
+329, line 30
+330, part1  False
+331, part2  False
+332, line 30
+333, line 31
+334, part1  False
+335, part2  False
+336, line 31
+337, line 32
+338, part1  False
+339, part2  False
+340, line 32
+341, line 33
+342, part1  False
+343, part2  False
+344, line 33
+345, line 34
+346, part1  False
+347, part2  False
+348, line 34
+349, line 35
+350, part1  False
+351, part2  False
+352, line 35
+353, line 36
+354, part1  True
+355, part2  True
+356," line 36 product [4522-980-37891] Filterplate al 5, raw [5601-0000-0118] ALU 99.5 40HV UN-T136 plaat 145x145x6"
+357,pn... 4522-980-37891
+358,prod handled... True
+359,raw 1... 
+360,raw added to predecesors... 
+361,no second raw product... 
+362,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+363,prod id: 15021.0
+364,prodp pn: 4522-980-37891
+365, operation id... 15021.0-_-__export__.mrp_workcenter_65_c1e1b939
+366, operation will be created..
+367,first operation passed... 
+368,oprtn M3-02 - Accuway - 3axis - Manual (FR3_02)
+369,oprtn BW - Benchwork (BKW_01)
+370,oprtn PACK - Packaging (VERP_P)
+371,No operations 4
+372,ordname...[4522-980-37891]  Filterplate al 5_201.0[e8df]
+373,line 36
+374,ordid..__export__.mrp_production_4841_95fde8df
+375,deadline null?...False
+376,deadline...2025-09-18 11:00:00
+377,deadline formatted...2025-09-18 11:00:00
+378,"order created and add with id __export__.mrp_production_4841_95fde8df, total 10"
+379,deadline null?...False
+380,deadline...2025-09-18 11:00:00
+381,deadline formatted...2025-09-18 11:00:00
+382, line 37
+383, part1  False
+384, part2  False
+385, line 37
+386, line 38
+387, part1  False
+388, part2  False
+389, line 38
+390, line 39
+391, part1  False
+392, part2  False
+393, line 39
+394, line 40
+395, part1  True
+396, part2  True
+397," line 40 product [4022.622.61092] RH RED GRIPPER CABLE COVER , raw [5602-0000-0031] RVS 316L wgw plat 80x20"
+398,pn... 4022.622.61092
+399,prod handled... True
+400,raw 1... 
+401,raw added to predecesors... 
+402,no second raw product... 
+403,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+404,prod id: 7366.0
+405,prodp pn: 4022.622.61092
+406, operation id... 7366.0-_-__export__.mrp_workcenter_63_98a7a00b
+407, operation will be created..
+408,first operation passed... 
+409,oprtn M5-04 - Haas - 5axis  - Manual (UMC750SS)
+410,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+411,oprtn OUT - Outsourced activity
+412,oprtn OUT - Outsourced activity
+413,oprtn OUT - Outsourced activity
+414,oprtn PACK - Packaging (VERP_P)
+415,No operations 7
+416,ordname...[4022.622.61092]  RH RED GRIPPER CABLE COVER _34.0[7d1f]
+417,line 40
+418,ordid..__export__.mrp_production_4875_38ec7d1f
+419,deadline null?...False
+420,deadline...2025-11-03 01:00:00
+421,deadline formatted...2025-11-03 01:00:00
+422,"order created and add with id __export__.mrp_production_4875_38ec7d1f, total 11"
+423,deadline null?...False
+424,deadline...2025-11-03 01:00:00
+425,deadline formatted...2025-11-03 01:00:00
+426, line 41
+427, part1  False
+428, part2  False
+429, line 41
+430, line 42
+431, part1  False
+432, part2  False
+433, line 42
+434, line 43
+435, part1  False
+436, part2  False
+437, line 43
+438, line 44
+439, part1  False
+440, part2  False
+441, line 44
+442, line 45
+443, part1  False
+444, part2  False
+445, line 45
+446, line 46
+447, part1  False
+448, part2  False
+449, line 46
+450, line 47
+451, part1  True
+452, part2  True
+453," line 47 product [00429-00-662-B] Arret lever, raw [5601-0000-0007] ALU 6082 T6 vk 30"
+454,pn... 00429-00-662-B
+455,prod handled... True
+456,raw 1... 
+457,raw added to predecesors... 
+458,no second raw product... 
+459,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+460,prod id: 14895.0
+461,prodp pn: 00429-00-662-B
+462, operation id... 14895.0-_-__export__.mrp_workcenter_63_98a7a00b
+463, operation will be created..
+464,first operation passed... 
+465,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+466,oprtn BW - Benchwork (BKW_01)
+467,oprtn PACK - Packaging (VERP_P)
+468,No operations 4
+469,ordname...[00429-00-662-B]  Arret lever_400.0[2ff7]
+470,line 47
+471,ordid..__export__.mrp_production_4894_c0252ff7
+472,deadline null?...False
+473,deadline...2025-10-03 12:42:49
+474,deadline formatted...2025-10-03 12:42:49
+475,"order created and add with id __export__.mrp_production_4894_c0252ff7, total 12"
+476,deadline null?...False
+477,deadline...2025-10-03 12:42:49
+478,deadline formatted...2025-10-03 12:42:49
+479, line 48
+480, part1  False
+481, part2  False
+482, line 48
+483, line 49
+484, part1  False
+485, part2  False
+486, line 49
+487, line 50
+488, part1  False
+489, part2  False
+490, line 50
+491, line 51
+492, part1  True
+493, part2  True
+494," line 51 product [4598-008-08901B POS 1] CEILING INLET*, raw [5990-0000-0013] EPRAFORM PC helder rond Ø125"
+495,pn... 4598-008-08901B POS 1
+496,prod handled... True
+497,raw 1... 
+498,raw added to predecesors... 
+499,no second raw product... 
+500,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+501,prod id: 15022.0
+502,prodp pn: 4598-008-08901B POS 1
+503, operation id... 15022.0-_-__export__.mrp_workcenter_63_98a7a00b
+504, operation will be created..
+505,first operation passed... 
+506,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+507,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+508,oprtn BW - Benchwork (BKW_01)
+509,oprtn OUT - Outsourced activity
+510,oprtn PACK - Packaging (VERP_P)
+511,No operations 6
+512,ordname...[4598-008-08901B POS 1]  CEILING INLET*_87.0[95e9]
+513,line 51
+514,ordid..__export__.mrp_production_5031_9e2495e9
+515,deadline null?...False
+516,deadline...2025-11-21 11:00:00
+517,deadline formatted...2025-11-21 11:00:00
+518,"order created and add with id __export__.mrp_production_5031_9e2495e9, total 13"
+519,deadline null?...False
+520,deadline...2025-11-21 11:00:00
+521,deadline formatted...2025-11-21 11:00:00
+522, line 52
+523, part1  False
+524, part2  False
+525, line 52
+526, line 53
+527, part1  False
+528, part2  False
+529, line 53
+530, line 54
+531, part1  False
+532, part2  False
+533, line 54
+534, line 55
+535, part1  False
+536, part2  False
+537, line 55
+538, line 56
+539, part1  False
+540, part2  False
+541, line 56
+542, line 57
+543, part1  True
+544, part2  True
+545," line 57 product [4598-008-08901B POS 1] CEILING INLET*, raw [5990-0000-0013] EPRAFORM PC helder rond Ø125"
+546,pn... 4598-008-08901B POS 1
+547,prod handled... True
+548,raw 1... 
+549,no second raw product... 
+550,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+551,prod id: 15022.0
+552,prodp pn: 4598-008-08901B POS 1
+553, operation id... 15022.0-_-__export__.mrp_workcenter_63_98a7a00b
+554,first operation passed... 
+555,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+556,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+557,oprtn BW - Benchwork (BKW_01)
+558,oprtn OUT - Outsourced activity
+559,oprtn PACK - Packaging (VERP_P)
+560,No operations 6
+561,ordname...[4598-008-08901B POS 1]  CEILING INLET*_386.0[a862]
+562,line 57
+563,ordid..__export__.mrp_production_4967_3148a862
+564,deadline null?...True
+565,"order created and add with id __export__.mrp_production_4967_3148a862, total 14"
+566,deadline null?...True
+567, line 58
+568, part1  False
+569, part2  False
+570, line 58
+571, line 59
+572, part1  False
+573, part2  False
+574, line 59
+575, line 60
+576, part1  False
+577, part2  False
+578, line 60
+579, line 61
+580, part1  False
+581, part2  False
+582, line 61
+583, line 62
+584, part1  False
+585, part2  False
+586, line 62
+587, line 63
+588, part1  True
+589, part2  True
+590," line 63 product [100160036] EPSON-i3200_InksupplyUpperplate8Channel / SUSS, raw [5608-0000-0006] PEEK naturel gzgd plaat 465x150x10 / Victrex "
+591,pn... 100160036
+592,prod handled... True
+593,raw 1... 
+594,raw added to predecesors... 
+595,no second raw product... 
+596,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+597,prod id: 18212.0
+598,prodp pn: 100160036
+599, operation id... 18212.0-_-__export__.mrp_workcenter_65_c1e1b939
+600, operation will be created..
+601,first operation passed... 
+602,No operations 1
+603,ordname...[100160036]  EPSON-i3200_InksupplyUpperplate8Channel / SUSS_5.0[fba5]
+604,line 63
+605,ordid..__export__.mrp_production_4956_ec0ffba5
+606,deadline null?...False
+607,deadline...2025-11-12 01:00:00
+608,deadline formatted...2025-11-12 01:00:00
+609,"order created and add with id __export__.mrp_production_4956_ec0ffba5, total 15"
+610,deadline null?...False
+611,deadline...2025-11-12 01:00:00
+612,deadline formatted...2025-11-12 01:00:00
+613, line 64
+614, part1  True
+615, part2  True
+616," line 64 product [4022.632.63021] WTP LOCKING NUT, raw [5602-0000-0058] RVS 303 (1.4305) wgw geschild rond dia 40"
+617,pn... 4022.632.63021
+618,prod handled... True
+619,raw 1... 
+620,raw added to predecesors... 
+621,no second raw product... 
+622,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+623,prod id: 7034.0
+624,prodp pn: 4022.632.63021
+625, operation id... 7034.0-_-__export__.mrp_workcenter_63_98a7a00b
+626, operation will be created..
+627,first operation passed... 
+628,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+629,No operations 2
+630,ordname...[4022.632.63021]  WTP LOCKING NUT_512.0[4e8f]
+631,line 64
+632,ordid..__export__.mrp_production_5207_49934e8f
+633,deadline null?...False
+634,deadline...2025-11-13 01:00:00
+635,deadline formatted...2025-11-13 01:00:00
+636,"order created and add with id __export__.mrp_production_5207_49934e8f, total 16"
+637,deadline null?...False
+638,deadline...2025-11-13 01:00:00
+639,deadline formatted...2025-11-13 01:00:00
+640, line 65
+641, part1  False
+642, part2  False
+643, line 65
+644, line 66
+645, part1  True
+646, part2  True
+647," line 66 product [22203901]  WSS alignment tool base V02-01 / NFI, raw [5601-0000-0204] ALU 6082 T651 (wgw) gzgd plaat 500x300x80"
+648,pn... 22203901
+649,prod handled... True
+650,raw 1... 
+651,raw added to predecesors... 
+652,no second raw product... 
+653,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+654,prod id: 18304.0
+655,prodp pn: 22203901
+656, operation id... 18304.0-_-__export__.mrp_workcenter_65_c1e1b939
+657, operation will be created..
+658,first operation passed... 
+659,oprtn OUT - Outsourced activity
+660,No operations 2
+661,ordname...[22203901]   WSS alignment tool base V02-01 / NFI_3.0[1350]
+662,line 66
+663,ordid..__export__.mrp_production_4994_50f61350
+664,deadline null?...False
+665,deadline...2025-11-20 01:00:00
+666,deadline formatted...2025-11-20 01:00:00
+667,"order created and add with id __export__.mrp_production_4994_50f61350, total 17"
+668,deadline null?...False
+669,deadline...2025-11-20 01:00:00
+670,deadline formatted...2025-11-20 01:00:00
+671, line 67
+672, part1  False
+673, part2  False
+674, line 67
+675, line 68
+676, part1  True
+677, part2  True
+678," line 68 product [00385-00-346-A] Plint fixing strip right, raw [5603-0000-0004] STAAL S235JRC+C blank plat 30x20"
+679,pn... 00385-00-346-A
+680,prod handled... True
+681,raw 1... 
+682,raw added to predecesors... 
+683,no second raw product... 
+684,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+685,prod id: 14892.0
+686,prodp pn: 00385-00-346-A
+687, operation id... 14892.0-_-__export__.mrp_workcenter_63_98a7a00b
+688, operation will be created..
+689,first operation passed... 
+690,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+691,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+692,oprtn BW - Benchwork (BKW_01)
+693,oprtn OUT - Outsourced activity
+694,oprtn PACK - Packaging (VERP_P)
+695,No operations 6
+696,ordname...[00385-00-346-A]  Plint fixing strip right_329.0[e277]
+697,line 68
+698,ordid..__export__.mrp_production_5102_6bc4e277
+699,deadline null?...False
+700,deadline...2025-12-02 11:00:00
+701,deadline formatted...2025-12-02 11:00:00
+702,"order created and add with id __export__.mrp_production_5102_6bc4e277, total 18"
+703,deadline null?...False
+704,deadline...2025-12-02 11:00:00
+705,deadline formatted...2025-12-02 11:00:00
+706, line 69
+707, part1  False
+708, part2  False
+709, line 69
+710, line 70
+711, part1  False
+712, part2  False
+713, line 70
+714, line 71
+715, part1  False
+716, part2  False
+717, line 71
+718, line 72
+719, part1  False
+720, part2  False
+721, line 72
+722, line 73
+723, part1  False
+724, part2  False
+725, line 73
+726, line 74
+727, part1  True
+728, part2  True
+729," line 74 product [00385-00-102-C] Height bearing clamp plate, raw [5603-0000-0003] STAAL S355J2C+C ngl plat 50x20"
+730,pn... 00385-00-102-C
+731,prod handled... True
+732,raw 1... 
+733,raw added to predecesors... 
+734,no second raw product... 
+735,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+736,prod id: 14886.0
+737,prodp pn: 00385-00-102-C
+738, operation id... 14886.0-_-__export__.mrp_workcenter_63_98a7a00b
+739, operation will be created..
+740,first operation passed... 
+741,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+742,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+743,oprtn OUT - Outsourced activity
+744,oprtn PACK - Packaging (VERP_P)
+745,No operations 5
+746,ordname...[00385-00-102-C]  Height bearing clamp plate_600.0[9410]
+747,line 74
+748,ordid..__export__.mrp_production_5103_54a89410
+749,deadline null?...False
+750,deadline...2025-12-23 11:00:00
+751,deadline formatted...2025-12-23 11:00:00
+752,"order created and add with id __export__.mrp_production_5103_54a89410, total 19"
+753,deadline null?...False
+754,deadline...2025-12-23 11:00:00
+755,deadline formatted...2025-12-23 11:00:00
+756, line 75
+757, part1  False
+758, part2  False
+759, line 75
+760, line 76
+761, part1  False
+762, part2  False
+763, line 76
+764, line 77
+765, part1  False
+766, part2  False
+767, line 77
+768, line 78
+769, part1  False
+770, part2  False
+771, line 78
+772, line 79
+773, part1  True
+774, part2  True
+775," line 79 product [00385-00-346-A] Plint fixing strip right, raw [5603-0000-0004] STAAL S235JRC+C blank plat 30x20"
+776,pn... 00385-00-346-A
+777,prod handled... True
+778,raw 1... 
+779,no second raw product... 
+780,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+781,prod id: 14892.0
+782,prodp pn: 00385-00-346-A
+783, operation id... 14892.0-_-__export__.mrp_workcenter_63_98a7a00b
+784,first operation passed... 
+785,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+786,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+787,oprtn BW - Benchwork (BKW_01)
+788,oprtn OUT - Outsourced activity
+789,oprtn PACK - Packaging (VERP_P)
+790,No operations 6
+791,ordname...[00385-00-346-A]  Plint fixing strip right_356.0[d7d4]
+792,line 79
+793,ordid..__export__.mrp_production_5253_f5d2d7d4
+794,deadline null?...False
+795,deadline...2025-12-02 11:00:00
+796,deadline formatted...2025-12-02 11:00:00
+797,"order created and add with id __export__.mrp_production_5253_f5d2d7d4, total 20"
+798,deadline null?...False
+799,deadline...2025-12-02 11:00:00
+800,deadline formatted...2025-12-02 11:00:00
+801, line 80
+802, part1  False
+803, part2  False
+804, line 80
+805, line 81
+806, part1  False
+807, part2  False
+808, line 81
+809, line 82
+810, part1  False
+811, part2  False
+812, line 82
+813, line 83
+814, part1  False
+815, part2  False
+816, line 83
+817, line 84
+818, part1  False
+819, part2  False
+820, line 84
+821, line 85
+822, part1  True
+823, part2  True
+824," line 85 product [4022.689.94931] RH RED DP PT LOWER COVER , raw [5601-0000-0182] ALU 5083 (O3) gegoten 6z gezaagd plaat 570x350x50"
+825,pn... 4022.689.94931
+826,prod handled... True
+827,raw 1... 
+828,raw added to predecesors... 
+829,no second raw product... 
+830,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+831,prod id: 17481.0
+832,prodp pn: 4022.689.94931
+833, operation id... 17481.0-_-__export__.mrp_workcenter_65_c1e1b939
+834, operation will be created..
+835,first operation passed... 
+836,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+837,oprtn OUT - Outsourced activity
+838,No operations 3
+839,ordname...[4022.689.94931]  RH RED DP PT LOWER COVER _2.0[6a60]
+840,line 85
+841,ordid..__export__.mrp_production_5109_96246a60
+842,deadline null?...False
+843,deadline...2025-11-27 01:00:00
+844,deadline formatted...2025-11-27 01:00:00
+845,"order created and add with id __export__.mrp_production_5109_96246a60, total 21"
+846,deadline null?...False
+847,deadline...2025-11-27 01:00:00
+848,deadline formatted...2025-11-27 01:00:00
+849, line 86
+850, part1  False
+851, part2  False
+852, line 86
+853, line 87
+854, part1  False
+855, part2  False
+856, line 87
+857, line 88
+858, part1  True
+859, part2  True
+860," line 88 product [4022.689.94981] RH RED DP PT UPPER COVER , raw [5601-0000-0181] ALU 5083 (O3) gegoten 6z gezaagd plaat 610x350x30"
+861,pn... 4022.689.94981
+862,prod handled... True
+863,raw 1... 
+864,raw added to predecesors... 
+865,no second raw product... 
+866,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+867,prod id: 17484.0
+868,prodp pn: 4022.689.94981
+869, operation id... 17484.0-_-__export__.mrp_workcenter_65_c1e1b939
+870, operation will be created..
+871,first operation passed... 
+872,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+873,oprtn OUT - Outsourced activity
+874,No operations 3
+875,ordname...[4022.689.94981]  RH RED DP PT UPPER COVER _2.0[52ad]
+876,line 88
+877,ordid..__export__.mrp_production_5110_924052ad
+878,deadline null?...False
+879,deadline...2025-11-27 01:00:00
+880,deadline formatted...2025-11-27 01:00:00
+881,"order created and add with id __export__.mrp_production_5110_924052ad, total 22"
+882,deadline null?...False
+883,deadline...2025-11-27 01:00:00
+884,deadline formatted...2025-11-27 01:00:00
+885, line 89
+886, part1  False
+887, part2  False
+888, line 89
+889, line 90
+890, part1  False
+891, part2  False
+892, line 90
+893, line 91
+894, part1  True
+895, part2  True
+896," line 91 product [4022.693.44221] RH BACK PLATE ATM RTIPCA , raw [5601-0000-0051] ALU 5083 H111 (wgw) gzgd plaat 200x15"
+897,pn... 4022.693.44221
+898,prod handled... True
+899,raw 1... 
+900,raw added to predecesors... 
+901,no second raw product... 
+902,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+903,prod id: 17465.0
+904,prodp pn: 4022.693.44221
+905, operation id... 17465.0-_-__export__.mrp_workcenter_63_98a7a00b
+906, operation will be created..
+907,first operation passed... 
+908,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+909,oprtn OUT - Outsourced activity
+910,No operations 3
+911,ordname...[4022.693.44221]  RH BACK PLATE ATM RTIPCA _15.0[11f4]
+912,line 91
+913,ordid..__export__.mrp_production_5125_b56511f4
+914,deadline null?...False
+915,deadline...2025-11-27 01:00:00
+916,deadline formatted...2025-11-27 01:00:00
+917,"order created and add with id __export__.mrp_production_5125_b56511f4, total 23"
+918,deadline null?...False
+919,deadline...2025-11-27 01:00:00
+920,deadline formatted...2025-11-27 01:00:00
+921, line 92
+922, part1  False
+923, part2  False
+924, line 92
+925, line 93
+926, part1  False
+927, part2  False
+928, line 93
+929, line 94
+930, part1  True
+931, part2  True
+932," line 94 product [4022.693.44241] RH EMI SHIELD ATM RTIPCA, raw [5601-0000-0051] ALU 5083 H111 (wgw) gzgd plaat 200x15"
+933,pn... 4022.693.44241
+934,prod handled... True
+935,raw 1... 
+936,raw added to predecesors... 
+937,no second raw product... 
+938,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+939,prod id: 17477.0
+940,prodp pn: 4022.693.44241
+941, operation id... 17477.0-_-__export__.mrp_workcenter_63_98a7a00b
+942, operation will be created..
+943,first operation passed... 
+944,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+945,oprtn OUT - Outsourced activity
+946,No operations 3
+947,ordname...[4022.693.44241]  RH EMI SHIELD ATM RTIPCA_15.0[a776]
+948,line 94
+949,ordid..__export__.mrp_production_5126_a451a776
+950,deadline null?...False
+951,deadline...2025-11-27 01:00:00
+952,deadline formatted...2025-11-27 01:00:00
+953,"order created and add with id __export__.mrp_production_5126_a451a776, total 24"
+954,deadline null?...False
+955,deadline...2025-11-27 01:00:00
+956,deadline formatted...2025-11-27 01:00:00
+957, line 95
+958, part1  False
+959, part2  False
+960, line 95
+961, line 96
+962, part1  False
+963, part2  False
+964, line 96
+965, line 97
+966, part1  True
+967, part2  True
+968," line 97 product [4022.623.82781] RH EMI SHIELD VAC RTIPCA , raw [5601-0000-0051] ALU 5083 H111 (wgw) gzgd plaat 200x15"
+969,pn... 4022.623.82781
+970,prod handled... True
+971,raw 1... 
+972,raw added to predecesors... 
+973,no second raw product... 
+974,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+975,prod id: 17459.0
+976,prodp pn: 4022.623.82781
+977, operation id... 17459.0-_-__export__.mrp_workcenter_63_98a7a00b
+978, operation will be created..
+979,first operation passed... 
+980,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+981,oprtn OUT - Outsourced activity
+982,oprtn OUT - Outsourced activity
+983,No operations 4
+984,ordname...[4022.623.82781]  RH EMI SHIELD VAC RTIPCA _16.0[2f00]
+985,line 97
+986,ordid..__export__.mrp_production_4938_ea5c2f00
+987,deadline null?...False
+988,deadline...2025-11-28 01:00:00
+989,deadline formatted...2025-11-28 01:00:00
+990,"order created and add with id __export__.mrp_production_4938_ea5c2f00, total 25"
+991,deadline null?...False
+992,deadline...2025-11-28 01:00:00
+993,deadline formatted...2025-11-28 01:00:00
+994, line 98
+995, part1  False
+996, part2  False
+997, line 98
+998, line 99
+999, part1  False
+1000, part2  False
+1001, line 99
+1002, line 100
+1003, part1  False
+1004, part2  False
+1005, line 100
+1006, line 101
+1007, part1  True
+1008, part2  True
+1009," line 101 product [7001-2540-0010] 12i Shield Mounting Block / FM / FM7031-M00033-B, raw [5602-0000-0073] RVS 304/304L gzgd plaat 200x100x20"
+1010,pn... 7001-2540-0010
+1011,prod handled... True
+1012,raw 1... 
+1013,raw added to predecesors... 
+1014,no second raw product... 
+1015,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1016,prod id: 18475.0
+1017,prodp pn: 7001-2540-0010
+1018, operation id... 18475.0-_-__export__.mrp_workcenter_63_98a7a00b
+1019, operation will be created..
+1020,first operation passed... 
+1021,No operations 1
+1022,ordname...[7001-2540-0010]  12i Shield Mounting Block / FM / FM7031-M00033-B_4.0[dbf0]
+1023,line 101
+1024,ordid..__export__.mrp_production_5128_5077dbf0
+1025,deadline null?...False
+1026,deadline...2025-11-28 01:00:00
+1027,deadline formatted...2025-11-28 01:00:00
+1028,"order created and add with id __export__.mrp_production_5128_5077dbf0, total 26"
+1029,deadline null?...False
+1030,deadline...2025-11-28 01:00:00
+1031,deadline formatted...2025-11-28 01:00:00
+1032, line 102
+1033, part1  True
+1034, part2  True
+1035," line 102 product [E06581] 4598-013-97781 WA2 VIBRATION PAD LEFT SPACER blauw, raw [5601-0000-0183] ALU 6082 T651 (wgw) gzgd plaat 142x142x20"
+1036,pn... E06581
+1037,prod handled... True
+1038,raw 1... 
+1039,raw added to predecesors... 
+1040,no second raw product... 
+1041,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+1042,prod id: 17519.0
+1043,prodp pn: E06581
+1044, operation id... 17519.0-_-__export__.mrp_workcenter_65_c1e1b939
+1045, operation will be created..
+1046,first operation passed... 
+1047,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1048,No operations 2
+1049,ordname...[E06581]  4598-013-97781 WA2 VIBRATION PAD LEFT SPACER blauw_400.0[6e23]
+1050,line 102
+1051,ordid..__export__.mrp_production_5132_8a506e23
+1052,deadline null?...False
+1053,deadline...2025-12-02 01:00:00
+1054,deadline formatted...2025-12-02 01:00:00
+1055,"order created and add with id __export__.mrp_production_5132_8a506e23, total 27"
+1056,deadline null?...False
+1057,deadline...2025-12-02 01:00:00
+1058,deadline formatted...2025-12-02 01:00:00
+1059, line 103
+1060, part1  False
+1061, part2  False
+1062, line 103
+1063, line 104
+1064, part1  True
+1065, part2  False
+1066, line 104
+1067,no raw- pn... flowteq koke
+1068,ordname...[flowteq koke] flowteq koker_30.0[9fd4]
+1069,line 104
+1070,ordid..__export__.mrp_production_5142_ccd39fd4
+1071,deadline null?...False
+1072,deadline...2025-11-20 01:00:00
+1073,deadline formatted...2025-11-20 01:00:00
+1074,"order created and add with id __export__.mrp_production_5142_ccd39fd4, total 28"
+1075, line 105
+1076, part1  True
+1077, part2  True
+1078," line 105 product [4022-656-73531] Pipe clamp exhaust FW 1980, raw [5602-0000-0013] RVS 304/304L blank plat 50x8"
+1079,pn... 4022-656-73531
+1080,prod handled... True
+1081,raw 1... 
+1082,raw added to predecesors... 
+1083,no second raw product... 
+1084,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1085,prod id: 14976.0
+1086,prodp pn: 4022-656-73531
+1087, operation id... 14976.0-_-__export__.mrp_workcenter_63_98a7a00b
+1088, operation will be created..
+1089,first operation passed... 
+1090,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+1091,oprtn BW - Benchwork (BKW_01)
+1092,oprtn PACK - Packaging (VERP_P)
+1093,No operations 4
+1094,ordname...[4022-656-73531]  Pipe clamp exhaust FW 1980_86.0[8c28]
+1095,line 105
+1096,ordid..__export__.mrp_production_5015_cdd78c28
+1097,deadline null?...False
+1098,deadline...2025-12-04 01:00:00
+1099,deadline formatted...2025-12-04 01:00:00
+1100,"order created and add with id __export__.mrp_production_5015_cdd78c28, total 29"
+1101,deadline null?...False
+1102,deadline...2025-12-04 01:00:00
+1103,deadline formatted...2025-12-04 01:00:00
+1104, line 106
+1105, part1  False
+1106, part2  False
+1107, line 106
+1108, line 107
+1109, part1  False
+1110, part2  False
+1111, line 107
+1112, line 108
+1113, part1  False
+1114, part2  False
+1115, line 108
+1116, line 109
+1117, part1  True
+1118, part2  True
+1119," line 109 product [4022-635-87291] HANDLE, raw [5602-0000-0001] RVS 304/304L blank plat 25x12"
+1120,pn... 4022-635-87291
+1121,prod handled... True
+1122,raw 1... 
+1123,raw added to predecesors... 
+1124,no second raw product... 
+1125,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1126,prod id: 14958.0
+1127,prodp pn: 4022-635-87291
+1128, operation id... 14958.0-_-__export__.mrp_workcenter_63_98a7a00b
+1129, operation will be created..
+1130,first operation passed... 
+1131,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1132,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1133,oprtn BW - Benchwork (BKW_01)
+1134,oprtn PACK - Packaging (VERP_P)
+1135,No operations 5
+1136,ordname...[4022-635-87291]  HANDLE_75.0[bc43]
+1137,line 109
+1138,ordid..__export__.mrp_production_5124_b236bc43
+1139,deadline null?...False
+1140,deadline...2025-12-04 01:00:00
+1141,deadline formatted...2025-12-04 01:00:00
+1142,"order created and add with id __export__.mrp_production_5124_b236bc43, total 30"
+1143,deadline null?...False
+1144,deadline...2025-12-04 01:00:00
+1145,deadline formatted...2025-12-04 01:00:00
+1146, line 110
+1147, part1  False
+1148, part2  False
+1149, line 110
+1150, line 111
+1151, part1  False
+1152, part2  False
+1153, line 111
+1154, line 112
+1155, part1  False
+1156, part2  False
+1157, line 112
+1158, line 113
+1159, part1  False
+1160, part2  False
+1161, line 113
+1162, line 114
+1163, part1  True
+1164, part2  True
+1165," line 114 product [4022-631-99701] LCW ABS PRES SENS CONN BLOCK, raw [5602-0000-0011] RVS 304/304L wgw vk 50"
+1166,pn... 4022-631-99701
+1167,prod handled... True
+1168,raw 1... 
+1169,raw added to predecesors... 
+1170,no second raw product... 
+1171,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1172,prod id: 14954.0
+1173,prodp pn: 4022-631-99701
+1174, operation id... 14954.0-_-__export__.mrp_workcenter_63_98a7a00b
+1175, operation will be created..
+1176,first operation passed... 
+1177,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+1178,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1179,oprtn BW - Benchwork (BKW_01)
+1180,oprtn PACK - Packaging (VERP_P)
+1181,No operations 5
+1182,ordname...[4022-631-99701]  LCW ABS PRES SENS CONN BLOCK_130.0[3749]
+1183,line 114
+1184,ordid..__export__.mrp_production_5014_625c3749
+1185,deadline null?...False
+1186,deadline...2025-12-05 01:00:00
+1187,deadline formatted...2025-12-05 01:00:00
+1188,"order created and add with id __export__.mrp_production_5014_625c3749, total 31"
+1189,deadline null?...False
+1190,deadline...2025-12-05 01:00:00
+1191,deadline formatted...2025-12-05 01:00:00
+1192, line 115
+1193, part1  False
+1194, part2  False
+1195, line 115
+1196, line 116
+1197, part1  False
+1198, part2  False
+1199, line 116
+1200, line 117
+1201, part1  False
+1202, part2  False
+1203, line 117
+1204, line 118
+1205, part1  False
+1206, part2  False
+1207, line 118
+1208, line 119
+1209, part1  True
+1210, part2  True
+1211," line 119 product [M0216-01-091-A] Bev. Klitteband, raw [5601-0000-0111] ALU 6060 T66 plat 30x5"
+1212,pn... M0216-01-091-A
+1213,prod handled... True
+1214,raw 1... 
+1215,raw added to predecesors... 
+1216,no second raw product... 
+1217,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1218,prod id: 15041.0
+1219,prodp pn: M0216-01-091-A
+1220, operation id... 15041.0-_-__export__.mrp_workcenter_63_98a7a00b
+1221, operation will be created..
+1222,first operation passed... 
+1223,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1224,oprtn MP1 - Material preparation - automatic sawing (ZGN_01)
+1225,oprtn BW - Benchwork (BKW_01)
+1226,oprtn PACK - Packaging (VERP_P)
+1227,No operations 5
+1228,ordname...[M0216-01-091-A]  Bev. Klitteband_2000.0[7c08]
+1229,line 119
+1230,ordid..__export__.mrp_production_5019_630e7c08
+1231,deadline null?...False
+1232,deadline...2025-12-09 01:00:00
+1233,deadline formatted...2025-12-09 01:00:00
+1234,"order created and add with id __export__.mrp_production_5019_630e7c08, total 32"
+1235,deadline null?...False
+1236,deadline...2025-12-09 01:00:00
+1237,deadline formatted...2025-12-09 01:00:00
+1238, line 120
+1239, part1  False
+1240, part2  False
+1241, line 120
+1242, line 121
+1243, part1  False
+1244, part2  False
+1245, line 121
+1246, line 122
+1247, part1  False
+1248, part2  False
+1249, line 122
+1250, line 123
+1251, part1  False
+1252, part2  False
+1253, line 123
+1254, line 124
+1255, part1  True
+1256, part2  True
+1257," line 124 product [00385-00-274-D] Filling block, raw [5601-0000-0010] ALU 6082 T6 vk 70"
+1258,pn... 00385-00-274-D
+1259,prod handled... True
+1260,raw 1... 
+1261,raw added to predecesors... 
+1262,no second raw product... 
+1263,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1264,prod id: 14888.0
+1265,prodp pn: 00385-00-274-D
+1266, operation id... 14888.0-_-__export__.mrp_workcenter_63_98a7a00b
+1267, operation will be created..
+1268,first operation passed... 
+1269,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1270,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1271,oprtn BW - Benchwork (BKW_01)
+1272,oprtn PACK - Packaging (VERP_P)
+1273,No operations 5
+1274,ordname...[00385-00-274-D]  Filling block_356.0[2e39]
+1275,line 124
+1276,ordid..__export__.mrp_production_5153_7c842e39
+1277,deadline null?...False
+1278,deadline...2025-12-09 11:00:00
+1279,deadline formatted...2025-12-09 11:00:00
+1280,"order created and add with id __export__.mrp_production_5153_7c842e39, total 33"
+1281,deadline null?...False
+1282,deadline...2025-12-09 11:00:00
+1283,deadline formatted...2025-12-09 11:00:00
+1284, line 125
+1285, part1  False
+1286, part2  False
+1287, line 125
+1288, line 126
+1289, part1  False
+1290, part2  False
+1291, line 126
+1292, line 127
+1293, part1  False
+1294, part2  False
+1295, line 127
+1296, line 128
+1297, part1  False
+1298, part2  False
+1299, line 128
+1300, line 129
+1301, part1  True
+1302, part2  True
+1303," line 129 product [00385-00-321-A] Plint fixing strip left, raw [5603-0000-0004] STAAL S235JRC+C blank plat 30x20"
+1304,pn... 00385-00-321-A
+1305,prod handled... True
+1306,raw 1... 
+1307,raw added to predecesors... 
+1308,no second raw product... 
+1309,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1310,prod id: 14890.0
+1311,prodp pn: 00385-00-321-A
+1312, operation id... 14890.0-_-__export__.mrp_workcenter_63_98a7a00b
+1313, operation will be created..
+1314,first operation passed... 
+1315,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1316,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1317,oprtn BW - Benchwork (BKW_01)
+1318,oprtn OUT - Outsourced activity
+1319,oprtn PACK - Packaging (VERP_P)
+1320,No operations 6
+1321,ordname...[00385-00-321-A]  Plint fixing strip left_200.0[c3b6]
+1322,line 129
+1323,ordid..__export__.mrp_production_5154_8c51c3b6
+1324,deadline null?...False
+1325,deadline...2025-12-16 11:00:00
+1326,deadline formatted...2025-12-16 11:00:00
+1327,"order created and add with id __export__.mrp_production_5154_8c51c3b6, total 34"
+1328,deadline null?...False
+1329,deadline...2025-12-16 11:00:00
+1330,deadline formatted...2025-12-16 11:00:00
+1331, line 130
+1332, part1  False
+1333, part2  False
+1334, line 130
+1335, line 131
+1336, part1  False
+1337, part2  False
+1338, line 131
+1339, line 132
+1340, part1  False
+1341, part2  False
+1342, line 132
+1343, line 133
+1344, part1  False
+1345, part2  False
+1346, line 133
+1347, line 134
+1348, part1  False
+1349, part2  False
+1350, line 134
+1351, line 135
+1352, part1  True
+1353, part2  True
+1354," line 135 product [00385-00-329-A] End plate finger safety hinge, raw [5603-0000-0006] STAAL S235JRC+C blank plat 20x5"
+1355,pn... 00385-00-329-A
+1356,prod handled... True
+1357,raw 1... 
+1358,raw added to predecesors... 
+1359,no second raw product... 
+1360,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1361,prod id: 14891.0
+1362,prodp pn: 00385-00-329-A
+1363, operation id... 14891.0-_-__export__.mrp_workcenter_63_98a7a00b
+1364, operation will be created..
+1365,first operation passed... 
+1366,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1367,oprtn BW - Benchwork (BKW_01)
+1368,oprtn OUT - Outsourced activity
+1369,oprtn PACK - Packaging (VERP_P)
+1370,No operations 5
+1371,ordname...[00385-00-329-A]  End plate finger safety hinge_473.0[f1d6]
+1372,line 135
+1373,ordid..__export__.mrp_production_5198_1e51f1d6
+1374,deadline null?...False
+1375,deadline...2025-12-16 01:00:00
+1376,deadline formatted...2025-12-16 01:00:00
+1377,"order created and add with id __export__.mrp_production_5198_1e51f1d6, total 35"
+1378,deadline null?...False
+1379,deadline...2025-12-16 01:00:00
+1380,deadline formatted...2025-12-16 01:00:00
+1381, line 136
+1382, part1  False
+1383, part2  False
+1384, line 136
+1385, line 137
+1386, part1  False
+1387, part2  False
+1388, line 137
+1389, line 138
+1390, part1  False
+1391, part2  False
+1392, line 138
+1393, line 139
+1394, part1  False
+1395, part2  False
+1396, line 139
+1397, line 140
+1398, part1  True
+1399, part2  True
+1400," line 140 product [00385-00-321-A] Plint fixing strip left, raw [5603-0000-0004] STAAL S235JRC+C blank plat 30x20"
+1401,pn... 00385-00-321-A
+1402,prod handled... True
+1403,raw 1... 
+1404,no second raw product... 
+1405,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1406,prod id: 14890.0
+1407,prodp pn: 00385-00-321-A
+1408, operation id... 14890.0-_-__export__.mrp_workcenter_63_98a7a00b
+1409,first operation passed... 
+1410,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1411,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1412,oprtn BW - Benchwork (BKW_01)
+1413,oprtn OUT - Outsourced activity
+1414,oprtn PACK - Packaging (VERP_P)
+1415,No operations 6
+1416,ordname...[00385-00-321-A]  Plint fixing strip left_153.0[a832]
+1417,line 140
+1418,ordid..__export__.mrp_production_5212_13faa832
+1419,deadline null?...False
+1420,deadline...2025-12-16 11:00:00
+1421,deadline formatted...2025-12-16 11:00:00
+1422,"order created and add with id __export__.mrp_production_5212_13faa832, total 36"
+1423,deadline null?...False
+1424,deadline...2025-12-16 11:00:00
+1425,deadline formatted...2025-12-16 11:00:00
+1426, line 141
+1427, part1  False
+1428, part2  False
+1429, line 141
+1430, line 142
+1431, part1  False
+1432, part2  False
+1433, line 142
+1434, line 143
+1435, part1  False
+1436, part2  False
+1437, line 143
+1438, line 144
+1439, part1  False
+1440, part2  False
+1441, line 144
+1442, line 145
+1443, part1  False
+1444, part2  False
+1445, line 145
+1446, line 146
+1447, part1  True
+1448, part2  True
+1449," line 146 product [00385-00-321-A] Plint fixing strip left, raw [5603-0000-0004] STAAL S235JRC+C blank plat 30x20"
+1450,pn... 00385-00-321-A
+1451,prod handled... True
+1452,raw 1... 
+1453,no second raw product... 
+1454,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1455,prod id: 14890.0
+1456,prodp pn: 00385-00-321-A
+1457, operation id... 14890.0-_-__export__.mrp_workcenter_63_98a7a00b
+1458,first operation passed... 
+1459,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1460,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1461,oprtn BW - Benchwork (BKW_01)
+1462,oprtn OUT - Outsourced activity
+1463,oprtn PACK - Packaging (VERP_P)
+1464,No operations 6
+1465,ordname...[00385-00-321-A]  Plint fixing strip left_337.0[dc48]
+1466,line 146
+1467,ordid..__export__.mrp_production_5252_9768dc48
+1468,deadline null?...False
+1469,deadline...2025-12-16 11:00:00
+1470,deadline formatted...2025-12-16 11:00:00
+1471,"order created and add with id __export__.mrp_production_5252_9768dc48, total 37"
+1472,deadline null?...False
+1473,deadline...2025-12-16 11:00:00
+1474,deadline formatted...2025-12-16 11:00:00
+1475, line 147
+1476, part1  False
+1477, part2  False
+1478, line 147
+1479, line 148
+1480, part1  False
+1481, part2  False
+1482, line 148
+1483, line 149
+1484, part1  False
+1485, part2  False
+1486, line 149
+1487, line 150
+1488, part1  False
+1489, part2  False
+1490, line 150
+1491, line 151
+1492, part1  False
+1493, part2  False
+1494, line 151
+1495, line 152
+1496, part1  True
+1497, part2  True
+1498," line 152 product [00429-00-662-B] Arret lever, raw [5601-0000-0007] ALU 6082 T6 vk 30"
+1499,pn... 00429-00-662-B
+1500,prod handled... True
+1501,raw 1... 
+1502,no second raw product... 
+1503,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1504,prod id: 14895.0
+1505,prodp pn: 00429-00-662-B
+1506, operation id... 14895.0-_-__export__.mrp_workcenter_63_98a7a00b
+1507,first operation passed... 
+1508,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+1509,oprtn BW - Benchwork (BKW_01)
+1510,oprtn PACK - Packaging (VERP_P)
+1511,No operations 4
+1512,ordname...[00429-00-662-B]  Arret lever_400.0[f28e]
+1513,line 152
+1514,ordid..__export__.mrp_production_5191_57caf28e
+1515,deadline null?...False
+1516,deadline...2025-12-10 14:11:28
+1517,deadline formatted...2025-12-10 14:11:28
+1518,"order created and add with id __export__.mrp_production_5191_57caf28e, total 38"
+1519,deadline null?...False
+1520,deadline...2025-12-10 14:11:28
+1521,deadline formatted...2025-12-10 14:11:28
+1522, line 153
+1523, part1  False
+1524, part2  False
+1525, line 153
+1526, line 154
+1527, part1  False
+1528, part2  False
+1529, line 154
+1530, line 155
+1531, part1  False
+1532, part2  False
+1533, line 155
+1534, line 156
+1535, part1  True
+1536, part2  True
+1537," line 156 product [000750458] Mounting Block for Flight, raw [5602-0000-0064] RVS 304/304L wgw vk 35"
+1538,pn... 000750458
+1539,prod handled... True
+1540,raw 1... 
+1541,raw added to predecesors... 
+1542,no second raw product... 
+1543,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1544,prod id: 17087.0
+1545,prodp pn: 000750458
+1546, operation id... 17087.0-_-__export__.mrp_workcenter_63_98a7a00b
+1547, operation will be created..
+1548,first operation passed... 
+1549,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+1550,No operations 2
+1551,ordname...[000750458]  Mounting Block for Flight_64.0[3986]
+1552,line 156
+1553,ordid..__export__.mrp_production_5146_15453986
+1554,deadline null?...False
+1555,deadline...2025-12-11 01:00:00
+1556,deadline formatted...2025-12-11 01:00:00
+1557,"order created and add with id __export__.mrp_production_5146_15453986, total 39"
+1558,deadline null?...False
+1559,deadline...2025-12-11 01:00:00
+1560,deadline formatted...2025-12-11 01:00:00
+1561, line 157
+1562, part1  False
+1563, part2  False
+1564, line 157
+1565, line 158
+1566, part1  True
+1567, part2  True
+1568," line 158 product [7005-2580-0017] GP Z-Adjustment Lever V02-01 / 26241001, raw [5602-0000-0051] RVS 304/304L wgw plat 90x20"
+1569,pn... 7005-2580-0017
+1570,prod handled... True
+1571,raw 1... 
+1572,raw added to predecesors... 
+1573,no second raw product... 
+1574,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1575,prod id: 18142.0
+1576,prodp pn: 7005-2580-0017
+1577, operation id... 18142.0-_-__export__.mrp_workcenter_63_98a7a00b
+1578, operation will be created..
+1579,first operation passed... 
+1580,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+1581,oprtn OUT - Outsourced activity
+1582,No operations 3
+1583,ordname...[7005-2580-0017]  GP Z-Adjustment Lever V02-01 / 26241001_12.0[0b35]
+1584,line 158
+1585,ordid..__export__.mrp_production_5193_bb240b35
+1586,deadline null?...False
+1587,deadline...2025-12-11 01:00:00
+1588,deadline formatted...2025-12-11 01:00:00
+1589,"order created and add with id __export__.mrp_production_5193_bb240b35, total 40"
+1590,deadline null?...False
+1591,deadline...2025-12-11 01:00:00
+1592,deadline formatted...2025-12-11 01:00:00
+1593, line 159
+1594, part1  False
+1595, part2  False
+1596, line 159
+1597, line 160
+1598, part1  False
+1599, part2  False
+1600, line 160
+1601, line 161
+1602, part1  True
+1603, part2  True
+1604," line 161 product [7005-2580-0005] Single Rail V01-00-A / IGUS / WSQ-06S, raw Single rail WSQ - not drilled / IGUS / WSQ-06S"
+1605,pn... 7005-2580-0005
+1606,prod handled... True
+1607,raw 1... 
+1608,raw added to predecesors... 
+1609,no second raw product... 
+1610,"resid: __export__.mrp_workcenter_64_95992ef5, resname: MP2 - Material preparation - manual sawing (ZGN_02)"
+1611,prod id: 16257.0
+1612,prodp pn: 7005-2580-0005
+1613, operation id... 16257.0-_-__export__.mrp_workcenter_64_95992ef5
+1614, operation will be created..
+1615, resource not found..
+1616,first operation passed... 
+1617,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+1618,No operations 2
+1619,ordname...[7005-2580-0005]  Single Rail V01-00-A / IGUS / WSQ-06S_15.0[7218]
+1620,line 161
+1621,ordid..__export__.mrp_production_5194_22067218
+1622,deadline null?...False
+1623,deadline...2025-12-11 01:00:00
+1624,deadline formatted...2025-12-11 01:00:00
+1625,"order created and add with id __export__.mrp_production_5194_22067218, total 41"
+1626,deadline null?...False
+1627,deadline...2025-12-11 01:00:00
+1628,deadline formatted...2025-12-11 01:00:00
+1629, line 162
+1630, part1  False
+1631, part2  False
+1632, line 162
+1633, line 163
+1634, part1  True
+1635, part2  True
+1636," line 163 product [4022-335-71012] filter holder, raw [5604-0000-0004] MESSING CuZn40Pb2 plat 20x10"
+1637,pn... 4022-335-71012
+1638,prod handled... True
+1639,raw 1... 
+1640,raw added to predecesors... 
+1641,no second raw product... 
+1642,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1643,prod id: 14923.0
+1644,prodp pn: 4022-335-71012
+1645, operation id... 14923.0-_-__export__.mrp_workcenter_63_98a7a00b
+1646, operation will be created..
+1647,first operation passed... 
+1648,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1649,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1650,oprtn BW - Benchwork (BKW_01)
+1651,oprtn PACK - Packaging (VERP_P)
+1652,No operations 5
+1653,ordname...[4022-335-71012]  filter holder_40.0[7b38]
+1654,line 163
+1655,ordid..__export__.mrp_production_5016_d46c7b38
+1656,deadline null?...False
+1657,deadline...2025-12-12 01:00:00
+1658,deadline formatted...2025-12-12 01:00:00
+1659,"order created and add with id __export__.mrp_production_5016_d46c7b38, total 42"
+1660,deadline null?...False
+1661,deadline...2025-12-12 01:00:00
+1662,deadline formatted...2025-12-12 01:00:00
+1663, line 164
+1664, part1  False
+1665, part2  False
+1666, line 164
+1667, line 165
+1668, part1  False
+1669, part2  False
+1670, line 165
+1671, line 166
+1672, part1  False
+1673, part2  False
+1674, line 166
+1675, line 167
+1676, part1  False
+1677, part2  False
+1678, line 167
+1679, line 168
+1680, part1  True
+1681, part2  True
+1682," line 168 product [7005-2580-0015] Baseplate V01-00 / NFI / 27244702, raw [5601-0000-0175] ALU 5083 gegoten 6 zijdig gezaagd 520x250x45"
+1683,pn... 7005-2580-0015
+1684,prod handled... True
+1685,raw 1... 
+1686,raw added to predecesors... 
+1687,no second raw product... 
+1688,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+1689,prod id: 17993.0
+1690,prodp pn: 7005-2580-0015
+1691, operation id... 17993.0-_-__export__.mrp_workcenter_65_c1e1b939
+1692, operation will be created..
+1693,first operation passed... 
+1694,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+1695,oprtn OUT - Outsourced activity
+1696,No operations 3
+1697,ordname...[7005-2580-0015]  Baseplate V01-00 / NFI / 27244702_5.0[dede]
+1698,line 168
+1699,ordid..__export__.mrp_production_5192_879adede
+1700,deadline null?...False
+1701,deadline...2025-12-12 01:00:00
+1702,deadline formatted...2025-12-12 01:00:00
+1703,"order created and add with id __export__.mrp_production_5192_879adede, total 43"
+1704,deadline null?...False
+1705,deadline...2025-12-12 01:00:00
+1706,deadline formatted...2025-12-12 01:00:00
+1707, line 169
+1708, part1  False
+1709, part2  False
+1710, line 169
+1711, line 170
+1712, part1  False
+1713, part2  False
+1714, line 170
+1715, line 171
+1716, part1  True
+1717, part2  True
+1718," line 171 product [7007-2500-0005] TL 1 - Feet Dark / IAH / 105886, raw [5601-0000-0180] ALU 5083 H111 (wgw) gzgd plaat 310x282x35"
+1719,pn... 7007-2500-0005
+1720,prod handled... True
+1721,raw 1... 
+1722,raw added to predecesors... 
+1723,no second raw product... 
+1724,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+1725,prod id: 18484.0
+1726,prodp pn: 7007-2500-0005
+1727, operation id... 18484.0-_-__export__.mrp_workcenter_65_c1e1b939
+1728, operation will be created..
+1729,first operation passed... 
+1730,oprtn M3-03 - Haas - 3axis - Manual (VF2SS)
+1731,oprtn OUT - Outsourced activity
+1732,No operations 3
+1733,ordname...[7007-2500-0005]  TL 1 - Feet Dark / IAH / 105886_6.0[39a8]
+1734,line 171
+1735,ordid..__export__.mrp_production_5135_fb4139a8
+1736,deadline null?...False
+1737,deadline...2025-12-15 01:00:00
+1738,deadline formatted...2025-12-15 01:00:00
+1739,"order created and add with id __export__.mrp_production_5135_fb4139a8, total 44"
+1740,deadline null?...False
+1741,deadline...2025-12-15 01:00:00
+1742,deadline formatted...2025-12-15 01:00:00
+1743, line 172
+1744, part1  False
+1745, part2  False
+1746, line 172
+1747, line 173
+1748, part1  False
+1749, part2  False
+1750, line 173
+1751, line 174
+1752, part1  True
+1753, part2  True
+1754," line 174 product [4022.704.19282] RH RED GRIPPER BODY, raw [5602-0000-0060] RVS 316/316L gzgd plaat 210x105x30 (tol. -0/+3mm)"
+1755,pn... 4022.704.19282
+1756,prod handled... True
+1757,raw 1... 
+1758,raw added to predecesors... 
+1759,no second raw product... 
+1760,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+1761,prod id: 14210.0
+1762,prodp pn: 4022.704.19282
+1763, operation id... 14210.0-_-__export__.mrp_workcenter_65_c1e1b939
+1764, operation will be created..
+1765,first operation passed... 
+1766,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+1767,oprtn OUT - Outsourced activity
+1768,No operations 3
+1769,ordname...[4022.704.19282]  RH RED GRIPPER BODY_29.0[0c6a]
+1770,line 174
+1771,ordid..__export__.mrp_production_5255_92200c6a
+1772,deadline null?...False
+1773,deadline...2025-12-15 01:00:00
+1774,deadline formatted...2025-12-15 01:00:00
+1775,"order created and add with id __export__.mrp_production_5255_92200c6a, total 45"
+1776,deadline null?...False
+1777,deadline...2025-12-15 01:00:00
+1778,deadline formatted...2025-12-15 01:00:00
+1779, line 175
+1780, part1  False
+1781, part2  False
+1782, line 175
+1783, line 176
+1784, part1  False
+1785, part2  False
+1786, line 176
+1787, line 177
+1788, part1  True
+1789, part2  True
+1790," line 177 product [00429-00-249-A] Plint adjust strip, raw [5603-0000-0013] S235JRC+C blank plat 40x10 (ca 3-3,5 mtr)"
+1791,pn... 00429-00-249-A
+1792,prod handled... True
+1793,raw 1... 
+1794,raw added to predecesors... 
+1795,no second raw product... 
+1796,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1797,prod id: 14894.0
+1798,prodp pn: 00429-00-249-A
+1799, operation id... 14894.0-_-__export__.mrp_workcenter_63_98a7a00b
+1800, operation will be created..
+1801,first operation passed... 
+1802,oprtn M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+1803,oprtn BW - Benchwork (BKW_01)
+1804,oprtn OUT - Outsourced activity
+1805,oprtn PACK - Packaging (VERP_P)
+1806,No operations 5
+1807,ordname...[00429-00-249-A]  Plint adjust strip_436.0[fdca]
+1808,line 177
+1809,ordid..__export__.mrp_production_5213_0247fdca
+1810,deadline null?...False
+1811,deadline...2025-12-23 11:00:00
+1812,deadline formatted...2025-12-23 11:00:00
+1813,"order created and add with id __export__.mrp_production_5213_0247fdca, total 46"
+1814,deadline null?...False
+1815,deadline...2025-12-23 11:00:00
+1816,deadline formatted...2025-12-23 11:00:00
+1817, line 178
+1818, part1  False
+1819, part2  False
+1820, line 178
+1821, line 179
+1822, part1  False
+1823, part2  False
+1824, line 179
+1825, line 180
+1826, part1  False
+1827, part2  False
+1828, line 180
+1829, line 181
+1830, part1  False
+1831, part2  False
+1832, line 181
+1833, line 182
+1834, part1  True
+1835, part2  True
+1836," line 182 product [4022-456-08803] LENSGAS INTERFACE BLOCK, raw [5602-0000-0041] RVS 430F blank rond 50h9"
+1837,pn... 4022-456-08803
+1838,prod handled... True
+1839,raw 1... 
+1840,raw added to predecesors... 
+1841,no second raw product... 
+1842,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+1843,prod id: 14932.0
+1844,prodp pn: 4022-456-08803
+1845, operation id... 14932.0-_-__export__.mrp_workcenter_63_98a7a00b
+1846, operation will be created..
+1847,first operation passed... 
+1848,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1849,oprtn M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01)
+1850,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+1851,oprtn BW - Benchwork (BKW_01)
+1852,oprtn PACK - Packaging (VERP_P)
+1853,No operations 6
+1854,ordname...[4022-456-08803]  LENSGAS INTERFACE BLOCK_15.0[9f5a]
+1855,line 182
+1856,ordid..__export__.mrp_production_5123_34859f5a
+1857,deadline null?...False
+1858,deadline...2025-12-17 01:00:00
+1859,deadline formatted...2025-12-17 01:00:00
+1860,"order created and add with id __export__.mrp_production_5123_34859f5a, total 47"
+1861,deadline null?...False
+1862,deadline...2025-12-17 01:00:00
+1863,deadline formatted...2025-12-17 01:00:00
+1864, line 183
+1865, part1  False
+1866, part2  False
+1867, line 183
+1868, line 184
+1869, part1  False
+1870, part2  False
+1871, line 184
+1872, line 185
+1873, part1  False
+1874, part2  False
+1875, line 185
+1876, line 186
+1877, part1  False
+1878, part2  False
+1879, line 186
+1880, line 187
+1881, part1  False
+1882, part2  False
+1883, line 187
+1884, line 188
+1885, part1  True
+1886, part2  False
+1887, line 188
+1888,no raw- pn... 100161448
+1889,ordname...[100161448]  Modified part of Enclose extrud alu_145 / SUSS / HAMMOND-1457U2801_5.0[04b7]
+1890,line 188
+1891,ordid..__export__.mrp_production_5254_a5ca04b7
+1892,deadline null?...False
+1893,deadline...2025-11-27 14:02:11
+1894,deadline formatted...2025-11-27 14:02:11
+1895,"order created and add with id __export__.mrp_production_5254_a5ca04b7, total 48"
+1896, line 189
+1897, part1  True
+1898, part2  False
+1899, line 189
+1900,no raw- pn... 4022.684.28993
+1901,ordname...[4022.684.28993]  RS C+H SLAB STAT PLT IL SIDE / CLS_1.0[3c2e]
+1902,line 189
+1903,ordid..__export__.mrp_production_5033_ffa23c2e
+1904,deadline null?...False
+1905,deadline...2025-11-28 01:00:00
+1906,deadline formatted...2025-11-28 01:00:00
+1907,"order created and add with id __export__.mrp_production_5033_ffa23c2e, total 49"
+1908, line 190
+1909, part1  True
+1910, part2  False
+1911, line 190
+1912,no raw- pn... 4022.684.29043
+1913,ordname...[4022.684.29043]  RS C+H DYN ATTACH PLT IL SIDE / CLS_1.0[b4c4]
+1914,line 190
+1915,ordid..__export__.mrp_production_5034_4d53b4c4
+1916,deadline null?...False
+1917,deadline...2025-11-28 01:00:00
+1918,deadline formatted...2025-11-28 01:00:00
+1919,"order created and add with id __export__.mrp_production_5034_4d53b4c4, total 50"
+1920, line 191
+1921, part1  True
+1922, part2  False
+1923, line 191
+1924,no raw- pn... 4022.684.28962
+1925,ordname...[4022.684.28962]  RS C+H DYN ATTACH PLT RH SIDE / CLS_1.0[e293]
+1926,line 191
+1927,ordid..__export__.mrp_production_5035_e3dce293
+1928,deadline null?...False
+1929,deadline...2025-11-28 01:00:00
+1930,deadline formatted...2025-11-28 01:00:00
+1931,"order created and add with id __export__.mrp_production_5035_e3dce293, total 51"
+1932, line 192
+1933, part1  True
+1934, part2  False
+1935, line 192
+1936,no raw- pn... 4022.684.28842
+1937,ordname...[4022.684.28842]  RS C+H SLAB STAT PLT RH SIDE / CLS_1.0[ca68]
+1938,line 192
+1939,ordid..__export__.mrp_production_5036_bec2ca68
+1940,deadline null?...False
+1941,deadline...2025-11-28 01:00:00
+1942,deadline formatted...2025-11-28 01:00:00
+1943,"order created and add with id __export__.mrp_production_5036_bec2ca68, total 52"
+1944, line 193
+1945, part1  True
+1946, part2  False
+1947, line 193
+1948,no raw- pn... 4022.656.37971
+1949,ordname...[4022.656.37971]  UXL2 DGF QCK CONNECT MANIFOLD / CLS_5.0[d60d]
+1950,line 193
+1951,ordid..__export__.mrp_production_5037_60eed60d
+1952,deadline null?...False
+1953,deadline...2025-11-28 01:00:00
+1954,deadline formatted...2025-11-28 01:00:00
+1955,"order created and add with id __export__.mrp_production_5037_60eed60d, total 53"
+1956, line 194
+1957, part1  True
+1958, part2  True
+1959," line 194 product [4022.622.61941] RH RED FRAME -X COVER, raw [5601-0000-0161] ALU 6082 T651 (wgw) gzgd plaat 500x365x100 "
+1960,pn... 4022.622.61941
+1961,prod handled... True
+1962,raw 1... 
+1963,raw added to predecesors... 
+1964,no second raw product... 
+1965,"resid: __export__.mrp_workcenter_68_8bff6631, resname: OUT - Outsourced activity"
+1966,prod id: 16115.0
+1967,prodp pn: 4022.622.61941
+1968, operation id... 16115.0-_-__export__.mrp_workcenter_68_8bff6631
+1969, operation will be created..
+1970,first operation passed... 
+1971,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+1972,oprtn OUT - Outsourced activity
+1973,oprtn OUT - Outsourced activity
+1974,No operations 4
+1975,ordname...[4022.622.61941]  RH RED FRAME -X COVER_1.0[b71e]
+1976,line 194
+1977,ordid..__export__.mrp_production_5131_a5c1b71e
+1978,deadline null?...False
+1979,deadline...2025-12-22 01:00:00
+1980,deadline formatted...2025-12-22 01:00:00
+1981,"order created and add with id __export__.mrp_production_5131_a5c1b71e, total 54"
+1982,deadline null?...False
+1983,deadline...2025-12-22 01:00:00
+1984,deadline formatted...2025-12-22 01:00:00
+1985, line 195
+1986, part1  False
+1987, part2  False
+1988, line 195
+1989, line 196
+1990, part1  False
+1991, part2  False
+1992, line 196
+1993, line 197
+1994, part1  False
+1995, part2  False
+1996, line 197
+1997, line 198
+1998, part1  True
+1999, part2  False
+2000, line 198
+2001,no raw- pn... Z5191180
+2002,ordname...[Z5191180]  Z5191180_75.0[b8a9]
+2003,line 198
+2004,ordid..__export__.mrp_production_5197_add2b8a9
+2005,deadline null?...False
+2006,deadline...2025-12-08 01:00:00
+2007,deadline formatted...2025-12-08 01:00:00
+2008,"order created and add with id __export__.mrp_production_5197_add2b8a9, total 55"
+2009, line 199
+2010, part1  True
+2011, part2  False
+2012, line 199
+2013,no raw- pn... Z4611960
+2014,ordname...[Z4611960]  Z4611960_1400.0[cd5e]
+2015,line 199
+2016,ordid..__export__.mrp_production_5133_b9bdcd5e
+2017,deadline null?...False
+2018,deadline...2025-12-12 01:00:00
+2019,deadline formatted...2025-12-12 01:00:00
+2020,"order created and add with id __export__.mrp_production_5133_b9bdcd5e, total 56"
+2021, line 200
+2022, part1  True
+2023, part2  False
+2024, line 200
+2025,no raw- pn... Z4610530
+2026,ordname...[Z4610530]  Z4610530_1400.0[74be]
+2027,line 200
+2028,ordid..__export__.mrp_production_5134_0ea674be
+2029,deadline null?...False
+2030,deadline...2025-12-12 01:00:00
+2031,deadline formatted...2025-12-12 01:00:00
+2032,"order created and add with id __export__.mrp_production_5134_0ea674be, total 57"
+2033, line 201
+2034, part1  True
+2035, part2  True
+2036," line 201 product [4022-666-3837-1] LSPH Bellow Clamp, raw [5990-0000-0017] LSPH Bellow Clamp cutout"
+2037,pn... 4022-666-3837-1
+2038,prod handled... True
+2039,raw 1... 
+2040,raw added to predecesors... 
+2041,no second raw product... 
+2042,"resid: __export__.mrp_workcenter_54_3f0243e1, resname: M3-01 - Accuway - 3axis - Manual (FR3_01)"
+2043,prod id: 14985.0
+2044,prodp pn: 4022-666-3837-1
+2045, operation id... 14985.0-_-__export__.mrp_workcenter_54_3f0243e1
+2046, operation will be created..
+2047,first operation passed... 
+2048,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+2049,oprtn BW - Benchwork (BKW_01)
+2050,oprtn PACK - Packaging (VERP_P)
+2051,No operations 4
+2052,ordname...[4022-666-3837-1]  LSPH Bellow Clamp_200.0[a32e]
+2053,line 201
+2054,ordid..__export__.mrp_production_5152_da0fa32e
+2055,deadline null?...False
+2056,deadline...2026-01-09 01:00:00
+2057,deadline formatted...2026-01-09 01:00:00
+2058,"order created and add with id __export__.mrp_production_5152_da0fa32e, total 58"
+2059,deadline null?...False
+2060,deadline...2026-01-09 01:00:00
+2061,deadline formatted...2026-01-09 01:00:00
+2062, line 202
+2063, part1  False
+2064, part2  False
+2065, line 202
+2066, line 203
+2067, part1  False
+2068, part2  False
+2069, line 203
+2070, line 204
+2071, part1  False
+2072, part2  False
+2073, line 204
+2074, line 205
+2075, part1  True
+2076, part2  True
+2077," line 205 product [4598-008-08901B POS 1] CEILING INLET*, raw [5990-0000-0013] EPRAFORM PC helder rond Ø125"
+2078,pn... 4598-008-08901B POS 1
+2079,prod handled... True
+2080,raw 1... 
+2081,no second raw product... 
+2082,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+2083,prod id: 15022.0
+2084,prodp pn: 4598-008-08901B POS 1
+2085, operation id... 15022.0-_-__export__.mrp_workcenter_63_98a7a00b
+2086,first operation passed... 
+2087,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+2088,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+2089,oprtn BW - Benchwork (BKW_01)
+2090,oprtn OUT - Outsourced activity
+2091,oprtn PACK - Packaging (VERP_P)
+2092,No operations 6
+2093,ordname...[4598-008-08901B POS 1]  CEILING INLET*_300.0[5207]
+2094,line 205
+2095,ordid..__export__.mrp_production_5233_e8375207
+2096,deadline null?...False
+2097,deadline...2026-01-30 01:00:00
+2098,deadline formatted...2026-01-30 01:00:00
+2099,"order created and add with id __export__.mrp_production_5233_e8375207, total 59"
+2100,deadline null?...False
+2101,deadline...2026-01-30 01:00:00
+2102,deadline formatted...2026-01-30 01:00:00
+2103, line 206
+2104, part1  False
+2105, part2  False
+2106, line 206
+2107, line 207
+2108, part1  False
+2109, part2  False
+2110, line 207
+2111, line 208
+2112, part1  False
+2113, part2  False
+2114, line 208
+2115, line 209
+2116, part1  False
+2117, part2  False
+2118, line 209
+2119, line 210
+2120, part1  False
+2121, part2  False
+2122, line 210
+2123, line 211
+2124, part1  True
+2125, part2  False
+2126, line 211
+2127,no raw- pn... FM3001-M00050
+2128,ordname...[FM3001-M00050]  SPG PG Top Plate / FM / FM3001-M00050_1.0[707f]
+2129,line 211
+2130,ordid..__export__.mrp_production_5156_89ad707f
+2131,deadline null?...False
+2132,deadline...2025-12-15 01:00:00
+2133,deadline formatted...2025-12-15 01:00:00
+2134,"order created and add with id __export__.mrp_production_5156_89ad707f, total 60"
+2135, line 212
+2136, part1  True
+2137, part2  False
+2138, line 212
+2139,no raw- pn... FM3001-M00051
+2140,ordname...[FM3001-M00051]  SPS PG Bottom Plate / FM / FM3001-M00051_1.0[e97f]
+2141,line 212
+2142,ordid..__export__.mrp_production_5157_c42ee97f
+2143,deadline null?...False
+2144,deadline...2025-12-15 01:00:00
+2145,deadline formatted...2025-12-15 01:00:00
+2146,"order created and add with id __export__.mrp_production_5157_c42ee97f, total 61"
+2147, line 213
+2148, part1  True
+2149, part2  False
+2150, line 213
+2151,no raw- pn... FM3001-M00055
+2152,ordname...[FM3001-M00055]  SPG PG Pancake Ejector Ring / FM / FM3001-M00055_1.0[9b00]
+2153,line 213
+2154,ordid..__export__.mrp_production_5158_7a489b00
+2155,deadline null?...False
+2156,deadline...2025-12-15 01:00:00
+2157,deadline formatted...2025-12-15 01:00:00
+2158,"order created and add with id __export__.mrp_production_5158_7a489b00, total 62"
+2159, line 214
+2160, part1  True
+2161, part2  False
+2162, line 214
+2163,no raw- pn... FM3001-M00057
+2164,ordname...[FM3001-M00057]  SPG SE Side Plate / FM / FM3001-M00057_2.0[ca56]
+2165,line 214
+2166,ordid..__export__.mrp_production_5159_3c33ca56
+2167,deadline null?...False
+2168,deadline...2025-12-15 01:00:00
+2169,deadline formatted...2025-12-15 01:00:00
+2170,"order created and add with id __export__.mrp_production_5159_3c33ca56, total 63"
+2171, line 215
+2172, part1  True
+2173, part2  False
+2174, line 215
+2175,no raw- pn... FM3001-M00059
+2176,ordname...[FM3001-M00059]  SPS SE Intermediate Joint / FM / FM3001-M00059_1.0[a309]
+2177,line 215
+2178,ordid..__export__.mrp_production_5160_0d19a309
+2179,deadline null?...False
+2180,deadline...2025-12-15 01:00:00
+2181,deadline formatted...2025-12-15 01:00:00
+2182,"order created and add with id __export__.mrp_production_5160_0d19a309, total 64"
+2183, line 216
+2184, part1  True
+2185, part2  False
+2186, line 216
+2187,no raw- pn... FM3001-M00061
+2188,ordname...[FM3001-M00061]  SPS SE Guide Block / FM / FM3001-M00061_1.0[390a]
+2189,line 216
+2190,ordid..__export__.mrp_production_5161_2e80390a
+2191,deadline null?...False
+2192,deadline...2025-12-15 01:00:00
+2193,deadline formatted...2025-12-15 01:00:00
+2194,"order created and add with id __export__.mrp_production_5161_2e80390a, total 65"
+2195, line 217
+2196, part1  True
+2197, part2  False
+2198, line 217
+2199,no raw- pn... FM3001-M00062
+2200,ordname...[FM3001-M00062]  SPS SE Pivotting Arm / FM / FM3001-M00062_1.0[c835]
+2201,line 217
+2202,ordid..__export__.mrp_production_5162_ef98c835
+2203,deadline null?...False
+2204,deadline...2025-12-15 01:00:00
+2205,deadline formatted...2025-12-15 01:00:00
+2206,"order created and add with id __export__.mrp_production_5162_ef98c835, total 66"
+2207, line 218
+2208, part1  True
+2209, part2  False
+2210, line 218
+2211,no raw- pn... FM3001-M00063
+2212,ordname...[FM3001-M00063]  SPS SE Ejector Joint / FM / FM3001-M00063_1.0[2cf6]
+2213,line 218
+2214,ordid..__export__.mrp_production_5163_ce692cf6
+2215,deadline null?...False
+2216,deadline...2025-12-15 01:00:00
+2217,deadline formatted...2025-12-15 01:00:00
+2218,"order created and add with id __export__.mrp_production_5163_ce692cf6, total 67"
+2219, line 219
+2220, part1  True
+2221, part2  True
+2222," line 219 product [4022.632.63021] WTP LOCKING NUT, raw [5602-0000-0058] RVS 303 (1.4305) wgw geschild rond dia 40"
+2223,pn... 4022.632.63021
+2224,prod handled... True
+2225,raw 1... 
+2226,no second raw product... 
+2227,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+2228,prod id: 7034.0
+2229,prodp pn: 4022.632.63021
+2230, operation id... 7034.0-_-__export__.mrp_workcenter_63_98a7a00b
+2231,first operation passed... 
+2232,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+2233,No operations 2
+2234,ordname...[4022.632.63021]  WTP LOCKING NUT_1800.0[d523]
+2235,line 219
+2236,ordid..__export__.mrp_production_5127_c4b6d523
+2237,deadline null?...False
+2238,deadline...2026-01-05 01:00:00
+2239,deadline formatted...2026-01-05 01:00:00
+2240,"order created and add with id __export__.mrp_production_5127_c4b6d523, total 68"
+2241,deadline null?...False
+2242,deadline...2026-01-05 01:00:00
+2243,deadline formatted...2026-01-05 01:00:00
+2244, line 220
+2245, part1  False
+2246, part2  False
+2247, line 220
+2248, line 221
+2249, part1  True
+2250, part2  True
+2251," line 221 product [4022-637-68442] IH HINGE BRACKET TOP HINGE, raw [5603-0000-0011] STAAL S355J2C+C ngl plat 60x40"
+2252,pn... 4022-637-68442
+2253,prod handled... True
+2254,raw 1... 
+2255,raw added to predecesors... 
+2256,no second raw product... 
+2257,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+2258,prod id: 14969.0
+2259,prodp pn: 4022-637-68442
+2260, operation id... 14969.0-_-__export__.mrp_workcenter_63_98a7a00b
+2261, operation will be created..
+2262,first operation passed... 
+2263,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+2264,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+2265,oprtn BW - Benchwork (BKW_01)
+2266,oprtn PACK - Packaging (VERP_P)
+2267,No operations 5
+2268,ordname...[4022-637-68442]  IH HINGE BRACKET TOP HINGE_110.0[ad82]
+2269,line 221
+2270,ordid..__export__.mrp_production_5139_6ec4ad82
+2271,deadline null?...False
+2272,deadline...2026-01-05 01:00:00
+2273,deadline formatted...2026-01-05 01:00:00
+2274,"order created and add with id __export__.mrp_production_5139_6ec4ad82, total 69"
+2275,deadline null?...False
+2276,deadline...2026-01-05 01:00:00
+2277,deadline formatted...2026-01-05 01:00:00
+2278, line 222
+2279, part1  False
+2280, part2  False
+2281, line 222
+2282, line 223
+2283, part1  False
+2284, part2  False
+2285, line 223
+2286, line 224
+2287, part1  False
+2288, part2  False
+2289, line 224
+2290, line 225
+2291, part1  False
+2292, part2  False
+2293, line 225
+2294, line 226
+2295, part1  True
+2296, part2  False
+2297, line 226
+2298,no raw- pn... 4022-637-44661
+2299,ordname...[4022-637-44661]  Hinge block 7c-e rr _7.0[7655]
+2300,line 226
+2301,ordid..__export__.mrp_production_5167_29e67655
+2302,deadline null?...False
+2303,deadline...2025-12-17 01:00:00
+2304,deadline formatted...2025-12-17 01:00:00
+2305,"order created and add with id __export__.mrp_production_5167_29e67655, total 70"
+2306, line 227
+2307, part1  True
+2308, part2  False
+2309, line 227
+2310,no raw- pn... 4022-631-06691
+2311,ordname...[4022-631-06691]  Hinge Block Front rm2_1.0[ee54]
+2312,line 227
+2313,ordid..__export__.mrp_production_5238_8767ee54
+2314,deadline null?...False
+2315,deadline...2025-12-17 01:00:00
+2316,deadline formatted...2025-12-17 01:00:00
+2317,"order created and add with id __export__.mrp_production_5238_8767ee54, total 71"
+2318, line 228
+2319, part1  True
+2320, part2  True
+2321," line 228 product [4022-333-19505] BRIL, raw [5990-0000-0014] EPRATEX PF CC201 180x140x10"
+2322,pn... 4022-333-19505
+2323,prod handled... True
+2324,raw 1... 
+2325,raw added to predecesors... 
+2326,no second raw product... 
+2327,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+2328,prod id: 14918.0
+2329,prodp pn: 4022-333-19505
+2330, operation id... 14918.0-_-__export__.mrp_workcenter_65_c1e1b939
+2331, operation will be created..
+2332,first operation passed... 
+2333,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+2334,oprtn BW - Benchwork (BKW_01)
+2335,oprtn PACK - Packaging (VERP_P)
+2336,No operations 4
+2337,ordname...[4022-333-19505]  BRIL_100.0[4293]
+2338,line 228
+2339,ordid..__export__.mrp_production_5166_fc264293
+2340,deadline null?...False
+2341,deadline...2026-01-08 01:00:00
+2342,deadline formatted...2026-01-08 01:00:00
+2343,"order created and add with id __export__.mrp_production_5166_fc264293, total 72"
+2344,deadline null?...False
+2345,deadline...2026-01-08 01:00:00
+2346,deadline formatted...2026-01-08 01:00:00
+2347, line 229
+2348, part1  False
+2349, part2  False
+2350, line 229
+2351, line 230
+2352, part1  False
+2353, part2  False
+2354, line 230
+2355, line 231
+2356, part1  False
+2357, part2  False
+2358, line 231
+2359, line 232
+2360, part1  True
+2361, part2  True
+2362," line 232 product [4022-637-24142] HINGE BLOCK FIXED RF, raw [5602-0000-0003] RVS 304/304L wgw plat 40x30"
+2363,pn... 4022-637-24142
+2364,prod handled... True
+2365,raw 1... 
+2366,no second raw product... 
+2367,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+2368,prod id: 14961.0
+2369,prodp pn: 4022-637-24142
+2370, operation id... 14961.0-_-__export__.mrp_workcenter_63_98a7a00b
+2371,first operation passed... 
+2372,oprtn M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01)
+2373,oprtn M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+2374,oprtn BW - Benchwork (BKW_01)
+2375,oprtn PACK - Packaging (VERP_P)
+2376,No operations 5
+2377,ordname...[4022-637-24142]  HINGE BLOCK FIXED RF_26.0[b95a]
+2378,line 232
+2379,ordid..__export__.mrp_production_5168_bf7bb95a
+2380,deadline null?...False
+2381,deadline...2026-01-08 01:00:00
+2382,deadline formatted...2026-01-08 01:00:00
+2383,"order created and add with id __export__.mrp_production_5168_bf7bb95a, total 73"
+2384,deadline null?...False
+2385,deadline...2026-01-08 01:00:00
+2386,deadline formatted...2026-01-08 01:00:00
+2387, line 233
+2388, part1  False
+2389, part2  False
+2390, line 233
+2391, line 234
+2392, part1  False
+2393, part2  False
+2394, line 234
+2395, line 235
+2396, part1  False
+2397, part2  False
+2398, line 235
+2399, line 236
+2400, part1  False
+2401, part2  False
+2402, line 236
+2403, line 237
+2404, part1  True
+2405, part2  True
+2406," line 237 product [4022-637-24191] HINGE BLOCK RF, raw [5602-0000-0009] RVS 304/304L wgw plat 100x20"
+2407,pn... 4022-637-24191
+2408,prod handled... True
+2409,raw 1... 
+2410,raw added to predecesors... 
+2411,no second raw product... 
+2412,"resid: __export__.mrp_workcenter_63_98a7a00b, resname: MP1 - Material preparation - automatic sawing (ZGN_01)"
+2413,prod id: 14962.0
+2414,prodp pn: 4022-637-24191
+2415, operation id... 14962.0-_-__export__.mrp_workcenter_63_98a7a00b
+2416, operation will be created..
+2417,first operation passed... 
+2418,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+2419,oprtn M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+2420,oprtn BW - Benchwork (BKW_01)
+2421,oprtn PACK - Packaging (VERP_P)
+2422,No operations 5
+2423,ordname...[4022-637-24191]  HINGE BLOCK RF_47.0[6f4a]
+2424,line 237
+2425,ordid..__export__.mrp_production_5169_605d6f4a
+2426,deadline null?...False
+2427,deadline...2026-01-08 01:00:00
+2428,deadline formatted...2026-01-08 01:00:00
+2429,"order created and add with id __export__.mrp_production_5169_605d6f4a, total 74"
+2430,deadline null?...False
+2431,deadline...2026-01-08 01:00:00
+2432,deadline formatted...2026-01-08 01:00:00
+2433, line 238
+2434, part1  False
+2435, part2  False
+2436, line 238
+2437, line 239
+2438, part1  False
+2439, part2  False
+2440, line 239
+2441, line 240
+2442, part1  False
+2443, part2  False
+2444, line 240
+2445, line 241
+2446, part1  False
+2447, part2  False
+2448, line 241
+2449, line 242
+2450, part1  True
+2451, part2  True
+2452," line 242 product [4022-333-19505] BRIL, raw [5990-0000-0014] EPRATEX PF CC201 180x140x10"
+2453,pn... 4022-333-19505
+2454,prod handled... True
+2455,raw 1... 
+2456,no second raw product... 
+2457,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+2458,prod id: 14918.0
+2459,prodp pn: 4022-333-19505
+2460, operation id... 14918.0-_-__export__.mrp_workcenter_65_c1e1b939
+2461,first operation passed... 
+2462,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+2463,oprtn BW - Benchwork (BKW_01)
+2464,oprtn PACK - Packaging (VERP_P)
+2465,No operations 4
+2466,ordname...[4022-333-19505]  BRIL_100.0[b5e3]
+2467,line 242
+2468,ordid..__export__.mrp_production_5170_e417b5e3
+2469,deadline null?...False
+2470,deadline...2026-01-08 01:00:00
+2471,deadline formatted...2026-01-08 01:00:00
+2472,"order created and add with id __export__.mrp_production_5170_e417b5e3, total 75"
+2473,deadline null?...False
+2474,deadline...2026-01-08 01:00:00
+2475,deadline formatted...2026-01-08 01:00:00
+2476, line 243
+2477, part1  False
+2478, part2  False
+2479, line 243
+2480, line 244
+2481, part1  False
+2482, part2  False
+2483, line 244
+2484, line 245
+2485, part1  False
+2486, part2  False
+2487, line 245
+2488, line 246
+2489, part1  True
+2490, part2  False
+2491, line 246
+2492,no raw- pn... DW-00-001
+2493,ordname...[DW-00-001]  Battery cover / DW_1.0[0479]
+2494,line 246
+2495,ordid..__export__.mrp_production_5200_79500479
+2496,deadline null?...False
+2497,deadline...2025-12-19 01:00:00
+2498,deadline formatted...2025-12-19 01:00:00
+2499,"order created and add with id __export__.mrp_production_5200_79500479, total 76"
+2500, line 247
+2501, part1  True
+2502, part2  False
+2503, line 247
+2504,no raw- pn... DW-00-002
+2505,ordname...[DW-00-002]  Nose cover - DW_1.0[6277]
+2506,line 247
+2507,ordid..__export__.mrp_production_5201_363c6277
+2508,deadline null?...False
+2509,deadline...2025-12-19 01:00:00
+2510,deadline formatted...2025-12-19 01:00:00
+2511,"order created and add with id __export__.mrp_production_5201_363c6277, total 77"
+2512, line 248
+2513, part1  True
+2514, part2  False
+2515, line 248
+2516,no raw- pn... DW-00-003
+2517,ordname...[DW-00-003]  Parachute Cover - DW_1.0[768d]
+2518,line 248
+2519,ordid..__export__.mrp_production_5202_397a768d
+2520,deadline null?...False
+2521,deadline...2025-12-19 01:00:00
+2522,deadline formatted...2025-12-19 01:00:00
+2523,"order created and add with id __export__.mrp_production_5202_397a768d, total 78"
+2524, line 249
+2525, part1  True
+2526, part2  False
+2527, line 249
+2528,no raw- pn... DW-00-006-001
+2529,ordname...[DW-00-006-001]  DW-00-006-001 / DW_1.0[58a0]
+2530,line 249
+2531,ordid..__export__.mrp_production_5203_a08f58a0
+2532,deadline null?...False
+2533,deadline...2025-12-19 01:00:00
+2534,deadline formatted...2025-12-19 01:00:00
+2535,"order created and add with id __export__.mrp_production_5203_a08f58a0, total 79"
+2536, line 250
+2537, part1  True
+2538, part2  False
+2539, line 250
+2540,no raw- pn... DW-00-006-002
+2541,ordname...[DW-00-006-002]  DW-00-006-002 / DW_1.0[eaf6]
+2542,line 250
+2543,ordid..__export__.mrp_production_5204_63e7eaf6
+2544,deadline null?...False
+2545,deadline...2025-12-19 01:00:00
+2546,deadline formatted...2025-12-19 01:00:00
+2547,"order created and add with id __export__.mrp_production_5204_63e7eaf6, total 80"
+2548, line 251
+2549, part1  True
+2550, part2  False
+2551, line 251
+2552,no raw- pn... DW-00-007-001
+2553,ordname...[DW-00-007-001]  DW-00-007-001  / DW_1.0[0ba8]
+2554,line 251
+2555,ordid..__export__.mrp_production_5205_3d2f0ba8
+2556,deadline null?...False
+2557,deadline...2025-12-19 01:00:00
+2558,deadline formatted...2025-12-19 01:00:00
+2559,"order created and add with id __export__.mrp_production_5205_3d2f0ba8, total 81"
+2560, line 252
+2561, part1  True
+2562, part2  False
+2563, line 252
+2564,no raw- pn... DW-00-007-002
+2565,ordname...[DW-00-007-002]  DW-00-007-002 / DW_1.0[b650]
+2566,line 252
+2567,ordid..__export__.mrp_production_5206_d453b650
+2568,deadline null?...False
+2569,deadline...2025-12-19 01:00:00
+2570,deadline formatted...2025-12-19 01:00:00
+2571,"order created and add with id __export__.mrp_production_5206_d453b650, total 82"
+2572, line 253
+2573, part1  True
+2574, part2  True
+2575," line 253 product [4022.706.05882] EXE IL IXF MOD TA GUIDE / HQP, raw [5601-0000-0203] ALU 5083 H111 (wgw) gzgd plaat 645x75x50"
+2576,pn... 4022.706.05882
+2577,prod handled... True
+2578,raw 1... 
+2579,raw added to predecesors... 
+2580,no second raw product... 
+2581,"resid: __export__.mrp_workcenter_65_c1e1b939, resname: MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+2582,prod id: 18078.0
+2583,prodp pn: 4022.706.05882
+2584, operation id... 18078.0-_-__export__.mrp_workcenter_65_c1e1b939
+2585, operation will be created..
+2586,first operation passed... 
+2587,oprtn M3-01 - Accuway - 3axis - Manual (FR3_01)
+2588,oprtn M5-03 - Haas - 5axis - Manual (UMC750)
+2589,oprtn OUT - Outsourced activity
+2590,No operations 4
+2591,ordname...[4022.706.05882]  EXE IL IXF MOD TA GUIDE / HQP_4.0[1304]
+2592,line 253
+2593,ordid..__export__.mrp_production_5211_e60f1304
+2594,deadline null?...False
+2595,deadline...2026-01-09 01:00:00
+2596,deadline formatted...2026-01-09 01:00:00
+2597,"order created and add with id __export__.mrp_production_5211_e60f1304, total 83"
+2598,deadline null?...False
+2599,deadline...2026-01-09 01:00:00
+2600,deadline formatted...2026-01-09 01:00:00
+2601, line 254
+2602, part1  False
+2603, part2  False
+2604, line 254
+2605, line 255
+2606, part1  False
+2607, part2  False
+2608, line 255
+2609, line 256
+2610, part1  False
+2611, part2  False
+2612, line 256
+2613, line 257
+2614, part1  True
+2615, part2  False
+2616, line 257
+2617,no raw- pn... 4022.719.28491
+2618,ordname...[4022.719.28491]  HALFFAB M PLATE SST 150x40x15 / HQP / 104018451_4.0[4063]
+2619,line 257
+2620,ordid..__export__.mrp_production_5148_cddb4063
+2621,deadline null?...False
+2622,deadline...2025-12-22 01:00:00
+2623,deadline formatted...2025-12-22 01:00:00
+2624,"order created and add with id __export__.mrp_production_5148_cddb4063, total 84"
+2625, line 258
+2626, part1  True
+2627, part2  False
+2628, line 258
+2629,no raw- pn... 4022.719.44971
+2630,ordname...[4022.719.44971]  HALFFAB M CL SP SST 150x30x159 / HQP / 104018452_2.0[d335]
+2631,line 258
+2632,ordid..__export__.mrp_production_5149_79afd335
+2633,deadline null?...False
+2634,deadline...2025-12-22 01:00:00
+2635,deadline formatted...2025-12-22 01:00:00
+2636,"order created and add with id __export__.mrp_production_5149_79afd335, total 85"
+2637,New orders:  85
+2638,New products:  117
+2639,New operations:  171
+2640,New resources:  15
+2641,"res_codeOperator , Operator 1"
+2642,Shifts: [1]
+2643,"res_codeOperator , Operator 2"
+2644,Shifts: [1]
+2645,"res_codeOperator , Operator 3"
+2646,Shifts: [2]
+2647,"res_codeManual worker , Manual worker 1"
+2648,Shifts: [1]
+2649,"res_codeManual worker , Manual worker 2"
+2650,Shifts: [1]
+2651,"res_codeM5-05, (UMC750SS)"
+2652,"Matches0[1, 2], data: 1_2"
+2653,"Shifts: [1, 2]"
+2654,"res_codeMP2, (ZGN_02)"
+2655,"Matches1[1, 2], data: 1_2"
+2656, res MP2 - Material preparation - manual sawing (ZGN_02)
+2657,"Shifts: [1, 2]"
+2658,"res_codeM3-01, (FR3_01)"
+2659,"Matches1[1, 2], data: 1_2"
+2660, res M3-01 - Accuway - 3axis - Manual (FR3_01)
+2661,"Shifts: [1, 2]"
+2662,"res_codeBW, (BKW_01)"
+2663,"Matches1[1, 2], data: 1_2"
+2664, res BW - Benchwork (BKW_01)
+2665,"Shifts: [1, 2]"
+2666,"res_codePACK, (VERP_P)"
+2667,"Matches1[1, 2], data: 1_2"
+2668, res PACK - Packaging (VERP_P)
+2669,"Shifts: [1, 2]"
+2670,"res_codeOUT, Outsourced activity"
+2671, res OUT - Outsourced activity
+2672,Shifts: [1]
+2673,"res_codeMP1, (ZGN_01)"
+2674,"Matches1[1, 2], data: 1_2"
+2675, res MP1 - Material preparation - automatic sawing (ZGN_01)
+2676,"Shifts: [1, 2]"
+2677,"res_codeM5-01, (FR5_01)"
+2678,"Matches1[1, 2, 3], data: 1_2_3"
+2679, res M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01)
+2680,"Shifts: [1, 2]"
+2681,"res_codeM4-01, (FR4_01)"
+2682,"Matches1[1, 2, 3], data: 1_2_3"
+2683, res M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01)
+2684,"Shifts: [1, 2]"
+2685,"res_codeM5-03, (UMC750)"
+2686,"Matches1[1, 2], data: 1_2"
+2687, res M5-03 - Haas - 5axis - Manual (UMC750)
+2688,"Shifts: [1, 2]"
+2689,"res_codeM3-02, (FR3_02)"
+2690,"Matches1[1, 2], data: 1_2"
+2691, res M3-02 - Accuway - 3axis - Manual (FR3_02)
+2692,"Shifts: [1, 2]"
+2693,"res_codeMP3, (UITG_M)"
+2694,"Matches1[1, 2], data: 1_2"
+2695," res MP3 - Material preparation - pre-cutted, only picking (UITG_M)"
+2696,"Shifts: [1, 2]"
+2697,"res_codeM4-02, (FR4_02)"
+2698,"Matches1[1, 2, 3], data: 1_2_3"
+2699, res M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02)
+2700,"Shifts: [1, 2]"
+2701,"res_codeM3-03, (VF2SS)"
+2702,"Matches1[1, 2], data: 1_2"
+2703, res M3-03 - Haas - 3axis - Manual (VF2SS)
+2704,"Shifts: [1, 2]"
+2705,"res_codeM5-02, (FR5_02)"
+2706,"Matches1[1, 2, 3], data: 1_2_3"
+2707, res M5-02 - Accuway - 5axis - Pallet Automation (FR5_02)
+2708,"Shifts: [1, 2]"
+2709,"res_codeM5-04, (UMC750SS)"
+2710,"Matches1[1, 2, 3], data: 1_2_3"
+2711, res M5-04 - Haas - 5axis  - Manual (UMC750SS)
+2712,"Shifts: [1, 2]"
+2713,First pass done..
+2714,Alternatives of res Operator 1nan
+2715,Alternatives of res Operator 2nan
+2716,Alternatives of res Operator 3nan
+2717,Alternatives of res Manual worker 1nan
+2718,Alternatives of res Manual worker 2nan
+2719,Alternatives of res M5-05_(UMC750SS)M5-03~M5-04
+2720,Alternatives of res MP2_(ZGN_02)nan
+2721,Alternatives of res M3-01_(FR3_01)nan
+2722,Alternatives of res BW_(BKW_01)nan
+2723,Alternatives of res PACK_(VERP_P)nan
+2724,Alternatives of res OUT_Outsourced activitynan
+2725,Alternatives of res MP1_(ZGN_01)nan
+2726,Alternatives of res M5-01_(FR5_01)nan
+2727,Alternatives of res M4-01_(FR4_01)FR4_02
+2728,Alternatives of res M5-03_(UMC750)M5-04~M5-05
+2729,Alternatives of res M3-02_(FR3_02)M3-03
+2730,Alternatives of res MP3_(UITG_M)nan
+2731,Alternatives of res M4-02_(FR4_02)FR4_01
+2732,Alternatives of res M3-03_(VF2SS)M5-03~M5-04~M5-05
+2733,Alternatives of res M5-02_(FR5_02)nan
+2734,Alternatives of res M5-04_(UMC750SS)M5-03~M5-05
+2735,"++ res... M3-02 - Accuway - 3axis - Manual (FR3_02) >>>> [1, 2]"
+2736,"++ res... M5-04 - Haas - 5axis  - Manual (UMC750SS) >>>> [1, 2, 3]"
+2737,"++ res... MP1 - Material preparation - automatic sawing (ZGN_01) >>>> [1, 2]"
+2738,"++ res... M5-02 - Accuway - 5axis - Pallet Automation (FR5_02) >>>> [1, 2, 3]"
+2739,"++ res... M5-01 - Accuway - 5axis - Conveyor Automation (FR5_01) >>>> [1, 2, 3]"
+2740,"++ res... BW - Benchwork (BKW_01) >>>> [1, 2]"
+2741,"++ res... PACK - Packaging (VERP_P) >>>> [1, 2]"
+2742,"++ res... M3-01 - Accuway - 3axis - Manual (FR3_01) >>>> [1, 2]"
+2743,"++ res... M4-02 - Accuway - 4axis - Conveyor Automation (FR4_02) >>>> [1, 2, 3]"
+2744,++ res... OUT - Outsourced activity >>>> [1]
+2745,"++ res... MP3 - Material preparation - pre-cutted, only picking (UITG_M) >>>> [1, 2]"
+2746,"++ res... M3-03 - Haas - 3axis - Manual (VF2SS) >>>> [1, 2]"
+2747,"++ res... M5-03 - Haas - 5axis - Manual (UMC750) >>>> [1, 2]"
+2748,"++ res... M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01) >>>> [1, 2, 3]"
+2749,"++ res... MP2 - Material preparation - manual sawing (ZGN_02) >>>> [1, 2]"
+2750,++ res... Operator 1 >>>> [1]
+2751,++ res... Operator 2 >>>> [1]
+2752,++ res... Operator 3 >>>> [2]
+2753,++ res... Manual worker 1 >>>> [1]
+2754,++ res... Manual worker 2 >>>> [1]
+2755,"++ res... M5-05_(UMC750SS) >>>> [1, 2]"
+2756,Second pass done..
+2757,refreshing done..
+2758,planning start..2026-01-12 00:10:29.843607
+2759,Saving file starts..

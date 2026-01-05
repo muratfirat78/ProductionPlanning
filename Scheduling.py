@@ -344,6 +344,13 @@ class SchedulingManager:
 ############################################################################################################################
     def ScheduleJob(self,job,res,starttime,completiontime,schsol,Progress):
 
+        """
+        Scheduling a job involves the following points: 
+          - set the following properties: resource, scheduled boolean as true, start time, completion time, scheduled start shift, scheduled completion shift.
+          - place the job into relevant job lisft of the resource in the scheduling solution. 
+          
+        """
+        
         Progress.value+= "Job: "+job.getJob().getName()+", scheduled on mach "+res.getName()+" st/cp "+str(starttime)+"/"+str(completiontime)+"\n" 
         job.SetScheduled()
         job.setScheduledResource(res)
@@ -363,6 +370,11 @@ class SchedulingManager:
         except Exception as e: 
             Progress.value+="error.."+str(e)+"\n"
 
+        if not res in schsol.getResourceJobs():
+            schsol.getResourceJobs()[res] = []
+        
+        schsol.getResourceJobs()[res].append(job)
+        
                     
         Progress.value+=cpshift.String("Comp sh")+"\n"
 
@@ -418,8 +430,8 @@ class SchedulingManager:
 
         scheduleperiod = pd.date_range(psstart,pssend)
     
-        oprdict = dict()
-        nrjobs = 0
+    
+      
         AllJobs = []
 
         #Determine customer orders with latest start
@@ -427,38 +439,24 @@ class SchedulingManager:
 
         existings = 0
         for name,order in self.getDataManager().getCustomerOrders().items():
+            
             if len(order.getMyJobs()) > 0:
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order planned delivery none?: "+str(name)+": "+str(order.getPlannedDelivery() == None)+"\n"
-            if order.getPlannedDelivery() != None: # planned ones..
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Planned order: "+str(name)+"\n"
+                if order.getPlannedDelivery() != None: # planned ones..
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Planned order: "+str(name)+"\n"
+    
+                    for job in order.getMyJobs():
+                        job.backupSch()
+                        AllJobs.append(job.getMySch()) #a clean sch inserted, previous one: job.getJob().getPrevSch()
 
-                nrjobs+=len(order.getMyJobs())
-                    
-                for job in order.getMyJobs():
-                    if job.getMySch() == None:
-                        job.initializeMySch()
-                       
-                    else:
-                        existings+=1
-
-                    AllJobs.append(job.getMySch())
-                    
-                    if not job.getOperation() in oprdict:
-                        oprdict[job.getOperation()] = []
-                    oprdict[job.getOperation()].append(job.getMySch())
-
-                if len(order.getMyJobs()) > 0: 
                     SelectedOrders.append(order)
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Order: "+order.getName()+": "+str(len(order.getMyJobs()))+"\n"
                     self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="LS: "+str(order.getLatestStart())+"\n"
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" To schedule (order-based) jobs: "+str(nrjobs)+"("+str(existings)+")"+"\n"                    
+        prevscheduled = len([x for x in AllJobs if x.getJob().getPrevSch() != None])
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" Prev.scheduled jobs: "+str(prevscheduled)+"/"+str(len(AllJobs))+")"+"\n"           
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Orders in scheduling: "+str(len(SelectedOrders))+"\n"
 
-        for resname,res in self.getDataManager().getResources().items():
-            res.getCurrentSchedule().clear()
-
-   
         self.CreateShifts(psstart,pssend)
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shifts created.."+"\n"
@@ -489,6 +487,7 @@ class SchedulingManager:
                 self.ApplySchedule(sch_sol)
         
 
+        self.getVisualManager().getSchedulingTab().getPSchTBmakesch_btn().disabled = True
         self.getVisualManager().getSchedulingTab().getPSchTBaccsch_btn().disabled = False
         
         Orderstatus = []

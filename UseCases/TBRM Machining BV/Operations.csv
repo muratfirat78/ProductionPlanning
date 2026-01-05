@@ -170,3 +170,18 @@ OperationID,Name,ProcessTime
 18078.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022.706.05882] M3-01 - Accuway - 3axis - Manual (FR3_01),176.5
 18078.0-_-__export__.mrp_workcenter_61_bcb50df3,[4022.706.05882] M5-03 - Haas - 5axis - Manual (UMC750),47.0
 18078.0-_-__export__.mrp_workcenter_68_8bff6631,[4022.706.05882] OUT - Outsourced activity,4500.0
+14950.0-_-__export__.mrp_workcenter_63_98a7a00b,[4022-631-80961] MP1 - Material preparation - automatic sawing (ZGN_01),8.5
+14950.0-_-__export__.mrp_workcenter_56_d6637dea,[4022-631-80961] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),75.0
+14950.0-_-__export__.mrp_workcenter_54_3f0243e1,[4022-631-80961] M3-01 - Accuway - 3axis - Manual (FR3_01),60.0
+14950.0-_-__export__.mrp_workcenter_66_9f807a30,[4022-631-80961] BW - Benchwork (BKW_01),5.0
+14950.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4022-631-80961] PACK - Packaging (VERP_P),1.0
+17395.0-_-__export__.mrp_workcenter_63_98a7a00b,[m05534] MP1 - Material preparation - automatic sawing (ZGN_01),1.075
+17395.0-_-__export__.mrp_workcenter_56_d6637dea,[m05534] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),2.95
+15023.0-_-__export__.mrp_workcenter_63_98a7a00b,[4598-011-70891B] MP1 - Material preparation - automatic sawing (ZGN_01),1.0649350649350648
+15023.0-_-__export__.mrp_workcenter_66_9f807a30,[4598-011-70891B] BW - Benchwork (BKW_01),1.0
+15023.0-_-__export__.mrp_workcenter_56_d6637dea,[4598-011-70891B] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),8.38961038961039
+15023.0-_-__export__.mrp_workcenter_68_8bff6631,[4598-011-70891B] OUT - Outsourced activity,2250.0
+15017.0-_-__export__.mrp_workcenter_63_98a7a00b,[4512-127-05186B] MP1 - Material preparation - automatic sawing (ZGN_01),1.015
+15017.0-_-__export__.mrp_workcenter_56_d6637dea,[4512-127-05186B] M4-01 - Accuway - 4axis - Conveyor Automation (FR4_01),2.09
+15017.0-_-__export__.mrp_workcenter_66_9f807a30,[4512-127-05186B] BW - Benchwork (BKW_01),1.0
+15017.0-_-__export__.mrp_workcenter_67_d1ac8ce6,[4512-127-05186B] PACK - Packaging (VERP_P),1.0

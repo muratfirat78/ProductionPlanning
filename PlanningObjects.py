@@ -544,12 +544,11 @@ class SchJob():
         return
 
     def IsSchedulable(self):
+
+        if self.IsScheduled():
+            return False
         
         for pred in self.getJob().getPredecessors():
-            if pred.IsBatched():
-                continue
-
-              
             if not pred.getMySch().IsScheduled():
                 return False
         return True
@@ -592,6 +591,7 @@ class Job():
         self.ActualCompletion = None
      
         self.MySch = None
+        self.PrevSch = None
         self.MyPlan = None # (resource,date)
         self.status = None
 
@@ -613,12 +613,15 @@ class Job():
     def getStatus(self):
 
         if len (self.Predecessors)> 0:
-            pred = self.Predecessors[0]
-            if pred.getActualStart() == None:
-                return "Predecessor not started"
+            starteds = [x for x in self.getPredecessors() if x.getActualCompletion() != None] 
+            if len(starteds) == 0:
+                return "No predecessor started"
             else:
-                if pred.getActualCompletion() == None:
-                    return "Predecessor in production"
+                completeds = [x for x in self.getPredecessors() if x.getActualCompletion() != None] 
+                if len(completeds) == 0:
+                    return str(len(starteds))+" preds started, but none of them completed."
+                else:
+                    return str(len(starteds))+" preds started and "+str(len(completeds))+" of them completed."
                 
         if self.getActualStart() == None:
             return "Pending"
@@ -627,15 +630,20 @@ class Job():
                 return "In production"
             else:
                 return "Completed"
-     
+
        
    
     def initializeMySch(self):
         self.MySch = SchJob(self)
         return
 
-   
-  
+    def backupSch(self):
+        self.PrevSch =  self.MySch
+        self.MySch = SchJob(self)
+        return
+
+    def getPrevSch(self):
+        return self.PrevSch    
     
     def setBatched(self):
         self.batched = True
@@ -915,7 +923,9 @@ class Shift():
 class ScheduleSolution():
     def __init__(self,myname):
         self.name = myname
-        self.resources_sch = dict()  #key: resname, #val: schdule: dict key: Shift, val: [(jobid,st,cp)]
+        self.resources_sch = dict()  #key: resname, #val: schdule: dict [key: Shift, val: dict [key: job , val: (st,cp)]]
+        self.resourcejobs = dict() # key: resname, val: [job]
+        self.resourceslots = dict() # key: res, val: [(st,cp)]
         self.startweek = None
         self.endweek = None
 
@@ -924,6 +934,12 @@ class ScheduleSolution():
         return
     def getStartWeek(self):
         return self.startweek 
+        
+    def getResourceJobs(self):
+        return self.resourcejobs
+
+    def getResourceSlots(self):
+        return self.resourceslots
 
     def setEndWeek(self,mywk):
         self.endweek = mywk

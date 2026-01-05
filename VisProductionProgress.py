@@ -837,9 +837,13 @@ class ProductionProgressTab():
             for ordname,ordr in self.getVisualManager().DataManager.getCustomerOrders().items():
                 self.getPProgReport().value +="ordr: "+str(ordname)+": "+str(len(ordr.getMyJobs()))+"\n"
                 for job in ordr.getMyJobs():
+                    self.getPProgReport().value +="   >>"+str(job.getName())+"\n"
+                    self.getPProgReport().value +="   >> Status: "+str(job.getStatus())+"\n"
                     if job.getStatus() in ["Pending","In production"]:
                         joblist.append(job.getName())
-        
+                        self.getPProgReport().value +="      >>> Inserted..."+"\n"
+
+            self.getPProgReport().value +="   >> Active Jobs"+str(len(joblist))+"\n"
             self.getCustomerOrderList().options = [jname for jname in joblist]                                
                
             

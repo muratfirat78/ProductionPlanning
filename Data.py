@@ -403,6 +403,7 @@ class DataManager:
 
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>> schedule saved....."+"\n" 
 
+        self.getVisualManager().getSchedulingTab().getPSchTBaccsch_btn().disabled = True
 
         return
         
@@ -414,8 +415,7 @@ class DataManager:
 
         return
         
-        
-
+    
 
     def read_dataset(self,b):  
 
