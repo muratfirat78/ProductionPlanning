@@ -569,6 +569,135 @@ class SchJob():
 ################################################################################################################################################
 ################################################################################################################################################
 
+class SimJob():
+    # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
+    def __init__(self,myJob):
+
+        self.job = myJob
+        self.StartTime = None
+        self.CompletionTime = None
+        self.StartShift = None
+        self.StartDay = None
+        self.CompShift = None    
+
+
+    def getJob(self):
+        return self.job
+        
+    def getStartTime(self):
+        return self.StartTime
+
+    def setStartTime(self,myst):
+        self.StartTime = myst
+        return
+    
+    def getCompletionTime(self):
+        return self.CompletionTime
+
+    def setCompletionTime(self,myst):
+        
+        self.CompletionTime = myst
+
+        for job in self.getJob().getOrderJobs():
+            maxcomp = 0
+            allscheduled = True
+            for bjob in self.getJob().getBatchJobs():
+                if bjob.getMySch().IsScheduled():
+                    maxcomp = max(maxcomp,bjob.getMySch().getCompletionTime())
+                else: 
+                    allscheduled = False
+
+            if allscheduled and len(self.getJob().getBatchJobs()) > 0:
+                job.getMySch().setCompletionTime(myst)
+       
+        return
+
+    def getStartShift(self):
+        return self.StartShift
+
+    def setStartShift(self,shift):
+        self.StartShift = shift
+        return
+
+    def getStartDay(self):
+        return self.StartDay
+
+    def setStartDay(self,day):
+        self.StartDay = day
+        return
+
+    def getScheduledDay(self):
+        return self.ScheduledDay
+
+    def setScheduledDay(self,day):
+        self.ScheduledDay = day
+        return
+
+    def getScheduledShift(self):
+        return self.ScheduledShift
+
+    def setScheduledShift(self,shift):
+        self.ScheduledShift = shift
+        return
+
+
+    def IsScheduled(self):
+        return self.Scheduled
+        
+    def SetScheduled(self):
+        self.Scheduled = True
+        return 
+
+    def getScheduledTime(self):
+        return self.ScheduledTime
+
+    def setScheduledTime(self,myst):
+        self.ScheduledTime = myst
+        return
+
+    def getScheduledResource(self):
+        return self.ScheduledResource
+
+    def setScheduledResource(self,myst):
+        self.ScheduledResource = myst
+        return
+
+   
+
+    def getScheduledCompShift(self):
+        return self.ScheduledCompShift
+
+    def setScheduledCompShift(self,myst):
+        self.ScheduledCompShift = myst
+        return
+
+    def IsSchedulable(self):
+        
+        for pred in self.getJob().getPredecessors():
+            if pred.IsBatched():
+                continue
+
+              
+            if not pred.getMySch().IsScheduled():
+                return False
+        return True
+
+    def getLatestPredecessorCompletion(self):
+
+        maxcomptime = 0
+
+        for pred in self.getJob().getPredecessors():
+    
+            if not pred.getMySch().IsScheduled():
+                return -1 
+            else: 
+                maxcomptime = max(maxcomptime,pred.getMySch().getCompletionTime())
+
+        return maxcomptime
+
+################################################################################################################################################
+################################################################################################################################################
+
 class Job():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
     def __init__(self,myid,myname,myprod,myopr,myqnty,myddline):

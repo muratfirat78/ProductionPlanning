@@ -1,0 +1,11 @@
+JobID,Quantity,Deadline,OrderID,ProductID,OperationID
+bb95a_5,26,2026-01-07,__export__.mrp_production_5168_bf7bb95a,14961.0,14961.0-_-__export__.mrp_workcenter_63_98a7a00b
+bb95a_4,26,2026-01-07,__export__.mrp_production_5168_bf7bb95a,14961.0,14961.0-_-__export__.mrp_workcenter_58_a525d5b9
+bb95a_3,26,2026-01-08,__export__.mrp_production_5168_bf7bb95a,14961.0,14961.0-_-__export__.mrp_workcenter_57_6faf5319
+bb95a_2,26,2026-01-08,__export__.mrp_production_5168_bf7bb95a,14961.0,14961.0-_-__export__.mrp_workcenter_66_9f807a30
+bb95a_1,26,2026-01-08,__export__.mrp_production_5168_bf7bb95a,14961.0,14961.0-_-__export__.mrp_workcenter_67_d1ac8ce6
+d6f4a_5,47,2026-01-06,__export__.mrp_production_5169_605d6f4a,14962.0,14962.0-_-__export__.mrp_workcenter_63_98a7a00b
+d6f4a_4,47,2026-01-06,__export__.mrp_production_5169_605d6f4a,14962.0,14962.0-_-__export__.mrp_workcenter_59_d6deab7b
+d6f4a_3,47,2026-01-07,__export__.mrp_production_5169_605d6f4a,14962.0,14962.0-_-__export__.mrp_workcenter_59_d6deab7b
+d6f4a_2,47,2026-01-08,__export__.mrp_production_5169_605d6f4a,14962.0,14962.0-_-__export__.mrp_workcenter_66_9f807a30
+d6f4a_1,47,2026-01-08,__export__.mrp_production_5169_605d6f4a,14962.0,14962.0-_-__export__.mrp_workcenter_67_d1ac8ce6
