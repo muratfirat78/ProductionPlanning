@@ -183,6 +183,7 @@ class PlanningManager:
 
         return
 
+###########################################################################################################################
     def ApplyPlan(self,order):
 
         prev_date = None
@@ -196,8 +197,11 @@ class PlanningManager:
                     mydate = job.getDeadLine().date()
                     self.getVisualManager().getPLTBresult2exp().value+=">>>> Job: "+str(job.getName())+" not scheduled"+"\n"
             else:  
-                prev_date = job.getMySch().getScheduledCompShift().getDay().date()
-                self.getVisualManager().getPLTBresult2exp().value+=">>>> Job: "+str(job.getName())+" scheduled"+"\n"
+                if job.getMySch().getActualCompletion()!= None:
+                    prev_date = job.getMySch().getActualCompletion().date() 
+                else:
+                    prev_date = job.getMySch().getScheduledCompShift().getDay().date()
+                    self.getVisualManager().getPLTBresult2exp().value+=">>>> Job: "+str(job.getName())+" scheduled"+"\n"
                 continue
 
 
@@ -516,8 +520,8 @@ class PlanningManager:
 
         return self.getPHStart() 
 
-    
-
+#######################################################################################################################################################    
+#######################################################################################################################################################
     def MakeDeliveryPlan(self,b):
         ''' This function construct a delivery plan for every customer orders as follows: 
             - Customer Orders have priority due to their deadlines; i.e. the customer order with soonest deadline must be planned first. 
@@ -549,6 +553,7 @@ class PlanningManager:
         for ordname,myord in self.getDataManager().getCustomerOrders().items():
             myord.resetPlannedDelivery()
 
+        ##############################################################################################
         for resname,res in self.getDataManager().getResources().items():
             res.getCapacityLevels().clear()
             res.getCapacityUsePlan().clear()
@@ -567,11 +572,17 @@ class PlanningManager:
                     self.getVisualManager().getPLTBresult2exp().value+=res.getName()+"******** weekend in schedule!!!! \n" 
 
                 for job in jobs: # schedule jobs
-                    starttime = shift.getStartHour()+timedelta(hours = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime())
-                    endtime =  shift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),shift.getEndTime()+1)-shift.getStartTime())
-                    shiftuse+=math.ceil(2*((endtime-starttime).total_seconds()/3600)) # half-hour granularity
+                    starttime = None; endtime = None
                     
-                    
+                    #if job.getActualStart() == None: 
+                    starttime = max(shift.getStartHour(),job.getScheduledStart())
+                    endtime =  min(shift.getEndHour(),job.getScheduledCompletion())
+                    #else:
+                    #    if job.getActualCompletion() == None: 
+                    #        starttime = max(shift.getStartHour(),job.getScheduledStart())
+                    #    else:
+                        
+                    shiftuse+=math.ceil(((endtime-starttime).total_seconds()/3600)) # half-hour granularity
 
                 if shiftuse > 0:
                     if not shift.getDay().date() in scheduleuse:
@@ -623,6 +634,7 @@ class PlanningManager:
 
             if len(myord.getMyJobs()) > 0:
                 self.getVisualManager().getPLTBresult2exp().value+="Applying plan for order: "+str(myord.getName())+"\n"
+                
                 self.ApplyPlan(myord)
 
                 self.getLogInfo().loc[len(self.getLogInfo())] = {"Info":"Order "+str(myord.getID())+" is previously planned/scheduled."}
@@ -762,16 +774,12 @@ class PlanningManager:
        
         self.getVisualManager().getPLTBOrdlist().options = ops
 
-        self.getVisualManager().getPLTBresult2exp().value+=" 111 starts saving planning"+"\n"
+       
 
         self.SetPlanningDone()
 
-
-
-        self.getVisualManager().getPLTBresult2exp().value+=" 222 starts saving planning"+"\n"
         
-        self.getDataManager().SavePlanning()
-
+       
         
         self.getVisualManager().getPLTBresult2exp().value+="  plannnig DONE!!!"+"\n"
         

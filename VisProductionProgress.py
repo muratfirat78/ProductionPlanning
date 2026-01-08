@@ -554,32 +554,31 @@ class ProductionProgressTab():
                 self.getJobInfo().value ="PN: "+str(myjob.getOperation().getProduct().getPN())
                 self.getJobInfo2().value ="Operation: "+str(myjob.getOperation().getName())
                 self.getJobInfo3().value ="Quantity: "+str(myjob.getQuantity())
-                self.getJobInfo5().value ="Product: "+str(myjob.getOperation().getProduct().getName())
+                self.getJobInfo5().value ="Status: "+myjob.getStatus()
+
+                if myjob.getStatus() == "In production": 
+                    self.getJobInfo5().value +=", Started: "+str(myjob.getMySch().getActualStart())
+                else: 
+                    if myjob.getStatus() == "Completed": 
+                        self.getJobInfo5().value ="Completed: "+str(myjob.getMySch().getActualCompletion())
+                            
 
                 self.getPProgReport().value+="SCHJOB none ?  "+str(myjob.getMySch() == None)+"\n"
 
                 self.setCurrentJob(myjob)
                 
                 if myjob.getMySch() != None:
-                    startshift = myjob.getMySch().getScheduledShift()
-                    self.getPProgReport().value+= "startshift none? "+str(startshift == None)+"\n"
-                    cpshift = myjob.getMySch().getScheduledCompShift()
-                    self.getPProgReport().value+= "cpshift none? "+str(cpshift == None)+"\n"
 
-                    starttime,endtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(myjob.getMySch(),startshift)
-    
-    
-    
-                    schstr ="{:d}-{:02d}-{:02d} / {:d}:{:02d}".format(starttime.year,starttime.month, starttime.day,starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)    
+                    starttime =  myjob.getMySch().getScheduledStart(); endtime =  myjob.getMySch().getScheduledCompletion() 
+
                     
-                    if startshift != cpshift:
-                        jstrttime,jendtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(myjob.getMySch(),cpshift)
-    
-                        schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour, jendtime.minute) 
+                    schstr = "  {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(starttime.year,starttime.month,starttime.day,starttime.hour,starttime.minute) 
+                    schstr+= " -> "+" {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(endtime.year,endtime.month,endtime.day,endtime.hour,endtime.minute) 
+  
                     
                     self.getJobInfo4().value ="Schedule: "+schstr
 
-                    if myjob.getStatus() == "Pending":
+                    if myjob.getStatus() in ["Pending (No predecessor)","Pending (all predecessors completed)"]:
                         self.getJobStartBtn().layout.display  = 'block'
                         self.getJobStartBtn().layout.visibility  = 'visible'
                         self.getJobCompleteBtn().layout.visibility  = 'hidden'
@@ -657,15 +656,18 @@ class ProductionProgressTab():
                     source = pd.DataFrame(columns=["Job","Start","End"])
 
                     for job in jobs:
-                        self.getPProgReport().value+=str(shift.getStartHour())+"-"+str(job.getStartTime())+"-"+str(shift.getStartTime())+"\n"
+                        
+                        self.getPProgReport().value+="Shft strt "+str(shift.getStartHour())+"-> Jobstrt: "+str(job.getScheduledStart())+"\n"
 
 
-                        starttime,endtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(job,shift)
+                        starttime = job.getScheduledStart() if shift == job.getScheduledCompShift() else shift.getStartHour()
+                        endtime = job.getScheduledCompletion() if shift == job.getScheduledCompShift() else shift.getEndHour()
+
+                        
                         row = pd.DataFrame([{"Job":job.getJob().getName(), "Start":starttime,"End":endtime}])
                         source = pd.concat([source, row], axis=0, ignore_index=True)
                   
                    
-                    
                     fig, ax = plt.subplots(figsize=(5.5,2))
                     
                     #colors = plt.cm.tab10.colors  # get a list of 10 colors
@@ -839,7 +841,7 @@ class ProductionProgressTab():
                 for job in ordr.getMyJobs():
                     self.getPProgReport().value +="   >>"+str(job.getName())+"\n"
                     self.getPProgReport().value +="   >> Status: "+str(job.getStatus())+"\n"
-                    if job.getStatus() in ["Pending","In production"]:
+                    if job.getStatus() in ["Pending (No predecessor)","Pending (all predecessors completed)","In production"]:
                         joblist.append(job.getName())
                         self.getPProgReport().value +="      >>> Inserted..."+"\n"
 
@@ -959,7 +961,7 @@ class ProductionProgressTab():
 
         return
 
-      
+##########################################################################################################################################      
     def ShowJobInfo(self,event):
   
         if not 'index' in event['new']:
@@ -997,6 +999,7 @@ class ProductionProgressTab():
             for job in self.getSelectedOrder().getMyJobs():
                 if job.getName() == jobname:
                     selectedjob = job
+                    
                     self.getPProgReport().value+="Selected Job found.."+"\n"
                     break
             if selectedjob.getMySch()!= None:
@@ -1026,6 +1029,10 @@ class ProductionProgressTab():
 
         
         else:
+            if selectedjob!= None:
+                if selectedjob.getMySch() != None:
+                    currshift = selectedjob.getMySch().getScheduledShift()
+                
             self.getPProgReport().value+="job scheduled shift"+" Sh:("+str(currshift)+"\n"
             self.getPProgReport().value+="job scheduled shift"+" Sh:("+str(currshift.getDay())+","+str(currshift.getNumber())+"), hrs: ["+str(currshift.getStartTime())+"-"+str(currshift.getEndTime())+"\n"
             self.getPProgReport().value+=" is job scheduled shift is schedule of resource? "+str(currshift in jobresource.getSchedule())+"\n"
@@ -1050,45 +1057,41 @@ class ProductionProgressTab():
                         
 
                     self.getPProgReport().value+=" curr shift. "+currshift.String(" Curr sh ")+"\n"
-                   
-                    starttime,endtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(job,currshift)
+                
+                    starttime = job.getScheduledStart(); endtime = job.getScheduledCompletion() 
 
-                    self.getPProgReport().value+=" times "+str(starttime)+" : "+str(endtime)+"\n"
-    
-                    cpshift = job.getScheduledCompShift()
-               
                     
-                    schstr =" {:d}:{:02d}".format(starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)
-
-                    if self.infotype != "Resources":
-                        schstr = str(currshift.getDay().date())+" | "+str(currshift.getNumber())+schstr
-    
-                    if currshift != cpshift:
-                        jstarttime,jendtime = self.getVisualManager().DataManager.getSchedulingManager().getJobStartEndinShift(job,cpshift)
-                        schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month,
-                                                                                         jendtime.day,jendtime.hour,jendtime.minute)  
+                    schstr = "  {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(starttime.year,starttime.month,starttime.day,starttime.hour,starttime.minute) 
+                    schstr+= " -> "+" {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(endtime.year,endtime.month,endtime.day,endtime.hour,endtime.minute) 
+  
                       
-                        
-                    self.getJobInfo().value ="PN: "+str(job.getJob().getOperation().getProduct().getPN())
-                    self.getJobInfo2().value ="Operation: "+str(job.getJob().getOperation().getName())
-                    self.getJobInfo3().value ="Quantity: "+str(job.getJob().getQuantity())
-                    self.getJobInfo4().value ="Scheduled: "+str(schstr)
-    
+                    self.getJobInfo().value = "Operation: "+str(job.getJob().getOperation().getName())
+                    #"PN: "+str(job.getJob().getOperation().getProduct().getPN())
+                    self.getJobInfo2().value = "Quantity: "+str(job.getJob().getQuantity())
+                    self.getJobInfo3().value = "Scheduled: "+str(schstr)
+                    self.getJobInfo4().value = "Resource: "+job.getScheduledResource().getName()
                     self.getJobInfo5().value ="Status: "+job.getJob().getStatus()
                     
-                    if job.getJob().getStatus() == "Pending": 
+                    if job.getJob().getStatus() in ["Pending (No predecessor)","Pending (all predecessors completed)"]: 
                         self.getJobStartBtn().layout.display = 'block'
                         self.getJobStartBtn().layout.visibility  = 'visible'
         
                     else:
                         if job.getJob().getStatus() == "In production": 
-                            self.getJobInfo5().value +=", Started: "+str(job.getJob().getActualStart())
+                            self.getJobInfo5().value +=", Started: "+str(job.getActualStart())
                             self.getJobCompleteBtn().layout.display = 'block'
                             self.getJobCompleteBtn().layout.visibility  = 'visible'
+                            self.getJobStartBtn().layout.visibility  = 'hidden'
+                            self.getJobStartBtn().layout.display = 'none'
+                        
                    
                         else:
                             if job.getJob().getStatus() == "Completed": 
-                                self.getJobInfo5().value ="Completed: "+str(job.getJob().getActualCompletion())
+                                self.getJobInfo5().value ="Completed: "+str(job.getActualCompletion())
+                                self.getJobCompleteBtn().layout.visibility  = 'hidden'
+                                self.getJobCompleteBtn().layout.display = 'none'
+                                self.getJobStartBtn().layout.visibility  = 'hidden'
+                                self.getJobStartBtn().layout.display = 'none'
                             
                     self.getPProgReport().value+="done.. "+"\n"
                     break
@@ -1098,9 +1101,46 @@ class ProductionProgressTab():
 
     def SetJobStarted(self,event):
 
+        starttime = datetime.now()
+        
+        self.getCurrentJob().getMySch().setActualStart(starttime)
+
+        self.getPProgReport().value+=">>>>>>>>>>>>> "+str(starttime)+"\n"
+        self.getPProgReport().value+=">>>>>>>>>>>>> "+str(type(starttime))+"\n"
+
+
         self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" has started.."+"\n"
-        self.getCurrentJob().setActualStart(datetime.now())
-       
+
+        self.getVisualManager().DataManager.getSchedulingManager().ExtendShifts(self.getCurrentJob().getMySch().getActualStart().date())
+
+        
+        dayshifts = self.getVisualManager().DataManager.getSchedulingManager().getMyShifts()[starttime.date()]
+        self.getPProgReport().value+="day shits "+str(len(dayshifts))+"\n"
+
+        for shift in dayshifts:
+            self.getPProgReport().value+=" "+str(type(shift.getStartHour()))+", "+str(type(starttime))+"\n"
+            self.getPProgReport().value+=" "+str(shift.getStartHour())+", "+str(shift.getEndHour())+", "+str(starttime)+"\n"
+            self.getPProgReport().value+=" 1. check "+str((shift.getStartHour()<= starttime))+"\n"
+            self.getPProgReport().value+=" 2. check "+str((shift.getEndHour()>=starttime))+"\n"
+            if (shift.getStartHour()<= starttime) and (shift.getEndHour()>=starttime): 
+                
+                self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" gets act startshift..."+shift.String("act strt: ")+"\n"
+
+                self.getCurrentJob().getMySch().setActualStartShift(shift)
+                self.getPProgReport().value+=shift.String(" Actual start shift: ")+"\n"
+
+        # update from current schedule..
+        self.getVisualManager().DataManager.getSchedulingManager().UpdateSchedule(self.getCurrentJob().getMySch())
+        self.getVisualManager().DataManager.SaveCurrentSchedule()
+     
+
+        self.getPProgReport().value+=" dayshifts: "+str(dayshifts)+"\n"
+    
+        self.getJobInfo5().value ="Status: "+self.getCurrentJob().getStatus()
+
+        if self.getCurrentJob().getStatus() == "In production": 
+            self.getJobInfo5().value +=", Started: "+str(self.getCurrentJob().getMySch().getActualStart())
+    
         self.getJobStartBtn().layout.visibility  = 'hidden'
         self.getJobStartBtn().layout.display  = 'none'
 
@@ -1113,10 +1153,26 @@ class ProductionProgressTab():
 
     def SetJobCompleted(self,event):
 
-        self.getCurrentJob().setActualCompletion(datetime.now())
+        completiontime = datetime.now()
+        self.getCurrentJob().getMySch().setActualCompletion(completiontime)
+
+        dayshifts = self.getVisualManager().DataManager.getSchedulingManager().getMyShifts()[completiontime.date()]
+
+        for shift in dayshifts:
+            if (shift.getStartHour()<= completiontime) and (shift.getEndHour()>=completiontime): 
+                self.getCurrentJob().getMySch().setActualCompletionShift(shift)
+                self.getPProgReport().value+=shift.String(" Actual completion shift: ")+"\n"
+                self.getPProgReport().value+=" Actual start was: "+str(self.getCurrentJob().getMySch().getActualStart())+"\n"
+                
+        self.getVisualManager().DataManager.SaveCurrentSchedule()
+
 
         self.getJobCompleteBtn().layout.visibility  = 'hidden'
         self.getJobCompleteBtn().layout.display  = 'none'
+
+        if self.getCurrentJob().getStatus() == "Completed": 
+            self.getJobInfo5().value ="Started: "+str(self.getCurrentJob().getMySch().getActualStart())+", Completed: "+str(self.getCurrentJob().getMySch().getActualCompletion())
+    
 
         
         return

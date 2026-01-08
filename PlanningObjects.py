@@ -411,19 +411,87 @@ class SchJob():
     def __init__(self,myJob):
 
         self.job = myJob
+
+        
+        # overall data properties
+        self.ScheduledStart = None
+        self.ScheduledCompletion = None
+        self.ActualStart = None
+        self.ActualCompletion = None
+        self.ActualStartShift = None
+        self.ActualCompletionShift = None
+ 
+
+
+        # shared (overall-scheduling properties)
+        self.ScheduledResource = None
+        self.ScheduledCompShift = None
+        self.ScheduledShift=None
+
+        
+
+        # scheduling properties
+        self.Scheduled = False
         self.StartTime = None
         self.CompletionTime = None
+
+ 
         self.StartShift = None
         self.StartDay = None
         self.ScheduledDay=None
-        self.ScheduledShift=None
-        self.Scheduled = False
-        self.ScheduledTime =None
-        self.ScheduledResource = None
-        self.ScheduledCompShift = None
+
+
+
+    def setActualStart(self,co):
+        self.ActualStart = co
+        return
+
+    def setActualStartShift(self,co):
+        self.ActualStartShift= co
+        return
+
+    def getActualStartShift(self):
+        return self.ActualStartShift
+
+    def setActualCompletionShift(self,co):
+        self.ActualCompletionShift= co
+        return
+
+    def getActualCompletionShift(self):
+        return self.ActualCompletionShift
+
+    
+    def getActualStart(self):
+        return self.ActualStart
+
+
+    def setActualCompletion(self,co):
+        self.ActualCompletion = co
+        return
+
+    
+    def getActualCompletion(self):
+        return self.ActualCompletion
     
 
 
+    def getScheduledCompletion(self):
+        return self.ScheduledCompletion
+
+    def setScheduledCompletion(self,myst):
+        self.ScheduledCompletion = myst
+        return
+
+
+    def getScheduledStart(self):
+        return self.ScheduledStart
+
+    def setScheduledStart(self,myst):
+        self.ScheduledStart = myst
+        return
+
+
+    
     def getJob(self):
         return self.job
         
@@ -434,31 +502,37 @@ class SchJob():
         self.StartTime = myst
         return
     def resetSchedule(self):
+        self.ScheduledStart = None
+        self.ScheduledCompletion = None
         self.setScheduledShift(None)
         self.setStartTime(None) 
         self.setCompletionTime(None)
         self.setScheduledCompShift(None)
         return
         
-    def updateStartTime(self,shift,myst):
-        if self.getStartTime() == None: 
-            self.setStartTime(myst)
+    def updateScheduledStart(self,shift,myst):
+        if self.getScheduledStart() == None: 
+            self.setScheduledStart(shift.getStartHour()+timedelta(minutes= 30*myst))
+            self.setStartTime(shift.getStartTime()+myst)
             self.setScheduledShift(shift)           
         else:
-            if self.getStartTime() > myst:
-                self.setStartTime(myst)
+            if self.getScheduledStart() > shift.getStartHour():
+                self.setScheduledStart(shift.getStartHour()+timedelta(minutes= 30*myst))
+                self.setStartTime(shift.getStartTime()+myst)
                 self.setScheduledShift(shift)
                        
         return
         
-    def updateCompletionTime(self,shift,myst):
+    def updateScheduledCompletion(self,shift,myst):
         
-        if self.getCompletionTime() == None: 
-            self.setCompletionTime(myst)
+        if self.getScheduledCompletion() == None: 
+            self.setScheduledCompletion(shift.getStartHour()+timedelta(minutes= 30*myst))
+            self.setCompletionTime(shift.getStartTime()+myst)
             self.setScheduledCompShift(shift)           
         else:
-            if self.getCompletionTime() < myst:
-                self.setCompletionTime(myst)
+            if self.getScheduledCompletion() < shift.getEndHour():
+                self.setScheduledCompletion(shift.getStartHour()+timedelta(minutes= 30*myst))
+                self.setCompletionTime(shift.getStartTime()+myst)
                 self.setScheduledCompShift(shift)
                        
         return
@@ -467,21 +541,8 @@ class SchJob():
         return self.CompletionTime
 
     def setCompletionTime(self,myst):
-        
         self.CompletionTime = myst
 
-        for job in self.getJob().getOrderJobs():
-            maxcomp = 0
-            allscheduled = True
-            for bjob in self.getJob().getBatchJobs():
-                if bjob.getMySch().IsScheduled():
-                    maxcomp = max(maxcomp,bjob.getMySch().getCompletionTime())
-                else: 
-                    allscheduled = False
-
-            if allscheduled and len(self.getJob().getBatchJobs()) > 0:
-                job.getMySch().setCompletionTime(myst)
-       
         return
 
     def getStartShift(self):
@@ -512,6 +573,7 @@ class SchJob():
         self.ScheduledShift = shift
         return
 
+   
 
     def IsScheduled(self):
         return self.Scheduled
@@ -520,12 +582,8 @@ class SchJob():
         self.Scheduled = True
         return 
 
-    def getScheduledTime(self):
-        return self.ScheduledTime
-
-    def setScheduledTime(self,myst):
-        self.ScheduledTime = myst
-        return
+  
+  
 
     def getScheduledResource(self):
         return self.ScheduledResource
@@ -569,135 +627,6 @@ class SchJob():
 ################################################################################################################################################
 ################################################################################################################################################
 
-class SimJob():
-    # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
-    def __init__(self,myJob):
-
-        self.job = myJob
-        self.StartTime = None
-        self.CompletionTime = None
-        self.StartShift = None
-        self.StartDay = None
-        self.CompShift = None    
-
-
-    def getJob(self):
-        return self.job
-        
-    def getStartTime(self):
-        return self.StartTime
-
-    def setStartTime(self,myst):
-        self.StartTime = myst
-        return
-    
-    def getCompletionTime(self):
-        return self.CompletionTime
-
-    def setCompletionTime(self,myst):
-        
-        self.CompletionTime = myst
-
-        for job in self.getJob().getOrderJobs():
-            maxcomp = 0
-            allscheduled = True
-            for bjob in self.getJob().getBatchJobs():
-                if bjob.getMySch().IsScheduled():
-                    maxcomp = max(maxcomp,bjob.getMySch().getCompletionTime())
-                else: 
-                    allscheduled = False
-
-            if allscheduled and len(self.getJob().getBatchJobs()) > 0:
-                job.getMySch().setCompletionTime(myst)
-       
-        return
-
-    def getStartShift(self):
-        return self.StartShift
-
-    def setStartShift(self,shift):
-        self.StartShift = shift
-        return
-
-    def getStartDay(self):
-        return self.StartDay
-
-    def setStartDay(self,day):
-        self.StartDay = day
-        return
-
-    def getScheduledDay(self):
-        return self.ScheduledDay
-
-    def setScheduledDay(self,day):
-        self.ScheduledDay = day
-        return
-
-    def getScheduledShift(self):
-        return self.ScheduledShift
-
-    def setScheduledShift(self,shift):
-        self.ScheduledShift = shift
-        return
-
-
-    def IsScheduled(self):
-        return self.Scheduled
-        
-    def SetScheduled(self):
-        self.Scheduled = True
-        return 
-
-    def getScheduledTime(self):
-        return self.ScheduledTime
-
-    def setScheduledTime(self,myst):
-        self.ScheduledTime = myst
-        return
-
-    def getScheduledResource(self):
-        return self.ScheduledResource
-
-    def setScheduledResource(self,myst):
-        self.ScheduledResource = myst
-        return
-
-   
-
-    def getScheduledCompShift(self):
-        return self.ScheduledCompShift
-
-    def setScheduledCompShift(self,myst):
-        self.ScheduledCompShift = myst
-        return
-
-    def IsSchedulable(self):
-        
-        for pred in self.getJob().getPredecessors():
-            if pred.IsBatched():
-                continue
-
-              
-            if not pred.getMySch().IsScheduled():
-                return False
-        return True
-
-    def getLatestPredecessorCompletion(self):
-
-        maxcomptime = 0
-
-        for pred in self.getJob().getPredecessors():
-    
-            if not pred.getMySch().IsScheduled():
-                return -1 
-            else: 
-                maxcomptime = max(maxcomptime,pred.getMySch().getCompletionTime())
-
-        return maxcomptime
-
-################################################################################################################################################
-################################################################################################################################################
-
 class Job():
     # CustomerOrder(r["OrderID"],self.Products[r["ProductName"]],r["Name"],r["Quantity"],r["Deadline"])
     def __init__(self,myid,myname,myprod,myopr,myqnty,myddline):
@@ -715,10 +644,9 @@ class Job():
         self.OrderJobs = dict() #key: customer order, val: [(job,Q)] of that order. 
         self.batched = False
         self.BatchJobs = []
+        self.ActualStatus = None
        
-        self.ActualStart = None
-        self.ActualCompletion = None
-     
+   
         self.MySch = None
         self.PrevSch = None
         self.MyPlan = None # (resource,date)
@@ -730,6 +658,14 @@ class Job():
         
         self.OrderReserves = dict() # key: Order, val: quantity reserved for the order.
 
+    def setActualStatus(self,sts):
+        self.ActualStatus = sts
+        return
+
+    def getActualStatus(self):
+        return self.ActualStatus
+        
+
     def setPlan(self,pln):
         self.MyPlan = pln
         return
@@ -740,25 +676,41 @@ class Job():
         return self.MySch
 
     def getStatus(self):
-
-        if len (self.Predecessors)> 0:
-            starteds = [x for x in self.getPredecessors() if x.getActualCompletion() != None] 
-            if len(starteds) == 0:
-                return "No predecessor started"
-            else:
-                completeds = [x for x in self.getPredecessors() if x.getActualCompletion() != None] 
-                if len(completeds) == 0:
-                    return str(len(starteds))+" preds started, but none of them completed."
+   
+        if len (self.getPredecessors())> 0:
+            allpredsscheduled = len([x for x in self.getPredecessors() if x.getMySch() != None]) == len(self.getPredecessors())
+    
+            if allpredsscheduled:
+                allpredsstarted = len([x for x in self.getPredecessors() if x.getMySch().getActualStart() != None]) == len(self.getPredecessors())
+    
+                if allpredsstarted:
+                    allpredscompleted = len([x for x in self.getPredecessors() if x.getMySch().getActualCompletion() != None]) == len(self.getPredecessors())
+                    
+                    if allpredscompleted:
+                        if self.getMySch().getActualStart() == None:
+                            return "Pending (all predecessors completed)"
+                        else:
+                            if self.getMySch().getActualCompletion() == None:
+                                return "In production"
+                            else:
+                                return "Completed"
+                            
+                    else:
+                        return "Predecessors to be completed (all predecessors started)"
                 else:
-                    return str(len(starteds))+" preds started and "+str(len(completeds))+" of them completed."
-                
-        if self.getActualStart() == None:
-            return "Pending"
-        else:
-            if self.getActualCompletion() == None:
-                return "In production"
+                    return "Predecessors to be started/completed (all predecessors scheduled)"
             else:
-                return "Completed"
+                return "Predecessors to be scheduled"
+
+        
+        else:      
+            if self.getMySch().getActualStart() == None:
+                return "Pending (No predecessor)"
+            else:
+                if self.getMySch().getActualCompletion() == None:
+                    return "In production"
+                else:
+                    return "Completed"
 
        
    
@@ -787,26 +739,7 @@ class Job():
     def getOrderJobs(self):
         return self.OrderJobs
  
-    
-
-
-    def setActualStart(self,co):
-        self.ActualStart = co
-        return
-
-    
-    def getActualStart(self):
-        return self.ActualStart
-
-
-    def setActualCompletion(self,co):
-        self.ActualCompletion = co
-        return
-
-    
-    def getActualCompletion(self):
-        return self.ActualCompletion
-    
+   
 
     def setCustomerOrder(self,co):
         self.CustomerOrder = co
@@ -881,6 +814,7 @@ class CustomerOrder():
         self.DelayReasons = [] # key: deldate, val: prodpn+resource cap./lead time+date
        
         self.OrderPlanDict= dict() # for target stock levels
+        self.ScheduleFixed = False
        
 
         # PlANNING
@@ -891,6 +825,14 @@ class CustomerOrder():
 
     
 
+    def setSchFix(self,mybool):
+        self.ScheduleFixed = mybool
+        return
+
+    def getSchFix(self):
+        return self.ScheduleFixed
+        
+        
     def getComponentAvailable(self):
         return self.ComponentAvailable
 
@@ -910,6 +852,28 @@ class CustomerOrder():
             else: 
                 # all planned, check if all scheduled:
                 if sum([int(j.getMySch() != None) for j in self.getMyJobs()]) < len(self.getMyJobs()):
+                    return "Partially Scheduled" # some but not all jobs scheduled..
+                else: # all scheduled, check actual starts
+                    if sum([int(j.getMySch().getActualStart() != None) for j in self.getMyJobs()]) > 0: 
+                        if sum([int(j.getMySch().getActualCompletion() != None) for j in self.getMyJobs()]) == len(self.getMyJobs()): 
+                            return "Completed" # all jobs completed..
+                        else:
+                            return "In Production" # some jobs started, not all completed..
+                    else:
+                        return "Scheduled"  # all scheduled, but no job has actually started being processed
+
+    def getPrevStatus(self):
+
+        nojobscompleted  = 0
+
+        if len (self.getMyJobs()) == 0:
+            return "UnPlanned"
+        else:
+            if sum([int(j.getPrevSch() != None) for j in self.getMyJobs()]) ==  0:
+                return "UnScheduled"
+            else: 
+                # all planned, check if all scheduled:
+                if sum([int(j.getPrevSch() != None) for j in self.getMyJobs()]) < len(self.getMyJobs()):
                     return "Partially Scheduled" # some but not all jobs scheduled..
                 else: # all scheduled, check actual starts
                     if sum([int(j.getActualStart() != None) for j in self.getMyJobs()]) > 0: 
@@ -989,7 +953,7 @@ class Shift():
     def __init__(self,myday,number,previous):
         self.Day = myday
         self.Number = number
-        self.StartTime = 0
+        self.StartTime = 0 #with sch time granularity (half-hour)
         self.EndTime = 0
         self.StartHour = None
         self.EndHour = None
@@ -998,9 +962,19 @@ class Shift():
             previous.setNext(self)
         
         self.previous = previous
+        
+    def setNext(self,nxt):
+        self.next = None 
+        return
+    def setPrevious(self,prv):
+        self.previous = prv 
+        return
+        
+        
 
     def String(self,mystr):
-        return mystr+" :("+str(self.getDay())+", no."+str(self.getNumber())+"), hrs: ["+str(self.getStartTime())+"-"+str(self.getEndTime())+"]"
+        return mystr+" :("+str(self.getDay())+", no."+str(self.getNumber())+"), hrs: "+ " {:02d}:{:02d} ".format(self.getStartHour().hour,self.getStartHour().minute)+" - "+" {:02d}:{:02d} ".format(self.getEndHour().hour,self.getEndHour().minute)
+        +", sch: ["+str(self.getStartTime())+"-"+str(self.getEndTime())+"]"
 
     def setEndHour(self,time):
         self.EndHour = time
@@ -1053,7 +1027,7 @@ class ScheduleSolution():
     def __init__(self,myname):
         self.name = myname
         self.resources_sch = dict()  #key: resname, #val: schdule: dict [key: Shift, val: dict [key: job , val: (st,cp)]]
-        self.resourcejobs = dict() # key: resname, val: [job]
+        self.resourcejobs = dict() # key: res, val: [job]
         self.resourceslots = dict() # key: res, val: [(st,cp)]
         self.startweek = None
         self.endweek = None

@@ -182,9 +182,7 @@ class ScheduleTab():
         self.PSchTBsavesch_btn = myitm
         return
         
-    def getPSchTBsavesch_btn(self):
-        return self.PSchTBsavesch_btn
-
+   
     
 
     def setPSchJoblist(self,myitm):
@@ -296,16 +294,14 @@ class ScheduleTab():
                
                 for job in jobs:
                     if job.IsScheduled():
+
+                        starttime = job.getScheduledStart() if shift == job.getScheduledCompShift() else shift.getStartHour()
+                        endtime = job.getScheduledCompletion() if shift == job.getScheduledCompShift() else shift.getEndHour()
+      
+                        schstr =" {:d}:{:02d}".format(starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)   
                         
-                        cpshift = job.getScheduledCompShift()
-                        starttime = shift.getStartHour()+timedelta(hours = max(job.getStartTime(),shift.getStartTime())-shift.getStartTime())
-                        if shift == cpshift:
-                            endtime =  cpshift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
-                        else:
-                            endtime =  shift.getEndHour()
-                        schstr =" {:d}:{:02d}".format(starttime.hour, starttime.minute)+" - {:d}:{:02d}".format(endtime.hour, endtime.minute)    
-                        if shift != cpshift:
-                            jendtime =  cpshift.getStartHour()+timedelta(hours = min(job.getCompletionTime(),cpshift.getEndTime()+1)-cpshift.getStartTime())
+                        if shift != job.getScheduledCompShift():
+                            jendtime =  job.getScheduledCompletion()
                             schstr = schstr+" ( {:d}-{:02d}-{:02d} / {:02d}:{:02d} )".format(jendtime.year,jendtime.month, jendtime.day,jendtime.hour, jendtime.minute)  
                     else: 
                         schstr = "not scheduled"
@@ -451,46 +447,7 @@ class ScheduleTab():
 
         return
 
-    def SaveSchedule(self,b):
-
-        Schedule_df = pd.DataFrame(columns = ["Resource Name","Day","Shift","Job","OperationName","Start in Shift","Completion in Shift"])
-        folder = 'UseCases'; casename = "TBRM_Volledige_Instantie"
-        path = folder+"\\"+casename
-        isExist = os.path.exists(path)
-        
-        if not isExist:
-            os.makedirs(path)
-
-        
-        
-        for name,myres in self.getVisualManager().DataManager.getResources().items():
-            if name != 'Operator 1' and name != 'Operator 2' and name != 'Operator 3' and name != 'Manual workers':
-                for shift, jobs in myres.getSchedule().items():
-                    if jobs == []:
-                        continue
-                    else: 
-                        jobs.sort(key=lambda x: x.getStartTime())
-                        for job in jobs:
-                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":job.getCompletionTime()}
-                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() <= shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":job.getCompletionTime()}
-                            if job.getStartTime() < shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":shift.getStartTime(),"Completion in Shift":shift.getEndTime()}
-                            if job.getStartTime() >= shift.getStartTime() and job.getCompletionTime() > shift.getEndTime():
-                                Schedule_df.loc[len(Schedule_df)] = {"Resource Name":myres.getName(),"Day":shift.getDay(), "Shift":shift.getNumber(),"JobID":job.getID(),"OperationName":job.getOperation().getName(),"Start in Shift":job.getStartTime(),"Completion in Shift":shift.getEndTime()}
-                                
-                    
-        filename = "Schedule_"+self.getScheduleAlgs().value+"_"+str(time.now())+".csv"; path = folder+"\\"+casename+"\\"+filename;fullpath = os.path.join(Path.cwd(), path)
-        Schedule_df.to_csv(fullpath, index=False)  
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule saved.."+"\n"
-                                                                                     
-        return 
-
-
-   
-        
+     
     
     def generatePSschTAB(self):
     
@@ -503,9 +460,7 @@ class ScheduleTab():
         self.setPSchTBmakesch_btn(widgets.Button(description="Make Schedule", icon = 'fa-gear'))
         self.getPSchTBmakesch_btn().on_click(self.MakeSchedule)
 
-        self.setPSchTBsavesch_btn(widgets.Button(description="Export Schedule",icon = 'fa-file-excel-o'))
-        self.getPSchTBsavesch_btn().on_click(self.SaveSchedule)
-
+     
         self.setPSchTBaccsch_btn(widgets.Button(description="Accept Schedule",icon = 'fa-check-square',disabled = True))
         self.getPSchTBaccsch_btn().on_click(self.getVisualManager().DataManager.SaveSchedule)
        
@@ -578,9 +533,6 @@ class ScheduleTab():
         self.setBatchingAlgs(widgets.Dropdown(options=["Order size based","Simple Merge"], description=''))
         self.getBatchingAlgs().layout.width = '150px'
 
-
-
-        
         
         tab_sch = HBox(children = [ VBox(children = [
            

@@ -23,6 +23,7 @@ from Visual import *
 from io import BytesIO,StringIO
 import time
 from difflib import SequenceMatcher
+import math
 
 warnings.filterwarnings("ignore")
 
@@ -357,33 +358,72 @@ class DataManager:
         return
   
    
-    
+###############################################################################################################################################  
     def SaveSchedule(self,b):
 
+        self.SaveCurrentSchedule()
+    
+        return
+#####################################################################################################################################################
+    def SaveCurrentSchedule(self):
+
+        self.SavePlanning()
+        
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+"\n" 
     
         myschedule = self.getSchedulingManager().getMyCurrentSchedule() 
 
-
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  current schedule....."+str(myschedule)+"\n"  
-        
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value += "Schedule ? None >>"+str(myschedule == None)+"\n" 
+    
         self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  saving schedule....."+str(len(myschedule.getResourceSchedules()))+"\n" 
     
 
-        schedule_df = pd.DataFrame(columns= ["ResourceID","Day","ShiftNo","JobID","SchStart", "SchCompletion"])
+        schedule_df = pd.DataFrame(columns= ["ResourceID","Day","ShiftNo","JobID","SchStart", "SchCompletion","ActStart","ActCompletion"])
         for resname,res_schedule in myschedule.getResourceSchedules().items():
-            #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  res "+resname+"\n"
+            
             for shift,jobsdict in res_schedule.items():
-                #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>>  shift "+str(shift.getDay())+"->"+str(shift.getNumber())+"->"+str(len(jobsdict))+"\n" 
+                if len(jobsdict)> 0:
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value +=shift.String("shift: ")+"\n" 
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value +="Job: "+str(len(jobsdict))+"\n" 
+                    
                 for job,jobtimes in jobsdict.items():
-                    #self.getVisualManager().getSchedulingTab().getPSchScheRes().value += str(job.getJob().getID())+"\n"
+
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value += ">>"+job.getJob().getName()+"--"+str(job.getActualStart())+": "+str(shift.getStartHour())+"\n" 
+                    actstart = None; actcomp = None
+
+                    strt_shift = job.getActualStartShift()
+                    if strt_shift!= None:
+                        if job.getActualStart() <= shift.getEndHour():
+                            end_shift = job.getActualCompletionShift()
+                            if job.getActualCompletion() != None:
+                                if end_shift.getEndHour() >= shift.getStartHour(): 
+                                    if end_shift.getStartHour() > shift.getEndHour():
+                                        # fully-used shift
+                                        actstart = 0
+                                        actcomp = math.ceil((shift.getEndHour()-shift.getStartHour()).total_seconds()/1800)
+                                    else: 
+                                        # partially-used shift
+                                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value +="Act comp"+str(job.getActualCompletion())+"-- , shft strt: "+str(shift.getStartHour())+"\n" 
+                                        actstart = math.ceil((job.getActualStart()-shift.getStartHour()).total_seconds()/1800)
+                                        actcomp = math.ceil((job.getActualCompletion()-shift.getStartHour()).total_seconds()/1800)
+                                #else: end_shift.getEndHour() < shift.getStartHour(), completed.. both None
+                                    
+                            else:# not completed, current schedule values
+                                actstart = jobtimes[0]
+                                actcomp = jobtimes[1]
+                                
+                       # else: job.getActualStart() > shift.getEndHour(): started.. both None
+
+                    
                     schedule_df.loc[len(schedule_df)] = {"ResourceID":self.getResources()[resname].getID(),
                                                              "Day":shift.getDay(),
                                                              "ShiftNo":shift.getNumber(),
-                                                         
                                                              "JobID":job.getJob().getID(),
                                                              "SchStart":jobtimes[0],
-                                                             "SchCompletion":jobtimes[1]}
+                                                             "SchCompletion":jobtimes[1],
+                                                             "ActStart":actstart,
+                                                             "ActCompletion":actcomp
+                                                             }
         alldates = []
         for resname,res_schedule in myschedule.getResourceSchedules().items():
             alldates = [x.getDay().date() for x in res_schedule.keys()]
@@ -405,18 +445,12 @@ class DataManager:
 
         self.getVisualManager().getSchedulingTab().getPSchTBaccsch_btn().disabled = True
 
-        return
+        return   
         
  
-
-    def getFTECapacity(res,shift):
-
-        #
-
-        return
-        
-    
-
+########################################################################################################################################
+########################################################################################################################################
+########################################################################################################################################
     def read_dataset(self,b):  
 
 
@@ -689,6 +723,7 @@ class DataManager:
             periodind = schfile.find("Period_")
             self.getVisualManager().getCaseInfo().value += ">>>> Schedule period:"+str(schfile[periodind+7:periodind+17])+"  -  "+str(schfile[periodind+18:periodind+28])+"\n" 
 
+
             periodstart = datetime.strptime(schfile[periodind+7:periodind+17],"%Y-%m-%d")
 
             periodend = datetime.strptime(schfile[periodind+18:periodind+28],"%Y-%m-%d")
@@ -704,6 +739,18 @@ class DataManager:
             self.ScheduleEndWeek = endweek
 
             self.getSchedulingManager().CreateShifts(periodstart,periodend)
+
+            #----------------------------------------------------------------------------------------------
+            schedule = ScheduleSolution("Schedule_"+str((datetime.now()).date()))
+            
+            for resname,res in self.getResources().items():
+                schedule.getResourceSchedules()[resname] = dict() # key: shift, value: dict following,
+                for day,dayshifts in self.getSchedulingManager().getMyShifts().items():
+                    for shift in dayshifts:
+                        if shift.getNumber() in res.getAvailableShifts():
+                            schedule.getResourceSchedules()[resname][shift] = dict() # key: job, vaL: (st,cp)
+            #----------------------------------------------------------------------------------------------
+
             
             schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
             self.getVisualManager().getCaseInfo().value += ">>>> Schedules.."+str(len(schedule_df))+"\n" 
@@ -731,6 +778,7 @@ class DataManager:
                     mydeadline = datetime.now()
                     
                 newjob = Job(r["JobID"],"Job_"+str(r["JobID"]),prod,opr,r["Quantity"],mydeadline)   
+                newjob.setActualStatus(r["Status"])
                 alljobs[newjob.getID()]= newjob
                 
                 ords = [myord  for oname,myord in self.getCustomerOrders().items() if myord.getID() == r["OrderID"]] 
@@ -773,59 +821,136 @@ class DataManager:
                     job.getMySch().SetScheduled()
                 resid = [x for x in job_df["ResourceID"]][0]
                 res = [myres  for resname,myres in self.getResources().items() if myres.getID() == resid][0]
+                
                 job.getMySch().setScheduledResource(res)
 
-                #self.getVisualManager().getCaseInfo().value += ">>>> Job2  .."+str(job.getName())+"\n"     
-                startime = None
-                comptime = None
+                startime = None; comptime = None; strtshft = None; cpshft = None
+                actstartime = None; actcomptime = None; actstrtshft = None; actcpshft = None
+                
                 strtshift = None
+
+                self.getVisualManager().getCaseInfo().value += ">>>> Schedule for job  .."+str(job.getName())+"\n"
                 for i,r in job_df.iterrows():
                     
                     shftday = datetime.strptime(r["Day"],'%Y-%m-%d')
                     shftno = r["ShiftNo"]
 
-                    if startime == None:
-                        startime = r["SchStart"]
-           
-                    else:
-                        if r["SchStart"] < startime:
-                            startime = r["SchStart"]
+                    self.getVisualManager().getCaseInfo().value += "Shift day: "+str(shftday)+"\n"
+                    self.getVisualManager().getCaseInfo().value += "Shift day: "+str(shftday.date())+"\n"
+                    self.getVisualManager().getCaseInfo().value += "Shift no: "+str(shftno)+"\n"
 
-                    if comptime == None:
-                        comptime = r["SchCompletion"]
-                    else:
-                        if r["SchCompletion"] > comptime:
-                            comptime = r["SchCompletion"]
+
+                    curr_shift = None
+                    self.getVisualManager().getCaseInfo().value += "Shift in  "+str(shftday.date() in self.getSchedulingManager().getMyShifts())+"\n"
+                    if shftday.date() in self.getSchedulingManager().getMyShifts():
                         
-                    shifts = [x for x in res.getSchedule().keys() if (x.getDay() == shftday) and (x.getNumber() == shftno)] 
-                    
-                    if len(shifts)  == 0:
-                        self.getVisualManager().getCaseInfo().value += ">>>> Execution in  .."+str(shftday)+"--"+str(shftno)+"\n"         
-                        self.getVisualManager().getCaseInfo().value += ">>>> Shifts found  .."+str(len(shifts))+"\n"
+
+                        curr_shift = self.getSchedulingManager().getMyShifts()[shftday.date()][shftno-1]
+  
+                    if curr_shift  == None:
+                        self.getVisualManager().getCaseInfo().value += "ERROR >>>> Execution in  .."+str(shftday)+"--"+str(shftno)+"\n"         
+                        self.getVisualManager().getCaseInfo().value += "ERROR >>>> Shifts found  .."+str(len(shifts))+"\n"
                     else:
-                        res.getSchedule()[shifts[0]].append(job.getMySch())
+                        
+                        self.getVisualManager().getCaseInfo().value += curr_shift.String(" shift: ")+"\n"
+                         #----------------------------------------------------------------------------------------------
+                        self.getVisualManager().getCaseInfo().value += "job sch   "+str(r["SchStart"])+str(r["SchCompletion"])+"\n"
+                        self.getVisualManager().getCaseInfo().value += "res   "+str(job.getMySch().getScheduledResource().getName())+"\n"
+                        self.getVisualManager().getCaseInfo().value += "check  "+str(job.getMySch().getScheduledResource().getName() in schedule.getResourceSchedules())+"\n"
+                        self.getVisualManager().getCaseInfo().value += "check2  "+str(curr_shift in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()])+"\n"
+                        self.getVisualManager().getCaseInfo().value += "check3  "+str(job.getMySch() in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift])+"\n"
+                        
+                        schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift][job.getMySch()] = (r["SchStart"],r["SchCompletion"])
+                         #----------------------------------------------------------------------------------------------
+
+                        self.getVisualManager().getCaseInfo().value += "inserted...."+"\n"
+                        self.getVisualManager().getCaseInfo().value += ">>>> Actstst  .."+str(r["ActStart"])+"\n"
+                        self.getVisualManager().getCaseInfo().value += ">>>> np.nan?  .."+str(np.isnan(r["ActStart"]))+"\n"
+                        self.getVisualManager().getCaseInfo().value += ">>>> status  .."+str(job.getActualStatus())+"\n"
+                    
+
+                        if not np.isnan(r["ActStart"]):
+                            if actstartime == None:
+                                actstartime = r["ActStart"]
+                                self.getVisualManager().getCaseInfo().value += ">>>> actstartime  .."+str(actstartime)+"\n"
+                                actstrtshft = curr_shift.getStartHour()
+                                self.getVisualManager().getCaseInfo().value += ">>>> actstrtshft .."+str(actstrtshft)+"\n"
+                            else:
+                                if curr_shift.getStartHour() < actstrtshft:
+                                    actstartime = r["ActStart"]
+                                    actstrtshft = curr_shift.getStartHour()
+
+                        if not np.isnan(r["ActCompletion"]):
+                            if actcomptime == None:
+                                actcomptime = r["ActCompletion"]
+                                actcpshft = curr_shift.getStartHour()
+                            else:
+                                if curr_shift.getStartHour() < actcpshft:
+                                    actcomptime = r["ActCompletion"]
+                                    actcpshft = curr_shift.getStartHour()
+                        
+                                   
+                     
+                        if strtshft == None:
+                            startime = r["SchStart"]
+                            strtshft = curr_shift.getStartHour()
+                        else:
+                            if curr_shift.getStartHour() < strtshft:
+                                strtshft = curr_shift.getStartHour()
+                                startime = r["SchStart"]
+
+                        if cpshft == None:
+                            comptime = r["SchCompletion"]
+                            cpshft = curr_shift.getStartHour()
+                        else:
+                            if curr_shift.getStartHour() > cpshft:
+                                cpshft = curr_shift.getStartHour()
+                                comptime = r["SchCompletion"]
+                        # insert into schedule..
+                        if curr_shift in res.getSchedule():
+                            res.getSchedule()[curr_shift].append(job.getMySch())
+                        else: 
+                            self.getVisualManager().getCaseInfo().value += "ERROR >>>> shift not in  resschedule.."+str(res.getName())+"\n" 
+                            self.getVisualManager().getCaseInfo().value += "ERROR .."+curr_shift.String("curr shft: ")+"\n"    
+                        
                         if r["SchStart"] == startime:
-                            job.getMySch().setScheduledShift(shifts[0])
+                            job.getMySch().setScheduledShift(curr_shift)
                         if r["SchCompletion"] == comptime:
-                            job.getMySch().setScheduledCompShift(shifts[0])
+                            job.getMySch().setScheduledCompShift(curr_shift)
+
+                    
+                        if not np.isnan(r["ActStart"]):
+                            if r["ActStart"] == actstartime:
+                                job.getMySch().setActualStartShift(curr_shift)
+
+                        if not np.isnan(r["ActCompletion"]):
+                            if r["ActCompletion"] == actcomptime:
+                                job.getMySch().setActualCompletionShift(curr_shift)
+
+                        
 
                 if (startime != None) and (comptime!= None):
-                    job.getMySch().setStartTime(startime)        
-                    job.getMySch().setCompletionTime(comptime)   
-                    #self.getVisualManager().getCaseInfo().value += ">>>> Job  .."+str(job.getName())+": "+str(job.getMySch().getStartTime())+"-"+str(job.getMySch().getCompletionTime())+"\n"     
+                    job.getMySch().setScheduledStart(strtshft+timedelta(minutes= 30*startime))
+                    job.getMySch().setScheduledCompletion(cpshft+timedelta(minutes= 30*comptime))  
+
+                if job.getActualStatus() in ["Started","Completed"]:
+                    starttime = job.getMySch().getActualStartShift().getStartHour()+timedelta(minutes=30*actstartime)
+                    job.getMySch().setActualStart(starttime)
+                if job.getActualStatus() == "Completed":
+                    comptime = job.getMySch().getActualCompletionShift().getStartHour()+timedelta(minutes=30*actcomptime)
+                    job.getMySch().setActualCompletion(comptime)
+                
                     
-          
 
-            #self.getVisualManager().getCaseInfo().value += ">>>> i2.."+str(i)+"\n" 
                 
-            #self.getVisualManager().getCaseInfo().value += ">>>> SchDaySt.."+str(r["SchDaySt"])+"\n" 
-            
 
-            
-        self.getVisualManager().getCaseInfo().value += ">>>> Shifts and schedules created .."+"\n"     
+            #----------------------------------------------------------------------------------------------
+            self.getSchedulingManager().setMyCurrentSchedule(schedule) 
+            #----------------------------------------------------------------------------------------------
+        self.getVisualManager().getCaseInfo().value += ">>>>  Schedule created .."+"\n"     
+        #self.SaveCurrentSchedule()
                 
-                   
-     
+               
     
         self.getVisualManager().RefreshViews()
 
@@ -841,6 +966,8 @@ class DataManager:
         
         return
 
+###########################################################################################################################################
+###########################################################################################################################################
     def UpdateData(self,b):
         '''
         This function imports prodction orders including: 
@@ -1532,10 +1659,10 @@ class DataManager:
 
         #self.getVisualManager().getCaseInfo().value += ">>> File read, size: ..."+str(len(df))+" \n"
         return
-        
+######################################################################################################################################################       
     def SavePlanning(self):
       
-        jobs_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID"])
+        jobs_df = pd.DataFrame(columns= ["JobID","Quantity","Deadline","OrderID","ProductID", "OperationID","Status"])
         jobpreds_df =  pd.DataFrame(columns= ["JobPredecessorID","JobSuccessorID"])
 
         self.getVisualManager().getPLTBresult2exp().value+="in saving planning..."+"\n"
@@ -1544,10 +1671,19 @@ class DataManager:
 
             self.getVisualManager().getPLTBresult2exp().value+=name+" jobs "+str(len(order.getMyJobs()))+"\n"
             for job in order.getMyJobs():
+                status = "Planned" 
+                if job.getMySch()!= None:
+                    status = "Scheduled"
+                    if job.getMySch().getActualStart()!= None:
+                        status = "Started"
+                        if job.getMySch().getActualCompletion()!= None:
+                            status = "Completed"
+                
+                    
                 self.getVisualManager().getPLTBresult2exp().value+=str(job.getID())+", Quantity "+str(job.getQuantity())+", Deadline"+str(job.getDeadLine())+", OrderID "+str(job.getCustomerOrder())+", ProductID "+str(job.getProduct())+", OperationID "+str(job.getOperation())+"\n"
                 jobs_df.loc[len(jobs_df)] = {"JobID":job.getID(),"Quantity":job.getQuantity(),"Deadline":job.getDeadLine(),
                                                     "OrderID":job.getCustomerOrder().getID(),"ProductID":job.getProduct().getID(),
-                                                    "OperationID":job.getOperation().getID()}
+                                                    "OperationID":job.getOperation().getID(),"Status":status}
                 for pred in job.getPredecessors():
                     jobpreds_df.loc[len(jobpreds_df)] = {"JobPredecessorID":pred.getID(),"JobSuccessorID":job.getID(),}
                     
