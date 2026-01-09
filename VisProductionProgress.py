@@ -1098,10 +1098,10 @@ class ProductionProgressTab():
                 
 
         return
-
+###############################################################################################################################################
     def SetJobStarted(self,event):
 
-        starttime = datetime.now()
+        starttime = datetime.now()+timedelta(hours=2)
         
         self.getCurrentJob().getMySch().setActualStart(starttime)
 
@@ -1131,6 +1131,8 @@ class ProductionProgressTab():
 
         # update from current schedule..
         self.getVisualManager().DataManager.getSchedulingManager().UpdateSchedule(self.getCurrentJob().getMySch())
+        self.getPProgReport().value+=self.getCurrentJob().getMySch().getScheduledShift().String(" Scheduled start shift: ")+"\n"
+        self.getPProgReport().value+=self.getCurrentJob().getMySch().getScheduledCompShift().String(" Scheduled comp shift: ")+"\n"
         self.getVisualManager().DataManager.SaveCurrentSchedule()
      
 

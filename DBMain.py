@@ -23,6 +23,8 @@ from Planning import *
 from Scheduling import *
 from Simulation import *
 
+import os
+online_version = False;editmode = True
 
 ScheduleTab = ScheduleTab()
 SimTab = SimulationTab()
@@ -60,3 +62,14 @@ SchedulingMgr.setPlanningManager(PlanningMgr)
 VisMgr.setSchedulingManager(SchedulingMgr)
 DataMgr.setSchedulingManager(SchedulingMgr)
 
+"""
+DataMgr.setOnlineVersion(online_version);VisMgr.setEditMode(editmode)
+
+if online_version:  
+    user = "muratfirat78";repo = "ProductionPlanning"
+    if os.path.isdir(repo):
+        !rm -rf {repo}
+
+    !git clone https://github.com/{user}/{repo}.git
+    %cd /content/{repo}
+"""

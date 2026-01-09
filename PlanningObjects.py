@@ -960,8 +960,16 @@ class Shift():
         self.next = None        
         if previous != None: 
             previous.setNext(self)
+        self.inscheduling = False
         
         self.previous = previous
+
+    def setInScheduling(self,fix):
+        self.inscheduling = fix
+        return
+    def inScheduling(self):
+        return self.inscheduling 
+
         
     def setNext(self,nxt):
         self.next = None 

@@ -379,6 +379,7 @@ class DataManager:
     
 
         schedule_df = pd.DataFrame(columns= ["ResourceID","Day","ShiftNo","JobID","SchStart", "SchCompletion","ActStart","ActCompletion"])
+        
         for resname,res_schedule in myschedule.getResourceSchedules().items():
             
             for shift,jobsdict in res_schedule.items():
@@ -530,20 +531,20 @@ class DataManager:
                 
                 if file.find("Jobpreds") != -1:
                     filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
-                    self.getVisualManager().getCaseInfo().value += "********jobprfile date .."+str(filedate)+"~"+str(jobprdate)+"~"+str(filedate == jobprdate)+"\n"     
+                    #self.getVisualManager().getCaseInfo().value += "********jobprfile date .."+str(filedate)+"~"+str(jobprdate)+"~"+str(filedate == jobprdate)+"\n"     
 
                     if filedate == jobprdate:
                         jobprfile = file
-                        self.getVisualManager().getCaseInfo().value += "*******jobprfile .."+str(file)+"\n"     
+                        #self.getVisualManager().getCaseInfo().value += "*******jobprfile .."+str(file)+"\n"     
                         
                 if file.find("Jobs") != -1:
                     filedate = datetime.strptime(file[file.find("_")+1:-4],"%Y%m%d-%H%M%S")
 
-                    self.getVisualManager().getCaseInfo().value += "jobfile date .."+str(filedate)+"~"+str(jobdate)+"~"+str(filedate == jobdate)+"\n"     
+                    #self.getVisualManager().getCaseInfo().value += "jobfile date .."+str(filedate)+"~"+str(jobdate)+"~"+str(filedate == jobdate)+"\n"     
 
                     if filedate == jobdate:
                         jobsfile = file
-                        self.getVisualManager().getCaseInfo().value += "jobsfile .."+str(file)+"\n"         
+                        #self.getVisualManager().getCaseInfo().value += "jobsfile .."+str(file)+"\n"         
    
 
                 if file == "MachineAlternatives.csv": 
@@ -556,7 +557,7 @@ class DataManager:
                         newprod = Product(str(r["ProductID"]),r["Name"],r["ProductNumber"],0)
                         self.Products[r["Name"]]= newprod
                         self.getProductsID()[r["ProductID"]] = newprod
-                    self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
+                    #self.getVisualManager().getCaseInfo().value += "Products created: "+str(len(self.getProducts()))+"\n"            
                    
                 if file == "Operations.csv": 
                     opr_df = pd.read_csv(abs_file_path+'/'+file)
@@ -566,7 +567,7 @@ class DataManager:
                         self.Operations[r["Name"]]= newopr
                         self.getOperationsID()[r["OperationID"]]= newopr
                         
-                    self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
+                    #self.getVisualManager().getCaseInfo().value += "Operations created: "+str(len(self.getOperations()))+"\n"            
        
                     
                 if file == "Resources.csv": 
@@ -578,7 +579,7 @@ class DataManager:
                             shifts = [int(s) for s in r["Shift"].replace('_', ' ').split()]
                         
                         newres = Resource(r["ResourceID"],r["ResourceType"],r["Name"],shifts)
-                        self.getVisualManager().getCaseInfo().value += ">>>.. "+str(r["ProcessType"])+"\n"
+                        #self.getVisualManager().getCaseInfo().value += ">>>.. "+str(r["ProcessType"])+"\n"
                         newres.setProcessType(r["ProcessType"])
                         if not np.isnan(r["Automated"]):
                             if str(r["Automated"]) == "True":
@@ -591,7 +592,7 @@ class DataManager:
                         self.getResourcesID()[r["ResourceID"]] = newres
                       
 
-                    self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
+                    #self.getVisualManager().getCaseInfo().value += "Resources created: "+str(len(self.getResources()))+"\n" 
                     
                 if file == "CustomerOrders.csv": 
                     orders_df = pd.read_csv(abs_file_path+'/'+file)
@@ -603,7 +604,7 @@ class DataManager:
                         
                         self.CustomerOrders[r["Name"]] = neworder
                         self.getCustomerOrdersID()[r["OrderID"]] = neworder
-                    self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
+                    #self.getVisualManager().getCaseInfo().value += "Customer Orders created: "+str(len(self.getCustomerOrders()))+"\n"  
     
     
                 if file == "ProductsOperations.csv": 
@@ -615,7 +616,7 @@ class DataManager:
                 if file == "ResourcesOperations.csv": 
                     oprsresources_df = pd.read_csv(abs_file_path+'/'+file)                    
                         
-                    self.getVisualManager().getCaseInfo().value += "ResourcesOperations: "+str(len(oprsresources_df))+"\n"  
+                    #self.getVisualManager().getCaseInfo().value += "ResourcesOperations: "+str(len(oprsresources_df))+"\n"  
 
       
        
@@ -651,7 +652,7 @@ class DataManager:
         for i,r in prodopmatch_df.iterrows():
             prodlst = [myprod  for pname,myprod in self.getProducts().items() if str(myprod.getID()) == str(r["ProductID"])]
 
-            self.getVisualManager().getCaseInfo().value += ">>> op id"+str(r['OperationID'])+"\n" 
+            #self.getVisualManager().getCaseInfo().value += ">>> op id"+str(r['OperationID'])+"\n" 
             
             if r["OperationID"] in self.getOperationsID():
                 myopr = self.getOperationsID()[r["OperationID"]]
@@ -662,13 +663,13 @@ class DataManager:
                 if r['OrderID'] in self.getCustomerOrdersID():
                     myorder = self.getCustomerOrdersID()[r['OrderID']]
 
-                    self.getVisualManager().getCaseInfo().value += ">>>> order id"+str(r['OrderID'])+"\n" 
+                    #self.getVisualManager().getCaseInfo().value += ">>>> order id"+str(r['OrderID'])+"\n" 
            
     
                     if str(r["ProductID"]) in self.getProductsID():
                         myprod = self.getProductsID()[str(r["ProductID"]) ]
 
-                        self.getVisualManager().getCaseInfo().value += ">>>>> product id"+str(r['ProductID'])+"\n" 
+                        #self.getVisualManager().getCaseInfo().value += ">>>>> product id"+str(r['ProductID'])+"\n" 
 
                         
                         if not myorder in myprod.getOperationSequences():
@@ -676,7 +677,7 @@ class DataManager:
 
                         inserted = False
 
-                        self.getVisualManager().getCaseInfo().value += ">>>>> opr index "+str(myopr.getOperationIndex())+"\n" 
+                        #self.getVisualManager().getCaseInfo().value += ">>>>> opr index "+str(myopr.getOperationIndex())+"\n" 
 
                         for opsqid in range(len(myprod.getOperationSequences()[myorder])):
                             if myprod.getOperationSequences()[myorder][opsqid].getSequenceIndices()[r['OrderID']] > r['OperationIndex']:
@@ -686,7 +687,7 @@ class DataManager:
 
                         if not inserted:
                             myprod.getOperationSequences()[myorder].append(myopr)
-                            self.getVisualManager().getCaseInfo().value += ">>>>>> inserted"+"\n" 
+                            #self.getVisualManager().getCaseInfo().value += ">>>>>> inserted"+"\n" 
     
       
 
@@ -697,11 +698,11 @@ class DataManager:
                     opr = oprlst[0]
                     opr.setProduct(prod)
                     prod.getOperations().insert(r["OperationIndex"],opr)
-                else:
-                    self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 
-                    self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+"\n" 
-            else:
-                self.getVisualManager().getCaseInfo().value += "XXXX: Product not found: "+str(r["ProductID"])+"\n" 
+                #else:
+                #    self.getVisualManager().getCaseInfo().value += "XXXX: Operation not found: "+str(r["OperationID"])+"\n" 
+                #    self.getVisualManager().getCaseInfo().value += "Product: "+str(prod.getName())+"\n" 
+            #else:
+            #    self.getVisualManager().getCaseInfo().value += "XXXX: Product not found: "+str(r["ProductID"])+"\n" 
 
         self.getVisualManager().getCaseInfo().value += ">>> Operation-Resources... "+str(len(oprsresources_df))+"\n" 
 
@@ -792,11 +793,15 @@ class DataManager:
             #set the precedences of jobs
             for jobid,job in alljobs.items():
                 job_df = jobprecs_df[jobprecs_df["JobSuccessorID"] == jobid]
+
+                
+                
                 jobpreds.append(len(job_df))
                 for predid in job_df["JobPredecessorID"]:
                     if predid in alljobs:
                         predjob = alljobs[predid]
                         job.getPredecessors().append(predjob)
+                        predjob.getSuccessors().append(job)
                     else: 
                         self.getVisualManager().getCaseInfo().value += ">>>> pred of job "+str(job.getID())+" not in jobs.."+"\n" 
 
@@ -810,7 +815,7 @@ class DataManager:
 
             for jobid,job in alljobs.items():
 
-                #self.getVisualManager().getCaseInfo().value += ">>>> Job  .."+str(job.getName())+"\n"     
+                self.getVisualManager().getCaseInfo().value += ">>>> Job  .."+str(job.getName())+"\n"     
                 
                 job_df = schedule_df[schedule_df["JobID"] == jobid]
                 if len(job_df)== 0:
@@ -830,6 +835,7 @@ class DataManager:
                 strtshift = None
 
                 self.getVisualManager().getCaseInfo().value += ">>>> Schedule for job  .."+str(job.getName())+"\n"
+                
                 for i,r in job_df.iterrows():
                     
                     shftday = datetime.strptime(r["Day"],'%Y-%m-%d')
@@ -841,7 +847,7 @@ class DataManager:
 
 
                     curr_shift = None
-                    self.getVisualManager().getCaseInfo().value += "Shift in  "+str(shftday.date() in self.getSchedulingManager().getMyShifts())+"\n"
+                    #self.getVisualManager().getCaseInfo().value += "Shift in  "+str(shftday.date() in self.getSchedulingManager().getMyShifts())+"\n"
                     if shftday.date() in self.getSchedulingManager().getMyShifts():
                         
 
@@ -854,27 +860,27 @@ class DataManager:
                         
                         self.getVisualManager().getCaseInfo().value += curr_shift.String(" shift: ")+"\n"
                          #----------------------------------------------------------------------------------------------
-                        self.getVisualManager().getCaseInfo().value += "job sch   "+str(r["SchStart"])+str(r["SchCompletion"])+"\n"
-                        self.getVisualManager().getCaseInfo().value += "res   "+str(job.getMySch().getScheduledResource().getName())+"\n"
-                        self.getVisualManager().getCaseInfo().value += "check  "+str(job.getMySch().getScheduledResource().getName() in schedule.getResourceSchedules())+"\n"
-                        self.getVisualManager().getCaseInfo().value += "check2  "+str(curr_shift in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()])+"\n"
-                        self.getVisualManager().getCaseInfo().value += "check3  "+str(job.getMySch() in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift])+"\n"
+                        #self.getVisualManager().getCaseInfo().value += "job sch   "+str(r["SchStart"])+str(r["SchCompletion"])+"\n"
+                        #self.getVisualManager().getCaseInfo().value += "res   "+str(job.getMySch().getScheduledResource().getName())+"\n"
+                        #self.getVisualManager().getCaseInfo().value += "check  "+str(job.getMySch().getScheduledResource().getName() in schedule.getResourceSchedules())+"\n"
+                        #self.getVisualManager().getCaseInfo().value += "check2  "+str(curr_shift in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()])+"\n"
+                        #self.getVisualManager().getCaseInfo().value += "check3  "+str(job.getMySch() in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift])+"\n"
                         
                         schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift][job.getMySch()] = (r["SchStart"],r["SchCompletion"])
                          #----------------------------------------------------------------------------------------------
 
-                        self.getVisualManager().getCaseInfo().value += "inserted...."+"\n"
-                        self.getVisualManager().getCaseInfo().value += ">>>> Actstst  .."+str(r["ActStart"])+"\n"
-                        self.getVisualManager().getCaseInfo().value += ">>>> np.nan?  .."+str(np.isnan(r["ActStart"]))+"\n"
-                        self.getVisualManager().getCaseInfo().value += ">>>> status  .."+str(job.getActualStatus())+"\n"
+                        #self.getVisualManager().getCaseInfo().value += "inserted...."+"\n"
+                        #self.getVisualManager().getCaseInfo().value += ">>>> Actstst  .."+str(r["ActStart"])+"\n"
+                        #self.getVisualManager().getCaseInfo().value += ">>>> np.nan?  .."+str(np.isnan(r["ActStart"]))+"\n"
+                        #self.getVisualManager().getCaseInfo().value += ">>>> status  .."+str(job.getActualStatus())+"\n"
                     
 
                         if not np.isnan(r["ActStart"]):
                             if actstartime == None:
                                 actstartime = r["ActStart"]
-                                self.getVisualManager().getCaseInfo().value += ">>>> actstartime  .."+str(actstartime)+"\n"
+                                #self.getVisualManager().getCaseInfo().value += ">>>> actstartime  .."+str(actstartime)+"\n"
                                 actstrtshft = curr_shift.getStartHour()
-                                self.getVisualManager().getCaseInfo().value += ">>>> actstrtshft .."+str(actstrtshft)+"\n"
+                                #self.getVisualManager().getCaseInfo().value += ">>>> actstrtshft .."+str(actstrtshft)+"\n"
                             else:
                                 if curr_shift.getStartHour() < actstrtshft:
                                     actstartime = r["ActStart"]

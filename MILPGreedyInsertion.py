@@ -157,11 +157,13 @@ class MILPGreedyInsertionAlg:
         
         infinity = solver.infinity(); objective = solver.Objective(); objective.SetMaximization()
 
-
         for date,shifts in ScheduleMgr.getMyShifts().items():
             for shift in shifts:
+                if not shift.inScheduling():
+                    continue
                 if shift.getNumber() == 3: 
                     continue
+                
                 ftecapacity = ScheduleMgr.getDataManager().getFTECapacity(selectedtype,shift) # no.man
                 ftecapacity*=(shift.getEndTime()-shift.getStartTime()+1) # no. man-halfhour
                 shift_fte_cons[shift] = solver.Constraint(0,ftecapacity,str(shift.getDay())+'_'+str(shift.getNumber())+'_cons')
@@ -169,8 +171,9 @@ class MILPGreedyInsertionAlg:
         for mach in machines:
             machines_conflict_cons[mach] = []
 
-        bigM = max([y.getEndTime() for x in ScheduleMgr.getMyShifts().values() for y in x])+8
-             
+        bigM = max([y.getEndTime() for x in ScheduleMgr.getMyShifts().values() for y in x if y.inScheduling()])+8
+
+        Progress.value+="Preparations done.. "+"\n"
     #**********************************************************************************   
         for job in JobsinModel: 
             jobs_cons[job]  = solver.Constraint(0,1,job.getJob().getName()+'_cons')
@@ -180,7 +183,36 @@ class MILPGreedyInsertionAlg:
 
             job_lpc=  0
             if len(job.getJob().getPredecessors()) > 0:
-                job_lpc = max([x.getMySch().getCompletionTime() for x in job.getJob().getPredecessors()])
+                job_lpc = 0
+                for x in job.getJob().getPredecessors():
+
+                    if x.getMySch().getActualStart() != None:
+                        #Progress.value+="predecessor actually started:  "+x.getName()+"\n"
+                        if x.getMySch().getActualCompletion() != None:
+                            #Progress.value+="predecessor actually completed:  "+x.getName()+"\n"
+                            continue
+                            
+                        if not x.getMySch().getScheduledCompShift().inScheduling():
+                            continue
+                        predcomp = x.getMySch().getScheduledCompletion()
+                        cpshift = x.getMySch().getScheduledCompShift()
+                        Progress.value+=cpshift.String("compshift:  ")+"\n"
+                        if cpshift.inScheduling():
+                            Progress.value+="completion:  "+str(predcomp)+"\n"
+                            comptime = cpshift.getStartTime()+math.ceil((predcomp-cpshift.getStartHour()).total_seconds()/1800)
+                            Progress.value+="comptime:  "+str(comptime)+"\n"
+                            job_lpc = max(job_lpc,comptime)
+
+                    else: 
+                        if x.getMySch().getCompletionTime() != None:
+                            job_lpc = max(job_lpc,x.getMySch().getCompletionTime())
+                        
+                   
+                        
+                        
+                
+               
+
 
             for mach in alternatives:
 
@@ -431,41 +463,83 @@ class MILPGreedyInsertionAlg:
 
 #######################################################################################################################################################
 
-    def SolveScheduling(self,AllJobs,ScheduleMgr,Progress,psstart,pssend):
+    def SolveScheduling(self,AllJobs,FixJobs,ScheduleMgr,Progress,psstart,pssend):
 
         #initialize schedule solution object
 
         start_time = time.time()
-        
+
+        Progress.value+="> MILP-based greedy alg: starts... "+"\n"
         sch_sol = ScheduleSolution(self.name)
         earliesttime = 10000000
         latesttime = 0
+        notinscheduleshifts = dict()  # key: resname, val: dict (key: shift, val: dict( key: job, val: (st,cp) ))
         for resname,res in ScheduleMgr.getDataManager().getResources().items():
             sch_sol.getResourceSchedules()[resname] = dict() # key: shift, value: dict following,
             for day,dayshifts in ScheduleMgr.getMyShifts().items():
                 for shift in dayshifts:
+                    if not shift.inScheduling():
+                        continue
                     sch_sol.getResourceSchedules()[resname][shift] = dict() # key: job, vaL: (st,cp)
+                    #if shift in ScheduleMgr.getMyCurrentSchedule().getResourceSchedules()[resname]:
+                    #    for job,jobtimes in ScheduleMgr.getMyCurrentSchedule().getResourceSchedules()[resname][shift]:
+                    #        if job.getActualStart()!= None:
+                    #            sch_sol.getResourceSchedules()[resname][shift][job] = jobtimes
+                    
                     earliesttime = min(shift.getStartTime(),earliesttime)
                     latesttime = max(shift.getEndTime(),latesttime)
-            
+
+        
+            #Progress.value+=" res slots "+str(res.getName())+"-"+str((earliesttime,latesttime))+"\n"
+
             sch_sol.getResourceSlots()[res] = [(earliesttime,latesttime)]
-            
+        Progress.value+="> MILP-based greedy alg: New schedule created... "+"\n"
+     
         self.setEST(earliesttime)
         self.setLST(latesttime)
 
         sch_sol.setStartWeek(psstart.isocalendar()[1])
         sch_sol.setEndWeek(pssend.isocalendar()[1])
 
+        
+        for job in FixJobs:
+            Progress.value+="> MILP-based greedy alg: "+", fix job: "+job.getJob().getName()+"\n"
+            for shift,jobtimes in ScheduleMgr.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()].items():
+                if shift.inScheduling():
+                    #Progress.value+="> MILP-based greedy alg: "+shift.String("shft in sch: ")+"\n"
+                    for mmjob,mmjobtimes in jobtimes.items():
+                        Progress.value+="> MILP-based greedy alg: "+", job: "+mmjob.getJob().getName()+"\n"
+                        if mmjob == job:
+                            Progress.value+="> MILP-based greedy alg: "+", inserted times: "+str(mmjobtimes)+"\n"
+                            sch_sol.getResourceSchedules()[job.getScheduledResource().getName()][shift][job] = mmjobtimes
+                            
+                            if job.getStartTime() == None:
+                                job.setStartTime(shift.getStartTime()+mmjobtimes[0]) 
+                                Progress.value+="> MILP-based greedy alg: "+", strt time: "+str(shift.getStartTime()+mmjobtimes[0])+"\n"
+                            else:
+                                if job.getStartTime() > shift.getStartTime()+mmjobtimes[0]:
+                                    job.setStartTime(shift.getStartTime()+mmjobtimes[0]) 
+                                    Progress.value+="> MILP-based greedy alg: "+", strt time: "+str(shift.getStartTime()+mmjobtimes[0])+"\n"
+                            
+                            if job.getCompletionTime() == None:
+                                job.setCompletionTime(shift.getStartTime()+mmjobtimes[1]) 
+                                Progress.value+="> MILP-based greedy alg: "+", comp time: "+str(shift.getStartTime()+mmjobtimes[1])+"\n"
+                            else:
+                                if job.getCompletionTime() < shift.getStartTime()+mmjobtimes[1]:
+                                    job.setCompletionTime(shift.getStartTime()+mmjobtimes[1]) 
+                                    Progress.value+="> MILP-based greedy alg: "+", comp time: "+str(shift.getStartTime()+mmjobtimes[1])+"\n"
+                                
+
+        Progress.value+="> MILP-based greedy alg: Fixed jobs handled... "+"\n"
+        
         Progress.value+=" schedule weeks: start "+str(sch_sol.getStartWeek())+"-"+str(sch_sol.getEndWeek())+"\n"
 
         SchedulableJobs= [] 
 
         Progress.value+=" MILP-based greedy insertion starts.., no. jobs "+str(len(AllJobs))+"\n"
 
-        #for job in AllJobs: 
-            #if job.getJob().getPrevSch().getActualStart()!= None:
-                #SchedulableJobs.append(job)
-      
+         
+
        
         for job in AllJobs: 
             if job.IsSchedulable():
@@ -479,12 +553,17 @@ class MILPGreedyInsertionAlg:
 
             scheduledjobs = self.SolveMILP(SchedulableJobs,ScheduleMgr,modelno,Progress,sch_sol)
 
+            #Progress.value+=" Scheduled jobs "+str(len(scheduledjobs))+"\n"
+
             if len(scheduledjobs) == 0:
                 break
 
             for j in scheduledjobs:
-                SchedulableJobs.remove(j)
+                if j in SchedulableJobs:
+                    SchedulableJobs.remove(j)
+                #Progress.value+=" checking successors of  "+str(j.getJob().getName())+" > "+str(len(j.getJob().getSuccessors()))+"\n"
                 for successor in j.getJob().getSuccessors():
+                    #Progress.value+="  successor  "+str(successor.getName())+" schedulable "+str(successor.getMySch().IsSchedulable()) +"\n"
                     if successor.getMySch().IsSchedulable():
                         SchedulableJobs.append(successor.getMySch())
                     else:
@@ -506,7 +585,17 @@ class MILPGreedyInsertionAlg:
         Progress.value+="____________________________________________"+"\n" 
 
         self.setSolutionTime(time.time()-start_time)
-        Progress.value+="Solution time: "+str(round(self.getSolutionTime(),2))+" secs. \n"     
+        Progress.value+="Solution time: "+str(round(self.getSolutionTime(),2))+" secs. \n"  
+
+
+        for resname,res in ScheduleMgr.getDataManager().getResources().items():
+            Progress.value+="res: "+resname+"\n" 
+            for shift,jobtimes in ScheduleMgr.getMyCurrentSchedule().getResourceSchedules()[resname].items():
+                if not shift.inScheduling():
+                    Progress.value+=shift.String(" added shft: ")+", jobs: "+str(len(jobtimes))+"\n" 
+                    sch_sol.getResourceSchedules()[resname][shift] = jobtimes
+        Progress.value+="> MILP-based greedy alg: done... "+"\n"
+        
         return sch_sol
         
         
