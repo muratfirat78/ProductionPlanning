@@ -461,6 +461,13 @@ class SimulationManager(object):
         self.DataManager = myvm
         return
 
+    def getSchedulingManager(self):
+        return self.SchedulingManager
+
+    def setSchedulingManager(self,mysch):
+        self.SchedulingManager = mysch
+        return
+
     def getSimStart(self):
         return self.SimStart
     def setSimStart(self,myvm):

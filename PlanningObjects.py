@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+get# -*- coding: utf-8 -*-
 
 ##### import ipywidgets as widgets
 from IPython.display import clear_output
@@ -421,7 +421,11 @@ class SchJob():
         self.ActualStartShift = None
         self.ActualCompletionShift = None
  
-
+        # Stores results from running the schedule in the simulation
+        self.SimStart = None
+        self.SimCompletion = None
+        self.SimStartShift = None
+        self.SimCompletionShift = None
 
         # shared (overall-scheduling properties)
         self.ScheduledResource = None

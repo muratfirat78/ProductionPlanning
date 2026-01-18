@@ -61,6 +61,7 @@ SchedulingMgr.setVisualManager(VisMgr)
 SchedulingMgr.setPlanningManager(PlanningMgr)
 VisMgr.setSchedulingManager(SchedulingMgr)
 DataMgr.setSchedulingManager(SchedulingMgr)
+SimMgr.setSchedulingManager(SchedulingMgr)
 
 """
 DataMgr.setOnlineVersion(online_version);VisMgr.setEditMode(editmode)

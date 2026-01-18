@@ -191,6 +191,8 @@ class Simulator(object):
 
         datamgr = self.getSimulationManager().getDataManager()
 
+        schedmgr = self.getSimulationManager().getSchedulingManager()
+
         Progress.value+="Simulation starts.."+"\n"
 
         Progress.value+="Simulation period "+str(self.getSimulationManager().getSimStart())+"-"+str(self.getSimulationManager().getSimEnd())+"\n"
@@ -206,7 +208,11 @@ class Simulator(object):
         
         self.getSimulationManager().CreateShifts(Progress)
 
-        Progress.value+="Shifts initialized in days: "+str(len(self.getSimulationManager().getMyShifts()))+"\n"  
+
+        ###-------------------------Here we initialize the shifts based on the scheduling information------------------------------------###
+        Progress.value+="Shifts initialized in days: "+str(len(self.schedmgr.getMyShifts()))+"\n"  
+
+        ###-------------------------end initialize the shifts based on the scheduling information------------------------------------###
 
         Progress.value+="Customer orders.."+str(len(datamgr.getCustomerOrders()))+"\n"
 
