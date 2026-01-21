@@ -99,9 +99,18 @@ class ProductionProgressTab():
         self.jobinfo = None
 
         self.ResDropDown = None
+        self.reslabel = None
         
       
         return
+
+    def setReslabel(self,myit):
+        self.reslabel = myit
+        return
+        
+    def getReslabel(self):
+        return self.reslabel
+
 
     def setResDropDown(self,myit):
         self.ResDropDown = myit
@@ -615,10 +624,20 @@ class ProductionProgressTab():
                 self.getJobInfo5().value ="Status: "+myjob.getStatus()
 
                 if myjob.getStatus().find("Pending") > -1: 
+                    if  self.getResDropDown().value!= None:
+                        self.getResDropDown().value = None
+
+                    self.getReslabel().layout.display = 'block'
+                    self.getReslabel().layout.visibility = 'visible'
+
+                    self.getJobStartBtn().disabled = True
+                    self.getResDropDown().options =  [r.getName() for r in self.getVisualManager().getSchedulingManager().getAlternativeResources(myjob.getMySch())]
                     
-                    self.getResDropDown().options = [r.getName() for r in self.getVisualManager().getSchedulingManager().getAlternativeResources(myjob.getMySch())]
-                    if len (self.getResDropDown().options) > 0:
-                        self.getResDropDown().value = self.getResDropDown().options[0]
+                    try: 
+                        self.getResDropDown().value = 'Select'
+                    except Exception as e: 
+                        self.getPProgReport().value+="Error: "+str(e)+", val: "+str(self.getResDropDown())+"\n"
+                        
                     self.getResDropDown().layout.display = 'block'
                     self.getResDropDown().layout.visibility = 'visible'
 
@@ -848,6 +867,8 @@ class ProductionProgressTab():
             else:
                 return
 
+        self.getReslabel().layout.visibility = 'hidden'
+        self.getReslabel().layout.display = 'none'
         self.weekradio.layout.visibility = 'hidden'
         self.weekradio.layout.display = 'none'
         self.resshifts.layout.visibility = 'hidden'
@@ -1031,6 +1052,14 @@ class ProductionProgressTab():
            
 
         return
+##########################################################################################################################################
+    def StartEnable(self,event):
+
+        if self.getResDropDown().value != None:
+            self.getJobStartBtn().disabled = False
+            
+
+        return
 
 ##########################################################################################################################################      
     def ShowJobInfo(self,event):
@@ -1182,6 +1211,8 @@ class ProductionProgressTab():
 
         self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" has started.."+"\n"
 
+        self.getPProgReport().value+=">>>>>>>> val: "+str(self.getResDropDown().value)+"\n"
+
         self.getVisualManager().DataManager.getSchedulingManager().ExtendShifts(self.getCurrentJob().getMySch().getActualStart().date())
 
         
@@ -1285,6 +1316,7 @@ class ProductionProgressTab():
         self.setProgressSlider(slider)
 
         self.setResDropDown(widgets.Dropdown(options=[]))
+        self.getResDropDown().observe(self.StartEnable)
 
  
       
@@ -1359,7 +1391,7 @@ class ProductionProgressTab():
         self.weekradio.observe(self.ShowShifts)
 
 
-        
+        self.setReslabel(widgets.Label(value='Resource: '))
         
 
        
@@ -1372,7 +1404,7 @@ class ProductionProgressTab():
                                           
                                           VBox( children = [self.getJobInfo(),self.getJobInfo2(),self.getProgressSlider(),
                                                             self.getJobInfo3(),self.getJobInfo4(),self.getJobInfo5(),
-                                                            HBox(  children =[widgets.Label(value='Resource: '),self.getResDropDown()]),
+                                                            HBox(  children =[ self.getReslabel(),self.getResDropDown()],layout = widgets.Layout(height='50px')),
                                                             self.getJobStartBtn(),self.getJobCompleteBtn() 
                                                            ])
                                         
@@ -1384,6 +1416,9 @@ class ProductionProgressTab():
 
 
         
+        self.getReslabel().layout.visibility = 'hidden'
+        self.getReslabel().layout.display = 'none'
+
 
         self.getResDropDown().layout.visibility = 'hidden'
         self.getResDropDown().layout.display = 'none'
