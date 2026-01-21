@@ -942,6 +942,7 @@ class DataManager:
                 if job.getActualStatus() in ["Started","Completed"]:
                     starttime = job.getMySch().getActualStartShift().getStartHour()+timedelta(minutes=30*actstartime)
                     job.getMySch().setActualStart(starttime)
+                    
                 if job.getActualStatus() == "Completed":
                     comptime = job.getMySch().getActualCompletionShift().getStartHour()+timedelta(minutes=30*actcomptime)
                     job.getMySch().setActualCompletion(comptime)
