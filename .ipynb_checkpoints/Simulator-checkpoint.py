@@ -191,9 +191,13 @@ class Simulator(object):
 
         datamgr = self.getSimulationManager().getDataManager()
 
+        schedmgr = self.getSimulationManager().getSchedulingManager()
+
         Progress.value+="Simulation starts.."+"\n"
 
-        Progress.value+="Simulation period "+str(self.getSimulationManager().getSimStart())+"-"+str(self.getSimulationManager().getSimEnd())+"\n"
+        Progress.value+="Simulation period is based on the selected scheduling period..."
+
+        Progress.value+="Simulation period "+str(schedmgr.getSHStart().date())+"-"+str((schedmgr.getSHStart() + timedelta(weeks=schedmgr.getSHEnd())).date())+"\n"
 
         env = simpy.Environment()
 
@@ -203,10 +207,16 @@ class Simulator(object):
 
         Progress.value+="Central buffer created with cap.."+str(CentralBuffer.getCapacity())+"\n"
    
-        
-        self.getSimulationManager().CreateShifts(Progress)
 
-        Progress.value+="Shifts initialized in days: "+str(len(self.getSimulationManager().getMyShifts()))+"\n"  
+
+        ###-------------------------Here we initialize the shifts and current schedule based on the scheduling information----------------------------------###
+        Progress.value+="Shifts initialized in days: "+str(len(schedmgr.getMyShifts()))+"\n"
+
+        SchedStart = schedmgr.getSHStart().date()
+
+        CurrentSchedule = schedmgr.getMyCurrentSchedule().getResourceSchedules()
+
+        ###-------------------------end initialize the shifts based on the scheduling information------------------------------------###
 
         Progress.value+="Customer orders.."+str(len(datamgr.getCustomerOrders()))+"\n"
 
@@ -254,32 +264,50 @@ class Simulator(object):
         eventStart = [start,scale]
         ######
        
-        # Product creation for jobs that are first to do. 
-        for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
-            if len(order.getMyJobs()) == 0:
+        ###### Product creation for jobs that are first to do. This implementation is not based on the schedule information ######
+        # for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
+        #     if len(order.getMyJobs()) == 0:
+        #         continue
+        #     else:
+        #         Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
+        #         for job in order.getMyJobs():                                        
+        #             Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
+        #             if len(job.getPredecessors()) == 0: #This means it is a schedulable first job
+        #                 Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
+        #                 Batch.setcurrentjob(job)                        
+        #                 for prd in range(int(job.getQuantity())):
+        #                     if len(Batch.getProducts()) < Batch.getCapacity():
+        #                         simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
+        #                         simprod.setLocation(CentralBuffer)                                                                                              
+        #                         CentralBuffer.getProducts().append(simprod)
+        #                         Batch.getProducts().append(simprod)
+        #                     else:
+        #                         FloorShopManager.add_batch(env,Batch,Progress,eventStart)
+        #                         Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
+        #                         Batch.setcurrentjob(job)
+        #                         simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
+        #                         simprod.setLocation(CentralBuffer)                                                                                              
+        #                         CentralBuffer.getProducts().append(simprod)
+        #                 Batch.setTimeRemaining(Batch.getProcessTime()*len(Batch.getProducts()))
+        #                 FloorShopManager.add_batch(env,Batch,Progress,eventStart)
+
+        #################### Initializing events based on scheduling information #####################
+
+        StartShift = schedmgr.getMyShifts()[SchedStart][0]
+        InitialJobs
+        for resname,res  in datamgr.getResources().items():
+            if len(CurrentSchedule[resname][StartShift]) == 0:
                 continue
             else:
-                Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
-                for job in order.getMyJobs():                                        
-                    Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
-                    if len(job.getPredecessors()) == 0: #This means it is a schedulable first job
-                        Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
-                        Batch.setcurrentjob(job)                        
-                        for prd in range(int(job.getQuantity())):
-                            if len(Batch.getProducts()) < Batch.getCapacity():
-                                simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                                simprod.setLocation(CentralBuffer)                                                                                              
-                                CentralBuffer.getProducts().append(simprod)
-                                Batch.getProducts().append(simprod)
-                            else:
-                                FloorShopManager.add_batch(env,Batch,Progress,eventStart)
-                                Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
-                                Batch.setcurrentjob(job)
-                                simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                                simprod.setLocation(CentralBuffer)                                                                                              
-                                CentralBuffer.getProducts().append(simprod)
-                        Batch.setTimeRemaining(Batch.getProcessTime()*len(Batch.getProducts()))
-                        FloorShopManager.add_batch(env,Batch,Progress,eventStart)
+                for job,value in CurrentSchedule[resname][StartShift].items():
+                    jobstarttime = job.getScheduledStart()
+                    jobstartshift = job.getStartShift()
+                    jobquantity = job.getJob().getQuantity()
+                    jobprocesstime = job.getJob().getOperation().getProcessTime("min") ## Later we can add sampling from a distribution
+                    if jobstartshift != StartShift:
+                        jobquantity = jobquantity - Quantity_Processed(job,SchedStart,res)
+                    
+        
         ProdSystem.setBuffer(CentralBuffer)
         Progress.value+="Event Queue: ."+str(len(FloorShopManager.getQueue()))+"\n"
 
@@ -298,6 +326,21 @@ class Simulator(object):
         
         completiontime = 1440*planninghorizon   # Sim time in minutes
 
+        def Quantity_Processsed(self,job,endtime,machine):
+
+            processtime = timedelta(minutes=job..getJob().getOperation().getProcessTime("min"))
+            current = job.getScheduledStart()
+            quantity = 0
+
+            while current + timedelta(minutes=processtime) < endtime:
+
+                if machine.Automated == False:
+                    if current.weekday() >=5:
+                        days_until_monday = 7 - current.weekday()
+                        next_day = current + timedelta(days=days_until_monday)
+                    else:
+                        
+        
         def shift_scheduler(env, machine):
             """Weekly calendar: 3 shifts per day, jobs only allowed in first 2."""
             day_length = 24
