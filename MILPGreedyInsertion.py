@@ -74,6 +74,10 @@ class MILPGreedyInsertionAlg:
         return curr_shift,curr_time
 ########################################################################################################################
     def checkMatch(self,ScheduleMgr,Progress,job,job_lpc,mach,sch_sol):
+        """
+        job_lpc: time in half hours from the start of scheduling horizon. 
+        
+        """
 
         #Progress.value+=" check match starts...for "+str(job.getJob().getName())+" with "+str(mach.getName())+"\n"
     
@@ -178,7 +182,7 @@ class MILPGreedyInsertionAlg:
         for job in JobsinModel: 
             jobs_cons[job]  = solver.Constraint(0,1,job.getJob().getName()+'_cons')
 
-            alternatives = ScheduleMgr.getAlternativeResources(job)
+            alternatives = ScheduleMgr.getAlternativeResources(job.getJob())
             alternatives = [res for res in alternatives if res in machines]
 
             job_lpc=  0
@@ -268,7 +272,7 @@ class MILPGreedyInsertionAlg:
                     mytuple = tuples[0]
                     succ_lpc = max(startcomps[(mytuple,myvar)][1],succ_lpc)
             
-                    alternatives = ScheduleMgr.getAlternativeResources(successor.getMySch())
+                    alternatives = ScheduleMgr.getAlternativeResources(successor)
 
                     for mach in alternatives:
                         
@@ -492,6 +496,7 @@ class MILPGreedyInsertionAlg:
         
             #Progress.value+=" res slots "+str(res.getName())+"-"+str((earliesttime,latesttime))+"\n"
 
+            # initializing scheduling slots for checking feasiblity in MILP matches.
             sch_sol.getResourceSlots()[res] = [(earliesttime,latesttime)]
         Progress.value+="> MILP-based greedy alg: New schedule created... "+"\n"
      

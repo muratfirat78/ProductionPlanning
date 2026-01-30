@@ -506,13 +506,15 @@ class SchJob():
         self.StartTime = myst
         return
     def resetSchedule(self):
-        self.ScheduledStart = None
-        self.ScheduledCompletion = None
+        self.ScheduledStart = None # this is datetime, universal time of the schedule.
+        self.ScheduledCompletion = None # this is datetime, universal time of the schedule.
         self.setScheduledShift(None)
-        self.setStartTime(None) 
-        self.setCompletionTime(None)
+        self.setStartTime(None)  # this is relative time, in half hours, in scheduling horizon
+        self.setCompletionTime(None) # this is relative time, in half hours, in scheduling horizon
         self.setScheduledCompShift(None)
+        self.setScheduledResource(None)      
         return
+
         
     def updateScheduledStart(self,shift,myst):
         if self.getScheduledStart() == None: 
@@ -668,6 +670,11 @@ class Job():
 
     def getActualStatus(self):
         return self.ActualStatus
+
+    def releaseschedule(self):
+        self.MySch.resetSchedule()
+        self.MySch = None
+        return
         
 
     def setPlan(self,pln):
@@ -679,7 +686,28 @@ class Job():
     def getMySch(self):
         return self.MySch
 
+    def getLPC(self):
+        lpc = None
+
+        for pred in self.getPredecessors():
+            if pred.getMySch() == None:
+                return None
+
+            if pred.getMySch().getActualCompletion() == None:
+                return None
+    
+            if lpc == None: 
+                lpc = pred.getMySch().getActualCompletion()
+            else: 
+                if lpc < pred.getMySch().getActualCompletion():
+                    lpc = pred.getMySch().getActualCompletion()
+
+        return lpc
+                
+
     def getStatus(self):
+
+        
    
         if len (self.getPredecessors())> 0:
             allpredsscheduled = len([x for x in self.getPredecessors() if x.getMySch() != None]) == len(self.getPredecessors())
@@ -691,13 +719,16 @@ class Job():
                     allpredscompleted = len([x for x in self.getPredecessors() if x.getMySch().getActualCompletion() != None]) == len(self.getPredecessors())
                     
                     if allpredscompleted:
-                        if self.getMySch().getActualStart() == None:
-                            return "Pending (all predecessors completed)"
-                        else:
-                            if self.getMySch().getActualCompletion() == None:
-                                return "In production"
+                        if self.getMySch() != None: 
+                            if self.getMySch().getActualStart() == None:
+                                return "Pending (all predecessors completed)"
                             else:
-                                return "Completed"
+                                if self.getMySch().getActualCompletion() == None:
+                                    return "In production"
+                                else:
+                                    return "Completed"
+                        else:
+                            return "Pending (all predecessors completed)"
                             
                     else:
                         return "Predecessors to be completed (all predecessors started)"
@@ -707,14 +738,17 @@ class Job():
                 return "Predecessors to be scheduled"
 
         
-        else:      
-            if self.getMySch().getActualStart() == None:
-                return "Pending (No predecessor)"
-            else:
-                if self.getMySch().getActualCompletion() == None:
-                    return "In production"
+        else:  
+            if self.getMySch() != None: 
+                if self.getMySch().getActualStart() == None:
+                    return "Pending (No predecessor)"
                 else:
-                    return "Completed"
+                    if self.getMySch().getActualCompletion() == None:
+                        return "In production"
+                    else:
+                        return "Completed"
+            else:
+                return "Planned (No predecessor)"
 
        
    

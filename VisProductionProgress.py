@@ -53,6 +53,7 @@ class ProductionProgressTab():
         self.OrdTreeRootNode = None
         self.PPrgGanttOutput = None
         self.ScheduleVisual = None
+        self.CurrentShift = None
 
         self.CustOrdersCheck = None
         self.ResourcesCheck = None
@@ -78,6 +79,9 @@ class ProductionProgressTab():
         self.JobInfo3 = None  
         self.JobInfo4 = None
         self.JobInfo5 = None
+        self.ShiftInfo = None
+        self.ShiftTime = None
+        self.ShiftTimeLbl = None
 
         self.OrderInfo = None
         self.OrderInfo2 = None
@@ -100,9 +104,29 @@ class ProductionProgressTab():
 
         self.ResDropDown = None
         self.reslabel = None
+        self.orderbox = None
+        self.jobinfobox = None
+        self.JobGernerateButton = None
         
       
         return
+
+    def setJobGernerateButton(self,myit):
+        self.JobGernerateButton= myit
+        return
+        
+    def getJobGernerateButton(self):
+        return self.JobGernerateButton
+    
+
+
+    def setCurrentShift(self,myit):
+        self.CurrentShift = myit
+        return
+        
+    def getCurrentShift(self):
+        return self.CurrentShift
+    
 
     def setReslabel(self,myit):
         self.reslabel = myit
@@ -110,6 +134,31 @@ class ProductionProgressTab():
         
     def getReslabel(self):
         return self.reslabel
+
+
+    
+    def setShiftTimeLbl(self,myit):
+        self.ShiftTimeLbl = myit
+        return
+        
+    def getShiftTimeLbl(self):
+        return self.ShiftTimeLbl
+
+
+    def setShiftInfo(self,myit):
+        self.ShiftInfo = myit
+        return
+        
+    def getShiftInfo(self):
+        return self.ShiftInfo
+
+    def setShiftTime(self,myit):
+        self.ShiftTime = myit
+        return
+        
+    def getShiftTime(self):
+        return self.ShiftTime
+
 
 
     def setResDropDown(self,myit):
@@ -466,7 +515,15 @@ class ProductionProgressTab():
     def timestr_to_num(self,timestr):
         return mdates.date2num(datetime.strptime(timestr, '%Y-%m-%d %H:%M:%S'))
 
+    def ShowShiftTime(self,event):
 
+
+        #change_new = event["new"]
+ 
+       
+        return
+
+###############################################################################################################################################
     def ShowInformation(self,event):
 
         if not 'index' in event['new']:
@@ -474,16 +531,30 @@ class ProductionProgressTab():
             
         if event['new']['index'] < 0:
             return
-            
-    
+
         selected = self.getCustomerOrderList().options[event['new']['index']]
 
-     
 
+        self.ShowItemInformation(selected)
+            
+
+        return
+
+######################################################################################################################################
+    def ShowItemInformation(self,selected):
 
         self.getPProgReport().value+="Selected from list: "+str(selected)+" infotype: "+str(self.infotype)+"\n"
 
         if self.getProgressMode() == "Customer Orders":
+
+            self.jobinfobox.layout.visibility = 'hidden'
+            self.jobinfobox.layout.display = 'none'
+            
+
+            self.orderbox.layout.display = 'block'
+            self.orderbox.layout.visibility = 'visible'
+
+            
  
             # first find and set selected order
             ordername = selected[:selected.find(": Status | ")]
@@ -504,16 +575,12 @@ class ProductionProgressTab():
                 self.getOrderInfo3().layout.visibility = 'visible'
                 self.getOrderInfo4().layout.display = 'block'
                 self.getOrderInfo4().layout.visibility = 'visible'
-                #self.getOrderInfo5().layout.display = 'block'
-                #self.getOrderInfo5().layout.visibility = 'visible'
-
+            
+                
                 self.getJobList().layout.display = 'block'
                 self.getJobList().layout.visibility  = 'visible'
-                self.getProgressSlider().layout.visibility = 'hidden'
-                self.getProgressSlider().layout.display = 'none'
-
-                
-                
+          
+          
                 self.getJobList().options = [job.getName() for job in myorder.getMyJobs()]
                 self.getJobList().selectedindex = -1
                 
@@ -531,6 +598,13 @@ class ProductionProgressTab():
 
             
         if self.getProgressMode() == "Resources":
+
+            
+            self.orderbox.layout.visibility = 'hidden'
+            self.orderbox.layout.display = 'none'
+ 
+            self.jobinfobox.layout.visibility = 'hidden'
+            self.jobinfobox.layout.display = 'none'
 
             self.getPProgReport().value+="start week: "+str(self.getVisualManager().DataManager.getScheduleStartWeek())+"\n"
 
@@ -562,51 +636,18 @@ class ProductionProgressTab():
 
                 self.resshifts.layout.display = 'block'
                 self.resshifts.layout.visibility = 'visible'
-                self.getProgressSlider().layout.visibility = 'hidden'
-                self.getProgressSlider().layout.display = 'none'
-
-
-                
-             
+            
+       
 
         if self.getProgressMode() == "Active Jobs":
 
-            if self.getJobInfo().layout.display == 'none':
-                
-                self.getOrderInfo().layout.visibility  = 'hidden'
-                self.getOrderInfo().layout.display = 'none'
-                self.getOrderInfo2().layout.visibility  = 'hidden'
-                self.getOrderInfo2().layout.display = 'none'
-                self.getOrderInfo3().layout.visibility  = 'hidden'
-                self.getOrderInfo3().layout.display = 'none'
-                self.getOrderInfo4().layout.visibility  = 'hidden'
-                self.getOrderInfo4().layout.display = 'none'  
-                self.getResDropDown().layout.visibility = 'hidden'
-                self.getResDropDown().layout.display = 'none'
-                
-                self.getJobInfo().layout.display = 'block'
-                self.getJobInfo().layout.visibility = 'visible'
-                self.getJobInfo2().layout.display = 'block'
-                self.getJobInfo2().layout.visibility = 'visible'
-                self.getJobInfo3().layout.display = 'block'
-                self.getJobInfo3().layout.visibility = 'visible'
-                self.getJobInfo4().layout.display = 'block'
-                self.getJobInfo4().layout.visibility = 'visible'
-                self.getJobInfo5().layout.display = 'block'
-                self.getJobInfo5().layout.visibility = 'visible'
+            
+            self.orderbox.layout.visibility = 'hidden'
+            self.orderbox.layout.display = 'none'
 
+            
                 
-                self.getProgressSlider().layout.display = 'block'
-                self.getProgressSlider().layout.visibility = 'visible'
-
-                
-
-
-            self.getJobInfo().value =""
-            self.getJobInfo2().value =""
-            self.getJobInfo3().value =""
-            self.getJobInfo4().value =""
-            self.getJobInfo5().value =""
+            # self.getShiftInfo().value = 
             
             myjob = None
             for ordname,ordr in self.getVisualManager().DataManager.getCustomerOrders().items():
@@ -617,76 +658,177 @@ class ProductionProgressTab():
                 if myjob != None:
                     break
             myjob = self.getProgressItem()
-            if myjob != None:
-                self.getJobInfo().value ="PN: "+str(myjob.getOperation().getProduct().getPN())
-                self.getJobInfo2().value ="Progress: "#+str(myjob.getOperation().getName())
-                self.getJobInfo3().value ="Quantity: "+str(myjob.getQuantity())
-                self.getJobInfo5().value ="Status: "+myjob.getStatus()
-
-                if myjob.getStatus().find("Pending") > -1: 
-                    if  self.getResDropDown().value!= None:
-                        self.getResDropDown().value = None
-
-                    self.getReslabel().layout.display = 'block'
-                    self.getReslabel().layout.visibility = 'visible'
-
-                    self.getJobStartBtn().disabled = True
-                    self.getResDropDown().options =  [r.getName() for r in self.getVisualManager().getSchedulingManager().getAlternativeResources(myjob.getMySch())]
-                    
-                    try: 
-                        self.getResDropDown().value = 'Select'
-                    except Exception as e: 
-                        self.getPProgReport().value+="Error: "+str(e)+", val: "+str(self.getResDropDown())+"\n"
-                        
-                    self.getResDropDown().layout.display = 'block'
-                    self.getResDropDown().layout.visibility = 'visible'
-
-                if myjob.getStatus() == "In production": 
-                    self.getJobInfo5().value +=", Started: "+str(myjob.getMySch().getActualStart())
-                  
-                else: 
-                    if myjob.getStatus() == "Completed": 
-                        self.getJobInfo5().value ="Completed: "+str(myjob.getMySch().getActualCompletion())
-                    
-                            
-
-                self.getPProgReport().value+="SCHJOB none ?  "+str(myjob.getMySch() == None)+"\n"
-
-                self.setCurrentJob(myjob)
-                
-                if myjob.getMySch() != None:
-
-                    starttime =  myjob.getMySch().getScheduledStart(); endtime =  myjob.getMySch().getScheduledCompletion() 
-
-                    
-                    schstr = "  {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(starttime.year,starttime.month,starttime.day,starttime.hour,starttime.minute) 
-                    schstr+= " -> "+" {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(endtime.year,endtime.month,endtime.day,endtime.hour,endtime.minute) 
-                    schstr+=" @"+myjob.getMySch().getScheduledResource().getName()
-  
-                    
-                    self.getJobInfo4().value ="Schedule: "+schstr
-
-                    if myjob.getStatus() in ["Pending (No predecessor)","Pending (all predecessors completed)"]:
-                        self.getJobStartBtn().layout.display  = 'block'
-                        self.getJobStartBtn().layout.visibility  = 'visible'
-                        self.getJobCompleteBtn().layout.visibility  = 'hidden'
-                        self.getJobCompleteBtn().layout.display  = 'none'
-                        
-                    if myjob.getStatus() == "In production":
-                        self.getJobCompleteBtn().layout.display  = 'block'
-                        self.getJobCompleteBtn().layout.visibility  = 'visible'
-                        self.getJobStartBtn().layout.visibility  = 'hidden'
-                        self.getJobStartBtn().layout.display  = 'none'
-                        
+            self.ShowJobStatus(myjob)
             
-                
-        
         
         return
 
     #def ShowWeekShifts(self,weekno):
         
+#################################################################################################################################################
+    def ShowJobStatus(self,myjob):
+
+     
+        if myjob != None:
+
+            
+            self.jobinfobox.layout.display = 'block'
+            self.jobinfobox.layout.visibility = 'visible'
+            self.getResDropDown().options = []
         
+
+            self.getJobInfo().value ="PN: "+str(myjob.getOperation().getProduct().getPN())
+            self.getJobInfo2().value ="Progress: "#+str(myjob.getOperation().getName())
+            self.getJobInfo3().value ="Quantity: "+str(myjob.getQuantity())
+            self.getJobInfo5().value ="Status: "+myjob.getStatus()
+            self.getShiftTimeLbl().value = "XXXXXXXXXXX"
+            starttime = datetime.now()+timedelta(hours = 1)
+            curr_shift = self.getVisualManager().DataManager.getSchedulingManager().getShiftgivenTime(starttime)
+            self.getPProgReport().value+="current shift??...."+str(curr_shift)+"\n"
+            self.setCurrentShift(curr_shift)
+            shifthrs = []
+            curr_time = self.getCurrentShift().getStartHour()
+
+            self.getPProgReport().value+=curr_shift.String("current shift??....")+"\n"
+        
+            for halfhr in range(1,17):
+                shifthrs.append(curr_time)
+                curr_time = curr_time + timedelta(minutes = 30)
+
+            self.getShiftTime().options =  shifthrs   
+            
+            if curr_shift != None: 
+                self.getShiftInfo().value = curr_shift.String("Current shift: ")
+                
+
+            if myjob.getStatus().find("Pending") > -1: 
+                if  self.getResDropDown().value!= None:
+                    self.getResDropDown().value = None
+                self.getResDropDown().disabled = False
+
+                    
+                lpc = myjob.getLPC()
+                curr_time = self.getCurrentShift().getStartHour()
+                shifthrs = []
+                if lpc == None:
+                    lpc = curr_time - timedelta(minutes = 1)
+                for halfhr in range(1,17):
+                    if curr_time >= lpc:
+                        shifthrs.append(curr_time)
+                            
+                    curr_time = curr_time + timedelta(minutes = 30)
+
+                self.getShiftTime().options =  shifthrs   
+
+                self.getPProgReport().value+="Job has pending status...."+"\n"
+
+                self.getReslabel().layout.display = 'block'
+                self.getReslabel().layout.visibility = 'visible'
+
+                self.getJobStartBtn().disabled = True
+                self.getPProgReport().value+="Alternatives... "+str(len(self.getVisualManager().getSchedulingManager().getAlternativeResources(myjob)))+"\n"
+                    
+                self.getResDropDown().options =  [r.getName() for r in self.getVisualManager().getSchedulingManager().getAlternativeResources(myjob)]
+                    
+                try: 
+                    self.getResDropDown().value = 'Select'
+                except Exception as e: 
+                    self.getPProgReport().value+="Error: "+str(e)+", val: "+str(self.getResDropDown())+"\n"
+                        
+                self.getResDropDown().layout.display = 'block'
+                self.getResDropDown().layout.visibility = 'visible'
+           
+            self.getPProgReport().value+="job status: "+str(myjob.getStatus())+"\n" 
+
+            if myjob.getStatus() == "In production": 
+                shifthrs = []
+                curr_time = self.getCurrentShift().getStartHour()+timedelta(minutes = 30)
+                    
+                for halfhr in range(1,16):
+                    if curr_time > myjob.getMySch().getActualStart():
+                        shifthrs.append(curr_time)
+
+                    curr_time = curr_time + timedelta(minutes = 30)
+                   
+
+                self.getShiftTime().options =  shifthrs   
+                self.getResDropDown().layout.display = 'block'
+                self.getResDropDown().layout.visibility = 'visible'
+                self.getJobInfo5().value +=", Started: "+str(myjob.getMySch().getActualStart())
+                self.getResDropDown().options =  [myjob.getMySch().getScheduledResource().getName()]
+                self.getResDropDown().value = myjob.getMySch().getScheduledResource().getName()
+                self.getResDropDown().disabled = True
+                  
+            else: 
+                if myjob.getStatus() == "Completed": 
+                    self.getJobInfo5().value ="Completed: "+str(myjob.getMySch().getActualCompletion())
+                    self.getResDropDown().options = [myjob.getMySch().getScheduledResource().getName()]
+                    self.getResDropDown().value = myjob.getMySch().getScheduledResource().getName()
+                    self.getResDropDown().disabled = True
+                    
+                            
+
+            self.getPProgReport().value+="SCHJOB none ?  "+str(myjob.getMySch() == None)+"\n"
+
+            self.setCurrentJob(myjob)
+
+            
+            if myjob.getMySch() == None:
+                myjob.initializeMySch()
+                
+                
+            if myjob.getMySch() != None:
+
+                if myjob.getMySch().getScheduledStart()!= None: 
+                    starttime =  myjob.getMySch().getScheduledStart(); endtime =  myjob.getMySch().getScheduledCompletion() 
+    
+                        
+                    schstr = "  {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(starttime.year,starttime.month,starttime.day,starttime.hour,starttime.minute) 
+                    schstr+= " -> "+" {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(endtime.year,endtime.month,endtime.day,endtime.hour,endtime.minute) 
+                    schstr+=" @"+myjob.getMySch().getScheduledResource().getName()
+      
+                        
+                    self.getJobInfo4().value ="Schedule: "+schstr
+                else:
+                    self.getJobInfo4().value =""
+
+                if myjob.getStatus().find("Pending") > -1:
+                    self.getJobStartBtn().layout.display  = 'block'
+                    self.getJobStartBtn().layout.visibility  = 'visible'
+                    self.getJobCompleteBtn().layout.visibility  = 'hidden'
+                    self.getJobCompleteBtn().layout.display  = 'none'
+
+                    self.getResDropDown().layout.visibility = 'visible'
+                    self.getShiftTime().layout.visibility = 'visible'
+                    self.getShiftInfo().layout.visibility = 'visible'
+                        
+                if myjob.getStatus() == "In production":
+                    self.getJobCompleteBtn().layout.display  = 'block'
+                    self.getJobCompleteBtn().layout.visibility  = 'visible'
+                    self.getJobStartBtn().layout.visibility  = 'hidden'
+                    self.getJobStartBtn().layout.display  = 'none'
+                    self.getResDropDown().layout.visibility = 'visible'
+                    self.getShiftTime().layout.visibility = 'visible'
+                    self.getShiftInfo().layout.visibility = 'visible'
+
+            else:
+                self.getJobInfo4().value =""
+                self.getResDropDown().options = []
+                self.getResDropDown().layout.visibility = 'hidden'
+                self.getShiftTime().layout.visibility = 'hidden'
+                self.getShiftInfo().layout.visibility = 'hidden'
+                if myjob.getStatus() == "Pending (all predecessors completed)":
+                    self.getJobStartBtn().layout.display  = 'block'
+                    self.getJobStartBtn().layout.visibility  = 'visible'
+                    self.getJobCompleteBtn().layout.visibility  = 'hidden'
+                    self.getJobCompleteBtn().layout.display  = 'none'
+                        
+          
+
+        return 
+
+
+#################################################################################################################################################
 
     
     def ShowResShift(self,event):
@@ -849,8 +991,6 @@ class ProductionProgressTab():
 
     def ShowDescriptives2(self,event):
 
-    
-
         self.getPProgReport().value +="Event "+str(event)+"\n"
 
         self.getPProgReport().value +="event new: "+str(event['new'])+"\n"
@@ -875,16 +1015,6 @@ class ProductionProgressTab():
         self.resshifts.layout.display = 'none'
         self.getJobList().layout.visibility = 'hidden'
         self.getJobList().layout.display = 'none'
-        self.getJobInfo().layout.visibility  = 'hidden'
-        self.getJobInfo().layout.display = 'none'
-        self.getJobInfo2().layout.visibility  = 'hidden'
-        self.getJobInfo2().layout.display = 'none'
-        self.getJobInfo3().layout.visibility  = 'hidden'
-        self.getJobInfo3().layout.display = 'none'
-        self.getJobInfo4().layout.visibility  = 'hidden'
-        self.getJobInfo4().layout.display = 'none'
-        self.getJobInfo5().layout.visibility  = 'hidden'
-        self.getJobInfo5().layout.display = 'none'
         self.getOrderInfo().layout.visibility  = 'hidden'
         self.getOrderInfo().layout.display = 'none'
         self.getOrderInfo2().layout.visibility  = 'hidden'
@@ -893,16 +1023,16 @@ class ProductionProgressTab():
         self.getOrderInfo3().layout.display = 'none'
         self.getOrderInfo4().layout.visibility  = 'hidden'
         self.getOrderInfo4().layout.display = 'none'
-        self.getJobStartBtn().layout.visibility  = 'hidden'
-        self.getJobStartBtn().layout.display = 'none'
-        self.getJobCompleteBtn().layout.visibility  = 'hidden'
-        self.getJobCompleteBtn().layout.display = 'none'
         self.weekradio.layout.visibility = 'hidden'
         self.weekradio.layout.display = 'none'
         self.resshifts.layout.visibility = 'hidden'
         self.resshifts.layout.display = 'none'
+        
 
         self.setProgressMode(selected)
+
+        self.jobinfobox.layout.visibility = 'hidden'
+        self.jobinfobox.layout.display = 'none'
         
 
         self.getPProgReport().value +="Selected: "+selected+", current info: "+str(self.infotype)+"\n"
@@ -916,6 +1046,9 @@ class ProductionProgressTab():
                 
         
         if self.getProgressMode() == 'Customer Orders':
+
+              
+            
 
             self.getPProgReport().value +="visibility: "+str(self.weekradio.layout.visibility)+"\n"
             if self.infotype != selected:
@@ -933,7 +1066,7 @@ class ProductionProgressTab():
                 for job in ordr.getMyJobs():
                     self.getPProgReport().value +="   >>"+str(job.getName())+"\n"
                     self.getPProgReport().value +="   >> Status: "+str(job.getStatus())+"\n"
-                    if job.getStatus() in ["Pending (No predecessor)","Pending (all predecessors completed)","In production"]:
+                    if (job.getStatus().find("Pending") > -1) or job.getStatus() == "In production": 
                         joblist.append(job.getName())
                         self.getPProgReport().value +="      >>> Inserted..."+"\n"
 
@@ -989,6 +1122,8 @@ class ProductionProgressTab():
        
         self.getJobInfo().layout.visibility  = 'hidden'
         self.getJobInfo().layout.display = 'none'
+
+        
         self.getJobInfo2().layout.visibility  = 'hidden'
         self.getJobInfo2().layout.display = 'none'
         self.getJobInfo3().layout.visibility  = 'hidden'
@@ -1078,6 +1213,9 @@ class ProductionProgressTab():
         if jobname == None:
             return
 
+
+            
+
         self.getJobStartBtn().layout.visibility  = 'hidden'
         self.getJobStartBtn().layout.display = 'none'
         self.getJobCompleteBtn().layout.visibility  = 'hidden'
@@ -1094,170 +1232,104 @@ class ProductionProgressTab():
             jobresource = self.getSelectedResource()
             currshift = self.currentshift
         else: # find job from order
-            if self.getSelectedOrder() != None:
-                self.getPProgReport().value+="Selected  Order: "+str(self.getSelectedOrder().getName())+", jobs "+str(len(self.getSelectedOrder().getMyJobs()))+"\n"
             for job in self.getSelectedOrder().getMyJobs():
                 if job.getName() == jobname:
                     selectedjob = job
+            self.ShowJobStatus(selectedjob)
                     
-                    self.getPProgReport().value+="Selected Job found.."+"\n"
-                    break
-            if selectedjob.getMySch()!= None:
-                jobresource = selectedjob.getMySch().getScheduledResource()
-                self.getPProgReport().value+="jobresource None? "+str(jobresource == None)+"\n"  
-                currshift = selectedjob.getMySch().getScheduledShift()
-                
-        if jobresource == None: 
-            if selectedjob!= None:
-                if  self.getJobInfo().layout.display == 'none':  
-                    self.getJobInfo().layout.display = 'block'       
-                    self.getJobInfo().layout.visibility  = 'visible'
-                    self.getJobInfo2().layout.display = 'block'       
-                    self.getJobInfo2().layout.visibility  = 'visible'
-                    self.getJobInfo3().layout.display = 'block'       
-                    self.getJobInfo3().layout.visibility  = 'visible'
-                    self.getJobInfo4().layout.display = 'block'       
-                    self.getJobInfo4().layout.visibility  = 'visible'
-                    self.getJobInfo5().layout.display = 'block'       
-                    self.getJobInfo5().layout.visibility  = 'visible'
-    
-                self.getJobInfo().value ="PN: "+str(selectedjob.getOperation().getProduct().getPN())
-                self.getJobInfo2().value ="Operation: "+str(selectedjob.getOperation().getName())
-                self.getJobInfo3().value ="Quantity: "+str(selectedjob.getQuantity())
-                self.getJobInfo4().value ="Planned: "+str(selectedjob.getDeadLine())
-                self.getJobInfo5().value =""
-
-        
-        else:
-            if selectedjob!= None:
-                if selectedjob.getMySch() != None:
-                    currshift = selectedjob.getMySch().getScheduledShift()
-                
-            self.getPProgReport().value+="job scheduled shift"+" Sh:("+str(currshift)+"\n"
-            self.getPProgReport().value+="job scheduled shift"+" Sh:("+str(currshift.getDay())+","+str(currshift.getNumber())+"), hrs: ["+str(currshift.getStartTime())+"-"+str(currshift.getEndTime())+"\n"
-            self.getPProgReport().value+=" is job scheduled shift is schedule of resource? "+str(currshift in jobresource.getSchedule())+"\n"
-            for job in jobresource.getSchedule()[currshift]:
-                if job.getJob().getName() == jobname:
-                    
-                    self.getPProgReport().value+=" Job found.. "+str(jobname)+"\n"
-                    jobfound = True
-                    self.setCurrentJob(job.getJob())
-                    
-                    if  self.getJobInfo().layout.display == 'none':  
-                        self.getJobInfo().layout.display = 'block'       
-                        self.getJobInfo().layout.visibility  = 'visible'
-                        self.getJobInfo2().layout.display = 'block'       
-                        self.getJobInfo2().layout.visibility  = 'visible'
-                        self.getJobInfo3().layout.display = 'block'       
-                        self.getJobInfo3().layout.visibility  = 'visible'
-                        self.getJobInfo4().layout.display = 'block'       
-                        self.getJobInfo4().layout.visibility  = 'visible'
-                        self.getJobInfo5().layout.display = 'block'       
-                        self.getJobInfo5().layout.visibility  = 'visible'
-                        
-
-                    self.getPProgReport().value+=" curr shift. "+currshift.String(" Curr sh ")+"\n"
-                
-                    starttime = job.getScheduledStart(); endtime = job.getScheduledCompletion() 
-
-                    
-                    schstr = "  {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(starttime.year,starttime.month,starttime.day,starttime.hour,starttime.minute) 
-                    schstr+= " -> "+" {:d}-{:02d}-{:02d} / {:02d}:{:02d} ".format(endtime.year,endtime.month,endtime.day,endtime.hour,endtime.minute) 
-  
-                      
-                    self.getJobInfo().value = "Operation: "+str(job.getJob().getOperation().getName())
-                    #"PN: "+str(job.getJob().getOperation().getProduct().getPN())
-                    self.getJobInfo2().value = "Quantity: "+str(job.getJob().getQuantity())
-                    self.getJobInfo3().value = "Scheduled: "+str(schstr)
-                    self.getJobInfo4().value = "Resource: "+job.getScheduledResource().getName()
-                    self.getJobInfo5().value ="Status: "+job.getJob().getStatus()
-                    
-                    if job.getJob().getStatus() in ["Pending (No predecessor)","Pending (all predecessors completed)"]: 
-                        self.getJobStartBtn().layout.display = 'block'
-                        self.getJobStartBtn().layout.visibility  = 'visible'
-        
-                    else:
-                        if job.getJob().getStatus() == "In production": 
-                            self.getJobInfo5().value +=", Started: "+str(job.getActualStart())
-                            self.getJobCompleteBtn().layout.display = 'block'
-                            self.getJobCompleteBtn().layout.visibility  = 'visible'
-                            self.getJobStartBtn().layout.visibility  = 'hidden'
-                            self.getJobStartBtn().layout.display = 'none'
-                        
                    
-                        else:
-                            if job.getJob().getStatus() == "Completed": 
-                                self.getJobInfo5().value ="Completed: "+str(job.getActualCompletion())
-                                self.getJobCompleteBtn().layout.visibility  = 'hidden'
-                                self.getJobCompleteBtn().layout.display = 'none'
-                                self.getJobStartBtn().layout.visibility  = 'hidden'
-                                self.getJobStartBtn().layout.display = 'none'
-                            
-                    self.getPProgReport().value+="done.. "+"\n"
-                    break
+           
+            
                 
 
         return
 ###############################################################################################################################################
     def SetJobStarted(self,event):
 
-        starttime = datetime.now()+timedelta(hours=2)
+        starttime = self.getShiftTime().value
+
+        schmangr = self.getVisualManager().DataManager.getSchedulingManager()
+
+        self.getPProgReport().value+=" resource value..."+str(self.getResDropDown().value)+"\n"
+      
+        resname = self.getResDropDown().value
+
+        if resname in self.getVisualManager().DataManager.getResources():
+            res = self.getVisualManager().DataManager.getResources()[resname]
+            self.getPProgReport().value+=" Resource found.."+"\n"
+            
+            dayshifts = self.getVisualManager().DataManager.getSchedulingManager().getMyShifts()[starttime.date()]
+            for shift in dayshifts:
+                if (shift.getStartHour()<= starttime) and (shift.getEndHour()>=starttime):
+                    start = math.ceil((starttime - shift.getStartHour()).total_seconds()/1800) # relative in half hours..
+                    processtime = math.ceil(self.getCurrentJob().getQuantity()*self.getCurrentJob().getOperation().getProcessTime('min')) # in mins..
+                    processinshift = min(processtime,(shift.getEndHour() - starttime).total_seconds()/60) # in mins..
+                    
+                    
+                    self.getPProgReport().value+=" start "+str(start)+", "+"\n"
+                    self.getPProgReport().value+=" current schedule? "+str(schmangr.getMyCurrentSchedule())+"\n"
+                    self.getPProgReport().value+=" res in current schedule? "+str(resname in schmangr.getMyCurrentSchedule().getResourceSchedules())+"\n"
+                    self.getPProgReport().value+=" shift in schedule? "+str(shift in schmangr.getMyCurrentSchedule().getResourceSchedules()[resname])+"\n"
+                    for schjob,timetuple in schmangr.getMyCurrentSchedule().getResourceSchedules()[resname][shift].items():
+                        self.getPProgReport().value+=" time tuple:  "+str(timetuple)+"\n"
+                        if timetuple[1] < start-0.0001 or timetuple[0]+0.0001 > start+math.ceil(processinshift/30):
+                            continue
+                        self.getPProgReport().value+=" Resource is currently busy, cannot start now!!"+"\n"
+                        return
+
+            # in case the job is only planned, or released from a schedule, create the schedule-job.
+            if self.getCurrentJob().getMySch() == None:
+                self.getCurrentJob().initializeMySch()
+            self.getCurrentJob().getMySch().setScheduledResource(res)
+            self.getCurrentJob().getMySch().setActualStart(starttime)
+            self.getPProgReport().value+=">>>>>>>>>>>>> "+str(starttime)+"\n"
+            self.getPProgReport().value+=">>>>>>>>>>>>> "+str(type(starttime))+"\n"
         
-        self.getCurrentJob().getMySch().setActualStart(starttime)
+               
+            
 
-        self.getPProgReport().value+=">>>>>>>>>>>>> "+str(starttime)+"\n"
-        self.getPProgReport().value+=">>>>>>>>>>>>> "+str(type(starttime))+"\n"
-
-
-        self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" has started.."+"\n"
-
-        self.getPProgReport().value+=">>>>>>>> val: "+str(self.getResDropDown().value)+"\n"
-
-        self.getVisualManager().DataManager.getSchedulingManager().ExtendShifts(self.getCurrentJob().getMySch().getActualStart().date())
-
-        
-        dayshifts = self.getVisualManager().DataManager.getSchedulingManager().getMyShifts()[starttime.date()]
-        self.getPProgReport().value+="day shits "+str(len(dayshifts))+"\n"
-
-        for shift in dayshifts:
-            self.getPProgReport().value+=" "+str(type(shift.getStartHour()))+", "+str(type(starttime))+"\n"
-            self.getPProgReport().value+=" "+str(shift.getStartHour())+", "+str(shift.getEndHour())+", "+str(starttime)+"\n"
-            self.getPProgReport().value+=" 1. check "+str((shift.getStartHour()<= starttime))+"\n"
-            self.getPProgReport().value+=" 2. check "+str((shift.getEndHour()>=starttime))+"\n"
-            if (shift.getStartHour()<= starttime) and (shift.getEndHour()>=starttime): 
+            self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" has started.."+"\n"
+    
+            self.getPProgReport().value+=">>>>>>>> val: "+str(self.getResDropDown().value)+"\n"
+    
+            self.getVisualManager().DataManager.getSchedulingManager().ExtendShifts(self.getCurrentJob().getMySch().getActualStart().date())
+    
+            
+            dayshifts = self.getVisualManager().DataManager.getSchedulingManager().getMyShifts()[starttime.date()]
+            self.getPProgReport().value+="day shifts "+str(len(dayshifts))+"\n"
+    
+            for shift in dayshifts:
+                self.getPProgReport().value+=" "+str(type(shift.getStartHour()))+", "+str(type(starttime))+"\n"
+                self.getPProgReport().value+=" strt hr: "+str(shift.getStartHour())+", end hr: "+str(shift.getEndHour())+", job strt: "+str(starttime)+"\n"
+                self.getPProgReport().value+="strt hr <= job strt "+str((shift.getStartHour()<= starttime))+"\n"
+                self.getPProgReport().value+="end hr >= job strt "+str((shift.getEndHour()>=starttime))+"\n"
                 
-                self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" gets act startshift..."+shift.String("act strt: ")+"\n"
-
-                self.getCurrentJob().getMySch().setActualStartShift(shift)
-                self.getPProgReport().value+=shift.String(" Actual start shift: ")+"\n"
-
-        # update from current schedule..
-        self.getVisualManager().DataManager.getSchedulingManager().UpdateSchedule(self.getCurrentJob().getMySch())
-        self.getPProgReport().value+=self.getCurrentJob().getMySch().getScheduledShift().String(" Scheduled start shift: ")+"\n"
-        self.getPProgReport().value+=self.getCurrentJob().getMySch().getScheduledCompShift().String(" Scheduled comp shift: ")+"\n"
-        self.getVisualManager().DataManager.SaveCurrentSchedule()
-     
-
-        self.getPProgReport().value+=" dayshifts: "+str(dayshifts)+"\n"
+                if (shift.getStartHour()<= starttime) and (shift.getEndHour()>=starttime):               
+                    self.getPProgReport().value+=" Job "+str(self.getCurrentJob().getName())+" gets act startshift..."+shift.String("act strt: ")+"\n"
+                    self.getCurrentJob().getMySch().setActualStartShift(shift)
+                    self.getPProgReport().value+=shift.String(" Actual start shift: ")+"\n"
+                    break
     
-        self.getJobInfo5().value ="Status: "+self.getCurrentJob().getStatus()
-
-        if self.getCurrentJob().getStatus() == "In production": 
-            self.getJobInfo5().value +=", Started: "+str(self.getCurrentJob().getMySch().getActualStart())
+                 
+            # update from current schedule..
+            self.getPProgReport().value+=" updating schedule...job sch? "+str(self.getCurrentJob().getMySch())+"\n"
+            self.getVisualManager().DataManager.getSchedulingManager().UpdateSchedule(self.getCurrentJob().getMySch())
+            self.getPProgReport().value+=self.getCurrentJob().getMySch().getScheduledShift().String(" Scheduled start shift: ")+"\n"
+            self.getPProgReport().value+=self.getCurrentJob().getMySch().getScheduledCompShift().String(" Scheduled comp shift: ")+"\n"
+            self.getVisualManager().DataManager.SaveCurrentSchedule()
+         
     
-        self.getJobStartBtn().layout.visibility  = 'hidden'
-        self.getJobStartBtn().layout.display  = 'none'
-
+            self.getPProgReport().value+=" dayshifts: "+str(dayshifts)+"\n"
         
-        self.getJobCompleteBtn().layout.display  = 'block'
-        self.getJobCompleteBtn().layout.visibility  = 'visible'
-
+        
+            self.ShowJobStatus(self.getCurrentJob())
         
         return
 
+#############################################################################################################################################################
     def SetJobCompleted(self,event):
 
-        completiontime = datetime.now()
+        completiontime = self.getShiftTime().value
         self.getCurrentJob().getMySch().setActualCompletion(completiontime)
 
         dayshifts = self.getVisualManager().DataManager.getSchedulingManager().getMyShifts()[completiontime.date()]
@@ -1268,7 +1340,7 @@ class ProductionProgressTab():
                 self.getPProgReport().value+=shift.String(" Actual completion shift: ")+"\n"
                 self.getPProgReport().value+=" Actual start was: "+str(self.getCurrentJob().getMySch().getActualStart())+"\n"
                 
-        self.getVisualManager().DataManager.SaveCurrentSchedule()
+        
 
 
         self.getJobCompleteBtn().layout.visibility  = 'hidden'
@@ -1276,14 +1348,22 @@ class ProductionProgressTab():
 
         if self.getCurrentJob().getStatus() == "Completed": 
             self.getJobInfo5().value ="Started: "+str(self.getCurrentJob().getMySch().getActualStart())+", Completed: "+str(self.getCurrentJob().getMySch().getActualCompletion())
+             
+        self.getVisualManager().DataManager.getSchedulingManager().updateCompletedJob(self.getCurrentJob().getMySch())
+        self.getVisualManager().DataManager.SaveCurrentSchedule()
     
 
-        
         return
 
+    def GenerateOrderJobs(self,event):
 
+        self.getVisualManager().DataManager.getSchedulingManager().getPlanningManager().GenerateJobs(self.getSelectedOrder())
 
+        self.getJobList().options = [job.getName() for job in self.getSelectedOrder().getMyJobs()]
 
+        return 
+
+########################################################################################################################################
     
     def generatePPrgTAB(self):
     
@@ -1308,12 +1388,22 @@ class ProductionProgressTab():
         self.resshifts.observe(self.ShowJobs)
         
 
-        self.getJobList().layout.height = "90%"
+        self.getJobList().layout.height='90%'
         self.getJobList().observe(self.ShowJobInfo)
 
 
         slider = widgets.IntSlider( value=0,min=0,max=100,step=5,description='',disabled=False,orientation='horizontal',readout=False)
         self.setProgressSlider(slider)
+
+        myit = widgets.SelectionSlider(
+            options=[str(x) for x in range(0,16)],
+            description='Time:',
+            orientation='horizontal',
+            #
+        )
+        self.setShiftTime(myit)
+        
+        self.getShiftTime().layout.width = '400px'
 
         self.setResDropDown(widgets.Dropdown(options=[]))
         self.getResDropDown().observe(self.StartEnable)
@@ -1325,6 +1415,9 @@ class ProductionProgressTab():
         self.setJobInfo3(widgets.Label(value =''))
         self.setJobInfo4(widgets.Label(value =''))
         self.setJobInfo5(widgets.Label(value =''))
+        self.setShiftInfo(widgets.Label(value =''))
+        
+        
 
 
         self.setOrderInfo(widgets.Label(value =''))
@@ -1338,6 +1431,10 @@ class ProductionProgressTab():
   
         self.setJobStartBtn(widgets.Button(description = "Set Started",icon = 'fa-check-square'))
         self.getJobStartBtn().on_click(self.SetJobStarted)
+
+
+        self.setJobGernerateButton(widgets.Button(description = "Generate Jobs",icon = 'fa-check-square'))
+        self.getJobGernerateButton().on_click(self.GenerateOrderJobs)
         
         
         self.setJobCompleteBtn(widgets.Button(description = "SetCompleted",icon = 'fa-check-square'))
@@ -1373,6 +1470,8 @@ class ProductionProgressTab():
         date = [(date.strftime(' %d %b %Y '), date) for date in dates]
         
         date_slider = widgets.SelectionSlider(options=date,orientation='horizontal',layout={'width': 'flex'})
+
+       
       
 
         HTML('<style> .widget-text { width: auto; } </style>')
@@ -1392,40 +1491,69 @@ class ProductionProgressTab():
 
 
         self.setReslabel(widgets.Label(value='Resource: '))
+
+        self.setShiftTimeLbl(widgets.Label(value=' '))
+        self.getShiftTime().observe(self.ShowShiftTime)
         
 
        
         self.infotype = "Customer Orders"
 
-        tab_sch = VBox( children = [
-                         self.resords,self.getCustomerOrderList(),
-                        HBox(  children =[ self.weekradio,self.resshifts,
-                                          VBox( children = [self.getOrderInfo(),self.getOrderInfo2(),self.getOrderInfo3(),self.getOrderInfo4()]),self.getJobList(),
-                                          
-                                          VBox( children = [self.getJobInfo(),self.getJobInfo2(),self.getProgressSlider(),
-                                                            self.getJobInfo3(),self.getJobInfo4(),self.getJobInfo5(),
-                                                            HBox(  children =[ self.getReslabel(),self.getResDropDown()],layout = widgets.Layout(height='50px')),
-                                                            self.getJobStartBtn(),self.getJobCompleteBtn() 
+        infobox = VBox( children = [self.getOrderInfo(),
+                                                            self.getOrderInfo2(),
+                                                            self.getOrderInfo3(),
+                                                            self.getOrderInfo4()
                                                            ])
-                                        
-                                         ],layout = widgets.Layout(width = '95%',height='250px')),
-            
-                             self.getPPrgOrdOutput(),
-                               self.getPProgReport()
-                       ])              
+        infobox.layout.width = '49%'
+
+        self.jobinfobox  = VBox( children = [self.getJobInfo(),
+                                                            self.getJobInfo2(),
+                                                            self.getProgressSlider(),
+                                                            self.getJobInfo3(),
+                                                            self.getJobInfo4(),
+                                                            self.getJobInfo5(),
+                                                            HBox(  children =[ 
+                                                                               self.getReslabel(),
+                                                                               self.getResDropDown()],
+                                                                              layout =  widgets.Layout(height='50px')),
+                                                           self.getShiftInfo(),
+                                                           self.getShiftTime(),
+                                                                             
+                                                                              self.getJobStartBtn(),
+                                                                               self.getJobCompleteBtn()
+                                                           ])
 
 
         
-        self.getReslabel().layout.visibility = 'hidden'
-        self.getReslabel().layout.display = 'none'
+        self.jobinfobox.layout.width='85%'
+
+        self.orderbox = VBox(children =[self.getJobList(),self.getJobGernerateButton()])
+        self.orderbox.layout.height='250px'
+        self.orderbox.layout.width='25%'
+
+        
+        tab_sch = VBox( children = [
+                                     self.resords,
+                                     self.getCustomerOrderList(),
+                            
+                            
+                            HBox(  children =[self.orderbox,self.weekradio,self.resshifts,self.jobinfobox
+                                              ],layout = widgets.Layout(width = '95%',height='350px')),
+            
+                            self.getPPrgOrdOutput(),
+                            self.getPProgReport()
+                       ])              
 
 
-        self.getResDropDown().layout.visibility = 'hidden'
-        self.getResDropDown().layout.display = 'none'
+        self.orderbox.layout.visibility = 'hidden'
+        self.orderbox.layout.display = 'none'
 
-        self.getProgressSlider().layout.visibility = 'hidden'
-        self.getProgressSlider().layout.display = 'none'
 
+        self.jobinfobox.layout.visibility = 'hidden'
+        self.jobinfobox.layout.display = 'none'
+        
+  
+    
         self.weekradio.layout.visibility = 'hidden'
         self.weekradio.layout.display = 'none'
 
@@ -1443,23 +1571,8 @@ class ProductionProgressTab():
         self.getJobList().layout.visibility  = 'hidden'
         self.getJobList().layout.display = 'none'
 
-        self.getJobStartBtn().layout.visibility  = 'hidden'
-        self.getJobStartBtn().layout.display = 'none'
-
-        self.getJobCompleteBtn().layout.visibility  = 'hidden'
-        self.getJobCompleteBtn().layout.display = 'none'
-
-        self.getJobInfo().layout.visibility  = 'hidden'
-        self.getJobInfo().layout.display = 'none'
-        self.getJobInfo2().layout.visibility  = 'hidden'
-        self.getJobInfo2().layout.display = 'none'
-        self.getJobInfo3().layout.visibility  = 'hidden'
-        self.getJobInfo3().layout.display = 'none'
-        self.getJobInfo4().layout.visibility  = 'hidden'
-        self.getJobInfo4().layout.display = 'none'
-        self.getJobInfo5().layout.visibility  = 'hidden'
-        self.getJobInfo5().layout.display = 'none'
-
+       
+     
         self.getOrderInfo().layout.visibility  = 'hidden'
         self.getOrderInfo().layout.display = 'none'
         self.getOrderInfo2().layout.visibility  = 'hidden'
@@ -1473,7 +1586,7 @@ class ProductionProgressTab():
 
 
 
-        tab_sch.layout.height = '670px'
+        tab_sch.layout.height = '750px'
           
         return tab_sch
 
