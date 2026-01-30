@@ -110,6 +110,11 @@ class VisualManager():
 
         self.PLTBDesciptives = None
         self.PLTBDisplayPeriod = None
+
+        self.PSTBInfoBox = None
+        self.PSTBEditBox = None
+
+        self.PSTBresedit_btn = None
      
 
 
@@ -184,10 +189,54 @@ class VisualManager():
         self.UpdStocks_btn = None
         self.NewRes_btn = None
 
+
+        self.ShiftsEdit = None
+        self.AvailabilityStart = None
+        self.AvailabilityEnd = None 
+
+
         
  
 
         return
+
+        
+
+
+
+    def setPSTBresedit_btn(self,myit):
+        self.PSTBresedit_btn = myit
+        return
+        
+    def getPSTBresedit_btn(self):
+        return self.PSTBresedit_btn
+
+
+    def setShiftsEdit(self,myit):
+        self.ShiftsEdit = myit
+        return
+        
+    def getShiftsEdit(self):
+        return self.ShiftsEdit
+
+    def setAvailabilityStart(self,myit):
+        self.AvailabilityStart = myit
+        return
+        
+    def getAvailabilityStart(self):
+        return self.AvailabilityStart
+
+
+    def setAvailabilityEnd(self,myit):
+        self.AvailabilityEnd = myit
+        return
+        
+    def getAvailabilityEnd(self):
+        return self.AvailabilityEnd
+
+        
+
+        
 
     def getPSTBAvailable(self):
         return self.PSTBAvailable
@@ -1901,7 +1950,20 @@ class VisualManager():
         return
 
 
-   
+
+    def ShowEdits(self,event):
+
+
+        if self.PSTBEditBox.layout.visibility == 'hidden':
+            self.PSTBEditBox.layout.display = 'block'
+            self.PSTBEditBox.layout.visibility  = 'visible'
+        
+        else:
+            self.PSTBEditBox.layout.visibility  = 'hidden'
+            self.PSTBEditBox.layout.display = 'none'
+
+
+        return 
         
         
     def generatePSTAB(self):
@@ -1952,13 +2014,33 @@ class VisualManager():
         ftel.add_class("blue_label")
         rscl = widgets.Label(value ='Shifts:')
         rscl.add_class("blue_label")
+
+
+        self.setPSTBresedit_btn(widgets.Button(description="Edit"))
+        self.getPSTBresedit_btn().layout.width = '80px'
+        self.getPSTBresedit_btn().layout.height = '25px'
+        self.getPSTBresedit_btn().on_click(self.ShowEdits)
+
+
+        self.setShiftsEdit(widgets.Text(description ='Shifts:',value=''))
+
+        self.setAvailabilityStart(widgets.DatePicker(description='Start',disabled=False))
+        self.getAvailabilityStart().value = datetime.now()
+        self.setAvailabilityEnd(widgets.DatePicker(description='End',disabled=False))
+        self.getAvailabilityEnd().value = datetime.now()
+
+
+        self.PSTBInfoBox = HBox(children=[rstl,self.getPSTBResType(),widgets.Label(value =  " | ",disabled = True),ftel,self.getPSTBResFTE(),widgets.Label(value =  " | ",disabled = True),rscl,self.getPSTBResCap()])
+        self.PSTBEditBox = HBox(children=[self.getAvailabilityStart(),self.getAvailabilityEnd(),self.getShiftsEdit()])
+     
        
        
 
         tb4_vbox1 = VBox(children = [
                                      HBox(children=[res_box]),self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),
+                      self.getPSTBresedit_btn(),
                      HBox(children=[rsnl,self.getPSTBResName()]),
-                     HBox(children=[rstl,self.getPSTBResType(),widgets.Label(value =  " | ",disabled = True),ftel,self.getPSTBResFTE(),widgets.Label(value =  " | ",disabled = True),rscl,self.getPSTBResCap()]),
+                     self.PSTBInfoBox,self.PSTBEditBox,
                      HBox(children=[self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]),ressel_box
                                     ]
                         )
@@ -2214,7 +2296,10 @@ class VisualManager():
                                    #self.getCOTBsave_bttn(),self.getCOTBcasename(), 
                                    datadiag,self.getDataDiaOpt(),self.getDataDiaBtn()]),
                                HBox(children=[self.getDiagInfo()])])
-        
+
+
+        self.PSTBEditBox.layout.visibility  = 'hidden'
+        self.PSTBEditBox.layout.display = 'none'
 
         return tab_4
 

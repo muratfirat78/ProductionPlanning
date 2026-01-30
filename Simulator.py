@@ -328,7 +328,7 @@ class Simulator(object):
 
         def Quantity_Processsed(self,job,endtime,machine):
 
-            processtime = timedelta(minutes=job..getJob().getOperation().getProcessTime("min"))
+            processtime = timedelta(minutes=job.getJob().getOperation().getProcessTime("min"))
             current = job.getScheduledStart()
             quantity = 0
 
@@ -338,7 +338,7 @@ class Simulator(object):
                     if current.weekday() >=5:
                         days_until_monday = 7 - current.weekday()
                         next_day = current + timedelta(days=days_until_monday)
-                    else:
+                  
                         
         
         def shift_scheduler(env, machine):

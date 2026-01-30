@@ -138,8 +138,9 @@ class Resource():
         self.OperatingTeam = None
         self.MachineGroup = None
         self.Alternatives = [] # alternatives that can make the operations of this resource.
-        self.AvailableShifts = myshifts
+        self.AvailableShifts = myshifts # default pattern
         self.processtype = None
+        self.Availability = dict() # key: (startdate,enddate), val: available shifts (pattern) 
         
    
         # PlANNING
@@ -165,6 +166,9 @@ class Resource():
 
         # SCHEDULING
 
+
+    def getAvailability(self):
+         return self.Availability 
  
 
     def UpdateLatestJobCompletion(self,job,comp):
