@@ -520,7 +520,42 @@ class PlanningManager:
 
         return self.getPHStart() 
 
-#######################################################################################################################################################    
+#######################################################################################################################################################
+    def MakeProductJobs(self,order,product,quantity):
+
+        if len(product.getMPredecessors()) > 0: # bom case
+
+            oprslist = product.getOperationSequences()[order]
+            reversedoprs = oprslist[::-1]
+
+            prev_job = None
+
+            for operation in reversedoprs: 
+                jobid = order.getID()[max(0,len(order.getID())-5):]+"_"+str(len(order.getMyJobs())+1)
+                curr_job =  Job(jobid,"Job_"+str(jobid),product,operation,quantity,order.getDeadLine().date())
+
+                if prev_job!= None:
+                    curr_job.getSuccessors().append(prev_job)
+                    prev_job.getPredecessors().append(curr_job)
+                prev_job = curr_job
+                curr_job.setCustomerOrder(order)  
+                #self.getVisualManager().getPLTBresult2exp().value+=">Job created: "+str(curr_job.getName())+", no.jobs: "+str(len(order.getMyJobs()))+"\n"
+
+                order.getMyJobs().insert(0,curr_job)
+
+        
+        for predecessor,multiplier in product.getMPredecessors().items():
+            if not self.MakeProductJobs(order,predecessor,quantity*multiplier):    
+                return False
+    
+        return True
+        
+#######################################################################################################################################################
+    def GenerateJobs(self,order):
+
+        self.MakeProductJobs(order,order.getProduct(),order.getQuantity())
+  
+        return 
 #######################################################################################################################################################
     def MakeDeliveryPlan(self,b):
         ''' This function construct a delivery plan for every customer orders as follows: 

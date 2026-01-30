@@ -274,35 +274,43 @@ class SchedulingManager:
        
        
         return 
-
+    
 ###############################################################################################################################
     def UpdateSchedule(self,job):
 
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" updating schedule.. is schedule"+str(job.IsScheduled())+"\n"
+        
         # remove from current schedule..
         curr_shift = job.getScheduledShift()
         compshift = job.getScheduledCompShift()
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" updating schedule.. "+"\n"
+        job.setScheduledStart(job.getActualStart()) 
 
-        if curr_shift == compshift:
-            del self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift][job] 
-          
-        else:
-            while curr_shift!= compshift:
-                if (curr_shift.getEndHour() >= job.getScheduledShift().getEndHour()) and (curr_shift.getStartHour() <= compshift.getStartHour()):
-                    del self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift][job] 
-                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=curr_shift.String("****rmv shiftt: ")+"\n"
-                curr_shift = curr_shift.getNext()
-                if not curr_shift in job.getScheduledResource().getSchedule():
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" removing job from scheduled shifts..... "+"\n"
+
+        if job.IsScheduled(): 
+            # remove the previous schedule
+            if curr_shift == compshift:
+                del self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift][job] 
+              
+            else:
+                while curr_shift!= compshift:
+                    if (curr_shift.getEndHour() >= job.getScheduledShift().getEndHour()) and (curr_shift.getStartHour() <= compshift.getStartHour()):
+                        del self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift][job] 
+                        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=curr_shift.String("****rmv shiftt: ")+"\n"
                     curr_shift = curr_shift.getNext()
-                if curr_shift == None:
-                    break
-                    
-            if job in self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][compshift]:
-                del self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][compshift][job] 
-                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=compshift.String("****rmv shiftt: ")+"\n"
+                    if not curr_shift in job.getScheduledResource().getSchedule():
+                        curr_shift = curr_shift.getNext()
+                    if curr_shift == None:
+                        break
+                        
+                if job in self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][compshift]:
+                    del self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][compshift][job] 
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=compshift.String("****rmv shiftt: ")+"\n"
+    
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job removed from schedule.. "+"\n"
 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job removed from schedule.. "+"\n"
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" getActualStartShift "+str(job.getActualStartShift())+"\n"
 
         curr_shift = job.getActualStartShift()
         job.setScheduledShift(curr_shift)
@@ -310,12 +318,27 @@ class SchedulingManager:
 
         processtime = math.ceil(job.getJob().getQuantity()*job.getJob().getOperation().getProcessTime('min')) 
     
-        curr_time = job.getActualStart()
-        
+        curr_time = job.getActualStart() # this is real time.
+
+        # check all jobs scheduled at overlapping times with the job in the selected resource
+        # insert the actual schedule
 
         while processtime > 0:
-            processinshift = min(processtime,(curr_shift.getEndHour() - curr_time).total_seconds()/60)
-            start = int((curr_time - curr_shift.getStartHour()).total_seconds()/1800) 
+
+            processinshift = min(processtime,(curr_shift.getEndHour() - curr_time).total_seconds()/60) # in mins..
+            start = math.ceil((curr_time - curr_shift.getStartHour()).total_seconds()/1800) # relative in half hours..
+
+            jobstorelease = []
+            # check other jobs in the shift: times are relative in half hours.
+            for schjob,timetuple in self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift].items():
+                if timetuple[1] < start-0.0001 or timetuple[0]+0.0001 > start+math.ceil(processinshift/30):
+                    continue
+                # if not release the job and its successors from the schedule.
+                jobstorelease.append(schjob)
+
+            for reljob in jobstorelease:
+                self.RecursiveRelease(reljob.getJob())
+
             
             completion = None
             processtime-=processinshift
@@ -328,25 +351,125 @@ class SchedulingManager:
                 curr_time=curr_shift.getStartHour()
             else: 
                 completion = start+math.ceil(processinshift/30) 
+                job.setScheduledCompletion(curr_shift.getStartHour()+timedelta(minutes = processinshift)) 
                 self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift][job]= (start,completion)
+                
                 
             
             self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=curr_shift.String("added shiftt: ")+"\n"
             job.setScheduledCompShift(curr_shift)
                 
-        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job added to schedule.. "+"\n"       
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" job added to schedule.. "+"\n"    
+
+        
+        # now check successors that can be influenced due to this actual start..
+        curr_lpc = job.getScheduledCompletion()
+        releasesuccessors = []
+        for successor in job.getJob().getSuccessors():
+            if successor.getMySch() != None:
+                if successor.getMySch().IsScheduled():
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" successor.getMySch().getScheduledStart() "+str(successor.getMySch().getScheduledStart())+"\n"    
+                    if successor.getMySch().getScheduledStart() < curr_lpc:
+                        self.RecursiveRelease(successor)
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" done.. "+"\n"    
+       
+        return 
+############################################################################################################################
+    def updateCompletedJob(self,job):
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" updating schedule for completed.. "+"\n"
+        
+        curr_shift = job.getActualStartShift()
+        compshift = job.getActualCompletionShift()
+
+
+        start_time = job.getActualStart()
+        comp_time = job.getActualCompletion() # this is real time.
+
+        
+        while curr_shift.getStartHour() <= compshift.getStartHour():
+            
+            start = math.ceil((max(start_time,curr_shift.getStartHour())-curr_shift.getStartHour()).total_seconds()/1800)
+            completion = math.ceil((min(comp_time,curr_shift.getEndHour())-curr_shift.getStartHour()).total_seconds()/1800)
+            self.getMyCurrentSchedule().getResourceSchedules()[job.getScheduledResource().getName()][curr_shift][job] = (start,completion)
+
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=curr_shift.String("current shift: ")+"\n"
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+="Times: "+str((start,completion))+"\n"
+
+            if comp_time <= curr_shift.getEndHour():
+                break
+            
+            curr_shift=curr_shift.getNext()
+            if not curr_shift in job.getScheduledResource().getSchedule():
+                curr_shift=curr_shift.getNext()
+            
+       
 
         return 
-##############################################################################################################################        
+
+
+#############################################################################################################################
+    def RecursiveRelease(self,curr_job):
+
+        if curr_job.getMySch() != None:    
+
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> job "+curr_job.getName()+" released from the schedule"+"\n" 
+            
+            if curr_job.getMySch().getScheduledResource() != None: 
+                
+                curr_shft = curr_job.getMySch().getScheduledShift() 
+                cp_shft = curr_job.getMySch().getScheduledCompShift() 
+
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=curr_shft.String(" curr_shft: ")+"\n" 
+                self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=cp_shft.String(" cp_shft: ")+"\n" 
+                
+                while curr_shft != None: 
+
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" res in current schedule? "+str(curr_job.getMySch().getScheduledResource().getName() in self.getMyCurrentSchedule().getResourceSchedules())+"\n"
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" shift in schedule? "+str(curr_shft in self.getMyCurrentSchedule().getResourceSchedules()[curr_job.getMySch().getScheduledResource().getName()])+"\n"
+
+                    self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=curr_shft.String(" curr_shft: ")+"\n" 
+                    del self.getMyCurrentSchedule().getResourceSchedules()[curr_job.getMySch().getScheduledResource().getName()][curr_shft][curr_job.getMySch()]
+
+                    if curr_shft == cp_shft:
+                        break  
+                    curr_shft = curr_shft.getNext()
+                    if not curr_shft.getNumber() in curr_job.getMySch().getScheduledResource().getAvailableShifts():
+                        curr_shft = curr_shft.getNext()
+                    
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> scheduling props reset to none"+"\n"
+            curr_job.releaseschedule()
+            self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" >> scheduling props resetting done"+"\n"
+
+            for successor in curr_job.getSuccessors():
+                self.RecursiveRelease(successor)
+
+        return 
+##############################################################################################################################   
+    def getShiftgivenTime(self,mytime):
+
+        if mytime.date() in self.getMyShifts():
+            dayshifts = self.getMyShifts()[mytime.date()]
+            for shift in dayshifts:
+                if (shift.getStartHour()<= mytime) and (shift.getEndHour()>=mytime):
+                    return shift
+                    
+        return None
+
+##############################################################################################################################
     def getAlternativeResources(self,job):
 
         alternatives = []
 
-        for res in job.getJob().getOperation().getRequiredResources():
+        for res in job.getOperation().getRequiredResources():
             alternatives.append(res) 
             for alt in res.getAlternatives():
                 if not alt in alternatives:
                     alternatives.append(alt)
+
+
+        self.getVisualManager().getSchedulingTab().getPSchScheRes().value+=" alternatives.............. "+str(len(alternatives))+"\n"
 
         return alternatives
 ##################################################################################################################################
@@ -494,7 +617,7 @@ class SchedulingManager:
                 infeasibilities.append(">>Infeasibility 3: Job"+job.getJob().getName()+" is assigned to multiple resources: "+str(resources))
             else:
                 if len(resources) == 1:
-                    alternatives = self.getAlternativeResources(job)
+                    alternatives = self.getAlternativeResources(job.getJob())
                     machine = resources[0]
                     if not machine in alternatives:
                         infeasibilities.append(">>Infeasibility 4:"+job.getJob().getName()+" with op "+job.getJob().getOperation().getName()+"  is assigned to incompatible resource "+str(machine.getName()))

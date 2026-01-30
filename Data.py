@@ -405,7 +405,7 @@ class DataManager:
                                     else: 
                                         # partially-used shift
                                         self.getVisualManager().getSchedulingTab().getPSchScheRes().value +="Act comp"+str(job.getActualCompletion())+"-- , shft strt: "+str(shift.getStartHour())+"\n" 
-                                        actstart = math.ceil((job.getActualStart()-shift.getStartHour()).total_seconds()/1800)
+                                        actstart = math.ceil((max(job.getActualStart(),shift.getStartHour())-shift.getStartHour()).total_seconds()/1800)
                                         actcomp = math.ceil((job.getActualCompletion()-shift.getStartHour()).total_seconds()/1800)
                                 #else: end_shift.getEndHour() < shift.getStartHour(), completed.. both None
                                     
@@ -752,6 +752,7 @@ class DataManager:
                             schedule.getResourceSchedules()[resname][shift] = dict() # key: job, vaL: (st,cp)
             #----------------------------------------------------------------------------------------------
 
+            self.getVisualManager().getCaseInfo().value += ">>>> reading: "+str(abs_file_path+'/'+schfile)+"\n" 
             
             schedule_df = pd.read_csv(abs_file_path+'/'+schfile)
             self.getVisualManager().getCaseInfo().value += ">>>> Schedules.."+str(len(schedule_df))+"\n" 
@@ -813,6 +814,9 @@ class DataManager:
             scheduleshiftsfound = 0
             scheduleds = 0
 
+
+            
+
             for jobid,job in alljobs.items():
 
                 self.getVisualManager().getCaseInfo().value += ">>>> Job  .."+str(job.getName())+"\n"     
@@ -829,126 +833,53 @@ class DataManager:
                 
                 job.getMySch().setScheduledResource(res)
 
-                startime = None; comptime = None; strtshft = None; cpshft = None
-                actstartime = None; actcomptime = None; actstrtshft = None; actcpshft = None
-                
-                strtshift = None
-
+    
                 self.getVisualManager().getCaseInfo().value += ">>>> Schedule for job  .."+str(job.getName())+"\n"
-                
+
+                scheduledict = dict() # key: shift, val: (strt,comp)
+
+                earliestshft = None; latestshft = None
+               
                 for i,r in job_df.iterrows():
-                    
                     shftday = datetime.strptime(r["Day"],'%Y-%m-%d')
                     shftno = r["ShiftNo"]
-
-                    self.getVisualManager().getCaseInfo().value += "Shift day: "+str(shftday)+"\n"
-                    self.getVisualManager().getCaseInfo().value += "Shift day: "+str(shftday.date())+"\n"
-                    self.getVisualManager().getCaseInfo().value += "Shift no: "+str(shftno)+"\n"
-
-
-                    curr_shift = None
-                    #self.getVisualManager().getCaseInfo().value += "Shift in  "+str(shftday.date() in self.getSchedulingManager().getMyShifts())+"\n"
                     if shftday.date() in self.getSchedulingManager().getMyShifts():
-                        
-
                         curr_shift = self.getSchedulingManager().getMyShifts()[shftday.date()][shftno-1]
-  
-                    if curr_shift  == None:
-                        self.getVisualManager().getCaseInfo().value += "ERROR >>>> Execution in  .."+str(shftday)+"--"+str(shftno)+"\n"         
-                        self.getVisualManager().getCaseInfo().value += "ERROR >>>> Shifts found  .."+str(len(shifts))+"\n"
-                    else:
-                        
-                        self.getVisualManager().getCaseInfo().value += curr_shift.String(" shift: ")+"\n"
-                         #----------------------------------------------------------------------------------------------
-                        #self.getVisualManager().getCaseInfo().value += "job sch   "+str(r["SchStart"])+str(r["SchCompletion"])+"\n"
-                        #self.getVisualManager().getCaseInfo().value += "res   "+str(job.getMySch().getScheduledResource().getName())+"\n"
-                        #self.getVisualManager().getCaseInfo().value += "check  "+str(job.getMySch().getScheduledResource().getName() in schedule.getResourceSchedules())+"\n"
-                        #self.getVisualManager().getCaseInfo().value += "check2  "+str(curr_shift in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()])+"\n"
-                        #self.getVisualManager().getCaseInfo().value += "check3  "+str(job.getMySch() in schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift])+"\n"
-                        
+
+                        scheduledict[curr_shift] = (r["SchStart"],r["SchCompletion"])
+
                         schedule.getResourceSchedules()[job.getMySch().getScheduledResource().getName()][curr_shift][job.getMySch()] = (r["SchStart"],r["SchCompletion"])
-                         #----------------------------------------------------------------------------------------------
 
-                        #self.getVisualManager().getCaseInfo().value += "inserted...."+"\n"
-                        #self.getVisualManager().getCaseInfo().value += ">>>> Actstst  .."+str(r["ActStart"])+"\n"
-                        #self.getVisualManager().getCaseInfo().value += ">>>> np.nan?  .."+str(np.isnan(r["ActStart"]))+"\n"
-                        #self.getVisualManager().getCaseInfo().value += ">>>> status  .."+str(job.getActualStatus())+"\n"
-                    
-
-                        if not np.isnan(r["ActStart"]):
-                            if actstartime == None:
-                                actstartime = r["ActStart"]
-                                #self.getVisualManager().getCaseInfo().value += ">>>> actstartime  .."+str(actstartime)+"\n"
-                                actstrtshft = curr_shift.getStartHour()
-                                #self.getVisualManager().getCaseInfo().value += ">>>> actstrtshft .."+str(actstrtshft)+"\n"
-                            else:
-                                if curr_shift.getStartHour() < actstrtshft:
-                                    actstartime = r["ActStart"]
-                                    actstrtshft = curr_shift.getStartHour()
-
-                        if not np.isnan(r["ActCompletion"]):
-                            if actcomptime == None:
-                                actcomptime = r["ActCompletion"]
-                                actcpshft = curr_shift.getStartHour()
-                            else:
-                                if curr_shift.getStartHour() < actcpshft:
-                                    actcomptime = r["ActCompletion"]
-                                    actcpshft = curr_shift.getStartHour()
-                        
-                                   
-                     
-                        if strtshft == None:
-                            startime = r["SchStart"]
-                            strtshft = curr_shift.getStartHour()
-                        else:
-                            if curr_shift.getStartHour() < strtshft:
-                                strtshft = curr_shift.getStartHour()
-                                startime = r["SchStart"]
-
-                        if cpshft == None:
-                            comptime = r["SchCompletion"]
-                            cpshft = curr_shift.getStartHour()
-                        else:
-                            if curr_shift.getStartHour() > cpshft:
-                                cpshft = curr_shift.getStartHour()
-                                comptime = r["SchCompletion"]
-                        # insert into schedule..
-                        if curr_shift in res.getSchedule():
-                            res.getSchedule()[curr_shift].append(job.getMySch())
+                        if earliestshft == None:
+                            earliestshft = curr_shift
                         else: 
-                            self.getVisualManager().getCaseInfo().value += "ERROR >>>> shift not in  resschedule.."+str(res.getName())+"\n" 
-                            self.getVisualManager().getCaseInfo().value += "ERROR .."+curr_shift.String("curr shft: ")+"\n"    
-                        
-                        if r["SchStart"] == startime:
-                            job.getMySch().setScheduledShift(curr_shift)
-                        if r["SchCompletion"] == comptime:
-                            job.getMySch().setScheduledCompShift(curr_shift)
+                            if earliestshft.getStartHour() > curr_shift.getStartHour():
+                                earliestshft = curr_shift
 
+                        if latestshft == None:
+                            latestshft = curr_shift
+                        else: 
+                            if latestshft.getStartHour() < curr_shift.getStartHour():
+                                latestshft = curr_shift
+
+                job.getMySch().setScheduledShift(earliestshft)
+                job.getMySch().setScheduledCompShift(latestshft)
+
+              
+                job.getMySch().setScheduledStart(earliestshft.getStartHour()+timedelta(minutes = scheduledict[earliestshft][0]*30))
+                job.getMySch().setScheduledCompletion(latestshft.getStartHour()+timedelta(minutes = scheduledict[latestshft][1]*30))
                     
-                        if not np.isnan(r["ActStart"]):
-                            if r["ActStart"] == actstartime:
-                                job.getMySch().setActualStartShift(curr_shift)
-
-                        if not np.isnan(r["ActCompletion"]):
-                            if r["ActCompletion"] == actcomptime:
-                                job.getMySch().setActualCompletionShift(curr_shift)
-
-                        
-
-                if (startime != None) and (comptime!= None):
-                    job.getMySch().setScheduledStart(strtshft+timedelta(minutes= 30*startime))
-                    job.getMySch().setScheduledCompletion(cpshft+timedelta(minutes= 30*comptime))  
-
+  
                 if job.getActualStatus() in ["Started","Completed"]:
-                    starttime = job.getMySch().getActualStartShift().getStartHour()+timedelta(minutes=30*actstartime)
-                    job.getMySch().setActualStart(starttime)
-                    
+                        job.getMySch().setActualStartShift(earliestshft)
+                        job.getMySch().setActualStart(earliestshft.getStartHour()+timedelta(minutes = scheduledict[earliestshft][0]*30))
+    
+                      
+    
                 if job.getActualStatus() == "Completed":
-                    comptime = job.getMySch().getActualCompletionShift().getStartHour()+timedelta(minutes=30*actcomptime)
-                    job.getMySch().setActualCompletion(comptime)
-                
-                    
-
+                        job.getMySch().setActualCompletionShift(latestshft)
+                        job.getMySch().setActualCompletion(latestshft.getStartHour()+timedelta(minutes = scheduledict[latestshft][1]*30))
+                  
                 
 
             #----------------------------------------------------------------------------------------------
