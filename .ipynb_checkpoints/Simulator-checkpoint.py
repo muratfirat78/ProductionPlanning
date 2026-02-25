@@ -42,11 +42,6 @@ class Simulator(object):
         self.SimulationManager = myvm
         return
 
-    def getMachines(self):
-        
-        return self.Machines
-
-
     def SystemClock(self,env,Progress):
    
        while True:
@@ -55,30 +50,6 @@ class Simulator(object):
                 event = self.Product_Proces(env,prod,Machine,Progress)
                 env.process(event)
                 yield env.timeout(0.01)
-    
-           
-        
-
-    # def Trolley_function(self,env,Trolley,job,end):
-    #     Trolley.setStatus(False)
-    #     if end.getName() == 'CentralBuffer':
-    #         product = job.getProduct()
-    #         quantity = job.getQuantity()            
-    #         with Trolley.getResource().request() as req:
-    #             yield req
-    #             yield env.timeout(0.01) #Travel time to central buffer
-    #             Trolley.setStatus(True)
-    #             for prd in range(quantity):
-    #                 simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())                      
-    #                 simprod.setLocation(CentralBuffer)                    
-    #                 CentralBuffer.getProducts().append(simprod)                
-    #     else:
-    #         Trolley.setJob(job)
-    #         with Trolley.getResource().request() as req:
-    #             yield req
-    #             yield env.timeout(0.01) #Traveltime of trolley
-    #             Trolley.setStatus(True)
-    #             env.process(self.Machine_function(env,end,job))
 
     def FloorShopManagerExecutes(self,env,FSM,operators,Progress,envstart):
             while True:
@@ -98,7 +69,7 @@ class Simulator(object):
                             FSM.queue.remove(batch)
                         if batch.process is None and batch.getTimeRemaining() > 0:                            
                             
-                            Machine = batch.getcurrentjob().getMyJob().getOperation().getRequiredResources()[0].getSimResource()
+                            Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()
                             Progress.value+= "Manager dispatches batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " to machine "+str(Machine.getName())+ "\n"
                             batch.setProcess(env.process(self.Batch_Proces(env,batch,Machine,operators,Progress,envstart)))
                             yield env.timeout(1) # check every time unit
@@ -164,7 +135,7 @@ class Simulator(object):
                 else:
                     batch.setcurrentjob(successor)
                     batch.setProcessTime(successor.getOperation().getProcessTime("min"))
-                    Machine = batch.getcurrentjob().getMyJob().getOperation().getRequiredResources()[0].getSimResource()                
+                    Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()                
                     Progress.value+="Moving batch "+ str(batch.getSN())+" to Floorshopmanager for next operation. " + "\n" + "\n"
                     batch.setTimeRemaining(batch.getProcessTime()*len(batch.getProducts()))
                     self.getSimulationManager().getFloorShopManager().add_batch(env,batch,Progress,envstart)
@@ -180,7 +151,7 @@ class Simulator(object):
 
         
     def SuccessorCheck(self, batch):
-        if len(batch.getcurrentjob().getMyJob().getSuccessors()) == 0:
+        if len(batch.getcurrentjob().getSuccessors()) == 0:
             return False
         else:
             return batch.getcurrentjob().getSuccessors()[0]
@@ -254,6 +225,9 @@ class Simulator(object):
 
         self.getSimulationManager().getEventQueue()[env.now] = []
 
+        ####HERE ARE THE PARAMETERS WE SET FOR THE ENVIRONMENT######
+
+        num_orders = 122
 
         ## This sets parameters for visualisation feedback to user
         start = datetime.datetime.combine(self.getSimulationManager().getSimStart(), datetime.datetime.min.time())
@@ -262,7 +236,7 @@ class Simulator(object):
         ######
        
         ###### Product creation for jobs that are first to do. This implementation is not based on the schedule information ######
-        # for name,order in self.getSimulationManager().getDataManager().getCustomerOrders().items():
+        # for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
         #     if len(order.getMyJobs()) == 0:
         #         continue
         #     else:
@@ -291,61 +265,22 @@ class Simulator(object):
         #################### Initializing events based on scheduling information #####################
 
         StartShift = schedmgr.getMyShifts()[SchedStart][0]
-        InitialJobs = []
-        Progress.value+="Setting up simulation starting situation"+"\n"
+        InitialJobs
         for resname,res  in datamgr.getResources().items():
-            if CurrentSchedule[resname].get(StartShift) is None or len(CurrentSchedule[resname][StartShift]) == 0:
+            if len(CurrentSchedule[resname][StartShift]) == 0:
                 continue
             else:
                 for job,value in CurrentSchedule[resname][StartShift].items():
-                    InitialJobs.append(job)
                     jobstarttime = job.getScheduledStart()
                     jobstartshift = job.getStartShift()
                     jobquantity = job.getJob().getQuantity()
                     jobprocesstime = job.getJob().getOperation().getProcessTime("min") ## Later we can add sampling from a distribution
                     if jobstartshift != StartShift:
                         jobquantity = jobquantity - Quantity_Processed(job,SchedStart,res)
-                    Progress.value+="job..Q"+str(jobquantity)+", preds: "+str(len(job.getJob().getPredecessors()))+"\n"
                     
-                    Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
-                    Batch.setcurrentjob(job)                        
-                    for prd in range(int(jobquantity)):
-                        if len(Batch.getProducts()) < Batch.getCapacity():
-                            simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                            simprod.setLocation(CentralBuffer)                                                                                              
-                            CentralBuffer.getProducts().append(simprod)
-                            Batch.getProducts().append(simprod)
-                        else:
-                            Machine = Batch.getcurrentjob().getMyJob().getOperation().getRequiredResources()[0].getSimResource()
-                            Batch.setProcess(env.process(self.Batch_Proces(env,batch,Machine,operators,Progress,envstart)))
-                            FloorShopManager.add_batch(env,Batch,Progress,eventStart)
-                            Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
-                            Batch.setcurrentjob(job)
-                            simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-                            simprod.setLocation(CentralBuffer)                                                                                              
-                            CentralBuffer.getProducts().append(simprod)
-                    Machine = Batch.getcurrentjob().getMyJob().getOperation().getRequiredResources()[0].getSimResource()
-                    Batch.setProcess(env.process(self.Batch_Proces(env,batch,Machine,operators,Progress,envstart)))
-                    Batch.setTimeRemaining(Batch.getProcessTime()*len(Batch.getProducts()))
-                    FloorShopManager.add_batch(env,Batch,Progress,eventStart)
-        if len(InitialJobs) == 0:
-            Progress.value+="No initial jobs running."+"\n"
-        else:
-            Progress.value+="Done setting up initial jobs"+"\n"
-
-        ##### This makes sure to collect all future jobs that have no predecessors that are also allowed to start #####
-        Future_Jobs = []
-        for name,order in self.getSimulationManager().getDataManager().getCustomerOrders().items():
-            if len(order.getMyJobs()) == 0 or order.getMyJobs()[0].getMySch().getScheduledStart() < StartShift.getStartHour():
-                continue
-            else:
-                for job in order.getMyJobs():
-                    if len(job.getPredecessors()) == 0 and job.getMySch() not in InitialJobs: #This means it is a new schedulable first job
-                        Future_Jobs.append(job.getMySch())
         
         ProdSystem.setBuffer(CentralBuffer)
         Progress.value+="Event Queue: ."+str(len(FloorShopManager.getQueue()))+"\n"
-        Progress.value+="Future jobs"+ str(len(Future_Jobs)) +"\n"
 
 
         self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Central buffer has "+str(len(CentralBuffer.getProducts()))+" products initially"+"\n"
@@ -364,31 +299,17 @@ class Simulator(object):
 
         def Quantity_Processsed(self,job,endtime,machine):
 
-            shifts = [(8, 16), (16, 24),(0, 8)]
             processtime = timedelta(minutes=job.getJob().getOperation().getProcessTime("min"))
             current = job.getScheduledStart()
-            quantity = 0                    
-            if machine.Automated:
-                while current + timedelta(minutes=processtime) < endtime:
+            quantity = 0
+
+            while current + timedelta(minutes=processtime) < endtime:
+
+                if machine.Automated == False:
                     if current.weekday() >=5:
                         days_until_monday = 7 - current.weekday()
                         next_day = current + timedelta(days=days_until_monday)
-                        current = current.replace(hour=8, minute=0, second=0, microsecond=0)
-                    else:
-                        current = current + timedelta(minutes=processtime)
-                        quantity +=1
-            else:
-                while current + timedelta(minutes=processtime) < endtime:
-                    if current.weekday() >= 5:
-                        days_until_monday = 7 - current.weekday()
-                        next_day = current + timedelta(days=days_until_monday)
-                        current = current.replace(hour=8, minute=0, second=0, microsecond=0)
-                    if 0 <= current + timedelta(minutes=processtime).hour() < 8:
-                        current = current.replace(hour=8, minute=0, second=0, microsecond=0)
-                    else:
-                        current = current + timedelta(minutes=processtime)
-                        quantity +=1
-            return quantity 
+                  
                         
         
         def shift_scheduler(env, machine):
@@ -426,6 +347,52 @@ class Simulator(object):
 
 
 #------------------------------------------------------------------------------------------        
-       
+class Workshop(object):
+
+    def __init(self,env,simulator,num_trays,granularity): #Later on we define more variables that we use to simulate the workshop
+        self.env = env;
+        self.resources = Define_resources(simulator);
+        self.operators = Define_operators(simulator);
+        self.trays = simpy.Resource(env,num_trays);
+        self.granularity = granularity #We define the granularity in minutes. This will mean that 1 timestep in simulation is granularity minutes in real life
+
+    def Define_resources(self,simulator):
+        resources = dict();       
+         
+        for resname,res  in simulator.getSimulationManager().getDataManager().getResources().items():
+            if res.getType() == "Machine":
+                simmach = simulator.getSimulationManager().createMachine(env,res)
+                res.setSimResource(simmach)
+                resources[resname]= simmach
+            
+            if res.getType() == "Outsourced":
+                simsub = simulator.getSimulationManager().createSubcontractor(env,res)
+                res.setSimResource(simsub)
+                resources[resname]= simsub
+
+            return resources
+            
+            if res.getType() == "Operator":
+                simop = self.getSimulationManager().createOperator(env,res)
+                res.setSimResource(simop)
+                ProdSystem.getOperators().append(simop)
+
+    def Define_operators(self, simulator):
+        operators = dict();
+
+        for resname,res  in simulator.getSimulationManager().getDataManager().getResources().items():            
+            
+            if res.getType() == "Operator":
+                simop = simulator.getSimulationManager().createOperator(env,res)
+                res.setSimResource(simop)
+                operators[resname] = res
+
+            return operators
+
+    def Process_job(self,job,resource,granularity):
+        res = self.resources[resource];
+
+        
+        
 
   

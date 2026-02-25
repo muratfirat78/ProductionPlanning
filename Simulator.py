@@ -42,11 +42,6 @@ class Simulator(object):
         self.SimulationManager = myvm
         return
 
-    def getMachines(self):
-        
-        return self.Machines
-
-
     def SystemClock(self,env,Progress):
    
        while True:
@@ -55,30 +50,6 @@ class Simulator(object):
                 event = self.Product_Proces(env,prod,Machine,Progress)
                 env.process(event)
                 yield env.timeout(0.01)
-    
-           
-        
-
-    # def Trolley_function(self,env,Trolley,job,end):
-    #     Trolley.setStatus(False)
-    #     if end.getName() == 'CentralBuffer':
-    #         product = job.getProduct()
-    #         quantity = job.getQuantity()            
-    #         with Trolley.getResource().request() as req:
-    #             yield req
-    #             yield env.timeout(0.01) #Travel time to central buffer
-    #             Trolley.setStatus(True)
-    #             for prd in range(quantity):
-    #                 simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())                      
-    #                 simprod.setLocation(CentralBuffer)                    
-    #                 CentralBuffer.getProducts().append(simprod)                
-    #     else:
-    #         Trolley.setJob(job)
-    #         with Trolley.getResource().request() as req:
-    #             yield req
-    #             yield env.timeout(0.01) #Traveltime of trolley
-    #             Trolley.setStatus(True)
-    #             env.process(self.Machine_function(env,end,job))
 
     def FloorShopManagerExecutes(self,env,FSM,operators,Progress,envstart):
             while True:
@@ -376,6 +347,52 @@ class Simulator(object):
 
 
 #------------------------------------------------------------------------------------------        
-       
+class Workshop(object):
+
+    def __init(self,env,simulator,num_trays,granularity): #Later on we define more variables that we use to simulate the workshop
+        self.env = env;
+        self.resources = Define_resources(simulator);
+        self.operators = Define_operators(simulator);
+        self.trays = simpy.Resource(env,num_trays);
+        self.granularity = granularity #We define the granularity in minutes. This will mean that 1 timestep in simulation is granularity minutes in real life
+
+    def Define_resources(self,simulator):
+        resources = dict();       
+         
+        for resname,res  in simulator.getSimulationManager().getDataManager().getResources().items():
+            if res.getType() == "Machine":
+                simmach = simulator.getSimulationManager().createMachine(env,res)
+                res.setSimResource(simmach)
+                resources[resname]= simmach
+            
+            if res.getType() == "Outsourced":
+                simsub = simulator.getSimulationManager().createSubcontractor(env,res)
+                res.setSimResource(simsub)
+                resources[resname]= simsub
+
+            return resources
+            
+            if res.getType() == "Operator":
+                simop = self.getSimulationManager().createOperator(env,res)
+                res.setSimResource(simop)
+                ProdSystem.getOperators().append(simop)
+
+    def Define_operators(self, simulator):
+        operators = dict();
+
+        for resname,res  in simulator.getSimulationManager().getDataManager().getResources().items():            
+            
+            if res.getType() == "Operator":
+                simop = simulator.getSimulationManager().createOperator(env,res)
+                res.setSimResource(simop)
+                operators[resname] = res
+
+            return operators
+
+    def Process_job(self,job,resource,granularity):
+        res = self.resources[resource];
+
+        
+        
 
   
