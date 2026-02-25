@@ -1464,7 +1464,8 @@ class VisualManager():
         
         self.getPSTBResName().value = sel_resource.getName()
         self.getPSTBResType().value = sel_resource.getType()
-        self.getPSTBResCap().value = str(sel_resource.getAvailableShifts())
+        self.getPSTBResCap().value = ",".join([str(x) for x in sel_resource.getAvailableShifts()])
+        
         self.getPSTBResFTE().value = str(100*sel_resource.getOperatingEffort())+" %"
 
        
@@ -1953,15 +1954,22 @@ class VisualManager():
 
     def ShowEdits(self,event):
 
-
-        if self.PSTBEditBox.layout.visibility == 'hidden':
-            self.PSTBEditBox.layout.display = 'block'
-            self.PSTBEditBox.layout.visibility  = 'visible'
+        shifts_str = self.getPSTBResCap().value
         
-        else:
-            self.PSTBEditBox.layout.visibility  = 'hidden'
-            self.PSTBEditBox.layout.display = 'none'
-
+        try: 
+            shifts = None
+            
+            if shifts_str.find(",") > -1:
+                shiftlst = shifts_str.split(",")
+                shifts = [int(x) for x in shiftlst]
+            else:
+                shifts = int(shifts_str)
+                
+            self.getPSTBResCap().value = str(shifts)+"**"
+           
+            
+        except: 
+            self.getPSTBResCap().value = "error"
 
         return 
         
@@ -2003,8 +2011,20 @@ class VisualManager():
         self.setPSTBResName(widgets.Label(value='',disabled = True))
         self.setPSTBResType(widgets.Label(value ='',disabled = True))
         self.setPSTBResFTE(widgets.Label(value ='',disabled = True))
+        
         self.setPSTBResCap(widgets.Label(value ='',disabled = True))
-        #self.setPSTB(widgets.Label(value ='',disabled = True))
+
+        from ipywidgets import Text, Layout, HTML
+        display(HTML("""
+        <style> .my-short-text input {height: 22px; width:40px; disabled= True; !important; padding: 0 !important;}
+        </style>
+        """))
+       
+
+        self.setPSTBResCap( widgets.Text('', _dom_classes=["my-short-text"]))
+        self.getPSTBResCap().layout.width = '50px'
+        self.getPSTBResCap().layout.height = '25px'
+
 
         rsnl = widgets.Label(value ='Name:')
         rsnl.add_class("blue_label")
@@ -2016,13 +2036,11 @@ class VisualManager():
         rscl.add_class("blue_label")
 
 
-        self.setPSTBresedit_btn(widgets.Button(description="Edit"))
-        self.getPSTBresedit_btn().layout.width = '80px'
+        self.setPSTBresedit_btn(widgets.Button(description="Save"))
+        self.getPSTBresedit_btn().layout.width = '60px'
         self.getPSTBresedit_btn().layout.height = '25px'
         self.getPSTBresedit_btn().on_click(self.ShowEdits)
 
-
-        self.setShiftsEdit(widgets.Text(description ='Shifts:',value=''))
 
         self.setAvailabilityStart(widgets.DatePicker(description='Start',disabled=False))
         self.getAvailabilityStart().value = datetime.now()
@@ -2030,17 +2048,17 @@ class VisualManager():
         self.getAvailabilityEnd().value = datetime.now()
 
 
-        self.PSTBInfoBox = HBox(children=[rstl,self.getPSTBResType(),widgets.Label(value =  " | ",disabled = True),ftel,self.getPSTBResFTE(),widgets.Label(value =  " | ",disabled = True),rscl,self.getPSTBResCap()])
-        self.PSTBEditBox = HBox(children=[self.getAvailabilityStart(),self.getAvailabilityEnd(),self.getShiftsEdit()])
+        self.PSTBInfoBox = HBox(children=[rstl,self.getPSTBResType(),widgets.Label(value =  " | ",disabled = True),ftel,self.getPSTBResFTE(),widgets.Label(value =  " | ",disabled = True),rscl,self.getPSTBResCap(),self.getPSTBresedit_btn()])
+  
      
        
        
 
         tb4_vbox1 = VBox(children = [
                                      HBox(children=[res_box]),self.getPSTBNewResName(),self.getPSTBNewResType(),self.getPSTBNewResCap(),
-                      self.getPSTBresedit_btn(),
+                  
                      HBox(children=[rsnl,self.getPSTBResName()]),
-                     self.PSTBInfoBox,self.PSTBEditBox,
+                     self.PSTBInfoBox,
                      HBox(children=[self.getPSTBaddres_btn(),self.getPSTBcanclres_btn()]),ressel_box
                                     ]
                         )
@@ -2296,10 +2314,6 @@ class VisualManager():
                                    #self.getCOTBsave_bttn(),self.getCOTBcasename(), 
                                    datadiag,self.getDataDiaOpt(),self.getDataDiaBtn()]),
                                HBox(children=[self.getDiagInfo()])])
-
-
-        self.PSTBEditBox.layout.visibility  = 'hidden'
-        self.PSTBEditBox.layout.display = 'none'
 
         return tab_4
 
