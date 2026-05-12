@@ -1,398 +1,733 @@
-# -*- coding: utf-8 -*-
-
-##### import ipywidgets as widgets
-from IPython.display import clear_output
-from IPython import display
-from ipywidgets import *
-from datetime import timedelta,date,datetime,time
-import matplotlib.pyplot as plt
-import warnings
-import seaborn as sns
-import os
+from datetime import timedelta,date
+import random
 import pandas as pd
-import warnings
-import sys
-import numpy as np
-import math as mth
-from PlanningObjects import *
-from Visual import *
-from Data import *
-import simpy
-from numpy import random
-import pandas as pd 
-import numpy as np
-import math
-import datetime
-import time
-from Simulation import *
-from itertools import islice
-
-#######################################################################################################################
 
 
 class Simulator(object):
-    
-    def __init__(self): 
-        self.SimulationManager = None
-    
-  
-    def getSimulationManager(self):
-        return self.SimulationManager
-    def setSimulationManager(self,myvm):
-        self.SimulationManager = myvm
+    def __init__(self,timelimit):
+        
+        self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
+        self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
+        self.queue = {} #key: time (start/completion times of events) , val: [event]
+        self.time = 0
+        self.eventno = 0
+        self.TimeLimit = timelimit
+        self.queue["Pending"] = []
+        self.DataTypes = dict() # key: dataset name, val: dataframe objects. 
+
+    def getDataTypes(self):
+        return self.DataTypes
+
+    def InsertDataRow(self,datatype,row):
+        self.getDataTypes()[datatype].loc[len(self.getDataTypes()[datatype])] = row
         return
 
-    def SystemClock(self,env,Progress):
+    def getEventData(self):
+        return self.EventData
+    def getExecutionData(self):
+        return self.ExecutionData
+        
    
-       while True:
-            for prod in self.getSimulationManager().getAltEventQueue():
-                Machine = prod.getJob().getOperation().getRequiredResources()[0].getSimResource()            
-                event = self.Product_Proces(env,prod,Machine,Progress)
-                env.process(event)
-                yield env.timeout(0.01)
+    def getTimeLimit(self):
+        return self.TimeLimit
 
-    def FloorShopManagerExecutes(self,env,FSM,operators,Progress,envstart):
-            while True:
-                while not (env.now%1440) >= 480 and FSM.queue !=[]:
-                    
-                    for batch in FSM.queue:
-                        if batch.process is not None and batch.getTimeRemaining() > 0 and batch.getcurrentjob().getOperation().getRequiredResources()[0].Automated == False:                            
-                            batch.process.interrupt()
-                            batch.process = None
-                    Progress.value+= "\n" + "Machines are closed for receiving new jobs. Manager is waiting for the new day to dispatch the batches " + "\n"
-                    yield env.timeout(480 - (env.now%1440))                    
-                    
-                if FSM.queue:
-                    
-                    for batch in FSM.queue:
-                        if batch.getTimeRemaining() == 0:
-                            FSM.queue.remove(batch)
-                        if batch.process is None and batch.getTimeRemaining() > 0:                            
-                            
-                            Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()
-                            Progress.value+= "Manager dispatches batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " to machine "+str(Machine.getName())+ "\n"
-                            batch.setProcess(env.process(self.Batch_Proces(env,batch,Machine,operators,Progress,envstart)))
-                            yield env.timeout(1) # check every time unit
-                yield env.timeout(1)
-                    
-                     
-                             
-                            
-
-
-                    
-                    # Decision rule: pick shortest batch first
-                    # batch = min(FSM.getQueue(), key=lambda b: b.getProcessTime())
-                    #FSM.queue.remove(batch)
-                    # Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()
-                    ## Manager only dispatches jobs in the morning and evening shift, not the nightshift. For now we simulate a waittime of
-                #     while not Machine.IsOpen(env.now):
-                #         Progress.value+= "Machines are closed for receiving new jobs. Manager is waiting for the new day to dispatch the batches " + "\n"
-                #         yield env.timeout(480 - (env.now%1440))
-                #     Progress.value+= "Manager dispatches batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " to machine "+str(Machine.getName())+ "\n"
-                    
-                #     batch.process = env.process(self.Batch_Proces(env,batch,Machine,Progress,envstart))
-                # yield env.timeout(1)  # check every time unit
-
-
-                
     
-    def Batch_Proces(self,env,batch,Machine,operators,Progress,envstart):
-        fte_set = False
-        try:            
-            while not Machine.IsOpen(env.now):
-                yield env.timeout(480-(env.now % 1440)) #Check again when new day starts
+    def RunSimulation(self,OperationsMgr): 
+
+        while self.getTime() < self.getTimeLimit():
+            self.updateTime()
+            self.executeEvents(OperationsMgr)
+
+        OperationsMgr.writeData()
+
+        return
+################################################################################################################        
+    def executeEvents(self,workmgr):
+
+        print(" > "+str(self.getTime())+": Pending events ",len(self.getEventQueue()["Pending"]))
+
+        pending_events =[e for e in self.getEventQueue()["Pending"]]
+
+        for event in pending_events: 
+            if workmgr.handleEvent(event):
+                self.getEventQueue()["Pending"].remove(event)
+             
+
+        if self.time in self.queue:
+            ev_round = 1
+            time_events =[e for e in self.queue[self.time]] # scheduled/started events
+
             
-            with Machine.getResource().request() as req:                
-                yield req
-                if Machine.type == 'Machine':
-                    yield operators.get(Machine.getFTERequirement()) # This is the fraction of FTE that gets consumed during the request
-                    fte_set = True
-                #Set start time
-                if batch.initialstarttime == None:
-                    batch.setInitialStartTime(env.now * envstart[1])
-                    batch.setInternalStartTime(env.now)
-                else:
-                   batch.setInternalStartTime(env.now) 
-                Progress.value+="Processing Batch "+str(batch.getSN()) +" at time: "+str(envstart[0] + env.now * envstart[1])+ " on machine: " + str(Machine.getName())+ "\n"    
-                
-                
-                #This means that this batch can be finished on
-                
-                yield env.timeout(batch.getTimeRemaining())
-                batch.setTimeRemaining(0) # This will only update if there is a successor job.
-                batch.setProcess(None) #The operation is complete. The current process does no longer need to be able to be interrupted
-    
-                    
-                Progress.value+="Done Processing products from batch "+str(batch.getSN()) +" at time: "+str(envstart[0] + env.now * envstart[1])+ " on machine: " + str(Machine.getName())+ "\n"
-                
-                successor = self.SuccessorCheck(batch)
-                if successor == False:                
-                    Progress.value+="This was the final job of the batch, moving finished products to buffer" + "\n"
-                    for product in batch.getProducts():
-                        self.getSimulationManager().getProdSystem().getBuffer().getProducts().append(product) #Product is finished --> Move to buffer
-                    Progress.value+="Moved products from batch "+str(batch.getSN()) +" to buffer at time: "+str(envstart[0] + env.now * envstart[1])+"\n" + "\n"
-                else:
-                    batch.setcurrentjob(successor)
-                    batch.setProcessTime(successor.getOperation().getProcessTime("min"))
-                    Machine = batch.getcurrentjob().getOperation().getRequiredResources()[0].getSimResource()                
-                    Progress.value+="Moving batch "+ str(batch.getSN())+" to Floorshopmanager for next operation. " + "\n" + "\n"
-                    batch.setTimeRemaining(batch.getProcessTime()*len(batch.getProducts()))
-                    self.getSimulationManager().getFloorShopManager().add_batch(env,batch,Progress,envstart)
-                    # event = self.Batch_Proces(env,batch,Machine,Progress,envstart)
-                    # env.process(event)
-        except simpy.Interrupt:
-            Progress.value+= "Manager interrupting batch " + str(batch.getSN()) + " at time "+ str(envstart[0] + env.now * envstart[1]) + " on machine "+str(Machine.getName())+ " due to schop closing."+ "\n"
-            elapsed = env.now - batch.getInternalStartTime()
-            batch.timeremaining -= elapsed
-        finally:
-            if fte_set and Machine.type=='Machine':
-                operators.put(Machine.getFTERequirement())
+            while len(time_events) > 0: 
+                print(" > "+str(self.getTime())+": Non-pending events ",len(time_events),"(",ev_round,")",[i.getName()+"("+str(i.getID())+")" for i in time_events])
 
-        
-    def SuccessorCheck(self, batch):
-        if len(batch.getcurrentjob().getSuccessors()) == 0:
-            return False
-        else:
-            return batch.getcurrentjob().getSuccessors()[0]
-       
-    def RunSimulation(self):
-
-        Progress = self.getSimulationManager().getVisualManager().getPSchScheRes()
-
-        datamgr = self.getSimulationManager().getDataManager()
-
-        schedmgr = self.getSimulationManager().getSchedulingManager()
-
-        Progress.value+="Simulation starts.."+"\n"
-
-        Progress.value+="Simulation period is based on the selected scheduling period..."
-
-        Progress.value+="Simulation period "+str(schedmgr.getSHStart().date())+"-"+str((schedmgr.getSHStart() + timedelta(weeks=schedmgr.getSHEnd())).date())+"\n"
-
-        env = simpy.Environment()
-
-        #self.getSimulationManager().getVisualManager().getPSchScheRes().value+="..."+str(env)+"\n"
-
-        CentralBuffer = self.getSimulationManager().createBuffer(env,"CentralBuffer",10000000)
-
-        Progress.value+="Central buffer created with cap.."+str(CentralBuffer.getCapacity())+"\n"
-   
-
-
-        ###-------------------------Here we initialize the shifts and current schedule based on the scheduling information----------------------------------###
-        Progress.value+="Shifts initialized in days: "+str(len(schedmgr.getMyShifts()))+"\n"
-
-        SchedStart = schedmgr.getSHStart().date()
-
-        CurrentSchedule = schedmgr.getMyCurrentSchedule().getResourceSchedules()
-
-        ###-------------------------end initialize the shifts based on the scheduling information------------------------------------###
-
-        Progress.value+="Customer orders.."+str(len(datamgr.getCustomerOrders()))+"\n"
-
-
-        ProdSystem = self.getSimulationManager().createProductionSystem(env,"TBRM_Machine_BV")
-
-        FloorShopManager = self.getSimulationManager().createFloorShopManager(env)
-
-        for resname,res  in datamgr.getResources().items():
-            if res.getType() == "Machine":
-
-                simmach = self.getSimulationManager().createMachine(env,res)
-                res.setSimResource(simmach)
-                ProdSystem.getMachines().append(simmach)
-            if res.getType() == "Outsourced":
-
-                simsub = self.getSimulationManager().createSubcontractor(env,res)
-                res.setSimResource(simsub)
-                ProdSystem.getSubcontractors().append(simsub)               
-                
-            if res.getType() == "Operator":
-                simop = self.getSimulationManager().createOperator(env,res)
-                res.setSimResource(simop)
-                ProdSystem.getOperators().append(simop)   
-                
-      
-
-        
-        for i in range(5):
-            ProdSystem.getTrolleys().append(self.getSimulationManager().createTrolley(env,"Trolley_"+str(i)))
-            
-
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+=ProdSystem.print()+"\n"
-
-
-        self.getSimulationManager().getEventQueue()[env.now] = []
-
-        ####HERE ARE THE PARAMETERS WE SET FOR THE ENVIRONMENT######
-
-        num_orders = 122
-
-        ## This sets parameters for visualisation feedback to user
-        start = datetime.datetime.combine(self.getSimulationManager().getSimStart(), datetime.datetime.min.time())
-        scale = timedelta(minutes=1)
-        eventStart = [start,scale]
-        ######
-       
-        ###### Product creation for jobs that are first to do. This implementation is not based on the schedule information ######
-        # for name,order in islice(self.getSimulationManager().getDataManager().getCustomerOrders().items(),num_orders):
-        #     if len(order.getMyJobs()) == 0:
-        #         continue
-        #     else:
-        #         Progress.value+="Customer order.."+str(name)+" jobs "+str(len(order.getMyJobs()))+"\n"
-        #         for job in order.getMyJobs():                                        
-        #             Progress.value+="job..Q"+str(job.getQuantity())+", preds: "+str(len(job.getPredecessors()))+"\n"
-        #             if len(job.getPredecessors()) == 0: #This means it is a schedulable first job
-        #                 Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
-        #                 Batch.setcurrentjob(job)                        
-        #                 for prd in range(int(job.getQuantity())):
-        #                     if len(Batch.getProducts()) < Batch.getCapacity():
-        #                         simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-        #                         simprod.setLocation(CentralBuffer)                                                                                              
-        #                         CentralBuffer.getProducts().append(simprod)
-        #                         Batch.getProducts().append(simprod)
-        #                     else:
-        #                         FloorShopManager.add_batch(env,Batch,Progress,eventStart)
-        #                         Batch = self.getSimulationManager().createBatch(env,job,len(FloorShopManager.getQueue()))
-        #                         Batch.setcurrentjob(job)
-        #                         simprod = self.getSimulationManager().createProduct(env,job,self.getSimulationManager().getProdSN())
-        #                         simprod.setLocation(CentralBuffer)                                                                                              
-        #                         CentralBuffer.getProducts().append(simprod)
-        #                 Batch.setTimeRemaining(Batch.getProcessTime()*len(Batch.getProducts()))
-        #                 FloorShopManager.add_batch(env,Batch,Progress,eventStart)
-
-        #################### Initializing events based on scheduling information #####################
-
-        StartShift = schedmgr.getMyShifts()[SchedStart][0]
-        InitialJobs
-        for resname,res  in datamgr.getResources().items():
-            if len(CurrentSchedule[resname][StartShift]) == 0:
-                continue
-            else:
-                for job,value in CurrentSchedule[resname][StartShift].items():
-                    jobstarttime = job.getScheduledStart()
-                    jobstartshift = job.getStartShift()
-                    jobquantity = job.getJob().getQuantity()
-                    jobprocesstime = job.getJob().getOperation().getProcessTime("min") ## Later we can add sampling from a distribution
-                    if jobstartshift != StartShift:
-                        jobquantity = jobquantity - Quantity_Processed(job,SchedStart,res)
-                    
-        
-        ProdSystem.setBuffer(CentralBuffer)
-        Progress.value+="Event Queue: ."+str(len(FloorShopManager.getQueue()))+"\n"
-
-
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Central buffer has "+str(len(CentralBuffer.getProducts()))+" products initially"+"\n"
-            
-        st = time.time() # get the start time
-        Progress.value+="Start time: ."+str(self.getSimulationManager().getSimStart())+"\n"
-        Progress.value+="End time: ."+str(self.getSimulationManager().getSimEnd())+"\n"
-        planninghorizon = (self.getSimulationManager().getSimEnd() - self.getSimulationManager().getSimStart()).days+1  # days
-        weekno = self.getSimulationManager().getSimStart().isocalendar()[1]
-        
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+="Simulation week start "+str(weekno)+", days: "+str(planninghorizon)+"\n"
-
-       
-        
-        completiontime = 1440*planninghorizon   # Sim time in minutes
-
-        def Quantity_Processsed(self,job,endtime,machine):
-
-            processtime = timedelta(minutes=job.getJob().getOperation().getProcessTime("min"))
-            current = job.getScheduledStart()
-            quantity = 0
-
-            while current + timedelta(minutes=processtime) < endtime:
-
-                if machine.Automated == False:
-                    if current.weekday() >=5:
-                        days_until_monday = 7 - current.weekday()
-                        next_day = current + timedelta(days=days_until_monday)
-                  
-                        
-        
-        def shift_scheduler(env, machine):
-            """Weekly calendar: 3 shifts per day, jobs only allowed in first 2."""
-            day_length = 24
-            shifts = [(8, 16), (16, 24),(0, 8)]  # three shifts per day
-        
-            while True:
-                for start, end in shifts:
-                    # Only allow jobs in first two shifts
-                    if start >= 8:
-                        machine.open = True
-
+                event_progress = 0
+                for event in time_events:
+                    if event.IsActive():  # completion of event
+                        event_progress+=1
+                        workmgr.commpleteEvent(event)
+                        self.queue[self.time].remove(event)   
                     else:
-                        machine.open = False
+                        workmgr.startEvent(event)    
+                        self.queue[self.time].remove(event)
+                        event_progress+=1          
+                if event_progress== 0: 
+                    print("All events pendig!!!")
 
-        
-                    yield env.timeout(end - start)        
-
-        #env.process(self.SystemClock(env,Progress))
-
-        # for batch in self.getSimulationManager().getAltEventQueue():
-        #         Machine = batch.getJob().getOperation().getRequiredResources()[0].getSimResource()            
-        #         event = self.Batch_Proces(env,batch,Machine,Progress,eventStart)
-        #         env.process(event)
-
-        Operatorpool = simpy.Container(env,init=100)
-        env.process(self.FloorShopManagerExecutes(env,FloorShopManager,Operatorpool,Progress,eventStart))
-        # Execute
-        env.run(until=completiontime)
-        
-        self.getSimulationManager().getVisualManager().getPSchScheRes().value+= '-> Execution time: '+str(round(time.time() - st,2))+' seconds'
+                time_events =[e for e in self.queue[self.time]] # scheduled/started events
+                ev_round+=1
+            
      
+        return
+#############################################################################################################################          
+    def ScheduleEvent(self,event, time):
+    
+        if not time in self.getEventQueue():
+            self.getEventQueue()[time] = []
+        print(" > "+str(self.getTime())+", "+event.print()+" in scheduled ? ",event in self.getEventQueue()[time])
+        if not event in self.getEventQueue()[time]:
+            self.getEventQueue()[time].append(event)
+            print(" > "+str(self.getTime())+", "+event.print()+" scheduled start at time "+str(time))
+
+        # schedule completion
+        if time != "Pending":
+            if not (time+event.getProcessTime()) in self.getEventQueue():
+                self.getEventQueue()[time+event.getProcessTime()] = []
+            
+            if not event in self.getEventQueue()[time+event.getProcessTime()]:
+                self.getEventQueue()[time+event.getProcessTime()].append(event)    
+                print(" > "+str(self.getTime())+", "+event.print()+" scheduled completion at time "+str(time+event.getProcessTime()))
+            
+
+        return 
+############################################################################################################################
+        self.writeData()
+    def updateTime(self):
+        self.time+=1
+        return
+    def getTime(self):
+        return self.time
+    def getEventNo(self):
+        self.eventno+=1
+        return self.eventno
+    def getEventQueue(self):
+        return self.queue
+#______________________________________________________________________________________
+
+
+class EventType(object):
+    def __init__(self,myname,restype,equiptype,static,loading,process):
+        self.Name = myname
+        self.ResourceType = restype # to help assigning 
+        self.EquipmentType = equiptype # to help selecting    
+     
+        self.precendenceDict = dict() #key: successor event name, val: properties directly transformed to successor event
+        self.decisionsDict = dict() #key: successor event name, val: decision to be made before the successor event scheduled
+        self.static = static
+        self.loading = loading # if static is False, this is not relevant. If static True and Loading false, then this is unloading. 
+        self.process = process
+        self.successortype = None
+        self.predecesortype = None
+
+    def setPredecessorType(self,myev):
+        self.predecessortype = myev
+        myev.setSuccessorType(self)
+        return
+    def getPredecessorType(self):
+        return self.predecessortype
+    def setSuccessorType(self,mysucc):
+        self.successortype = mysucc
+        return
+    def getSuccessorType(self):
+        return self.successortype
+        
+
+    def isStatic(self):
+        return self.static
+
+    def isLoading(self):
+        return self.loading
+
+    def isProcess(self):
+        return self.process
+    
+
+    def getDecisionsDict(self):
+        return self.decisionsDict
+
+    def getPrecendenceDict(self):
+        return self.precendenceDict
+   
+
+    def getName(self):
+        return self.Name
+
+    def getResourceType(self):
+        return self.ResourceType
+   
+    def getEquipmentType(self):
+        return self.EquipmentType
+
+ 
+
+
+############################################################################
+
+class Event(object):
+    def __init__(self,loc,start,proctime,sim,eventype):
+        self.EventType = eventype    
+        self.ID = sim.getEventNo()   
+        self.Location = loc  # static: resource, dynamic: (from buffer,to buffer)   
+        self.StartTime = start
+        self.ProcessTime = proctime     
+        self.active = False    
+        self.InfoDictionary = dict() # processing: ("operation",operation obj)
+        self.ItemSource = None # this is where items will be selected
+        self.Simulator = sim
+        self.Resource = None 
+        self.Equipment = None
+        self.Items = []
+        self.Place = None
+        self.successor = None
+        self.predecesor = None
+
+
+    def setPlace(self,myown):
+        self.Place = myown
+        return
+    def getPlace(self):
+        return self.Place
+        
+
+    
+    def setPredecessor(self,myev):
+        self.predecessor = myev
+        return
+    def getPredecessor(self):
+        return self.predecessor
+    def setSuccessor(self,mysucc):
+        self.successor = mysucc
+        mysucc.setPredecessor(self)
+        return
+    def getSuccessor(self):
+        return self.successor
+    
+
+    def getEventType(self):
+        return self.EventType
+
+    def getSimulator(self):
+        return self.Simulator
+
+    def getName(self):
+        return self.EventType.getName()
+
+    def setItemSource(self,myres):
+        self.ItemSource = myres
+        return 
+        
+    def getItemSource(self):
+        return self.ItemSource
+
+    def getItems(self):
+        return self.Items
+
+    def getResource(self):
+        return self.Resource
+    def setResource(self,myres):
+        self.Resource = myres
+        return 
+    def getEquipment(self):
+        return self.Equipment
+    def setEquipment(self,myequip):
+        self.Equipment = myequip
+        return
+
+    def print(self):
+
+        equip = "Pending" if self.Equipment == None else self.Equipment.getName()
+
+        res = "Pending" if self.Resource == None else self.Resource.getName()
+
+        loc_str = ""
+        
+        if isinstance(self.getLocation(),tuple):
+            loc_str= self.getLocation()[0].getName()+"->"+self.getLocation()[1].getName()
+        else:
+            loc_str = self.getLocation().getName()
+
+
+        return str(self.getEventType().getName())+"("+str(self.getID())+"): "+loc_str+("" if self.getPlace() == None else ", place: "+self.getPlace().getName())+", equip: "+equip+", res: "+res+",  ["+ "-".join([str(i.getID()) for i in self.getItems()])+"], proctime: "+str(self.ProcessTime)
+        
+    def getProcessTime(self):
+        return self.ProcessTime 
+
+    def getInfoDict(self):
+        return self.InfoDictionary
+
+    def getLocation(self):
+        return self.Location
+
+    
+    def setLocation(self,myloc):
+        self.Location = myloc
+        return 
+    
+        
+    def getID(self):
+        return self.ID
+ 
+    def setActive(self):
+        self.active = True
+        return 
+    def setInActive(self):
+        self.active = False
+        return 
+        
+    def IsActive(self):
+        return self.active
+         
+    def setStartTime(self,mystrt):
+        self.StartTime = mystrt
+    def getStartTime(self):
+        return self.StartTime 
+  
+
+##################################################################################################################################    
+class Resource(object):
+    def __init__(self,mytype,mycap,sim,workmgr):
+        self.Simulator = sim
+        self.WorkMgr = workmgr
+        self.Type = mytype
+        self.capacity = mycap
+        self.Items = [] 
+        self.LocationData= [] # [{"Entity": Name, "EntityID":...,"EventName":...,"EventID":...,"LocationID"",...,"LocationName":...,,"ArrivalTime":...,"}]
+
+   
+        self.location = None
+        self.Status = "Idle" # or "Busy"
+        
+        self.MyEvents = []
+        self.AssignedEvents = []
+        self.ID = workmgr.giveResouceID()
+        self.Name = mytype+"_"+str(self.ID)
+        self.Itemcriteria = dict()
+
+    def getLocationData(self):
+        return self.LocationData
+        
+    def getItemCriteria(self):
+        return self.Itemcriteria
+
+
+    def generateEvent(self):
+        # overwritten by subclassess
+        return
+
+
+    
+    def getCapacity(self):
+        return self.capacity
+
+    def setItemCriteria(self,resource):
         return 
 
+    def setLocation(self,myloc):
+        self.location = myloc
+        return
+    def getLocation(self):
+        return self.location
+    def setBusy(self):
+        self.Status = "Busy"
+        return
+    def setAssigned(self):
+        self.Status = "Assigned"
+        return
+    def setIdle(self):
+        self.Status = "Idle"
+        return 
+    def getWorkMgr(self):
+        return self.WorkMgr
+    def IsIdle(self):
+        return self.Status == "Idle"
 
-#------------------------------------------------------------------------------------------        
-class Workshop(object):
 
-    def __init(self,env,simulator,num_trays,granularity): #Later on we define more variables that we use to simulate the workshop
-        self.env = env;
-        self.resources = Define_resources(simulator);
-        self.operators = Define_operators(simulator);
-        self.trays = simpy.Resource(env,num_trays);
-        self.granularity = granularity #We define the granularity in minutes. This will mean that 1 timestep in simulation is granularity minutes in real life
+    def getID(self):
+        return self.ID
+       
+    def getName(self):
+        return self.Name  
+    def getType(self):
+        return self.Type
+    def print(self):
+        print("Res: ",self.Type,", cap: ",self.capacity)
+    def getItems(self):
+        return self.Items
 
-    def Define_resources(self,simulator):
-        resources = dict();       
-         
-        for resname,res  in simulator.getSimulationManager().getDataManager().getResources().items():
-            if res.getType() == "Machine":
-                simmach = simulator.getSimulationManager().createMachine(env,res)
-                res.setSimResource(simmach)
-                resources[resname]= simmach
-            
-            if res.getType() == "Outsourced":
-                simsub = simulator.getSimulationManager().createSubcontractor(env,res)
-                res.setSimResource(simsub)
-                resources[resname]= simsub
-
-            return resources
-            
-            if res.getType() == "Operator":
-                simop = self.getSimulationManager().createOperator(env,res)
-                res.setSimResource(simop)
-                ProdSystem.getOperators().append(simop)
-
-    def Define_operators(self, simulator):
-        operators = dict();
-
-        for resname,res  in simulator.getSimulationManager().getDataManager().getResources().items():            
-            
-            if res.getType() == "Operator":
-                simop = simulator.getSimulationManager().createOperator(env,res)
-                res.setSimResource(simop)
-                operators[resname] = res
-
-            return operators
-
-    def Process_job(self,job,resource,granularity):
-        res = self.resources[resource];
-
+    def removeItem(self):
+        # overwritten by subclassess
+        return
         
+    def getSimulator(self):
+        return self.Simulator
+
+   
+    
+    def getMyEvents(self):
+        return self.MyEvents
+
+    def getAssignedEvents(self):
+        return self.AssignedEvents
+
+#______________________________________________________________________________________________________
+class RandomVar(object):
+    def __init__(self):
+        self.Sampling = []
+        self.Parameters = dict()
+
+    def getParameters(self):
+        return self.Parameters
+
+    def getSampling(self):
+        return self.Sampling
+
+    def sampleValue(self):
+        return random.choice(self.getSampling())
+    
+#_______________________________________________________________________       
+class Process(object):
+    
+    def __init__(self,name,myid):
+        self.MyRandVar =  RandomVar()
+        self.Name = name
+        self.ID = myid
+        self.AlternativeResources = []
         
 
+    def getRandVar(self):
+        return self.MyRandVar
+    
+    def getProcessTime(self): 
+        return self.getRandVar().sampleValue()
+
+    def getAlternativeResources(self):
+        return self.AlternativeResources 
+        
+    def getName(self):
+        return self.Name
+    def getID(self):
+        return self.ID
+ 
+        
+#------------------------------------------------------------------------------------------------------
+class DemandType(object):
+    def __init__(self,myno,typename):
+        
+        self.ReferenceNumber = myno
+        self.Processes = [] # assumed sequential processes..
+        self.Predecessors = []
+        self.Successor =  None
+        self.TypeName = typename
+
+    def getProcesses(self):
+        return self.Processes
+
+    def getTypeName(self):
+        return self.TypeName
+        
+
+    def getPredecessors(self):
+        return self.Predecessors
+        
+    def setSuccessor(self,myscss):
+        self.Successor = myscss
+        return 
+    def getSuccessor(self):
+        return self.Successor
+
+    def getReferenceNo(self):
+        return self.ReferenceNumber
+
+    
+#-------------------------------------------------------------------------------------------------------------------------     
+class Demand(object):
+    def __init__(self,ddline,myid,demtype,quantity):
+        self.deadline = ddline
+        self.Items = [] 
+        self.InfoDictionary = dict()
+        self.DemandType = demtype
+        self.Quantity = quantity
+        self.MyID = myid
+
+    def getMyID(self):
+        return self.MyID
+
+    def getDemandType(self):
+        return self.DemandType
+ 
+    def getInfoDictionary(self):
+        return self.InfoDictionary
+
+   
+    def getQuantity(self):
+        return self.Quantity
+        
+
+    def getMyType(self):
+        return self.ItemType 
+        
+    def getItems(self):
+        return self.Items
+        
+    def print(self):     
+        return
+
+   
+#_______________________________________________________________________        
+class Item(object):
+    def __init__(self,demand,myid):
+       
+        self.ProcessData= [] # [{"ItemID":...,"ProcessID":...,"ResourceID"",...,"Start":...,"Completion":...}]
+        self.LocationData= [] # [{"Entity": Item, "EntityID":...,"EventName":...,"EventID":...,"LocationID"",...,"LocationName":...,,"ArrivalTime":...,"}]
+        self.location = None
+        self.ID = myid
+        self.Demand = demand
+        self.InfoDictionary = dict()
+        self.PriorityScore = 0
+
+    def setPriorityScore(self,myscore):
+        self.PriorityScore = myscore
+        return
+    def getPriorityScore(self):
+        return self.PriorityScore
+    
+    def getActiveOperation(self):
+        processnames = [pdt["OperationName"] for pdt in self.getProcessData()]
+        nextprocess = None
+        for process in self.getDemand().getDemandType().getProcesses():
+            if not process.getName() in processnames:
+                nextprocess = process
+                break
+        return nextprocess
+
+    def getInfoDictionary(self):
+        return self.InfoDictionary
+
+    def getProcessData(self):
+        return self.ProcessData 
+
+    def getLocationData(self):
+        return self.LocationData 
+
+
+    def setLocation(self,myloc):
+        self.location = myloc
+        return
+    def getDemand(self):
+        return self.Demand
+
+    def getLocation(self):
+        return self.location
+    def getID(self):
+        return self.ID
+
+    
+#__________________________________________________________________________________________________________________________________
+class OperationsManager(object):
+    def __init__(self,sim,demandname):
+        self.Resources = []
+        self.processid = 0
+        self.itemid = 0
+        self.resourceid = 0   
+        self.demandid = 0
+        self.Simulator = sim
+        self.Demands = []  
+        self.DemandTypes = []
+        self.DemandTypeName = demandname
+        self.EventTypes = dict()
+        self.AlgorithmManager = AlgorithmManager(sim,self)
+
+    def getAlgorithmManager(self):
+        self.AlgorithmManager
+        
+    
+    def getEventTypes(self):
+        return self.EventTypes
+        
+    def getDemandTypeName(self):
+        return self.DemandTypeName 
+
+
+    def createResources(self,res_dict):
+        # overwritten by subclassess
+        return
+
+    def setOperations(self,demandtype):
+        #overwritten by subclassess
+        return
+
+    def createDemandTypes(self,typename,notypes):      
+        #overwritten by subclassess
+        return 
+
+    def createDemands(self,daterange,dtype):
+        #overwritten by subclassess
+        return 
+
+    def initializeSystem(self):
+        #overwritten by subclassess
+        return 
+        
+    def handleEvent(self,event):
+        #overwritten by subclassess
+        return
+    def writeData(self):
+        #overwritten by subclassess
+        return
+#___________________________________________________________________________________________________________________________
+    def handlePendingEvent(self,event):
   
+        if event.getEquipment() == None: 
+
+            selected_algorithm = self.getProductionAlgManager().getAlgorithmSetting()["Assign Event Equipment"]
+            algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()["Assign Event Equipment"][selected_algorithm]
+            equip = algorithm_function(event)
+            
+            if equip == None:
+                return False
+
+            if event.getResource() == None:
+                
+                selected_algorithm = self.getProductionAlgManager().getAlgorithmSetting()["Assign Event Resource"]
+                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()["Assign Event Resource"][selected_algorithm]
+                res = algorithm_function(event)
+
+                if res == None:
+                    return False
+        else: 
+            if event.getResource() == None:
+                res = self.assignResource(event)
+                if res == None: 
+                    return False
+                    
+        return True
+#####################################################################################################################################################
+    def startEvent(self,event):
+        event.getResource().setBusy()
+        event.getEquipment().setBusy()
+
+        event.setActive()
+
+        if event.getName() in self.getProductionAlgManager().getAlgorithmSetting(): 
+
+            decision_name,selected_algorithm = self.getProductionAlgManager().getAlgorithmSetting()[event.getName()]
+            print(" > "+str(self.getSimulator().getTime())+": "+event.print()+" "+decision_name+"--"+selected_algorithm)
+            # check if selecting items
+            if decision_name == 'Select Items':
+                
+                item_source = event.getEquipment() if not event.getEventType().isLoading() else event.getPlace()
+                source_items = [i for i in item_source.getItems()]
+                print(" > "+str(self.getSimulator().getTime())+": ev",event.getName(),"decision_type ",decision_name,", selected_alg ",selected_algorithm) 
+                print(" > "+str(self.getSimulator().getTime())+": source items ",[i.getID() for i in source_items])  
+                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_name,selected_algorithm)]
+                sorted_items = algorithm_function(event,source_items)
+                
+                print(" > "+str(self.getSimulator().getTime())+": sorted items ",[i.getID() for i in sorted_items])  
+                for item in sorted_items:
+                    if event.getEventType().isLoading():
+                        if len(event.getItems()) == event.getEquipment().getCapacity(): 
+                            break
+                    else:
+                        if len(event.getItems()) == event.getPlace().getCapacity():
+                            break
+                            
+                    event.getItems().append(item)
+
+                    
+            if decision_name == 'Select Destination':
+                from_location = event.getResource().getLocation()
+                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_name,selected_algorithm)]      
+                print(" > "+str(self.getSimulator().getTime())+": decision_type ",decision_name,", selected_alg ",selected_algorithm)  
+                destination = algorithm_function(event,event.getItems())
+                print(" > "+str(self.getSimulator().getTime())+": destination",destination.getName()) 
+                event.setLocation((from_location,destination))
+            
+            #print(" > "+str(self.getSimulator().getTime())+":  event items ",[str(i.getID())  for i in event.getItems()])
+
+        print(" > "+str(self.getSimulator().getTime())+": "+event.print()+" started.")
+        return 
+####################################################################################################################################################
+    def commpleteEvent(self,event):
+        #overwritten by subclassess
+        return 
+######################################################################################################################################################
+######################################################################################################################################################
+
+    
+    def giveItemID(self):
+        self.itemid+=1
+        return self.itemid
+        
+    def giveDemandID(self):
+        self.demandid+=1
+        return self.demandid
+
+    def giveProcessID(self):
+        self.processid+=1
+        return self.processid
+
+        
+    def giveResouceID(self):
+        self.resourceid+=1
+        return self.resourceid
+        
+    def getSimulator(self):
+        return self.Simulator
+    
+    def getDemands(self):
+        return self.Demands
+
+    def getResources(self):
+        return self.Resources
+
+    def getDemandTypes(self):
+        return self.DemandTypes
+############################################################################################################      
+class AlgorithmManager(object):
+    def __init__(self,sim,oprmgr):
+        self.PriorityScoringFunctions = dict() # key: priority criterion, val: specific function
+        self.AlgorithmSetting = dict() # key: event name, val: (Decision name, Algorithm name)
+        self.simulator = sim
+        self.OperationsManager = oprmgr
+
+    def getAlgorithmSetting(self):
+        return self.AlgorithmSetting 
+        
+    def getOperationsManager(self):
+        return self.OperationsManager
+ 
+    def getPriorityScoringFunctions(self):
+        return self.PriorityScoringFunctions
+
+    def getSimulator(self):
+        return self.simulator
+################################################################################
+class FeasibilityChecker():
+    def __init__(self,Simulator,OprsMgr):
+        
+        self.Simulator = Simulator
+        self.OperationsManager = OprsMgr
+
+        
+    def getOperationsManager(self):
+        return self.OperationsManager
+
+    def getSimulator(self):
+        return self.Simulator
+
+        
+    def CheckFeasibility(self):
+        #overwritten by subclassess
+        return True
+        
+

@@ -1,0 +1,299 @@
+from Simulator import *
+from datetime import timedelta,date
+from productionalgs import *
+from productionChecker import *
+
+
+class Inventory(Resource):
+    
+    def __init__(self,mycap,sim,workmngr):
+        super().__init__("Central_Inventory","Inventory",mycap,sim,workmngr)
+        self.InputBuffer = Buffer("Input",None,1000,sim,workmngr)
+        self.OutputBuffer = Buffer("Output",None,1000,sim,workmngr)
+
+        self.InputBuffer.setLocation(self)
+        self.OutputBuffer.setLocation(self)
+
+
+    def getInputBuffer(self):
+        return self.InputBuffer 
+    def getOutputBuffer(self):
+        return self.OutputBuffer 
+       
+#_________________________________________________________________________
+class Buffer(Resource):
+    def __init__(self,buftype,mach,mycap,sim,workmngr):
+       
+        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,"Buffer",mycap,sim,workmngr)
+        self.BufferType = buftype
+        self.machine = mach
+        self.PendingEvent = None
+
+    def getMachine(self):
+        return self.machine
+        
+    def isInputType(self):   
+        if self.BufferType == "Input":
+            return True
+        return False
+
+    def getPendingEvent(self):
+        return self.PendingEvent
+
+    def setPendingEvent(self,myev):
+        self.PendingEvent = myev
+        return 
+        
+        
+
+    def addItem(self,myitem):     
+        #print(" > "+str(self.getSimulator().getTime())+": adding item to "+self.getName())
+        self.getItems().append(myitem)
+        self.generateEvent()
+        myitem.setLocation(self.getLocation())
+        
+        return
+        
+    def removeItem(self,myit):  
+        self.getItems().remove(myit)  
+        return
+  
+    def generateEvent(self):
+        
+        if len(self.getItems()) == 0 or self.getPendingEvent() != None:
+            return
+
+        if not self.isInputType(): #output buffer
+            load_event_type = self.getWorkMgr().getEventTypes()["Trailer Loading"]    
+            self.setPendingEvent(Event(self.getLocation(),"Pending",1,self.getSimulator(),load_event_type)) 
+            self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending",self.getWorkMgr(),False)
+      
+        else: # input buffer
+            if self.getMachine() != None:
+                processr = self.getMachine().getProcessor()
+                #print("Event generation: ",self.getMachine().getName()," processor:",processr)
+                if processr != None:
+                    load_event_type = self.getWorkMgr().getEventTypes()["Machine Loading"]
+                    loading_event = Event(self.getLocation(),self.getSimulator().getTime(),1,self.getSimulator(),load_event_type)
+                    self.setPendingEvent(loading_event)
+                    self.getMachine().getProcessMatch()[processr] = loading_event
+                    self.getPendingEvent().setEquipment(self.getMachine()) #resource pending
+                    self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending",self.getWorkMgr(),False)
+                
+                #else:
+                    #print("process matches",len(self.getMachine().getProcessMatch()),"process dict",len(self.getMachine().getProgressDict()))
+                    #for event,progresslist in self.getMachine().getProgressDict().items():
+                        #print("Event",event.print(),", progresses ",progresslist)
+                    
+                    
+                    
+                        
+                    
+            else:
+                return
+
+     
+        if self.getPendingEvent()!= None: 
+            self.getSimulator().saveLog(" "+self.getPendingEvent().print()+" generated.")
+            self.getPendingEvent().setPlace(self)
+            self.getPendingEvent().setItemSource(self)
+
+        return
+        
+    
+#_______________________________________________________________________  
+class Machine(Resource):
+    
+    def __init__(self,machcode,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
+        super().__init__(myname,"Machine",mycap,sim,workmngr)
+        self.InputBuffer = Buffer("Input",self,1000,sim,workmngr)
+        self.OutputBuffer = Buffer("Output",self,1000,sim,workmngr)
+        self.automated = automated
+        self.ProcessType = processtype
+        self.OperatingEffort = OprtingEffort
+        self.AvailableShifts = OprtingShifts
+        self.Alternatives = Alternatives
+        self.MachineCode = machcode
+        self.setuptime = Setup
+        self.InputBuffer.setLocation(self)
+        self.OutputBuffer.setLocation(self)
+        self.ProgressDict = dict() # key: processevent, val: (timecount,processtime)
+        self.ProcessMatch = dict() #key: processorid  val: processevent
+        self.NoProcessors = 1
+
+        if myname == "OUT - Outsourced activity_(OUT - Outsourced)":
+            self.NoProcessors = 1000
+
+    def getProcessor(self):
+
+        for processor in range(self.NoProcessors):
+            if not processor in self.ProcessMatch:
+                return processor
+                
+        return None
+
+    def getProcessMatch(self):
+        return self.ProcessMatch
+            
+    def getNoProcessors(self):
+        return self.NoProcessors
+
+    def getProgressDict(self):
+        return self.ProgressDict
+
+    def getSetupTime(self):
+        return self.setuptime
+
+
+    def getOperatingEffort(self):
+        return self.OperatingEffort
+
+    def getMachineCode(self):
+        return self.MachineCode
+        
+    def getInputBuffer(self):
+        return self.InputBuffer 
+    def getOutputBuffer(self):
+        return self.OutputBuffer 
+    def IsAutomated(self):
+        return self.automated
+
+    def removeItem(self,myit):
+        print(" > "+str(self.getSimulator().getTime())+": "+self.getName()," item removed, input buffer is triggered for loading ",len(self.getInputBuffer().getItems()))
+        self.getItems().remove(myit)
+        if len(self.getItems()) == 0 and len(self.getInputBuffer().getItems()) > 0:
+            self.getInputBuffer().generateEvent()
+        return
+
+    def getAvailableShifts(self):
+        return self.AvailableShifts
+
+    def checkShiftChange(self,shift):
+        if not shift in self.getAvailableShifts():
+            self.Status = "Unavailable"
+        else:
+            self.Status = "Idle" # assuming that an operator only works in one shift during the day.
+            
+        return
+
+    def getAlternatives(self):
+        return self.Alternatives
+        
+#___________________________________________________________________________________________
+class Operator(Resource):
+    
+    def __init__(self,myname,avshifts,mycap,sim,workmngr):
+        super().__init__(myname,"Operator",mycap,sim,workmngr)
+        self.AvailableShifts = avshifts
+      
+            
+    def getAvailableShifts(self):
+        return self.AvailableShifts
+
+    def checkShiftChange(self,shift):
+        if not shift in self.getAvailableShifts():
+            self.Status = "Unavailable"
+        else:
+            self.Status = "Idle" # assuming that an operator only works in one shift during the day.
+            
+        return
+
+#_________________________________________________________________________________________
+class Trailer(Resource):
+    def __init__(self,mycap,sim,workmngr):
+        super().__init__(None,"Trailer",mycap,sim,workmngr)  
+        self.location = None
+        self.outputbuffers = []  
+        self.destination = None
+
+        
+    def getOutputbuffers(self):
+        return self.outputbuffers
+    
+    def setDestination(self,mydest):
+        self.destination = mydest
+        return
+    def getDestination(self):
+        return self.destination
+ 
+#_______________________________________________________________________       
+class Operation(Process):
+    def __init__(self,name,myid,proctime,processtimedist):
+        super().__init__(name,myid,processtimedist)
+        self.getRandVar().getSampling().append(proctime) 
+        
+#_______________________________________________________________________          
+class Product(DemandType):
+    def __init__(self,pn,myid,name):
+        super().__init__(pn,myid,name)
+        self.OperationSequences = dict() #key: Order_ID, val: [Operations]
+       
+
+    def getOperationSequences(self):
+        return self.OperationSequences
+#_______________________________________________________________________  
+class ProductionOrder(Demand):
+    def __init__(self,ddline,myid,demtype,quantity,dfindx):
+        super().__init__(ddline,myid,demtype,quantity)
+        self.df_index =  dfindx
+        self.OperationsStatus = []  # list of (opr,(strt,comp))
+
+    def getDFIndex(self):
+        return self.df_index
+    
+    def getFinalProduct(self):
+        return self.getDemandType() #converting terminology
+
+    def CheckProperness(self):
+ 
+        oprseq = self.getFinalProduct().getOperationSequences()[self.getID()]
+   
+        for opr in oprseq:
+            if not opr in self.getOperationsStatus():
+                if opr.getName() == "UnknownOperation":
+                    return False
+                else:
+                    return True
+
+        return False
+   
+    def getOperationsStatus(self):
+        return self.OperationsStatus
+
+    def applyStatus(self):
+        
+        oprseq = self.getFinalProduct().getOperationSequences()[self.getID()]
+
+        for oprid in range(len(oprseq)):
+            
+            if self.getOperationsStatus()[oprid][0] in ["Finished","Completed"]:
+                strt = self.getOperationsStatus()[oprid][1][0]
+                comp = self.getOperationsStatus()[oprid][1][1]
+                
+                for item in self.getItems():
+                    myprocessdata = {"ItemID":item.getID(),"Demand":item.getDemand().getID(),"Product":self.getFinalProduct().getPN(),"OperationName":oprseq[oprid].getName(),"ProcessID":-1,"ResourceID":-1,"Start":strt,"Completion":comp}
+                    item.getProcessData().append(myprocessdata)
+                    item.getOperationsStatus()[oprseq[oprid]] = (strt,comp)
+            if self.getOperationsStatus()[oprid][0] == "Cancelled":
+                print("+++++++++++++ Product",self.getFinalProduct().getPN()," cancelled operation: ",oprseq[oprid].getName(),"++++++++++")
+                oprseq[oprid].setCancelled()
+                strt = datetime(2000, 1, 1)
+                comp = datetime(2000, 1, 1)
+                
+                for item in self.getItems():
+                    myprocessdata = {"ItemID":item.getID(),"Demand":item.getDemand().getID(),"Product":self.getFinalProduct().getPN(),"OperationName":oprseq[oprid].getName(),"ProcessID":-1,"ResourceID":-1,"Start":strt,"Completion":comp}
+                    item.getProcessData().append(myprocessdata)
+                    item.getOperationsStatus()[oprseq[oprid]] = (strt,comp)
+
+
+                
+               
+                
+              
+        return
+        
+        
+        
+
+
+        
