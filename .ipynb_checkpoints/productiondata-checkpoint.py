@@ -9,23 +9,32 @@ import numpy as np
 class ProductionDataManager(DataManager): 
     def __init__(self,sim,workmgr):
         super().__init__(sim,workmgr) 
+        self.res_process_df = None
+        self.demand_process_df = None
+
+    def getRes_process_df(self):
+        return self.res_process_df
+
+
+    def getDemand_process_df(self):
+        return self.demand_process_df
 
 ###########################################################################################
     def ReadResources(self):
-     u
+     
         rel_path = '/'+self.getOperationsManager().getUseCase()
         abs_file_path = os.path.dirname(os.path.realpath(__file__))+rel_path
-        
-        print(abs_file_path)
 
         
+        
+        self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
         latestfiledate = None
         filename = None
 
         for root, dirs, files in os.walk(abs_file_path):
             for file in files: 
-                print(file)
+                self.getOperationsManager().getSimulator().saveLog(file)
                 if ".csv" in file:                  
                     try: 
                         filedate = datetime.strptime(file[file.find("Resources_")+len("Resources_"):-5],"%Y-%m-%d")
@@ -37,14 +46,14 @@ class ProductionDataManager(DataManager):
                                 latestfilsedate = filedate
                                 filename = file
                
-                    except Exception as e:s
+                    except Exception as e:
                         pass
 
         if latestfiledate != None:
-            print("Latest Date resources file date: ",latestfiledate)
+            self.getOperationsManager().getSimulator().saveLog("Latest Date resources file date: "+str(latestfiledate))
             TBRMResources_df = pd.read_csv(abs_file_path+'/'+filename)
 
-            print(TBRMResources_df.info())
+            self.getOperationsManager().getSimulator().saveLog(str(TBRMResources_df.info()))
             for i,r in TBRMResources_df.iterrows():
                 if r['ResourceType'] == 'Operator':
                     AvlShifts = [1]  
@@ -52,7 +61,7 @@ class ProductionDataManager(DataManager):
                         AvlShifts = r['AvailableShifts'].split("_")
                         AvlShifts = [int(s) for s in AvlShifts]
                     except Exception as e:
-                        print("Error in reading available shifts of operator ",r['Name'])
+                        self.getOperationsManager().getSimulator().saveLog("Error in reading available shifts of operator "+str(r['Name']))
                     #myname,avshifts,mycap,sim,workmngr
                     optr = Operator(r['Name'],AvlShifts,1,self.getSimulator(),self.getOperationsManager())
                     optr.setLocation(self.getOperationsManager().getCentralInventory())
@@ -69,25 +78,25 @@ class ProductionDataManager(DataManager):
                         OperatingShifts = r['AvailableShifts'].split("_")
                         OperatingShifts = [int(s) for s in OperatingShifts]
                     except Exception as e:
-                        print("Error in reading operating shifts of machine ",r['Name'])
+                        self.getOperationsManager().getSimulator().saveLog("Error in reading operating shifts of machine "+str(r['Name']))
 
                     Alternatives = []
                     if not pd.isna(r['Alternatives']): 
                         try: 
                             Alternatives = r['Alternatives'].split("~")
                         except Exception as e:
-                            print("Error in reading alternatives of machine ",r['Name'],":",pd.isna(r['Alternatives']))
+                            self.getOperationsManager().getSimulator().saveLog("Error in reading alternatives of machine "+str(r['Name'])+":"+str(pd.isna(r['Alternatives'])))
 
                     #myname,machcode,OprtingShifts,processtype,automated,mycap,Alternatives,OprtingEffort,sim,workmngr
                     if len(Alternatives) > 0:
-                        print(Alternatives)
+                        self.getOperationsManager().getSimulator().saveLog(str(Alternatives))
                     mach = Machine(mcode,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
                 
                     mach.setLocation(mach)
                     self.getOperationsManager().getResources().append(mach)
                     
             
-            print("No resources: ",len(self.getOperationsManager().getResources()))         
+            self.getOperationsManager().getSimulator().saveLog("No resources: "+str(len(self.getOperationsManager().getResources())))      
            
         return
         
@@ -96,7 +105,7 @@ class ProductionDataManager(DataManager):
         rel_path = '/'+self.getOperationsManager().getUseCase()
         abs_file_path = os.path.dirname(os.path.realpath(__file__))+rel_path
         
-        print(abs_file_path)
+        self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
         
 
@@ -105,7 +114,7 @@ class ProductionDataManager(DataManager):
 
         for root, dirs, files in os.walk(abs_file_path):
             for file in files: 
-                print(file)
+                self.getOperationsManager().getSimulator().saveLog(file)
                 if ".xlsx" in file:                  
                     try: 
                         #print("Length: ","Production Orders_",len("Production Orders_"))
@@ -124,10 +133,10 @@ class ProductionDataManager(DataManager):
         if latestfiledate != None:
 
            
-            print("Latest Date input file date: ",latestfiledate)
+            self.getOperationsManager().getSimulator().saveLog("Latest Date input file date: "+str(latestfiledate))
             TBRM_df = pd.read_excel(abs_file_path+'/'+filename)
 
-            print([x for x in TBRM_df["Work Orders/Status"].unique()])
+            self.getOperationsManager().getSimulator().saveLog(str([x for x in TBRM_df["Work Orders/Status"].unique()]))
 
             #TBRM_df.info()
             TBRM_df["Index"] = [i for i in range(len(TBRM_df))]
@@ -142,10 +151,10 @@ class ProductionDataManager(DataManager):
             #TBRM_df.info()
            
   
-            print("Size of input file: ",len(TBRM_df))
+            self.getOperationsManager().getSimulator().saveLog("Size of input file: "+str(len(TBRM_df)))
 
             prodorder_aggrfeats = [x[1] for x in self.getOperationsManager().getDataManager().getObjectFeatures()["ProductionOrder"]]
-            print("Prod order feats to aggregte: ",prodorder_aggrfeats)
+            self.getOperationsManager().getSimulator().saveLog("Prod order feats to aggregte: "+str(prodorder_aggrfeats))
      
             prodorders_df = TBRM_df.groupby(prodorder_aggrfeats).size().reset_index() 
 
@@ -222,7 +231,7 @@ class ProductionDataManager(DataManager):
 
             machines = [r for r in self.getOperationsManager().getResources() if isinstance(r,Machine)]
 
-            print("The system has ",len(machines),"machines")
+            self.getOperationsManager().getSimulator().saveLog("The system has "+str(len(machines))+" machines")
 
             for i,r in TBRM_Operations_df.iterrows():
                 OprResources = r['Work Orders/Work Center']
@@ -276,18 +285,23 @@ class ProductionDataManager(DataManager):
 
         return
 
-    def ShowOrderProgress(self):
+    def setResultDFs(self,processdata):
 
-        item_process_df = pd.read_csv("ProcessData.csv")
+        #item_process_df = pd.read_csv("ProcessData.csv")
 
+        self.res_process_df = processdata.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
+        self.demand_process_df = processdata.groupby(["Demand","Product","OperationName",'Start','Completion'])[['ItemID']].agg(lambda x:list(x)).reset_index()
 
-        demand_process_df =item_process_df.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
+        return
 
-        for res in demand_process_df["ResourceID"].unique():
-            sub_df = demand_process_df[demand_process_df["ResourceID"] == res]
-            sub_df['Start'] = pd.to_datetime(sub_df['Start'])
-            sub_df = sub_df.sort_values(by ="Start")
+        #Eself.getSimulator().getController().getVisualManager().self.getFurtherText().options = [r for r in self.res_process_df["ResourceID"].unique()]
+        
+        #for res in demand_process_df["ResourceID"].unique():
             
-            display(sub_df.head(25))
+        #    sub_df = demand_process_df[demand_process_df["ResourceID"] == res]
+        #    sub_df['Start'] = pd.to_datetime(sub_df['Start'])
+        #    sub_df = sub_df.sort_values(by ="Start")
+            
+        #    display(sub_df.head(25))
 
         

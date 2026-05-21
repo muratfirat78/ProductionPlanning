@@ -12,12 +12,31 @@ class Controller:
         self.WorkManager = ShopFloorManager(self.Simulator)
         self.WorkManager.setDemandType("Product")
 
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"] =("Select Items",'EDDOrder')
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Transport"] = ("Select Destination",'MostDemanded')
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Unloading"] =("Select Items", 'UnloadFeasible')
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Loading"] =("Select Items",'HighestNoItems')
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Assign Event Equipment"] = "Straight Available"
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Assign Event Resource"] = "Straight Available"
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"] = []
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(("Select Items",'EDDOrder'))
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(('Assign Resource',"Straight Available"))
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(("Assign Equipment","Straight Available"))
+
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Transport"] = []
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Transport"].append(("Select Destination",'MostDemanded'))
+
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Unloading"] = []
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Unloading"].append(("Select Items", 'UnloadFeasible'))
+
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"] = []
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"].append(("Assign Equipment","Straight Available"))
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"].append(("Assign Resource","Straight Available"))
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"].append(("Select Items",'EDDOrder'))
+
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Loading"] = []
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Loading"].append(("Assign Resource","Straight Available"))
+
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Processing"] = []
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Processing"].append(("Assign Equipment","Straight Available"))
+        
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Unloading"] =[]
+        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Unloading"].append(("Assign Resource","Straight Available"))
+      
         self.WorkManager.getProductionAlgManager().setPriorityFunctions()
 
 

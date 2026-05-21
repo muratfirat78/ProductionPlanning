@@ -20,6 +20,7 @@ class ProductionDataManager(DataManager):
         return self.demand_process_df
 
 ###########################################################################################
+    
     def ReadResources(self):
      
         rel_path = '/'+self.getOperationsManager().getUseCase()
@@ -233,6 +234,7 @@ class ProductionDataManager(DataManager):
 
             self.getOperationsManager().getSimulator().saveLog("The system has "+str(len(machines))+" machines")
 
+            self.getOperationsManager().getSimulator().saveLog(" operations df "+str(len(TBRM_Operations_df)))
             for i,r in TBRM_Operations_df.iterrows():
                 OprResources = r['Work Orders/Work Center']
                 OprResourceIDs = r['Work Orders/Work Center/ID']
@@ -241,8 +243,9 @@ class ProductionDataManager(DataManager):
                 OprStarts = r['Work Orders/Start']
                 OprFinishes = r['Work Orders/End'] 
 
-                #print(OprStatus)
+                self.getOperationsManager().getSimulator().saveLog(" row "+str(i))
 
+                
                 oprsequence = []
 
                 prodorder = self.getOperationsManager().getProductionOrders()[r['ID']]
@@ -254,7 +257,6 @@ class ProductionDataManager(DataManager):
                     prodorder.getOperationsStatus().append((OprStatus[resid],(OprStarts[resid],OprFinishes[resid])))
                     oprres = OprResources[resid]
 
-                    
                     if not pd.isna(oprres): 
                         for mach in machines:
                             if mach.getMachineCode() in oprres:
@@ -279,18 +281,14 @@ class ProductionDataManager(DataManager):
 
                 prodorder.getFinalProduct().getOperationSequences()[r['ID']] = oprsequence
 
-                #print("Product ", prodorder.getFinalProduct().getName()," has ",len(oprsequence),"Operations")
-
-                #print(" Alt res: ",[op.getName()+" @"+str(alt.getMachineCode()) for op in oprsequence for alt in op.getAlternativeResources() ])
-
         return
 
     def setResultDFs(self,processdata):
 
-        #item_process_df = pd.read_csv("ProcessData.csv")
+        process_df = pd.read_csv("ProcessData.csv")
 
-        self.res_process_df = processdata.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
-        self.demand_process_df = processdata.groupby(["Demand","Product","OperationName",'Start','Completion'])[['ItemID']].agg(lambda x:list(x)).reset_index()
+        self.res_process_df = process_df.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
+        self.demand_process_df = process_df.groupby(["Demand","Product","OperationName",'Start','Completion'])[['ItemID']].agg(lambda x:list(x)).reset_index()
 
         return
 

@@ -430,12 +430,13 @@ class VisualManager():
         self.runbutton = widgets.Button(description="Run Simulation")
         self.runbutton.on_click(self.RunSim)
 
-        self.runbutton.layout.width = '400px'
+        self.runbutton.layout.width = '800px'
 
         self.setRunProgress(widgets.Textarea(value='', placeholder='',description='',disabled=True))
 
-        self.getRunProgress().layout.width = '400px'
-        self.getRunProgress().layout.height = '180px'
+        self.getRunProgress().layout.width = '800px'
+        self.getRunProgress().layout.height = '300px'
+
    
         runbox = VBox(children=[self.runbutton,self.getRunProgress()])
        
@@ -483,7 +484,7 @@ class VisualManager():
         self.getShowLogButton().on_click(self.ShowLog)
         self.getShowLogButton().layout.width = '750px'
         self.setLogSelect(widgets.Select(options=[],description='',disabled=False))
-        self.getLogSelect().layout.width = '750px'
+        self.getLogSelect().layout.width = '800px'
         self.getLogSelect().layout.height = '300px'
         logbox = VBox(children=[self.getShowLogButton(),self.getLogSelect()])
 

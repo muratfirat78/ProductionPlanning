@@ -61,34 +61,37 @@ class Buffer(Resource):
     def generateEvent(self):
         
         if len(self.getItems()) == 0 or self.getPendingEvent() != None:
+            self.getSimulator().saveLog("Returning  event generation: items "+str(len(self.getItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
+            if self.getPendingEvent() != None:
+                self.getSimulator().saveLog("pending event "+self.getPendingEvent().print())
             return
 
+        self.getSimulator().saveLog("In generating event "+self.getName()+"@"+self.getLocation().getName()+" output? "+str(not self.isInputType()))
         if not self.isInputType(): #output buffer
             load_event_type = self.getWorkMgr().getEventTypes()["Trailer Loading"]    
+            self.getSimulator().saveLog("event type.. "+load_event_type.getName())
+            
             self.setPendingEvent(Event(self.getLocation(),"Pending",1,self.getSimulator(),load_event_type)) 
-            self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending",self.getWorkMgr(),False)
-      
+            self.getPendingEvent().setPlace(self)
+            self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending",self.getWorkMgr())
+            self.getSimulator().saveLog("event generated.. pending event? "+str(self.getPendingEvent()== None))
         else: # input buffer
+            self.getSimulator().saveLog("Input... ")
+            self.getSimulator().saveLog("Machine none? "+str(self.getMachine()))
             if self.getMachine() != None:
-                processr = self.getMachine().getProcessor()
+                #processr = self.getMachine().getProcessor()
                 #print("Event generation: ",self.getMachine().getName()," processor:",processr)
-                if processr != None:
-                    load_event_type = self.getWorkMgr().getEventTypes()["Machine Loading"]
-                    loading_event = Event(self.getLocation(),self.getSimulator().getTime(),1,self.getSimulator(),load_event_type)
-                    self.setPendingEvent(loading_event)
-                    self.getMachine().getProcessMatch()[processr] = loading_event
-                    self.getPendingEvent().setEquipment(self.getMachine()) #resource pending
-                    self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending",self.getWorkMgr(),False)
-                
+                #if processr != None:
+                setup_event_type = self.getWorkMgr().getEventTypes()["Machine Setup"]
+                setup_event = Event(self.getLocation(),self.getSimulator().getTime(),1,self.getSimulator(),setup_event_type)
+                  
+                self.setPendingEvent(setup_event); self.getPendingEvent().setPlace(self)
+                #self.getMachine().getProcessMatch()[processr] = setup_event
+                #self.getPendingEvent().setEquipment(self.getMachine()) 
+                # both equipment and resource pending
+                self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending",self.getWorkMgr())  
                 #else:
-                    #print("process matches",len(self.getMachine().getProcessMatch()),"process dict",len(self.getMachine().getProgressDict()))
-                    #for event,progresslist in self.getMachine().getProgressDict().items():
-                        #print("Event",event.print(),", progresses ",progresslist)
-                    
-                    
-                    
-                        
-                    
+                # self.getSimulator().saveLog("Event generation at "+self.getMachine().getName()+" no processor found")
             else:
                 return
 
@@ -96,8 +99,7 @@ class Buffer(Resource):
         if self.getPendingEvent()!= None: 
             self.getSimulator().saveLog(" "+self.getPendingEvent().print()+" generated.")
             self.getPendingEvent().setPlace(self)
-            self.getPendingEvent().setItemSource(self)
-
+          
         return
         
     
@@ -117,7 +119,7 @@ class Machine(Resource):
         self.setuptime = Setup
         self.InputBuffer.setLocation(self)
         self.OutputBuffer.setLocation(self)
-        self.ProgressDict = dict() # key: processevent, val: (timecount,processtime)
+        self.ProgressDict = dict() # key: processevent, val: (start,end), all in simtime
         self.ProcessMatch = dict() #key: processorid  val: processevent
         self.NoProcessors = 1
 
@@ -169,11 +171,7 @@ class Machine(Resource):
         return self.AvailableShifts
 
     def checkShiftChange(self,shift):
-        if not shift in self.getAvailableShifts():
-            self.Status = "Unavailable"
-        else:
-            self.Status = "Idle" # assuming that an operator only works in one shift during the day.
-            
+        self.Available = shift in self.getAvailableShifts()
         return
 
     def getAlternatives(self):
@@ -185,8 +183,9 @@ class Operator(Resource):
     def __init__(self,myname,avshifts,mycap,sim,workmngr):
         super().__init__(myname,"Operator",mycap,sim,workmngr)
         self.AvailableShifts = avshifts
-      
-            
+     
+
+
     def getAvailableShifts(self):
         return self.AvailableShifts
 

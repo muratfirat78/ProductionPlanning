@@ -5,7 +5,7 @@ from stochastic import *
 
 
 class EventType(object):
-    def __init__(self,myname,restype,equiptype,static,loading,process):
+    def __init__(self,myname,restype,equiptype,static,loading,process,myset):
         self.Name = myname
         self.ResourceType = restype # to help assigning 
         self.EquipmentType = equiptype # to help selecting    
@@ -15,8 +15,28 @@ class EventType(object):
         self.static = static
         self.loading = loading # if static is False, this is not relevant. If static True and Loading false, then this is unloading. 
         self.process = process
+        self.setup = myset
         self.successortype = None
         self.predecessortype = None
+        self.preemptable = False
+        self.decisions = [] # of tuples (stage,type). 
+                            # Stage: handle, start, or complete. Type: SelectItems, SelectDestination, Assign Equipment, Assign Resource. 
+
+        self.itemdirection = True # Place -> Equipment, False means Equipment -> Place
+
+
+    def isSetup(self):
+        return self.setup
+        
+    def setItemDirection(self,myst):
+        self.itemdirection = myst
+        return
+
+    def getItemDirection(self):
+        return self.itemdirection
+
+    def getDecisions(self):
+        return self.decisions
 
     def setPredecessorType(self,myev):
         self.predecessortype = myev
@@ -29,7 +49,13 @@ class EventType(object):
         return
     def getSuccessorType(self):
         return self.successortype
-        
+
+    def setPreemptable(self,status):
+        self.preemptable = status
+        return
+
+    def isPreemptable(self):
+        return self.preemptable 
 
     def isStatic(self):
         return self.static
@@ -80,10 +106,29 @@ class Event(object):
         self.Place = None
         self.successor = None
         self.predecesor = None
+        self.ProgressDict = dict() # key: res, val: (simstart,progresstime), 
+        # events: ML,MU resources are operators and Processing resources are machines.  
+        self.definedsuccessors = dict() #key: successor type, val: successor event defined
+        self.ProgressDict = dict() # key: resource, val: [(start,end)], all in simtime
 
+        self.precedencetypes = dict() # key: successor or predecessor, val: "F2S", "SS", "SF"
+        
+
+    def getPrecedenceTypes(self):
+        return self.precedencetypes
+
+    def getProgressDict(self):
+        return self.ProgressDict
+        
     def setProcessTime(self,mytime):
         self.ProcessTime = mytime
         return
+
+    def getDefinedSuccessors(self):
+        return self.definedsuccessors
+
+    def getProgressDict(self):
+        return self.ProgressDict
 
     def setCompletionTime(self,mytime):
         self.CompletionTime = mytime
@@ -135,30 +180,50 @@ class Event(object):
 
     def getResource(self):
         return self.Resource
+        
     def setResource(self,myres):
+        if myres != None:
+            # insert the resource into progress dict.
+            if self.getEventType().isPreemptable():
+                if not myres in self.getProgressDict():
+                    self.getProgressDict()[myres] = []
+            if not self in myres.getMyEvents():
+                myres.getMyEvents().append(self)
+
         self.Resource = myres
         return 
+        
     def getEquipment(self):
         return self.Equipment
+        
     def setEquipment(self,myequip):
+        if myequip != None:
+            if self.getEventType().isProcess():  
+                if not self in myequip.getProgressDict():
+                    myequip.getProgressDict()[self] = []
+            if not self in myequip.getMyEvents():
+                myequip.getMyEvents().append(self)
         self.Equipment = myequip
         return
 
     def print(self):
 
-        equip = "Pending" if self.Equipment == None else self.Equipment.getName()
-
-        res = "Pending" if self.Resource == None else self.Resource.getName()
-
-        loc_str = ""
-        
-        if isinstance(self.getLocation(),tuple):
-            loc_str= self.getLocation()[0].getName()+"->"+self.getLocation()[1].getName()
-        else:
-            loc_str = self.getLocation().getName()
-
-
-        return str(self.getEventType().getName())+"("+str(self.getID())+"): "+loc_str+("" if self.getPlace() == None else ", place: "+self.getPlace().getName())+", equip: "+equip+", res: "+res+", "+str(len(self.getItems()))+" items, proctime: "+str(self.ProcessTime)
+        try: 
+            equip = "Pending" if self.Equipment == None else self.Equipment.getName()+"("+str(len(self.getEquipment().getItems()))+")"
+    
+            res = "Pending" if self.Resource == None else self.Resource.getName()
+    
+            loc_str = ""
+            
+            if isinstance(self.getLocation(),tuple):
+                loc_str= self.getLocation()[0].getName()+"->"+self.getLocation()[1].getName()
+            else:
+                loc_str = "no location" if self.getLocation() == None else self.getLocation().getName()
+    
+    
+            return str(self.getEventType().getName())+"("+str(self.getID())+"): loc "+loc_str+(" no place " if self.getPlace() == None else ", place  "+self.getPlace().getName()+"("+str(len(self.getPlace().getItems()))+")")+", equip: "+equip+", res: "+res+", "+str(len(self.getItems()))+" items, proctime: "+str(self.ProcessTime)
+        except Exception as e:
+            self.getSimulator().saveLog("ERROR in event printing: "+str(e))
         
     def getProcessTime(self):
         return self.ProcessTime 
@@ -173,12 +238,17 @@ class Event(object):
     def setLocation(self,myloc):
         self.Location = myloc
         return 
-    
+
+
         
     def getID(self):
         return self.ID
  
     def setActive(self):
+        if self.getEventType().isPreemptable(): # event progress start
+            self.getProgressDict()[self.getResource()].append((self.getSimulator().getTime(),0))
+        if self.getEventType().isProcess(): # equip progress start    
+            self.getEquipment().getProgressDict()[self].append((self.getSimulator().getTime(),0))
         self.active = True
         return 
     def setInActive(self):
@@ -204,7 +274,8 @@ class Resource(object):
         self.Items = [] 
         self.LocationData= [] # [{"Entity": Name, "EntityID":...,"EventName":...,"EventID":...,"LocationID"",...,"LocationName":...,,"ArrivalTime":...,"}]
         self.location = None
-        self.Status = "Idle" # or "Busy"
+        self.Available = False # changes with shift availability
+        self.Idle = False # changes with event executions
         self.MyEvents = []
         self.AssignedEvents = []
         self.ID = workmgr.giveResouceID()
@@ -245,21 +316,27 @@ class Resource(object):
         return
     def getLocation(self):
         return self.location
-    def setBusy(self):
-        self.Status = "Busy"
+
+     
+   
+
+    
+    def setAvailable(self,status):
+        self.Available = status
         return
-    def setAssigned(self):
-        self.Status = "Assigned"
+    def isAvailable(self):
+        return self.Available
+
+    def setIdle(self,status):
+        self.Idle = status
         return
-    def setIdle(self):
-        self.Status = "Idle"
-        return 
+    def isIdle(self):
+        return self.Idle 
+   
     def getWorkMgr(self):
         return self.WorkMgr
-        
-    def IsIdle(self):
-        return self.Status == "Idle"
 
+        
     def getID(self):
         return self.ID
        
@@ -279,8 +356,6 @@ class Resource(object):
     def getSimulator(self):
         return self.Simulator
 
-   
-    
     def getMyEvents(self):
         return self.MyEvents
 
@@ -453,18 +528,22 @@ class Item(object):
                 
         return None
 
-    def setProcessData(self,event,opr,sim):
+    def setProcessData(self,event,strt,opr,sim):
 
         if event != None: 
 
-            actual_comp = sim.getRealTime()
-
-            actual_start = actual_comp - timedelta(minutes = sim.getTime()-event.getStartTime())
-            
-            
-            myprocessdata = {"ItemID":self.getID(),"Demand":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"OperationName":opr.getName(),"ProcessID":event.getID(),"ResourceID":event.getResource().getID(),"Resource":event.getResource().getName(),"Start":actual_start,"Completion":actual_comp}
-            self.getProcessData().append(myprocessdata)
-            self.getOperationsStatus()[opr] = (event.getStartTime(),sim.getTime())
+            try: 
+                
+                actual_comp = sim.getRealTime()
+                actual_start = actual_comp - timedelta(minutes = sim.getTime()-strt)
+    
+                
+                
+                myprocessdata = {"ItemID":self.getID(),"Demand":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"OperationName":opr.getName(),"ProcessID":event.getID(),"ResourceID":event.getResource().getID(),"Resource":event.getResource().getName(),"Start":actual_start,"Completion":actual_comp}
+                self.getProcessData().append(myprocessdata)
+                self.getOperationsStatus()[opr] = (event.getStartTime(),sim.getTime())
+            except Exception as e:
+                sim.saveLog("ERROR in processdata "+str(e))
 
         return 
 

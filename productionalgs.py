@@ -9,27 +9,35 @@ class ProductionAlgManager(AlgorithmManager):
         
     def setPriorityFunctions(self):
 
+        # self.getPriorityScoringFunctions()[event name][(decision_type,decision_alg)] = alg_function
+
         self.getPriorityScoringFunctions()["Trailer Loading"] = dict()
-        self.getPriorityScoringFunctions()["Trailer Loading"][("Select Items",'FindMostCommon')] = self.findTrailerLoadScores
-
         self.getPriorityScoringFunctions()["Trailer Loading"][("Select Items",'EDDOrder')] = self.findTrailerLoadEarliestOrder
-        # one-prodorder items at a time loaded to trailer.  
+        self.getPriorityScoringFunctions()["Trailer Loading"][("Assign Equipment","Straight Available")] = self.assignStraightEquipment
+        self.getPriorityScoringFunctions()["Trailer Loading"][("Assign Resource","Straight Available")] = self.assignStraightResource
 
-        
         self.getPriorityScoringFunctions()["Trailer Transport"] = dict()
         self.getPriorityScoringFunctions()["Trailer Transport"][("Select Destination",'MostDemanded')] = self.findTrailerDestinationMostDemanded
 
         self.getPriorityScoringFunctions()["Trailer Unloading"] = dict()
         self.getPriorityScoringFunctions()["Trailer Unloading"][("Select Items", 'UnloadFeasible')] = self.findTrailerUnloadFeasible
-        
+
+
+        self.getPriorityScoringFunctions()["Machine Setup"] = dict()
+        self.getPriorityScoringFunctions()["Machine Setup"][("Assign Equipment","Straight Available")] = self.assignStraightEquipment
+        self.getPriorityScoringFunctions()["Machine Setup"][("Assign Resource","Straight Available")] = self.assignStraightResource
+        self.getPriorityScoringFunctions()["Machine Setup"][("Select Items",'EDDOrder')] = self.findMachineSetupSelectEDD
+
         self.getPriorityScoringFunctions()["Machine Loading"] = dict()
-        self.getPriorityScoringFunctions()["Machine Loading"][("Select Items",'HighestNoItems')] = self.findMachineLoadAutoHighestItems
+        self.getPriorityScoringFunctions()["Machine Loading"][("Assign Resource","Straight Available")] = self.assignStraightResource
 
-        self.getPriorityScoringFunctions()["Assign Event Equipment"] = dict()
-        self.getPriorityScoringFunctions()["Assign Event Equipment"]["Straight Available"] = self.assignStraightEquipment
+        self.getPriorityScoringFunctions()["Processing"] = dict()
+        self.getPriorityScoringFunctions()["Processing"][("Assign Equipment","Straight Available")] = self.assignStraightEquipment
 
-        self.getPriorityScoringFunctions()["Assign Event Resource"] = dict()
-        self.getPriorityScoringFunctions()["Assign Event Resource"]["Straight Available"] = self.assignStraightResource
+
+        self.getPriorityScoringFunctions()["Machine Unloading"] = dict()
+        self.getPriorityScoringFunctions()["Machine Unloading"][("Assign Resource","Straight Available")] = self.assignStraightResource
+
 
       
         return
@@ -37,82 +45,75 @@ class ProductionAlgManager(AlgorithmManager):
     def assignStraightEquipment(self,event):
 
         self.getSimulator().saveLog(" >>> Algorithm: assignStraightEquipment function <<<")
-        
-        comp_equip = [r for r in self.getOperationsManager().getResources() if r.IsIdle() and (r.getType() == event.getEventType().getEquipmentType())]
 
         selected_equip = None 
+        
+        if event.getEventType().getName() == "Machine Setup" or event.getEventType().getName() == "Processing": 
+        
+            event_mach = event.getLocation()
 
-        if len(comp_equip) > 0:
+            if event_mach.isAvailable():
+                processr = event_mach.getProcessor()
+                self.getSimulator().saveLog("Assign processor at machine "+event_mach.getName()+" processor found? "+str(processr != None))
                 
-            onloc_equip = [r for r in comp_equip if r.getLocation() == event.getLocation()]
-            comp_res = [r for r in self.getOperationsManager().getResources() if r.IsIdle() and (r.getType() == event.getEventType().getResourceType())]
+                if processr != None:
+                    event_mach.getProcessMatch()[processr] = event
+                    selected_equip = event_mach
 
-            selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
+                    if event.getEventType().getName() == "Processing":
+                        event.setResource(event_mach)
+        
+        else:
+
+            av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
+    
+            self.getSimulator().saveLog(" av_equip: "+str(len(av_equip)))
             
-            event.setEquipment(selected_equip)
-            selected_equip.setAssigned()    
-            selected_equip.getAssignedEvents().append(event)     
-
+            comp_equip = [r for r in av_equip if (r.isIdle())]
+    
+            
+    
+            self.getSimulator().saveLog(" comp_equip: "+str(len(comp_equip)))
+            if len(comp_equip) > 0:  
+                onloc_equip = [r for r in comp_equip if r.getLocation() == event.getLocation()]
+                selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
+                
+   
         return selected_equip
 
     def assignStraightResource(self,event):
-        
-        
-        comp_res = [r for r in self.getOperationsManager().getResources() if r.IsIdle() and (r.getType() == event.getEventType().getResourceType())] 
-
-        if len(comp_res) > 0:
-            self.getSimulator().saveLog(" >>> Algorithm: assignStraightResource function <<<")
 
         selected_res = None
         
-        if len(comp_res) > 0:
- 
-            onloc_res = [r for r in comp_res if r.getLocation() == event.getLocation()]
-            selected_res = onloc_res[0] if len(onloc_res) > 0 else comp_res[0]
-
-            event.setResource(selected_res)
-            selected_res.setAssigned()   
-            selected_res.getAssignedEvents().append(event)
+        
+        avail_res = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and r.getType() == event.getEventType().getResourceType()] 
+    
+            #self.getSimulator().saveLog(" avail_res: "+str(len(avail_res)))
             
+        idle_res = [r for r in avail_res if (r.isIdle() and len(r.getMyEvents()) == 0)] 
+    
+        if len(idle_res) > 0:
+            self.getSimulator().saveLog(str([r.getName()+"->"+str(r.getLocation() == None) for r in idle_res]))
+    
+            
+    
+            #self.getSimulator().saveLog(" >>> Algorithm: assignStraightResource function <<<"+str(len(idle_res)))
+            
+        if len(idle_res) > 0:
+            onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
+            self.getSimulator().saveLog(" >>> Algorithm: onloc_res "+str(len(onloc_res)))
+            selected_res = onloc_res[0] if len(onloc_res) > 0 else idle_res[0]
 
         return selected_res
     
 
-    
-    def findTrailerLoadScores(self,event,items):
-        self.getSimulator().saveLog(" >>> Algorithm: findTrailerLoadScores function <<<")
         
-        select_dict = dict()
-        for item in items:  
-            myopr = item.getActiveOperation()
-            if myopr!= None: 
-                for mach in myopr.getAlternativeResources():
-                    if not mach in select_dict:
-                        select_dict[mach] = 0
-                    select_dict[mach] += 1
-            else:
-                if not self.getOperationsManager().getCentralInventory() in select_dict:
-                    select_dict[self.getOperationsManager().getCentralInventory()] = 0
-                select_dict[self.getOperationsManager().getCentralInventory()] += 1
-
-        
-        for item in items:
-            myopr = item.getActiveOperation()
-            if myopr!= None: 
-                item.setPriorityScore(sum([select_dict[m] for m in myopr.getAlternativeResources()]))
-            else:
-                item.setPriorityScore(select_dict[self.getOperationsManager().getCentralInventory()])
-
-        items.sort(key=lambda x: x.getPriorityScore(), reverse=True)
-
-        return items
-        
-    def findTrailerLoadEarliestOrder(self,event,items):
+    def findTrailerLoadEarliestOrder(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerLoadEarliestOrder function <<<")
 
         select_dict = dict() #determine order items
         orders = []
-        for item in items:  
+        for item in event.getPlace().getItems():  
             myorder = item.getDemand()
             if not myorder in select_dict:
                 select_dict[myorder] = []
@@ -121,13 +122,16 @@ class ProductionAlgManager(AlgorithmManager):
 
         orders.sort(key=lambda x: x.getDeadline(), reverse= False)      
         return  select_dict[orders[0]]
+        
 
-    def findTrailerDestinationMostDemanded(self,event,items):
+    def findTrailerDestinationMostDemanded(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
+        self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
         select_dict = dict()
-        for item in items:
+        for item in event.getEquipment().getItems():
             myopr = item.getActiveOperation()
-            #print("Active operation of item",item.getID(),myopr.getName())
+
+           
             if myopr!= None: 
                 for mach in myopr.getAlternativeResources():
                     if not mach in select_dict:
@@ -137,16 +141,6 @@ class ProductionAlgManager(AlgorithmManager):
                 if not self.getOperationsManager().getCentralInventory() in select_dict:
                     select_dict[self.getOperationsManager().getCentralInventory()] = 0
                 select_dict[self.getOperationsManager().getCentralInventory()] += 1
-
-        for item in items:  
-            myopr = item.getActiveOperation()
-            if myopr!= None: 
-                item.setPriorityScore(sum([select_dict[m] for m in myopr.getAlternativeResources()]))
-            else:
-                item.setPriorityScore(select_dict[self.getOperationsManager().getCentralInventory()])
-
-
-        items.sort(key=lambda x: x.getPriorityScore(), reverse=True)
 
         mostdemanded = None; highestdemand = 0
 
@@ -158,52 +152,49 @@ class ProductionAlgManager(AlgorithmManager):
                 if highestdemand < demand:
                     mostdemanded = mymach
                     highestdemand = demand
-
+        #self.getSimulator().saveLog(" >>> returning... ")
         return mostdemanded
 
-    def findTrailerUnloadFeasible(self,event,items):
+    def findTrailerUnloadFeasible(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerUnloadFeasible function <<<")
 
         items_to_unload = []
      
 
-        for item in items:
+        for item in event.getEquipment().getItems():
             myopr = item.getActiveOperation()
-            
-
+ 
             if myopr!= None:
                 #print(" > "+str(self.getSimulator().getTime())+": >>> item ",item.getID()," opr ",myopr.getName(),  "ev loc ",event.getLocation().getName())
-                if event.getLocation().getMachine() in myopr.getAlternativeResources():
+                if event.getLocation() in myopr.getAlternativeResources():
                     items_to_unload.append(item)
             else:
                 #print(" > "+str(self.getSimulator().getTime())+": >>> item ",item.getID(),"to no  opr left ", "ev loc ",event.getLocation().getName())
-                if event.getLocation() == self.getOperationsManager().getCentralInventory().getInputBuffer():
+                if event.getLocation() == self.getOperationsManager().getCentralInventory():
                     items_to_unload.append(item)
    
         return items_to_unload
 
  
         
-    def findMachineLoadAutoHighestItems(self,event,items):
+    def findMachineSetupSelectEDD(self,event):
         
-        self.getSimulator().saveLog(" >>> Algorithm: findMachineLoadAutoHighestItems function <<<")
-        select_dict = dict()
-        for item in items:
-            myopr = item.getActiveOperation()
-            if not myopr in select_dict:
-                select_dict[myopr] = 0
-            select_dict[myopr] += 1
+        self.getSimulator().saveLog(" >>> Algorithm: findMachineSetupSelectEDD function <<<")
+        
+        select_dict = dict() #determine order items
+        
+        orders = []
 
-        highest_opr = None; max_items = 0
-        for opr,noitems in select_dict.items():
-            self.getSimulator().saveLog("Opr: "+opr.getName()+", items: "+str(noitems))
-            if highest_opr == None:
-                highest_opr = opr; max_items = noitems
-            else:
-                if max_items < noitems:
-                    highest_opr = opr; max_items = noitems
-                
-        # here choose one operation and send these items..
-        return [i for i in items if i.getActiveOperation() == highest_opr]
+        self.getSimulator().saveLog(" >event none?"+str(type(event.getPlace())))
+        for item in event.getPlace().getItems():  
+            myorder = item.getDemand()
+            if not myorder in select_dict:
+                select_dict[myorder] = []
+                orders.append(myorder)
+            select_dict[myorder].append(item)
+
+        orders.sort(key=lambda x: x.getDeadline(), reverse= False)   
+        self.getSimulator().saveLog(" >>> Algorithm: findMachineSetupSelectEDD function end <<<")
+        return  select_dict[orders[0]]
 
 
