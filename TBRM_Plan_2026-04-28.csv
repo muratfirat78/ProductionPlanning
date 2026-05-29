@@ -51,7 +51,7 @@ __export__.mrp_production_5484_c81e293e,[4022.622.61092] RH RED GRIPPER CABLE CO
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,6750.0,2026-05-31 09:25:00,,In Progress,True
 ,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,29.0,,,To Do,True
 __export__.mrp_production_5495_6bea93ed,[1207568A] Cable clamp,14912.0,30.0,2026-03-16 09:00:00,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,660.0,2026-05-31 09:21:00,2026-05-31 22:00:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30.0,2026-06-01 09:54:00,2026-06-01 10:25:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30.0,2026-06-01 09:55:00,2026-06-01 10:26:00,Finished,True
 __export__.mrp_production_5661_117b54ab,[4512-127-05186B] Anschlag,15017.0,850.0,2026-05-13 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,865.0,2026-03-23 09:45:09,2026-03-23 09:45:49,Finished,False
 ,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),__export__.mrp_workcenter_58_a525d5b9,1790.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,850.0,,,To Do,False
@@ -202,9 +202,9 @@ __export__.mrp_production_5980_7c410dbf,[7001-2580-0039] Lens Shim / FM / FM-02-
 __export__.mrp_production_5983_dcf32b91,[7001-2540-0009] Mirror Holder V2 / FM-02-034 ,17904.0,10.0,2026-05-04 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,25.0,2026-04-02 15:28:17,2026-04-02 15:28:18,Finished,False
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,480.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-__export__.mrp_production_6008_501a9ae7,[7017-2600-0006] VTPQ CSR 2 TARGET IF / JPE / P183559A,19235.0,2.0,2026-04-13 02:00:00,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,150.0,,,To Do,False
-,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,150.0,,,To Do,False
-,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,,,To Do,False
+__export__.mrp_production_6008_501a9ae7,[7017-2600-0006] VTPQ CSR 2 TARGET IF / JPE / P183559A,19235.0,2.0,2026-04-13 02:00:00,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,150.0,,,To Do,True
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,150.0,,,To Do,True
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,,,To Do,True
 __export__.mrp_production_6016_1de5774c,[4022.704.19302] RH RED STATIC STRAIN RELIEF A,6974.0,75.0,2026-04-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,90.0,2026-03-23 09:45:16,2026-03-23 09:46:23,Finished,True
 ,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1635.0,2026-04-15 11:07:19,2026-04-17 13:09:01,Cancelled,True
 ,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,210.0,2026-04-17 13:09:09,2026-04-17 13:09:09,Cancelled,True

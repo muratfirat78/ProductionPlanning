@@ -55,6 +55,37 @@ class VisualManager():
         self.DiagSelect = None
         self.DiagBox = None
         self.demandorderlist = dict()  # key: list order, val: demandid
+
+        self.milpmainbox = None
+        self.milpresultbox = None
+        self.milpprogress = None
+        self.milprunbutton = None
+
+
+    def setmilpprogress(self,myitem):
+       self.milpprogress = myitem
+       return 
+    def getmilpprogress(self):
+       return self.milpprogress
+
+    def setmilprunbutton(self,myitem):
+       self.milprunbutton = myitem
+       return 
+    def getmilprunbutton(self):
+       return self.milprunbutton
+
+    def setmilpmainbox(self,myitem):
+       self.milpmainbox = myitem
+       return 
+    def getmilpmainbox(self):
+       return self.milpmainbox
+
+    
+    def setmilpresultbox(self,myitem):
+       self.milpresultbox = myitem
+       return 
+    def getmilpresultbox(self):
+       return self.milpresultbox
         
         
         
@@ -437,6 +468,13 @@ class VisualManager():
         
         return
 
+    def RunMILP(self,event):
+
+        self.getController().getMILPManager().constructInstance()
+
+        
+        return 
+
     def GenerateMainTab(self):
 
         print("Visual Manager: Generating dashboard")
@@ -486,7 +524,7 @@ class VisualManager():
         self.setRunBox(runbox)
 
 
-        orders = widgets.Dropdown(options = [w for w in range(1,250)],value = 15,description = 'Orders:')
+        orders = widgets.Dropdown(options = [w for w in range(1,250)],value = 45,description = 'Orders:')
         self.setOrders(orders)
         self.getOrders().observe(self.setDropSimOrders,'value')
         self.getController().getWorkManager().setNoOrders(self.getOrders().value)
@@ -597,3 +635,23 @@ class VisualManager():
                                HBox(children = [self.getMainmenu(),self.getMainBox(),self.getEventTypeBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox()])]
                   )    
         return tab 
+
+    def GenerateMILPTab(self):
+
+
+        self.setmilprunbutton(widgets.Button(description="Run MILP"))
+        self.setmilpmainbox(VBox(children=[self.getmilprunbutton()]))
+
+        self.setmilpprogress(widgets.Textarea(value='', placeholder='',description='',disabled=True))
+
+        self.getmilpprogress().layout.width = '750px'
+        self.getmilpprogress().layout.height = '300px'
+
+        self.setmilpresultbox(VBox(children=[self.getmilpprogress()]))
+
+        self.getmilprunbutton().on_click(self.RunMILP)
+
+        
+        tab = VBox(children = [self.getmilpmainbox(),self.getmilpresultbox()])    
+
+        return tab

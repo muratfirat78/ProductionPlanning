@@ -229,7 +229,7 @@ class ProductionDataManager(DataManager):
                 
             self.getOperationsManager().getSimulator().saveLog("Size of input file: "+str(len(TBRM_df)))
   
-        return
+        return latestfiledate
 ########################################################################################################################################
     def defineProduct(self,dataprod,dataid):
 

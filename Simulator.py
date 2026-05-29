@@ -513,7 +513,31 @@ class AlgorithmManager(object):
 
     def getSimulator(self):
         return self.simulator
-################################################################################
+
+
+############################################################################################################      
+class MILPManager(object):
+    def __init__(self,sim):
+        
+        self.simulator = sim
+        self.OperationSchedules = dict() # key: job, val: (start,comp)
+        self.MachJobAssignments = dict() # key: mach, val: [job]
+
+   
+
+    def getMachJobAssignments(self):
+        return self.MachJobAssignments 
+ 
+ 
+    def getMachJobAssignments(self):
+        return self.MachJobAssignments
+
+    def getSimulator(self):
+        return self.simulator
+#######################################################################################################
+
+        
+#######################################################################################################
 class FeasibilityChecker():
     def __init__(self,Simulator,OprsMgr):
         

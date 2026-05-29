@@ -26,6 +26,7 @@ class ShopFloorManager(OperationsManager):
         self.NoOrders = 5
         self.SelectedOrders = []
         self.PerformanceRun = True
+        self.inputdate = None
 
         # Trailer Loading -> Trailer Transport -> Trailer Unloading
 
@@ -187,10 +188,13 @@ class ShopFloorManager(OperationsManager):
             else:
                 self.getSimulator().saveLog("Resource "+res.getType()+', id: '+str(res.getID())+" created.")
 
+
         try: 
-            self.DataManager.ReadDemandFile() # production orders created...
+            self.inputdate = self.DataManager.ReadDemandFile() # production orders created...
         except Exception as e: 
             self.getSimulator().saveLog("ERROR: In reading demand file "+str(e)+".")
+
+        
 
         #now choose soonest production orders to simulate..
         prodorders = []
@@ -976,7 +980,7 @@ class ShopFloorManager(OperationsManager):
 
             # first get end of this shift
             curr_shiftstart = (currtime//self.getSimulator().getShiftMinutes())*self.getSimulator().getShiftMinutes()
-            curr_shiftsend = curr_shiftstart+self.getSimulator().getShiftMinutes()*int((self.getSimulator().getTime()%self.getSimulator().getShiftMinutes())>0)
+            curr_shiftsend = curr_shiftstart+self.getSimulator().getShiftMinutes()*int((currtime%self.getSimulator().getShiftMinutes())>0)
             
             shiftno = self.getSimulator().getShift((self.getSimulator().getStartDay()+timedelta(minutes = curr_shiftstart)).hour)
 
@@ -1093,9 +1097,11 @@ class ShopFloorManager(OperationsManager):
                     TBRM_df.loc[len(TBRM_df)] = myorddata
                     oprid+=1
                         
-              
+            inputdate = ""
+            if self.inputdate !=None:
+                inputdate = str(self.inputdate.date())
             
-            TBRM_df.to_csv("TBRM_Plan.csv",index = False)
+            TBRM_df.to_csv("TBRM_Plan_"+inputdate+".csv",index = False)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
             

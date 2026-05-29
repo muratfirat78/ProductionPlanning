@@ -2,6 +2,7 @@
 from Visual import*
 from Simulator import *
 from productionmain import *
+from MILPScheduling import * 
 
 class Controller:
     def __init__(self):  
@@ -11,6 +12,7 @@ class Controller:
         self.Simulator.setController(self)
         self.WorkManager = ShopFloorManager(self.Simulator)
         self.WorkManager.setDemandType("Product")
+        self.MILPManager = ProductionMILPManager(self.Simulator)
 
         self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"] = []
         self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(("Select Items",'EDDOrder'))
@@ -46,11 +48,18 @@ class Controller:
         return self.WorkManager
     def getSimulator(self):
         return self.Simulator
+
+    def getMILPManager(self):
+        return self.MILPManager
       
     def GetDashBoard(self):
 
         print("Controller: Generating dashboard")
         return self.VisualManager.GenerateMainTab()
+
+    def GenerateMILPTab(self):
+
+        return self.VisualManager.GenerateMILPTab()
 
     
     def ExecuteOperation(self,operation,numbers):
