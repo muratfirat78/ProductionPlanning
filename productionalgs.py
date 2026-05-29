@@ -47,31 +47,28 @@ class ProductionAlgManager(AlgorithmManager):
         self.getSimulator().saveLog(" >>> Algorithm: assignStraightEquipment function <<<")
 
         selected_equip = None 
+
+        self.getSimulator().saveLog(" >>> event type:  "+str(event.getEventType().getName()))
         
-        if event.getEventType().getName() == "Machine Setup" or event.getEventType().getName() == "Processing": 
-        
+        if event.getEventType().getName() == "Machine Setup": 
             event_mach = event.getLocation()
 
             if event_mach.isAvailable():
                 processr = event_mach.getProcessor()
-                self.getSimulator().saveLog("Assign processor at machine "+event_mach.getName()+" processor found? "+str(processr != None))
+                self.getSimulator().saveLog(" Assign processor at machine "+event_mach.getName()+" processor found? "+str(processr != None))
                 
                 if processr != None:
-                    event_mach.getProcessMatch()[processr] = event
+                    event_mach.getProcessMatch()[event] = processr
                     selected_equip = event_mach
 
-                    if event.getEventType().getName() == "Processing":
-                        event.setResource(event_mach)
-        
         else:
+            
 
             av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
     
             self.getSimulator().saveLog(" av_equip: "+str(len(av_equip)))
             
             comp_equip = [r for r in av_equip if (r.isIdle())]
-    
-            
     
             self.getSimulator().saveLog(" comp_equip: "+str(len(comp_equip)))
             if len(comp_equip) > 0:  
@@ -87,7 +84,10 @@ class ProductionAlgManager(AlgorithmManager):
         
         
         avail_res = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and r.getType() == event.getEventType().getResourceType()] 
-    
+
+        #if event.getName() == 'Machine Loading' or ((self.getSimulator().getTime() >= 2880) and (self.getSimulator().getTime() <= 2980)):
+        #    self.getSimulator().saveLog("ERROR check: "+str(event.getName())+"("+str(event.getID())+")"+" avail_res: "+str(len(avail_res)))
+        #    self.getSimulator().saveLog("ERROR check: "+"getResourceType: "+str(event.getEventType().getResourceType()))
             #self.getSimulator().saveLog(" avail_res: "+str(len(avail_res)))
             
         idle_res = [r for r in avail_res if (r.isIdle() and len(r.getMyEvents()) == 0)] 
@@ -96,13 +96,17 @@ class ProductionAlgManager(AlgorithmManager):
             self.getSimulator().saveLog(str([r.getName()+"->"+str(r.getLocation() == None) for r in idle_res]))
     
             
-    
+
+        #if event.getName() == 'Machine Loading':
+        #    self.getSimulator().saveLog("ERROR check: "+str(event.getName())+"("+str(event.getID())+")"+" idle_res: "+str(len(idle_res)))
             #self.getSimulator().saveLog(" >>> Algorithm: assignStraightResource function <<<"+str(len(idle_res)))
             
         if len(idle_res) > 0:
             onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
             self.getSimulator().saveLog(" >>> Algorithm: onloc_res "+str(len(onloc_res)))
             selected_res = onloc_res[0] if len(onloc_res) > 0 else idle_res[0]
+
+           
 
         return selected_res
     
@@ -130,8 +134,7 @@ class ProductionAlgManager(AlgorithmManager):
         select_dict = dict()
         for item in event.getEquipment().getItems():
             myopr = item.getActiveOperation()
-
-           
+     
             if myopr!= None: 
                 for mach in myopr.getAlternativeResources():
                     if not mach in select_dict:
@@ -152,7 +155,14 @@ class ProductionAlgManager(AlgorithmManager):
                 if highestdemand < demand:
                     mostdemanded = mymach
                     highestdemand = demand
-        #self.getSimulator().saveLog(" >>> returning... ")
+        self.getSimulator().saveLog(" >>> event "+event.getName()+"["+str(event.getID())+"] returning... None? "+str(mostdemanded == None)+", dict size "+str(len(select_dict))+" items "+str(len(event.getEquipment().getItems())))
+        if mostdemanded == None: 
+            for mymach,demand in select_dict.items():
+                self.getSimulator().saveLog(" >>> mach "+mymach.getName()+" demand "+str(demand))
+            for item in event.getEquipment().getItems():
+                myopr = item.getActiveOperation()
+                if myopr!=None:
+                    self.getSimulator().saveLog(" >>> item "+str(item.getID())+" active opr "+myopr.getName()+" alts: "+str(len(myopr.getAlternativeResources())))
         return mostdemanded
 
     def findTrailerUnloadFeasible(self,event):

@@ -15,6 +15,7 @@ class Simulator(object):
         self.queue = {} #key: time (start/completion times of events) , val: [event]
         self.time = 0
         self.eventno = 0
+    
      
         self.queue["Pending"] = [] # list of pending events, to be hanlded
         self.queue["Preemptables"] = [] # list of ongoing process events
@@ -25,7 +26,7 @@ class Simulator(object):
         self.currentDay = None # will be updated dynamically
         self.currentShift = None #will be updated dynamically 
 
-        currentdate =  datetime.now()-timedelta(days = 2)
+        currentdate =  datetime.now()
         startday = datetime(currentdate.year, currentdate.month, currentdate.day)
         self.shifthours = 8 
         self.shiftsperday = 3 
@@ -39,6 +40,8 @@ class Simulator(object):
 
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
 
+    
+
     def setController(self,contr):
         self.Controller = contr
         return
@@ -49,13 +52,19 @@ class Simulator(object):
         return self.MyLog
 
     def saveLog(self,info):
+
+        
         if not self.getTime() in self.MyLog:
             self.MyLog[self.getTime()] = []
         self.MyLog[self.getTime()].append(info)
-        if not self.getController().getWorkManager().isPerformanceRun():
+
+        
+        if info.find("ERROR")> -1 or info.find("REPORT")> -1 : 
             self.getController().getVisualManager().updateSimProgress(str(self.getTime())+": "+info)
         return
+        
     def saveTitleLog(self,title,info):
+        
         if not title in self.MyLog:
             self.MyLog[title] = []
         self.MyLog[title].append(info)
@@ -119,171 +128,250 @@ class Simulator(object):
 ############################################################################################
     def RunSimulation(self,OperationsMgr): 
 
-        start = timer()
-        try:
-            self.getController().getVisualManager().updateSimProgress("Simulation starts ")
-        except Exception as e:
-            self.saveLog("ERROR in progress update: "+str(e))
-            
-        while self.getTime() < self.getTimeLimit():
-            
-            self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
-            self.setCurrentShift(self.getShift(self.getRealTime().hour))
+        try: 
 
-            if self.getTime() % self.shift_minutes == 0:
-                try:
-                    self.saveLog(">>>>>>>>>>>>>>>>>>  Shift start: "+str(self.getRealTime())+"<<<<<<<<<<<<<<<<<<<"+"hour: "+str(self.getRealTime().hour)+"shift: "+str(self.getShift(self.getRealTime().hour))+" sim time: "+str(self.getTime()))
-                    self.saveLog(">>>>>>>>>>>>>>>>>> Current day: "+str(self.getCurrentDay())+" shift: "+str(self.getCurrentShift()))
-                    OperationsMgr.applyShiftChange()
-                except Exception as e:
-                    self.saveLog("ERROR in shift change: "+str(e))
-                
-
-            while self.getCurrentDay().weekday() >= self.weekdays:
-                self.saveLog("Weekend jump..")
-                self.setCurrentDay(self.getCurrentDay()+timedelta(days= 1))
-
-                for res in OperationsMgr.getResources():
-                    if res.getType() == "Machine":
-                        self.saveLog("Res "+res.getName()+" progresses .."+str(len(res.getProgressDict())))
-                        for ev,progress in res.getProgressDict().items():
-                            self.saveLog("Res "+res.getName()+" ongoing event "+ev.print()+" proctime: "+str(progress))
-                        
-                
-                move_dict = dict()
-                for time,time_events in self.getEventQueue().items():
+            self.saveLog("simulation starts..")
+            start = timer()
+            try:
+                self.getController().getVisualManager().updateSimProgress("Simulation starts ")
+            except Exception as e:
+                self.saveLog("ERROR in progress update: "+str(e))
+    
+            while self.getTime() < self.getTimeLimit():
+    
+                self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
+    
+                weekendjump = 0
+                if self.getCurrentDay().weekday() >= self.weekdays:
+                    self.saveLog("Weekend jump..")
+       
+                    for res in OperationsMgr.getResources():
+                        if res.getType() == "Machine":
+                            self.saveLog("Res "+res.getName()+" progresses .."+str(len(res.getProgressDict())))
+                            for ev,progress in res.getProgressDict().items():
+                                self.saveLog("Res "+res.getName()+" ongoing event "+ev.print()+" proctime: "+str(progress))
+                            
                     
-                    if time in ["Pending","Preemptables"]:
-                        continue
-                    #self.saveLog("Time "+str(time)+", Events "+str(len(time_events)))
-                    if time <= self.getTime():
-                        continue
-                    move_dict[time] = []
-                    for ev in time_events:
-                        move_dict[time].append(ev)
-                        self.saveLog("Event "+ev.print()+" moved from time "+str(time)+" to time "+str(time+self.shiftsperday*self.shifthours*60))
-                    self.getEventQueue()[time].clear()
-                
-                for time,time_events in move_dict.items():
-                    self.getEventQueue()[time+self.shiftsperday*self.shifthours*60] = []
-                    for ev in time_events:
-                        self.getEventQueue()[time+self.shiftsperday*self.shifthours*60].append(ev)
-                self.updateTime(self.shiftsperday*self.shifthours*60)
+                    move_dict = dict()
+                    for time,time_events in self.getEventQueue().items():
                         
-             
-            self.updateTime(1)
+                        if time in ["Pending","Preemptables"]:
+                            continue
+                        #self.saveLog("Time "+str(time)+", Events "+str(len(time_events)))
+                        if time <= self.getTime():
+                            continue
+                        move_dict[time] = []
+                        for ev in time_events:
+                            move_dict[time].append(ev)
+                            self.saveLog("Event "+ev.print()+" moved from time "+str(time)+" to time "+str(time+self.shiftsperday*self.shifthours*60))
+                        self.getEventQueue()[time].clear()
+                    
+                    for time,time_events in move_dict.items():
+                        self.getEventQueue()[time+self.shiftsperday*self.shifthours*60] = []
+                        for ev in time_events:
+                            self.getEventQueue()[time+self.shiftsperday*self.shifthours*60].append(ev)
+                    self.updateTime(self.shiftsperday*self.shifthours*60)
+                    weekendjump+=self.shiftsperday*self.shifthours*60
+                            
+    
+                
+                self.setCurrentShift(self.getShift(self.getRealTime().hour))
+    
+                if self.getTime() % self.shift_minutes == 0:
+                    try:
+                        self.saveLog(" >>>>>>>>>>>>>>>>>>  Shift start: "+str(self.getRealTime())+"<<<<<<<<<<<<<<<<<<<"+"hour: "+str(self.getRealTime().hour)+"shift: "+str(self.getShift(self.getRealTime().hour))+" sim time: "+str(self.getTime()))
+                        self.saveLog(" >>>>>>>>>>>>>>>>>> Current day: "+str(self.getCurrentDay())+" shift: "+str(self.getCurrentShift()))
+                        OperationsMgr.applyShiftChange(weekendjump)
+                    except Exception as e:
+                        self.saveLog("ERROR in shift change: "+str(e))
+    
+                self.updateTime(1)
+                try: 
+                    self.executeEvents()
+                except Exception as e:
+                    self.saveLog("ERROR in execute events: "+str(e))
+                    
+    
+            end = timer()
             
-            self.executeEvents(OperationsMgr)
+            try:
+                self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
+            except Exception as e:
+                self.saveLog("ERROR in progress update: "+str(e))
+            start = timer()
+            self.getController().getVisualManager().updateSimProgress("Writing data")
+            OperationsMgr.writeData()
+            OperationsMgr.writeDataTBRMOutPut()
+            end = timer()
+            self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
 
-        end = timer()
-        
-        try:
-            self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
         except Exception as e:
-            self.saveLog("ERROR in progress update: "+str(e))
-        start = timer()
-        self.getController().getVisualManager().updateSimProgress("Writing data")
-        OperationsMgr.writeData()
-        end = timer()
-        self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
-
+            self.saveLog("ERROR in sim run: "+str(e))
+            
         return
 
         
 ######################################################################################################        
-    def executeEvents(self,workmgr):
+    def executeEvents(self):
 
-        self.getEventQueue()["Pending"] = [e for e in self.getEventQueue()["Pending"] if not workmgr.HandleSimEvent(e) ]
+        keyword = ""
 
+        workmgr = self.getController().getWorkManager()
+
+        # if an event is handled, then the return is true and does not stay in pending list.
+        try: 
+            self.getEventQueue()["Pending"] = [e for e in self.getEventQueue()["Pending"] if not workmgr.HandleSimEvent(e)]
+        except Exception as e:
+            self.saveLog("ERROR: Handling of pending events"+str(e))
+
+
+        # continue with preemptable events...
+        try: 
+            for event in self.getEventQueue()["Preemptables"]:
+                self.saveLog(keyword+": preemptable event "+event.print()+" to handle.. active? "+str(event.IsActive()))
+                if not event.IsActive():
+                    try: 
+                        workmgr.resumeSimEvent(event)  
+                    except Exception as e:
+                        self.saveLog("ERROR: resuming event "+str(e))
+                else:
+                    
+                    eventprogress = event.getTotalProgress()
+                    
+                    self.saveLog(" preemptable event total progress .."+str(eventprogress))
+                    for nextevent,prectype in event.getPrecedenceTypes().items(): # note that sim. finish event is already created in the start
+                        nextproctime = workmgr.getProcessTime(nextevent)
+                        if prectype ==  'Simultaneous Finish':
+                            if not nextevent.IsActive():
+                                if event.getProcessTime() - eventprogress  <= nextproctime:
+                                    self.saveLog("REPORT: preemptable event "+event.getName()+"["+str(event.getID())+"]"+" SS event scheduling .."+nextevent.getName()+"["+str(nextevent.getID())+"]")
+                        
+                                    self.ScheduleEvent(nextevent)
+                                    del event.getPrecedenceTypes()[nextevent]
+                                    break
+    
+                    if eventprogress == event.getProcessTime():
+                        workmgr.commpleteSimEvent(event)   
+        except Exception as e:
+            self.saveLog("ERROR: Handling of preemptable events "+str(e))
+
+       
         
-        for event in self.getEventQueue()["Preemptables"]:
-            if not event.IsActive():
-                workmgr.resumeSimEvent(event)   
-            else:
-              
-                #self.saveLog(" completing event "+event.getName()+" ? "+str(workmgr.getEventProgress(event,False))+", proctime "+str(event.getProcessTime()))
-                if workmgr.getEventProgress(event,True) == event.getProcessTime():
-                    workmgr.commpleteSimEvent(event)
-            
-      
-        if self.time in self.queue:
-            ev_round = 1
-            time_events =[e for e in self.queue[self.time]] # scheduled/started events
-
-            
-            while len(time_events) > 0: 
-                self.saveLog(" Non-pending events "+str(len(time_events))+"("+str(ev_round)+")"+str([i.getName()+"("+str(i.getID())+")" for i in time_events]))
-                event_progress = 0
-                for event in time_events:
-                    if event.IsActive():  # completion of event
-                        if event in self.getEventQueue()[self.time]:
-                            event_progress+=1
-                            workmgr.commpleteSimEvent(event)
-                            self.queue[self.time].remove(event) 
-                    else:
-                        if not workmgr.startSimEvent(event):
-                            #self.saveLog(" starting not successful back to pending...")
-                            self.getEventQueue()["Pending"].append(event)
-                        else:
-                            if event.getEventType().isPreemptable():
-                                #self.saveLog(" adding preemptables...")
-                                if not event in self.getEventQueue()["Preemptables"]:
-                                    self.getEventQueue()["Preemptables"].append(event)
-
-                        self.queue[self.time].remove(event)
-                        event_progress+=1 
-           
-
+        # continue with non-pending and non-preemptable events...
+        try: 
+            if self.time in self.queue:
+                self.saveLog(" Handling of non/pending-preemptable events at "+str(self.time))
+                ev_round = 1
                 time_events =[e for e in self.queue[self.time]] # scheduled/started events
-                ev_round+=1
-                
+    
+                self.saveLog("Handling of non/pending-preemptable events no "+str(len(time_events)))
+                while len(time_events) > 0: 
+                    self.saveLog(" Non-pending events "+str(len(time_events))+"("+str(ev_round)+")"+str([i.getName()+"("+str(i.getID())+")" for i in time_events]))
+                    event_progress = 0
+                    for event in time_events:
+                        self.saveLog(" Event "+str(event.getName())+"["+str(event.getID())+"]"+", ACTIVE? "+str(event.IsActive()))
+                        if event.IsActive():  # completion of event
+                            if event in self.getEventQueue()[self.time]:
+                                event_progress+=1
+                                try: 
+                                    workmgr.commpleteSimEvent(event)
+                                except Exception as e:
+                                    self.saveLog("ERROR: complete non/pending-preemptable events "+str(e))  
+                                
+                                self.queue[self.time].remove(event) 
+                        else:
+                            if event.getEquipment() == None or event.getResource() == None:
+                                self.saveLog(" event moved to pending.. "+str(self.time))
+                                self.getEventQueue()["Pending"].append(event)
+                                self.getEventQueue()[self.getTime()].remove(event) 
+                            else:
+                                try: 
+                                    if  workmgr.startSimEvent(event):
+                                        if event.getEventType().isPreemptable():
+                                            if not event in self.getEventQueue()["Preemptables"]:
+                                                #self.saveLog(keyword+": event "+event.print()+" moved to preemptables..")
+                                                self.getEventQueue()["Preemptables"].append(event)
+                                
+        
+                                    self.queue[self.time].remove(event)
+                                except Exception as e:
+                                    self.saveLog("ERROR: start non/pending-preemptable events "+str(e))  
+                                
+                            event_progress+=1 
+               
+    
+                    time_events =[e for e in self.queue[self.time]] # scheduled/started events
+                    ev_round+=1
+        
+        except Exception as e:
+            self.saveLog("ERROR: non/pending-preemptable events "+str(e))        
             
      
         return
 #############################################################################################################################          
-    def ScheduleEvent(self,event,time,workmgr):
+    def ScheduleEvent(self,event):
+
+        workmgr = self.getController().getWorkManager()
         
-        self.saveLog(" scheduling "+event.print()+" with start time "+str(time)+", preemptable "+str(event.getEventType().isPreemptable()))
-      
-        # if time = Pending, it will be handled, otherwise it will start
-        if not time in self.getEventQueue():
-            self.getEventQueue()[time] = []
-        self.getEventQueue()[time].append(event)
+        self.saveLog(" scheduling "+event.print()+", preemptable "+str(event.getEventType().isPreemptable()))
 
-        if (time == "Pending"):
-            return
-           
+        try: 
+            if event.getEquipment() == None or event.getResource() == None:
+                if not event in self.getEventQueue()["Pending"]:
+                    self.saveLog(" in pending  "+event.print())
+                    self.getEventQueue()["Pending"].append(event)
+                return 
+          
+            if not self.getTime() in self.getEventQueue():
+                self.getEventQueue()[self.getTime()] = []
+            self.getEventQueue()[self.getTime()].append(event)
+    
+            if event.getEventType().isPreemptable():
+                return
 
-        if event.getEventType().getSuccessorType()!= None:
-            if 'Simultaneous Start' in event.getEventType().getPrecendenceDict()[event.getEventType().getSuccessorType().getName()]:
-                nextevent = workmgr.defineNextEvent(event,'Simultaneous Start')
-                self.saveLog(" successor with precedence SS: "+nextevent.getName())
-                self.getEventQueue()[time].append(nextevent) # let the SS precendence event stsrt at the same time..   
-
-        if event.getEventType().isPreemptable():
-            return
-
-        # time is start time
-        completion = workmgr.getCompletionTime(event,time)
-
-        curr_shiftstart = (self.getTime()//self.getShiftMinutes())*self.getShiftMinutes()
-        curr_shiftsend = curr_shiftstart+self.getShiftMinutes()*int((self.getTime()%self.getShiftMinutes())>0)
-
-        
-        if completion > curr_shiftsend: 
-            # do not schedule event in this shift since it cannot finish..
-            self.saveLog(" non-preemptable event cannot be completed in this shift, so kept pending.")
-            self.getEventQueue()["Pending"].append(event)
-            return
-        else:
-            self.saveLog(" "+event.print()+" completion time "+str(completion)+", event+proctime: "+str(time+event.getProcessTime()))
-            event.setCompletionTime(completion)
+            if event.getSuccessor()!= None:
+                if event.getSuccessor() in self.getEventQueue()["Preemptables"]:
+                    self.getEventQueue()["Preemptables"].remove(event.getSuccessor())
+                    self.saveLog(" preemptable successor event "+event.getSuccessor().getName()+str(event.getSuccessor().getID())+" removed from preemptables..")
+                                                                
+    
+            # time is start time
+            completion = workmgr.getCompletionTime(event,self.getTime())
+    
+            curr_shiftstart = (self.getTime()//self.getShiftMinutes())*self.getShiftMinutes()
+            curr_shiftsend = curr_shiftstart+self.getShiftMinutes()*int((self.getTime()%self.getShiftMinutes())>0)
+    
+            
+            if completion > curr_shiftsend: 
+                # do not schedule event in this shift since it cannot finish..
+                self.saveLog(" non-preemptable event "+event.getName()+"["+str(event.getID())+"]"+" cannot be completed in this shift, so scheduled to shiftend.")
+                try: 
+                    event.setResource(None)
+                    if not curr_shiftsend+1 in self.getEventQueue():
+                        self.getEventQueue()[curr_shiftsend+1] = []
+                    self.getEventQueue()[curr_shiftsend+1].append(event)
+                    if event in self.getEventQueue()[self.getTime()]:
+                        self.getEventQueue()[self.getTime()].remove(event) 
                     
-            if not (completion) in self.getEventQueue():
-                self.getEventQueue()[completion] = []
+                    self.saveLog("REPORT: done.")
+                except Exception as e:
+                    self.saveLog("ERROR: In scheduling end of shift non-preemptable event "+event.print()+str(e))
+               
+                return
+            else:
+                self.saveLog(" "+event.print()+" completion time "+str(completion)+", event+proctime: "+str(self.getTime()+event.getProcessTime()))
+                event.setCompletionTime(completion)
                         
-            if not event in self.getEventQueue()[completion]:
-                self.getEventQueue()[completion].append(event)   
+                if not (completion) in self.getEventQueue():
+                    self.getEventQueue()[completion] = []
+                            
+                if not event in self.getEventQueue()[completion]:
+                    self.getEventQueue()[completion].append(event)  
+        except Exception as e:
+            self.saveLog("ERROR: in scheduling event "+str(e))
+            
+
+        self.saveLog("scheduled event,  "+event.print())
        
         return 
 ############################################################################################################################
@@ -451,6 +539,9 @@ class DataManager(object):
         self.ObjectFeatures = dict() # key: object type, val: columns of data_df of properties of objects
         self.simulator = sim
         self.OperationsManager = oprmgr
+
+   
+        
 
     def ReadData(self):
         #overwritten by subclassess

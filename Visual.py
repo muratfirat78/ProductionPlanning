@@ -54,6 +54,7 @@ class VisualManager():
         self.ShowDiagButton = None
         self.DiagSelect = None
         self.DiagBox = None
+        self.demandorderlist = dict()  # key: list order, val: demandid
         
         
         
@@ -261,7 +262,19 @@ class VisualManager():
 
 
         self.runbutton.disabled = True
+        self.getController().getSimulator().saveLog("Run clicked..")
         self.getController().getSimulator().RunSimulation(self.getController().getWorkManager())
+
+
+        self.demandorderlist.clear()
+   
+        process_df = pd.read_csv("ProcessData.csv")
+        demagrr = process_df.groupby(["DemandID","Product","NrItems"], dropna=True)[['OperationName']].agg(lambda x:list(x)).reset_index()
+
+        for i,r in demagrr.iterrows():
+            self.demandorderlist[len(self.demandorderlist)] = r["DemandID"]
+
+        self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
 
 
         return 
@@ -309,15 +322,17 @@ class VisualManager():
 
         self.getShowLogButton().disabled = True
 
-        allinfo = []
+      
+        #allinfo = []
         
-        for time,infolist in self.getController().getSimulator().getMyLog().items():
+        #for time,infolist in self.getController().getSimulator().getMyLog().items():
 
-            for info in infolist:
-                allinfo.append(str(time)+": "+str(info))
-                
+        #    for info in infolist:
+        #        allinfo.append(str(time)+": "+str(info))
 
-        self.getLogSelect().options = allinfo
+       
+
+        #self.getLogSelect().options = allinfo
 
         return
 
@@ -348,11 +363,23 @@ class VisualManager():
         #getDemand_process_df(self):
         result = self.getResultText().value
 
+        self.demandorderlist.clear()
+       
 
+        process_df = pd.read_csv("ProcessData.csv")
+
+       
+        demagrr = process_df.groupby(["DemandID","Product","NrItems"], dropna=True)[['OperationName']].agg(lambda x:list(x)).reset_index()
+
+
+        for i,r in demagrr.iterrows():
+            self.demandorderlist[len(self.demandorderlist)] = r["DemandID"]
+        
+            
         if result == 'Order Progress': 
-            self.getFurtherText().options = [ordr for ordr in self.getController().getWorkManager().getDataManager().getDemand_process_df()["Product"].unique()]
+            self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
         if result == 'Resource Operations': 
-            self.getFurtherText().options = [res for res in self.getController().getWorkManager().getDataManager().getRes_process_df()["Resource"].unique()]
+            self.getFurtherText().options = [res for res in process_df["Resource"].unique()]
                   
 
         return 
@@ -365,10 +392,26 @@ class VisualManager():
         result_detail = self.getFurtherText().value
 
 
+        selectid = 0
+        for x in self.getFurtherText().options:
+            if self.getFurtherText().options[selectid] == result_detail:
+                break
+            selectid+=1
+        
+            
+
+        
+
+        process_df = pd.read_csv("ProcessData.csv")
+    
+        process_df=process_df.reset_index()
+
         if result_type == 'Order Progress': 
-            main_df  = self.getController().getWorkManager().getDataManager().getDemand_process_df()
-            sub_df = main_df[main_df["Product"] == result_detail]
-            sub_df = sub_df[["Product","OperationName","Start","Completion"]]
+
+            prodord = self.demandorderlist[selectid]
+            sub_df = process_df[process_df["DemandID"] == prodord]
+            sub_df = sub_df[["OperationName","Resource","Start","Completion"]]
+            
             sub_df['Start'] = pd.to_datetime(sub_df['Start'])
             sub_df = sub_df.sort_values(by ="Start")
             with self.getResultInfoText():
@@ -376,8 +419,8 @@ class VisualManager():
                 display(sub_df.head(50))
            
         if result_type == 'Resource Operations': 
-            main_df  = self.getController().getWorkManager().getDataManager().getRes_process_df()
-            sub_df = main_df[main_df["Resource"] == result_detail]
+
+            sub_df = process_df[process_df["Resource"] == result_detail]
             sub_df = sub_df[["Resource","Start","Completion","Product"]]
             sub_df['Start'] = pd.to_datetime(sub_df['Start'])
             sub_df = sub_df.sort_values(by ="Start")
@@ -443,7 +486,7 @@ class VisualManager():
         self.setRunBox(runbox)
 
 
-        orders = widgets.Dropdown(options = [w for w in range(1,50)],value = 15,description = 'Orders:')
+        orders = widgets.Dropdown(options = [w for w in range(1,250)],value = 15,description = 'Orders:')
         self.setOrders(orders)
         self.getOrders().observe(self.setDropSimOrders,'value')
         self.getController().getWorkManager().setNoOrders(self.getOrders().value)
