@@ -193,6 +193,30 @@ class Simulator(object):
                     
     
             end = timer()
+
+            self.getController().getVisualManager().updateSimProgress("Checking for stuck events")
+
+            eventStuckThreshold = 60  # minutes with no progress
+
+            # check for stuck events
+            for time, events in self.getEventQueue().items():
+                for ev in events:
+                    if ev.lastProgressTime is None:
+                        self.saveLog("REPORT: Event "+ev.print()+" never progressed")
+                    elif self.getTime() - ev.lastProgressTime > eventStuckThreshold:
+                        self.saveLog("REPORT: Event "+ev.print()+
+                                     " last progressed at "+str(ev.lastProgressTime)+
+                                     " state="+ev.progressState)
+
+            # Check for resources that have stuck events
+            
+            for res in OperationsMgr.getResources():
+            for ev, prog in res.getProgressDict().items():
+                if ev.lastProgressTime is None or \
+                   self.getTime() - ev.lastProgressTime > STUCK_THRESHOLD:
+                    self.saveLog("REPORT: Resource "+res.getName()+
+                                 " still running event "+ev.print()+
+                                 " last progressed at "+str(ev.lastProgressTime))
             
             try:
                 self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
@@ -237,6 +261,7 @@ class Simulator(object):
                 else:
                     
                     eventprogress = event.getTotalProgress()
+                    event.setProgress(self.getTime(), "Progressed")
                     
                     self.saveLog(" preemptable event total progress .."+str(eventprogress))
                     for nextevent,prectype in event.getPrecedenceTypes().items(): # note that sim. finish event is already created in the start

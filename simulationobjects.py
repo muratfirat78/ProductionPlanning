@@ -114,6 +114,9 @@ class Event(object):
 
         self.startdelay = 0
         self.logisticevents = []
+
+        self.lastProgressTime = None
+        self.progressState = "Created"
         
 
     def getLogisticEvents(self):
@@ -123,7 +126,12 @@ class Event(object):
 
     def increaseStartDelay(self):
         self.startdelay+=1
-        return 
+        return
+
+    def setProgress(self, simTime, state):
+        self.lastProgressTime = simTime
+        self.progressState = state
+        return
         
     def getPrecedenceTypes(self):
         return self.precedencetypes

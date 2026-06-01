@@ -1,10 +1,11 @@
 from datetime import timedelta,date
 import random
 import pandas as pd
+from stochastic import *
 
 
 class EventType(object):
-    def __init__(self,myname,restype,equiptype,static,loading,process):
+    def __init__(self,myname,restype,equiptype,static,loading,process,myset):
         self.Name = myname
         self.ResourceType = restype # to help assigning 
         self.EquipmentType = equiptype # to help selecting    
@@ -14,8 +15,28 @@ class EventType(object):
         self.static = static
         self.loading = loading # if static is False, this is not relevant. If static True and Loading false, then this is unloading. 
         self.process = process
+        self.setup = myset
         self.successortype = None
-        self.predecesortype = None
+        self.predecessortype = None
+        self.preemptable = False
+        self.decisions = [] # of tuples (stage,type). 
+                            # Stage: handle, start, or complete. Type: SelectItems, SelectDestination, Assign Equipment, Assign Resource. 
+
+        self.itemdirection = True # Place -> Equipment, False means Equipment -> Place
+
+
+    def isSetup(self):
+        return self.setup
+        
+    def setItemDirection(self,myst):
+        self.itemdirection = myst
+        return
+
+    def getItemDirection(self):
+        return self.itemdirection
+
+    def getDecisions(self):
+        return self.decisions
 
     def setPredecessorType(self,myev):
         self.predecessortype = myev
@@ -28,7 +49,13 @@ class EventType(object):
         return
     def getSuccessorType(self):
         return self.successortype
-        
+
+    def setPreemptable(self,status):
+        self.preemptable = status
+        return
+
+    def isPreemptable(self):
+        return self.preemptable 
 
     def isStatic(self):
         return self.static
@@ -67,7 +94,8 @@ class Event(object):
         self.ID = sim.getEventNo()   
         self.Location = loc  # static: resource, dynamic: (from buffer,to buffer)   
         self.StartTime = start
-        self.ProcessTime = proctime     
+        self.ProcessTime = proctime  
+        self.CompletionTime = None
         self.active = False    
         self.InfoDictionary = dict() # processing: ("operation",operation obj)
         self.ItemSource = None # this is where items will be selected
@@ -77,15 +105,100 @@ class Event(object):
         self.Items = []
         self.Place = None
         self.successor = None
-        self.predecesor = None
+        self.predecessor = None
+        # events: ML,MU resources are operators and Processing resources are machines.  
+        self.definedsuccessors = dict() #key: successor type, val: successor event defined
+        self.ProgressDict = dict() # key: resource, val: [(start,end)], all in simtime
+
+        self.precedencetypes = dict() # key: successor or predecessor, val: "F2S", "SS", "SF"
+
+        self.startdelay = 0
+        self.logisticevents = []
+
+        self.lastProgressTime = None
+        self.progressState = "Created"
+        
+
+    def getLogisticEvents(self):
+        return self.logisticevents
+    def getStartDelay(self):
+        return self.startdelay
+
+    def increaseStartDelay(self):
+        self.startdelay+=1
+        return
+
+    def setProgress(self, simTime, state):
+        self.lastProgressTime = simTime
+        self.progressState = state
+        return
+        
+    def getPrecedenceTypes(self):
+        return self.precedencetypes
+
+    def getProgressDict(self):
+        return self.ProgressDict
+        
+    def setProcessTime(self,mytime):
+        self.ProcessTime = mytime
+        return
+
+    def getDefinedSuccessors(self):
+        return self.definedsuccessors
 
 
+    def setCompletionTime(self,mytime):
+        self.CompletionTime = mytime
+        return
+
+    def getCompletionTime(self):
+        return self.CompletionTime 
+        
+    
     def setPlace(self,myown):
         self.Place = myown
         return
     def getPlace(self):
         return self.Place
+
+
+    def getTotalProgress(self):
+
+        totalprogress = 0; openprogresses = 0
+
+        if len(self.getLogisticEvents()) > 0:
+            return totalprogress
         
+        if self.getEventType().isPreemptable():
+
+            for resource,proglist in self.getProgressDict().items():
+                totalprogress+= sum([((p[1] if p[1] != 0 else self.getSimulator().getTime())-p[0]) for p in proglist])
+                openprogresses+=sum([1 for p in proglist if p[1] == 0])
+                
+            if openprogresses > 1:
+                self.getSimulator().saveLog("ERROR: Premeptable Event "+self.getName()+"["+str(self.getID())+"]"+" has more than one open progresses..")
+                for resource,proglist in self.getProgressDict().items():
+                    self.getSimulator().saveLog("REPORT: Res "+resource.getName()+"Progresses of "+self.getName()+"["+str(self.getID())+"]"+": "+str([(p[0],p[1]) for p in proglist]))
+
+            pred = self.getPredecessor()
+            
+            if pred!= None:
+                for nextevent,prectype in pred.getPrecedenceTypes().items(): 
+                    if prectype == 'Simultaneous Start' and nextevent == self:
+                        totalprogress-= pred.getStartDelay()
+                        break
+
+       
+            for nextevent,prectype in self.getPrecedenceTypes().items(): 
+                if prectype == 'Simultaneous Finish':
+                    totalprogress-= nextevent.getStartDelay()
+                    break
+
+        else:
+            totalprogress+=min(self.getSimulator().getTime(),self.getCompletionTime()) - self.getStartTime()
+           
+
+        return totalprogress
 
     
     def setPredecessor(self,myev):
@@ -95,7 +208,8 @@ class Event(object):
         return self.predecessor
     def setSuccessor(self,mysucc):
         self.successor = mysucc
-        mysucc.setPredecessor(self)
+        if mysucc.getPredecessor() == None:
+            mysucc.setPredecessor(self)
         return
     def getSuccessor(self):
         return self.successor
@@ -122,30 +236,38 @@ class Event(object):
 
     def getResource(self):
         return self.Resource
+        
     def setResource(self,myres):
         self.Resource = myres
         return 
+        
     def getEquipment(self):
         return self.Equipment
+        
     def setEquipment(self,myequip):
         self.Equipment = myequip
         return
 
     def print(self):
 
-        equip = "Pending" if self.Equipment == None else self.Equipment.getName()
-
-        res = "Pending" if self.Resource == None else self.Resource.getName()
-
-        loc_str = ""
-        
-        if isinstance(self.getLocation(),tuple):
-            loc_str= self.getLocation()[0].getName()+"->"+self.getLocation()[1].getName()
-        else:
-            loc_str = self.getLocation().getName()
-
-
-        return str(self.getEventType().getName())+"("+str(self.getID())+"): "+loc_str+("" if self.getPlace() == None else ", place: "+self.getPlace().getName())+", equip: "+equip+", res: "+res+", "+str(len(self.getItems()))+" items, proctime: "+str(self.ProcessTime)
+        try: 
+            equip = "Pending" if self.getEquipment() == None else self.getEquipment().getName()+"("+str(len(self.getEquipment().getItems()))+")"
+    
+            res = "Pending" if self.Resource == None else self.Resource.getName()
+    
+            loc_str = ""
+            
+            if isinstance(self.getLocation(),tuple):
+                loc_str =("no location" if self.getLocation()[0] == None else self.getLocation()[0].getName())
+                loc_str +="->"+("no location" if self.getLocation()[1] == None else self.getLocation()[1].getName())
+               
+            else:
+                loc_str = "no location" if self.getLocation() == None else self.getLocation().getName()
+    
+    
+            return str(self.getName())+"("+str(self.getID())+"): loc "+loc_str+(" no place " if self.getPlace() == None else ", place  "+self.getPlace().getName()+"("+str(len(self.getPlace().getItems()))+")")+", equip: "+equip+", res: "+res+", "+str(len(self.getItems()))+" items, proctime: "+str(self.ProcessTime)
+        except Exception as e:
+            self.getSimulator().saveLog("ERROR in event printing: "+str(e))
         
     def getProcessTime(self):
         return self.ProcessTime 
@@ -160,7 +282,8 @@ class Event(object):
     def setLocation(self,myloc):
         self.Location = myloc
         return 
-    
+
+
         
     def getID(self):
         return self.ID
@@ -191,7 +314,8 @@ class Resource(object):
         self.Items = [] 
         self.LocationData= [] # [{"Entity": Name, "EntityID":...,"EventName":...,"EventID":...,"LocationID"",...,"LocationName":...,,"ArrivalTime":...,"}]
         self.location = None
-        self.Status = "Idle" # or "Busy"
+        self.Available = False # changes with shift availability
+        self.Idle = False # changes with event executions
         self.MyEvents = []
         self.AssignedEvents = []
         self.ID = workmgr.giveResouceID()
@@ -213,6 +337,9 @@ class Resource(object):
         return
 
 
+    def checkShiftChange(self,shift):
+        # overwritten by subclassess
+        return
     
     def getCapacity(self):
         return self.capacity
@@ -229,21 +356,27 @@ class Resource(object):
         return
     def getLocation(self):
         return self.location
-    def setBusy(self):
-        self.Status = "Busy"
+
+     
+   
+
+    
+    def setAvailable(self,status):
+        self.Available = status
         return
-    def setAssigned(self):
-        self.Status = "Assigned"
+    def isAvailable(self):
+        return self.Available
+
+    def setIdle(self,status):
+        self.Idle = status
         return
-    def setIdle(self):
-        self.Status = "Idle"
-        return 
+    def isIdle(self):
+        return self.Idle 
+   
     def getWorkMgr(self):
         return self.WorkMgr
-    def IsIdle(self):
-        return self.Status == "Idle"
 
-
+        
     def getID(self):
         return self.ID
        
@@ -263,39 +396,140 @@ class Resource(object):
     def getSimulator(self):
         return self.Simulator
 
-   
-    
     def getMyEvents(self):
         return self.MyEvents
 
     def getAssignedEvents(self):
         return self.AssignedEvents
 
-#______________________________________________________________________________________________________
-class RandomVar(object):
-    def __init__(self):
-        self.Sampling = []
-        self.Parameters = dict()
+    def setLocationData(self,event,sim):
 
-    def getParameters(self):
-        return self.Parameters
+        if event != None: 
 
-    def getSampling(self):
-        return self.Sampling
+            actual_comp = sim.getRealTime()
 
-    def sampleValue(self):
-        return random.choice(self.getSampling())
-#____________________________________________________________________________________
+            locid = None; locname = None
 
-    
+            if event.getLocation() != None:
+                if isinstance(event.getLocation(),tuple):
+                    locid =  str(event.getLocation()[0].getID())+"->"+str(event.getLocation()[1].getID())
+                    locname = event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName()
+                else:
+                    locid =  event.getLocation().getID()
+                    locname = event.getLocation().getName()
+            else:
+                sim.saveLog("ERROR location is None of event "+event.getName()+"["+str(event.getID())+"]")
+            
+            location_update = {"Entity":self.getName(),"EntityID":self.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":locid,"LocationName":locname,"Time":actual_comp}  
+            self.getLocationData().append(location_update)
+          
+
+        return 
+        
 #_______________________________________________________________________       
 class Process(object):
-    
-    def __init__(self,name,myid):
-        self.MyRandVar =  RandomVar()
+    def __init__(self,demand,name,myid,dist):
+
+        self.MyRandVar = RandomVar()
+            
+        if dist == 'LogNormal':
+            self.MyRandVar = LogNormalVar()
+        if dist == 'Normal':
+            self.MyRandVar = NormalVar()
+       
+
+        self.ExecutionData= [] # {"OperationName","ProcessID","ResourceID","Resource","Start","Completion","DemandID","Product","NrItems"}      
         self.Name = name
         self.ID = myid
         self.AlternativeResources = []
+        self.Cancelled = False
+        self.Finished = False  # when read from input file.
+        self.start = None  # from input file
+        self.completion = None
+        self.Demand = demand
+        self.simplanned = False
+
+
+    def setSimPlanned(self):
+        self.simplanned = True
+        return
+    def isSimPlanned(self):
+        return self.simplanned
+          
+    
+    def getDemand(self):
+        return self.Demand
+    def getExecutionData(self):
+        return self.ExecutionData
+
+    def setStart(self,mystrt,sim):
+        self.start = sim.getRealTime()
+        return
+        
+    def setExecutionData(self,event,sim):
+
+        if event != None: 
+            try: 
+                actual_comp = sim.getRealTime()
+                actual_start = actual_comp - timedelta(minutes = sim.getTime()-self.getStart()) 
+                self.completion = sim.getTime()
+                
+                myexecutedata = {"OperationName":self.getName(),"ProcessID":self.getID(),"ResourceID":event.getResource().getID(),"Resource":event.getResource().getName(),"Start":actual_start,"Completion":actual_comp,"DemandID":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"NrItems":self.getDemand().getQuantity()}
+                self.getExecutionData().append(myexecutedata)
+                self.Finished = True
+                
+            except Exception as e:
+                sim.saveLog("ERROR in executiondata "+str(e))
+
+                
+        else: # cases "cancelled" or "finished", start and completion are already registered is operation in realtime.
+            try: 
+                if self.isCancelled():
+                    myexecutedata = {"OperationName":self.getName(),"ProcessID":self.getID(),"ResourceID":"Cancelled","Resource":"Cancelled","Start":self.getStart(),"Completion":self.getCompletion(),"DemandID":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"NrItems":self.getDemand().getQuantity()}
+                    self.getExecutionData().append(myexecutedata)
+                else:
+                    myexecutedata = {"OperationName":self.getName(),"ProcessID":self.getID(),"ResourceID":"-","Resource":"-","Start":self.getStart(),"Completion":self.getCompletion(),"DemandID":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"NrItems":self.getDemand().getQuantity()}
+                    self.getExecutionData().append(myexecutedata)
+            except Exception as e:
+                sim.saveLog("ERROR in executiondata "+str(e))
+            
+        return 
+
+        
+    def setStart(self,mytime):
+        self.start = mytime
+        return
+    def getStart(self):
+        return self.start
+
+    def setFinished(self):
+        self.Finished = True
+        return
+
+    def isFinished(self):
+        return self.Finished 
+
+    def setName(self,nm):
+        self.Name = nm
+        return
+        
+    def getStart(self):
+        return self.start
+    
+    def setCompletion(self,mytime):
+        self.completion = mytime
+        return
+    def getCompletion(self):
+        return self.completion
+
+        
+
+    def setCancelled(self):
+        self.Cancelled = True
+        return
+
+    def isCancelled(self):
+        return self.Cancelled 
         
 
     def getRandVar(self):
@@ -386,14 +620,14 @@ class Demand(object):
 class Item(object):
     def __init__(self,demand,myid):
        
-        self.ProcessData= [] # {"ItemID","OperationName","ProcessID","ResourceID","Start","Completion"}   
+        self.ProcessData= [] # {"ItemID","OperationName","ProcessID","ResourceID","Start","Completion"}      
         self.LocationData= [] # {"Entity":"Item","EntityID","EventName","EventID","LocationID","LocationName","Time"}   
         self.location = None
         self.ID = myid
         self.Demand = demand
         self.InfoDictionary = dict()
         self.PriorityScore = 0
-  
+       
 
     def setPriorityScore(self,myscore):
         self.PriorityScore = myscore
@@ -401,15 +635,63 @@ class Item(object):
     def getPriorityScore(self):
         return self.PriorityScore
 
+   
+
  
     def getActiveOperation(self):
 
         oprseq = self.getDemand().getFinalProduct().getOperationSequences()[self.getDemand().getID()]
 
-        if len(self.getProcessData()) < len(oprseq):
-            return oprseq[len(self.getProcessData())]
-        else:
-            return None
+        for opr in oprseq:
+            if opr.isCancelled() or opr.isFinished() or opr.getName() == "Unknown":
+                continue
+            return opr
+                
+        return None
+
+    def setProcessData(self,event,strt,opr,sim):
+
+        if event != None: 
+
+            try: 
+                
+                actual_comp = sim.getRealTime()
+                actual_start = actual_comp - timedelta(minutes = sim.getTime()-strt)
+    
+ #{"ItemID":item.getID(),"Demand":item.getDemand().getID(),"Product":self.getFinalProduct().getPN(),"OperationName":oprseq[oprid].getName(),"ProcessID":-1,"ResourceID":-1,"Start":strt,"Completion":comp}               
+                
+                myprocessdata = {"ItemID":self.getID(),"Demand":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"OperationName":opr.getName(),"ProcessID":event.getID(),"ResourceID":event.getResource().getID(),"Resource":event.getResource().getName(),"Start":actual_start,"Completion":actual_comp}
+                self.getProcessData().append(myprocessdata)
+            except Exception as e:
+                sim.saveLog("ERROR in processdata "+str(e))
+
+        return 
+
+    def setLocationData(self,event,sim):
+
+        if event != None: 
+
+            actual_comp = sim.getRealTime()
+
+            locid = None; locname = None
+            if event.getLocation() != None:
+                if isinstance(event.getLocation(),tuple):
+                    locid =  str(event.getLocation()[0].getID())+"->"+str(event.getLocation()[1].getID())
+                    locname = event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName()
+                else:
+                    locid =  event.getLocation().getID()
+                    locname = event.getLocation().getName()
+            else:
+                sim.saveLog("ERROR in location is None of event "+event.getName()+"["+str(event.getID()))
+            
+            location_update = {"Entity":"Item","EntityID":self.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":locid,"LocationName":locname,"Time":actual_comp}   
+                
+            self.getLocationData().append(location_update)
+          
+
+        return 
+
+
 
     def getInfoDictionary(self):
         return self.InfoDictionary

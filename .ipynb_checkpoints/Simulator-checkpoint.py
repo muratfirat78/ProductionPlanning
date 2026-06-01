@@ -1,109 +1,408 @@
-from datetime import timedelta,date
+from datetime import timedelta,date,datetime
+from simulationobjects import *
 import random
 import pandas as pd
+import os 
+from timeit import default_timer as timer
+from pathlib import Path
 
 
 class Simulator(object):
-    def __init__(self,timelimit):
+    def __init__(self):
         
         self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
         self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
         self.queue = {} #key: time (start/completion times of events) , val: [event]
         self.time = 0
         self.eventno = 0
-        self.TimeLimit = timelimit
-        self.queue["Pending"] = []
+    
+     
+        self.queue["Pending"] = [] # list of pending events, to be hanlded
+        self.queue["Preemptables"] = [] # list of ongoing process events
         self.DataTypes = dict() # key: dataset name, val: dataframe objects. 
+        self.startday = None 
+        self.shiftmapping = {0:3,8:1,16:2}
+        self.shiftlength = timedelta(hours = 7)+ timedelta(minutes = 59)
+        self.currentDay = None # will be updated dynamically
+        self.currentShift = None #will be updated dynamically 
+
+        currentdate =  datetime.now()
+        startday = datetime(currentdate.year, currentdate.month, currentdate.day)
+        self.shifthours = 8 
+        self.shiftsperday = 3 
+        self.weekdays = 5
+        self.shift_minutes = 60*self.shifthours
+        self.TimeLimit =  None
+        self.MyLog = dict() #key: sim time, val: [events]
+        self.Controller = None
+
+        self.setStartDay(startday+timedelta(hours= 24))
+
+        print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
+
+    
+
+    def setController(self,contr):
+        self.Controller = contr
+        return
+    def getController(self):
+        return self.Controller
+        
+    def getMyLog(self):
+        return self.MyLog
+
+    def saveLog(self,info):
+
+        
+        if not self.getTime() in self.MyLog:
+            self.MyLog[self.getTime()] = []
+        self.MyLog[self.getTime()].append(info)
+
+        
+        if info.find("ERROR")> -1 or info.find("REPORT")> -1 : 
+            self.getController().getVisualManager().updateSimProgress(str(self.getTime())+": "+info)
+        return
+        
+    def saveTitleLog(self,title,info):
+        
+        if not title in self.MyLog:
+            self.MyLog[title] = []
+        self.MyLog[title].append(info)
+        return
+        
+    def setRunWeeks(self,weeks):
+        self.TimeLimit =  weeks*60*self.shifthours*self.shiftsperday*self.weekdays
+
+        return
+
+    def getTimelimit(self):
+        return self.TimeLimit
+
+        
+
+    def getShiftMinutes(self):
+        return self.shift_minutes
+
+    def getShift(self,hour):
+        if hour in self.shiftmapping:
+            return self.shiftmapping[hour]
+        else:
+            return 0
+        
+    def setStartDay(self,myday):
+        self.startday = myday
+        return
+    def getStartDay(self):
+        return self.startday
+
+    def setCurrentShift(self,shft):
+        self.currentShift = shft
+        return 
+    def getCurrentShift(self):
+        return self.currentShift
+
+    def setCurrentDay(self,day):
+        self.currentDay = day
+        return
+        
+    def getCurrentDay(self):
+        return self.currentDay 
 
     def getDataTypes(self):
         return self.DataTypes
-
-    def InsertDataRow(self,datatype,row):
-        self.getDataTypes()[datatype].loc[len(self.getDataTypes()[datatype])] = row
-        return
 
     def getEventData(self):
         return self.EventData
     def getExecutionData(self):
         return self.ExecutionData
-        
-   
+          
     def getTimeLimit(self):
         return self.TimeLimit
 
-    
+    def getRealTime(self):
+        return self.getStartDay()+timedelta(minutes = self.getTime())
+
+    def checkRealTime(self,time):
+        return self.getStartDay()+timedelta(minutes = time)
+
+############################################################################################
     def RunSimulation(self,OperationsMgr): 
 
-        while self.getTime() < self.getTimeLimit():
-            self.updateTime()
-            self.executeEvents(OperationsMgr)
+        try: 
 
-        OperationsMgr.writeData()
+            self.saveLog("simulation starts..")
+            start = timer()
+            try:
+                self.getController().getVisualManager().updateSimProgress("Simulation starts ")
+            except Exception as e:
+                self.saveLog("ERROR in progress update: "+str(e))
+    
+            while self.getTime() < self.getTimeLimit():
+    
+                self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
+    
+                weekendjump = 0
+                if self.getCurrentDay().weekday() >= self.weekdays:
+                    self.saveLog("Weekend jump..")
+       
+                    for res in OperationsMgr.getResources():
+                        if res.getType() == "Machine":
+                            self.saveLog("Res "+res.getName()+" progresses .."+str(len(res.getProgressDict())))
+                            for ev,progress in res.getProgressDict().items():
+                                self.saveLog("Res "+res.getName()+" ongoing event "+ev.print()+" proctime: "+str(progress))
+                            
+                    
+                    move_dict = dict()
+                    for time,time_events in self.getEventQueue().items():
+                        
+                        if time in ["Pending","Preemptables"]:
+                            continue
+                        #self.saveLog("Time "+str(time)+", Events "+str(len(time_events)))
+                        if time <= self.getTime():
+                            continue
+                        move_dict[time] = []
+                        for ev in time_events:
+                            move_dict[time].append(ev)
+                            self.saveLog("Event "+ev.print()+" moved from time "+str(time)+" to time "+str(time+self.shiftsperday*self.shifthours*60))
+                        self.getEventQueue()[time].clear()
+                    
+                    for time,time_events in move_dict.items():
+                        self.getEventQueue()[time+self.shiftsperday*self.shifthours*60] = []
+                        for ev in time_events:
+                            self.getEventQueue()[time+self.shiftsperday*self.shifthours*60].append(ev)
+                    self.updateTime(self.shiftsperday*self.shifthours*60)
+                    weekendjump+=self.shiftsperday*self.shifthours*60
+                            
+    
+                
+                self.setCurrentShift(self.getShift(self.getRealTime().hour))
+    
+                if self.getTime() % self.shift_minutes == 0:
+                    try:
+                        self.saveLog(" >>>>>>>>>>>>>>>>>>  Shift start: "+str(self.getRealTime())+"<<<<<<<<<<<<<<<<<<<"+"hour: "+str(self.getRealTime().hour)+"shift: "+str(self.getShift(self.getRealTime().hour))+" sim time: "+str(self.getTime()))
+                        self.saveLog(" >>>>>>>>>>>>>>>>>> Current day: "+str(self.getCurrentDay())+" shift: "+str(self.getCurrentShift()))
+                        OperationsMgr.applyShiftChange(weekendjump)
+                    except Exception as e:
+                        self.saveLog("ERROR in shift change: "+str(e))
+    
+                self.updateTime(1)
+                try: 
+                    self.executeEvents()
+                except Exception as e:
+                    self.saveLog("ERROR in execute events: "+str(e))
+                    
+    
+            end = timer()
 
-        return
-################################################################################################################        
-    def executeEvents(self,workmgr):
+            self.getController().getVisualManager().updateSimProgress("Checking for stuck events")
 
-        print(" > "+str(self.getTime())+": Pending events ",len(self.getEventQueue()["Pending"]))
+            eventStuckThreshold = 60  # minutes with no progress
 
-        pending_events =[e for e in self.getEventQueue()["Pending"]]
+            # check for stuck events
+            for time, events in self.getEventQueue().items():
+                for ev in events:
+                    if ev.lastProgressTime is None:
+                        self.saveLog("REPORT: Event "+ev.print()+" never progressed")
+                    elif self.getTime() - ev.lastProgressTime > eventStuckThreshold:
+                        self.saveLog("REPORT: Event "+ev.print()+
+                                     " last progressed at "+str(ev.lastProgressTime)+
+                                     " state="+ev.progressState)
 
-        for event in pending_events: 
-            if workmgr.handleEvent(event):
-                self.getEventQueue()["Pending"].remove(event)
-             
-
-        if self.time in self.queue:
-            ev_round = 1
-            time_events =[e for e in self.queue[self.time]] # scheduled/started events
-
+            # Check for resources that have stuck events
             
-            while len(time_events) > 0: 
-                print(" > "+str(self.getTime())+": Non-pending events ",len(time_events),"(",ev_round,")",[i.getName()+"("+str(i.getID())+")" for i in time_events])
+            for res in OperationsMgr.getResources():
+            for ev, prog in res.getProgressDict().items():
+                if ev.lastProgressTime is None or \
+                   self.getTime() - ev.lastProgressTime > STUCK_THRESHOLD:
+                    self.saveLog("REPORT: Resource "+res.getName()+
+                                 " still running event "+ev.print()+
+                                 " last progressed at "+str(ev.lastProgressTime))
+            
+            try:
+                self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
+            except Exception as e:
+                self.saveLog("ERROR in progress update: "+str(e))
+            start = timer()
+            self.getController().getVisualManager().updateSimProgress("Writing data")
+            OperationsMgr.writeData()
+            OperationsMgr.writeDataTBRMOutPut()
+            end = timer()
+            self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
 
-                event_progress = 0
-                for event in time_events:
-                    if event.IsActive():  # completion of event
-                        event_progress+=1
-                        workmgr.commpleteEvent(event)
-                        self.queue[self.time].remove(event)   
-                    else:
-                        workmgr.startEvent(event)    
-                        self.queue[self.time].remove(event)
-                        event_progress+=1          
-                if event_progress== 0: 
-                    print("All events pendig!!!")
+        except Exception as e:
+            self.saveLog("ERROR in sim run: "+str(e))
+            
+        return
 
+        
+######################################################################################################        
+    def executeEvents(self):
+
+        keyword = ""
+
+        workmgr = self.getController().getWorkManager()
+
+        # if an event is handled, then the return is true and does not stay in pending list.
+        try: 
+            self.getEventQueue()["Pending"] = [e for e in self.getEventQueue()["Pending"] if not workmgr.HandleSimEvent(e)]
+        except Exception as e:
+            self.saveLog("ERROR: Handling of pending events"+str(e))
+
+
+        # continue with preemptable events...
+        try: 
+            for event in self.getEventQueue()["Preemptables"]:
+                self.saveLog(keyword+": preemptable event "+event.print()+" to handle.. active? "+str(event.IsActive()))
+                if not event.IsActive():
+                    try: 
+                        workmgr.resumeSimEvent(event)  
+                    except Exception as e:
+                        self.saveLog("ERROR: resuming event "+str(e))
+                else:
+                    
+                    eventprogress = event.getTotalProgress()
+                    event.setProgress(self.getTime(), "Progressed")
+                    
+                    self.saveLog(" preemptable event total progress .."+str(eventprogress))
+                    for nextevent,prectype in event.getPrecedenceTypes().items(): # note that sim. finish event is already created in the start
+                        nextproctime = workmgr.getProcessTime(nextevent)
+                        if prectype ==  'Simultaneous Finish':
+                            if not nextevent.IsActive():
+                                if event.getProcessTime() - eventprogress  <= nextproctime:
+                                    self.saveLog("REPORT: preemptable event "+event.getName()+"["+str(event.getID())+"]"+" SS event scheduling .."+nextevent.getName()+"["+str(nextevent.getID())+"]")
+                        
+                                    self.ScheduleEvent(nextevent)
+                                    del event.getPrecedenceTypes()[nextevent]
+                                    break
+    
+                    if eventprogress == event.getProcessTime():
+                        workmgr.commpleteSimEvent(event)   
+        except Exception as e:
+            self.saveLog("ERROR: Handling of preemptable events "+str(e))
+
+       
+        
+        # continue with non-pending and non-preemptable events...
+        try: 
+            if self.time in self.queue:
+                self.saveLog(" Handling of non/pending-preemptable events at "+str(self.time))
+                ev_round = 1
                 time_events =[e for e in self.queue[self.time]] # scheduled/started events
-                ev_round+=1
+    
+                self.saveLog("Handling of non/pending-preemptable events no "+str(len(time_events)))
+                while len(time_events) > 0: 
+                    self.saveLog(" Non-pending events "+str(len(time_events))+"("+str(ev_round)+")"+str([i.getName()+"("+str(i.getID())+")" for i in time_events]))
+                    event_progress = 0
+                    for event in time_events:
+                        self.saveLog(" Event "+str(event.getName())+"["+str(event.getID())+"]"+", ACTIVE? "+str(event.IsActive()))
+                        if event.IsActive():  # completion of event
+                            if event in self.getEventQueue()[self.time]:
+                                event_progress+=1
+                                try: 
+                                    workmgr.commpleteSimEvent(event)
+                                except Exception as e:
+                                    self.saveLog("ERROR: complete non/pending-preemptable events "+str(e))  
+                                
+                                self.queue[self.time].remove(event) 
+                        else:
+                            if event.getEquipment() == None or event.getResource() == None:
+                                self.saveLog(" event moved to pending.. "+str(self.time))
+                                self.getEventQueue()["Pending"].append(event)
+                                self.getEventQueue()[self.getTime()].remove(event) 
+                            else:
+                                try: 
+                                    if  workmgr.startSimEvent(event):
+                                        if event.getEventType().isPreemptable():
+                                            if not event in self.getEventQueue()["Preemptables"]:
+                                                #self.saveLog(keyword+": event "+event.print()+" moved to preemptables..")
+                                                self.getEventQueue()["Preemptables"].append(event)
+                                
+        
+                                    self.queue[self.time].remove(event)
+                                except Exception as e:
+                                    self.saveLog("ERROR: start non/pending-preemptable events "+str(e))  
+                                
+                            event_progress+=1 
+               
+    
+                    time_events =[e for e in self.queue[self.time]] # scheduled/started events
+                    ev_round+=1
+        
+        except Exception as e:
+            self.saveLog("ERROR: non/pending-preemptable events "+str(e))        
             
      
         return
 #############################################################################################################################          
-    def ScheduleEvent(self,event, time):
+    def ScheduleEvent(self,event):
+
+        workmgr = self.getController().getWorkManager()
+        
+        self.saveLog(" scheduling "+event.print()+", preemptable "+str(event.getEventType().isPreemptable()))
+
+        try: 
+            if event.getEquipment() == None or event.getResource() == None:
+                if not event in self.getEventQueue()["Pending"]:
+                    self.saveLog(" in pending  "+event.print())
+                    self.getEventQueue()["Pending"].append(event)
+                return 
+          
+            if not self.getTime() in self.getEventQueue():
+                self.getEventQueue()[self.getTime()] = []
+            self.getEventQueue()[self.getTime()].append(event)
     
-        if not time in self.getEventQueue():
-            self.getEventQueue()[time] = []
-        print(" > "+str(self.getTime())+", "+event.print()+" in scheduled ? ",event in self.getEventQueue()[time])
-        if not event in self.getEventQueue()[time]:
-            self.getEventQueue()[time].append(event)
-            print(" > "+str(self.getTime())+", "+event.print()+" scheduled start at time "+str(time))
+            if event.getEventType().isPreemptable():
+                return
 
-        # schedule completion
-        if time != "Pending":
-            if not (time+event.getProcessTime()) in self.getEventQueue():
-                self.getEventQueue()[time+event.getProcessTime()] = []
+            if event.getSuccessor()!= None:
+                if event.getSuccessor() in self.getEventQueue()["Preemptables"]:
+                    self.getEventQueue()["Preemptables"].remove(event.getSuccessor())
+                    self.saveLog(" preemptable successor event "+event.getSuccessor().getName()+str(event.getSuccessor().getID())+" removed from preemptables..")
+                                                                
+    
+            # time is start time
+            completion = workmgr.getCompletionTime(event,self.getTime())
+    
+            curr_shiftstart = (self.getTime()//self.getShiftMinutes())*self.getShiftMinutes()
+            curr_shiftsend = curr_shiftstart+self.getShiftMinutes()*int((self.getTime()%self.getShiftMinutes())>0)
+    
             
-            if not event in self.getEventQueue()[time+event.getProcessTime()]:
-                self.getEventQueue()[time+event.getProcessTime()].append(event)    
-                print(" > "+str(self.getTime())+", "+event.print()+" scheduled completion at time "+str(time+event.getProcessTime()))
+            if completion > curr_shiftsend: 
+                # do not schedule event in this shift since it cannot finish..
+                self.saveLog(" non-preemptable event "+event.getName()+"["+str(event.getID())+"]"+" cannot be completed in this shift, so scheduled to shiftend.")
+                try: 
+                    event.setResource(None)
+                    if not curr_shiftsend+1 in self.getEventQueue():
+                        self.getEventQueue()[curr_shiftsend+1] = []
+                    self.getEventQueue()[curr_shiftsend+1].append(event)
+                    if event in self.getEventQueue()[self.getTime()]:
+                        self.getEventQueue()[self.getTime()].remove(event) 
+                    
+                    self.saveLog("REPORT: done.")
+                except Exception as e:
+                    self.saveLog("ERROR: In scheduling end of shift non-preemptable event "+event.print()+str(e))
+               
+                return
+            else:
+                self.saveLog(" "+event.print()+" completion time "+str(completion)+", event+proctime: "+str(self.getTime()+event.getProcessTime()))
+                event.setCompletionTime(completion)
+                        
+                if not (completion) in self.getEventQueue():
+                    self.getEventQueue()[completion] = []
+                            
+                if not event in self.getEventQueue()[completion]:
+                    self.getEventQueue()[completion].append(event)  
+        except Exception as e:
+            self.saveLog("ERROR: in scheduling event "+str(e))
             
 
+        self.saveLog("scheduled event,  "+event.print())
+       
         return 
 ############################################################################################################################
         self.writeData()
-    def updateTime(self):
-        self.time+=1
+    def updateTime(self,timedelta):
+        self.time+=timedelta
         return
     def getTime(self):
         return self.time
@@ -112,429 +411,9 @@ class Simulator(object):
         return self.eventno
     def getEventQueue(self):
         return self.queue
-#______________________________________________________________________________________
-
-
-class EventType(object):
-    def __init__(self,myname,restype,equiptype,static,loading,process):
-        self.Name = myname
-        self.ResourceType = restype # to help assigning 
-        self.EquipmentType = equiptype # to help selecting    
-     
-        self.precendenceDict = dict() #key: successor event name, val: properties directly transformed to successor event
-        self.decisionsDict = dict() #key: successor event name, val: decision to be made before the successor event scheduled
-        self.static = static
-        self.loading = loading # if static is False, this is not relevant. If static True and Loading false, then this is unloading. 
-        self.process = process
-        self.successortype = None
-        self.predecesortype = None
-
-    def setPredecessorType(self,myev):
-        self.predecessortype = myev
-        myev.setSuccessorType(self)
-        return
-    def getPredecessorType(self):
-        return self.predecessortype
-    def setSuccessorType(self,mysucc):
-        self.successortype = mysucc
-        return
-    def getSuccessorType(self):
-        return self.successortype
-        
-
-    def isStatic(self):
-        return self.static
-
-    def isLoading(self):
-        return self.loading
-
-    def isProcess(self):
-        return self.process
-    
-
-    def getDecisionsDict(self):
-        return self.decisionsDict
-
-    def getPrecendenceDict(self):
-        return self.precendenceDict
-   
-
-    def getName(self):
-        return self.Name
-
-    def getResourceType(self):
-        return self.ResourceType
-   
-    def getEquipmentType(self):
-        return self.EquipmentType
-
- 
-
-
-############################################################################
-
-class Event(object):
-    def __init__(self,loc,start,proctime,sim,eventype):
-        self.EventType = eventype    
-        self.ID = sim.getEventNo()   
-        self.Location = loc  # static: resource, dynamic: (from buffer,to buffer)   
-        self.StartTime = start
-        self.ProcessTime = proctime     
-        self.active = False    
-        self.InfoDictionary = dict() # processing: ("operation",operation obj)
-        self.ItemSource = None # this is where items will be selected
-        self.Simulator = sim
-        self.Resource = None 
-        self.Equipment = None
-        self.Items = []
-        self.Place = None
-        self.successor = None
-        self.predecesor = None
-
-
-    def setPlace(self,myown):
-        self.Place = myown
-        return
-    def getPlace(self):
-        return self.Place
-        
-
-    
-    def setPredecessor(self,myev):
-        self.predecessor = myev
-        return
-    def getPredecessor(self):
-        return self.predecessor
-    def setSuccessor(self,mysucc):
-        self.successor = mysucc
-        mysucc.setPredecessor(self)
-        return
-    def getSuccessor(self):
-        return self.successor
-    
-
-    def getEventType(self):
-        return self.EventType
-
-    def getSimulator(self):
-        return self.Simulator
-
-    def getName(self):
-        return self.EventType.getName()
-
-    def setItemSource(self,myres):
-        self.ItemSource = myres
-        return 
-        
-    def getItemSource(self):
-        return self.ItemSource
-
-    def getItems(self):
-        return self.Items
-
-    def getResource(self):
-        return self.Resource
-    def setResource(self,myres):
-        self.Resource = myres
-        return 
-    def getEquipment(self):
-        return self.Equipment
-    def setEquipment(self,myequip):
-        self.Equipment = myequip
-        return
-
-    def print(self):
-
-        equip = "Pending" if self.Equipment == None else self.Equipment.getName()
-
-        res = "Pending" if self.Resource == None else self.Resource.getName()
-
-        loc_str = ""
-        
-        if isinstance(self.getLocation(),tuple):
-            loc_str= self.getLocation()[0].getName()+"->"+self.getLocation()[1].getName()
-        else:
-            loc_str = self.getLocation().getName()
-
-
-        return str(self.getEventType().getName())+"("+str(self.getID())+"): "+loc_str+("" if self.getPlace() == None else ", place: "+self.getPlace().getName())+", equip: "+equip+", res: "+res+",  ["+ "-".join([str(i.getID()) for i in self.getItems()])+"], proctime: "+str(self.ProcessTime)
-        
-    def getProcessTime(self):
-        return self.ProcessTime 
-
-    def getInfoDict(self):
-        return self.InfoDictionary
-
-    def getLocation(self):
-        return self.Location
-
-    
-    def setLocation(self,myloc):
-        self.Location = myloc
-        return 
-    
-        
-    def getID(self):
-        return self.ID
- 
-    def setActive(self):
-        self.active = True
-        return 
-    def setInActive(self):
-        self.active = False
-        return 
-        
-    def IsActive(self):
-        return self.active
-         
-    def setStartTime(self,mystrt):
-        self.StartTime = mystrt
-    def getStartTime(self):
-        return self.StartTime 
-  
-
-##################################################################################################################################    
-class Resource(object):
-    def __init__(self,mytype,mycap,sim,workmgr):
-        self.Simulator = sim
-        self.WorkMgr = workmgr
-        self.Type = mytype
-        self.capacity = mycap
-        self.Items = [] 
-        self.LocationData= [] # [{"Entity": Name, "EntityID":...,"EventName":...,"EventID":...,"LocationID"",...,"LocationName":...,,"ArrivalTime":...,"}]
-
-   
-        self.location = None
-        self.Status = "Idle" # or "Busy"
-        
-        self.MyEvents = []
-        self.AssignedEvents = []
-        self.ID = workmgr.giveResouceID()
-        self.Name = mytype+"_"+str(self.ID)
-        self.Itemcriteria = dict()
-
-    def getLocationData(self):
-        return self.LocationData
-        
-    def getItemCriteria(self):
-        return self.Itemcriteria
-
-
-    def generateEvent(self):
-        # overwritten by subclassess
-        return
-
-
-    
-    def getCapacity(self):
-        return self.capacity
-
-    def setItemCriteria(self,resource):
-        return 
-
-    def setLocation(self,myloc):
-        self.location = myloc
-        return
-    def getLocation(self):
-        return self.location
-    def setBusy(self):
-        self.Status = "Busy"
-        return
-    def setAssigned(self):
-        self.Status = "Assigned"
-        return
-    def setIdle(self):
-        self.Status = "Idle"
-        return 
-    def getWorkMgr(self):
-        return self.WorkMgr
-    def IsIdle(self):
-        return self.Status == "Idle"
-
-
-    def getID(self):
-        return self.ID
-       
-    def getName(self):
-        return self.Name  
-    def getType(self):
-        return self.Type
-    def print(self):
-        print("Res: ",self.Type,", cap: ",self.capacity)
-    def getItems(self):
-        return self.Items
-
-    def removeItem(self):
-        # overwritten by subclassess
-        return
-        
-    def getSimulator(self):
-        return self.Simulator
-
-   
-    
-    def getMyEvents(self):
-        return self.MyEvents
-
-    def getAssignedEvents(self):
-        return self.AssignedEvents
-
-#______________________________________________________________________________________________________
-class RandomVar(object):
-    def __init__(self):
-        self.Sampling = []
-        self.Parameters = dict()
-
-    def getParameters(self):
-        return self.Parameters
-
-    def getSampling(self):
-        return self.Sampling
-
-    def sampleValue(self):
-        return random.choice(self.getSampling())
-    
-#_______________________________________________________________________       
-class Process(object):
-    
-    def __init__(self,name,myid):
-        self.MyRandVar =  RandomVar()
-        self.Name = name
-        self.ID = myid
-        self.AlternativeResources = []
-        
-
-    def getRandVar(self):
-        return self.MyRandVar
-    
-    def getProcessTime(self): 
-        return self.getRandVar().sampleValue()
-
-    def getAlternativeResources(self):
-        return self.AlternativeResources 
-        
-    def getName(self):
-        return self.Name
-    def getID(self):
-        return self.ID
- 
-        
-#------------------------------------------------------------------------------------------------------
-class DemandType(object):
-    def __init__(self,myno,typename):
-        
-        self.ReferenceNumber = myno
-        self.Processes = [] # assumed sequential processes..
-        self.Predecessors = []
-        self.Successor =  None
-        self.TypeName = typename
-
-    def getProcesses(self):
-        return self.Processes
-
-    def getTypeName(self):
-        return self.TypeName
-        
-
-    def getPredecessors(self):
-        return self.Predecessors
-        
-    def setSuccessor(self,myscss):
-        self.Successor = myscss
-        return 
-    def getSuccessor(self):
-        return self.Successor
-
-    def getReferenceNo(self):
-        return self.ReferenceNumber
-
-    
-#-------------------------------------------------------------------------------------------------------------------------     
-class Demand(object):
-    def __init__(self,ddline,myid,demtype,quantity):
-        self.deadline = ddline
-        self.Items = [] 
-        self.InfoDictionary = dict()
-        self.DemandType = demtype
-        self.Quantity = quantity
-        self.MyID = myid
-
-    def getMyID(self):
-        return self.MyID
-
-    def getDemandType(self):
-        return self.DemandType
- 
-    def getInfoDictionary(self):
-        return self.InfoDictionary
-
-   
-    def getQuantity(self):
-        return self.Quantity
-        
-
-    def getMyType(self):
-        return self.ItemType 
-        
-    def getItems(self):
-        return self.Items
-        
-    def print(self):     
-        return
-
-   
-#_______________________________________________________________________        
-class Item(object):
-    def __init__(self,demand,myid):
-       
-        self.ProcessData= [] # [{"ItemID":...,"ProcessID":...,"ResourceID"",...,"Start":...,"Completion":...}]
-        self.LocationData= [] # [{"Entity": Item, "EntityID":...,"EventName":...,"EventID":...,"LocationID"",...,"LocationName":...,,"ArrivalTime":...,"}]
-        self.location = None
-        self.ID = myid
-        self.Demand = demand
-        self.InfoDictionary = dict()
-        self.PriorityScore = 0
-
-    def setPriorityScore(self,myscore):
-        self.PriorityScore = myscore
-        return
-    def getPriorityScore(self):
-        return self.PriorityScore
-    
-    def getActiveOperation(self):
-        processnames = [pdt["OperationName"] for pdt in self.getProcessData()]
-        nextprocess = None
-        for process in self.getDemand().getDemandType().getProcesses():
-            if not process.getName() in processnames:
-                nextprocess = process
-                break
-        return nextprocess
-
-    def getInfoDictionary(self):
-        return self.InfoDictionary
-
-    def getProcessData(self):
-        return self.ProcessData 
-
-    def getLocationData(self):
-        return self.LocationData 
-
-
-    def setLocation(self,myloc):
-        self.location = myloc
-        return
-    def getDemand(self):
-        return self.Demand
-
-    def getLocation(self):
-        return self.location
-    def getID(self):
-        return self.ID
-
-    
 #__________________________________________________________________________________________________________________________________
 class OperationsManager(object):
-    def __init__(self,sim,demandname):
+    def __init__(self,sim):
         self.Resources = []
         self.processid = 0
         self.itemid = 0
@@ -543,13 +422,25 @@ class OperationsManager(object):
         self.Simulator = sim
         self.Demands = []  
         self.DemandTypes = []
-        self.DemandTypeName = demandname
+        self.DemandTypeName = None
         self.EventTypes = dict()
         self.AlgorithmManager = AlgorithmManager(sim,self)
+        self.usecase = ''
+
+    def setDemandType(self,demandname):
+        self.DemandTypeName = demandname
+        return
+    
 
     def getAlgorithmManager(self):
         self.AlgorithmManager
-        
+
+    def setUseCase(self,mycase):
+        self.usecase = mycase
+        return
+
+    def getUseCase(self):
+        return self.usecase
     
     def getEventTypes(self):
         return self.EventTypes
@@ -586,75 +477,11 @@ class OperationsManager(object):
         return
 #___________________________________________________________________________________________________________________________
     def handlePendingEvent(self,event):
-  
-        if event.getEquipment() == None: 
-
-            selected_algorithm = self.getProductionAlgManager().getAlgorithmSetting()["Assign Event Equipment"]
-            algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()["Assign Event Equipment"][selected_algorithm]
-            equip = algorithm_function(event)
-            
-            if equip == None:
-                return False
-
-            if event.getResource() == None:
-                
-                selected_algorithm = self.getProductionAlgManager().getAlgorithmSetting()["Assign Event Resource"]
-                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()["Assign Event Resource"][selected_algorithm]
-                res = algorithm_function(event)
-
-                if res == None:
-                    return False
-        else: 
-            if event.getResource() == None:
-                res = self.assignResource(event)
-                if res == None: 
-                    return False
-                    
-        return True
+        #overwritten by subclassess
+        return 
 #####################################################################################################################################################
     def startEvent(self,event):
-        event.getResource().setBusy()
-        event.getEquipment().setBusy()
-
-        event.setActive()
-
-        if event.getName() in self.getProductionAlgManager().getAlgorithmSetting(): 
-
-            decision_name,selected_algorithm = self.getProductionAlgManager().getAlgorithmSetting()[event.getName()]
-            print(" > "+str(self.getSimulator().getTime())+": "+event.print()+" "+decision_name+"--"+selected_algorithm)
-            # check if selecting items
-            if decision_name == 'Select Items':
-                
-                item_source = event.getEquipment() if not event.getEventType().isLoading() else event.getPlace()
-                source_items = [i for i in item_source.getItems()]
-                print(" > "+str(self.getSimulator().getTime())+": ev",event.getName(),"decision_type ",decision_name,", selected_alg ",selected_algorithm) 
-                print(" > "+str(self.getSimulator().getTime())+": source items ",[i.getID() for i in source_items])  
-                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_name,selected_algorithm)]
-                sorted_items = algorithm_function(event,source_items)
-                
-                print(" > "+str(self.getSimulator().getTime())+": sorted items ",[i.getID() for i in sorted_items])  
-                for item in sorted_items:
-                    if event.getEventType().isLoading():
-                        if len(event.getItems()) == event.getEquipment().getCapacity(): 
-                            break
-                    else:
-                        if len(event.getItems()) == event.getPlace().getCapacity():
-                            break
-                            
-                    event.getItems().append(item)
-
-                    
-            if decision_name == 'Select Destination':
-                from_location = event.getResource().getLocation()
-                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_name,selected_algorithm)]      
-                print(" > "+str(self.getSimulator().getTime())+": decision_type ",decision_name,", selected_alg ",selected_algorithm)  
-                destination = algorithm_function(event,event.getItems())
-                print(" > "+str(self.getSimulator().getTime())+": destination",destination.getName()) 
-                event.setLocation((from_location,destination))
-            
-            #print(" > "+str(self.getSimulator().getTime())+":  event items ",[str(i.getID())  for i in event.getItems()])
-
-        print(" > "+str(self.getSimulator().getTime())+": "+event.print()+" started.")
+       #overwritten by subclassess   
         return 
 ####################################################################################################################################################
     def commpleteEvent(self,event):
@@ -711,7 +538,31 @@ class AlgorithmManager(object):
 
     def getSimulator(self):
         return self.simulator
-################################################################################
+
+
+############################################################################################################      
+class MILPManager(object):
+    def __init__(self,sim):
+        
+        self.simulator = sim
+        self.OperationSchedules = dict() # key: job, val: (start,comp)
+        self.MachJobAssignments = dict() # key: mach, val: [job]
+
+   
+
+    def getMachJobAssignments(self):
+        return self.MachJobAssignments 
+ 
+ 
+    def getMachJobAssignments(self):
+        return self.MachJobAssignments
+
+    def getSimulator(self):
+        return self.simulator
+#######################################################################################################
+
+        
+#######################################################################################################
 class FeasibilityChecker():
     def __init__(self,Simulator,OprsMgr):
         
@@ -730,4 +581,30 @@ class FeasibilityChecker():
         #overwritten by subclassess
         return True
         
+####################################################################################
+class DataManager(object):
+    def __init__(self,sim,oprmgr):
+        self.data_df = dict() # key: priority criterion, val: specific function
+        self.ObjectFeatures = dict() # key: object type, val: columns of data_df of properties of objects
+        self.simulator = sim
+        self.OperationsManager = oprmgr
+
+   
+        
+
+    def ReadData(self):
+        #overwritten by subclassess
+        return
+    def ReadDemandFile(self):
+        #overwritten by subclassess
+        return
+
+    def getObjectFeatures(self):
+        return self.ObjectFeatures
+        
+    def getOperationsManager(self):
+        return self.OperationsManager
+
+    def getSimulator(self):
+        return self.simulator
 

@@ -20,6 +20,7 @@ class ProductionDataManager(DataManager):
         return self.demand_process_df
 
 ###########################################################################################
+    
     def ReadResources(self):
      
         rel_path = '/'+self.getOperationsManager().getUseCase()
@@ -107,8 +108,7 @@ class ProductionDataManager(DataManager):
         
         self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
-        
-
+  
         latestfiledate = None
         filename = None
 
@@ -131,168 +131,147 @@ class ProductionDataManager(DataManager):
                         pass
 
         if latestfiledate != None:
-
            
             self.getOperationsManager().getSimulator().saveLog("Latest Date input file date: "+str(latestfiledate))
             TBRM_df = pd.read_excel(abs_file_path+'/'+filename)
-
-            self.getOperationsManager().getSimulator().saveLog(str([x for x in TBRM_df["Work Orders/Status"].unique()]))
-
-            #TBRM_df.info()
-            TBRM_df["Index"] = [i for i in range(len(TBRM_df))]
-           
-
+            
             TBRM_df["Deadline"] = TBRM_df["Deadline"].fillna(TBRM_df["Deadline"].max()+timedelta(days=7))
             TBRM_df["Components/Product"] = TBRM_df["Components/Product"].fillna("UnknownRawMaterial")
             TBRM_df["Components/Product/ID"] = TBRM_df["Components/Product/ID"].fillna("UnknownRawMaterialID")
             TBRM_df["Components/Quantity To Consume"] = TBRM_df["Components/Quantity To Consume"].fillna("UnknownRawMaterialQ")
-            
-           
-            #TBRM_df.info()
-           
-  
-            self.getOperationsManager().getSimulator().saveLog("Size of input file: "+str(len(TBRM_df)))
 
-            prodorder_aggrfeats = [x[1] for x in self.getOperationsManager().getDataManager().getObjectFeatures()["ProductionOrder"]]
-            self.getOperationsManager().getSimulator().saveLog("Prod order feats to aggregte: "+str(prodorder_aggrfeats))
-     
-            prodorders_df = TBRM_df.groupby(prodorder_aggrfeats).size().reset_index() 
-
-            ####### PRODUCTS TO PRODUCE 
-            prod_aggrfeats = [x[1] for x in self.getOperationsManager().getDataManager().getObjectFeatures()["Product"]]
-            products_df = prodorders_df.groupby(prod_aggrfeats).size().reset_index()
-
-            for i,r in products_df.iterrows():
-                prodpn = None
-                if "[" in r['Product']:
-                    prodpn = r['Product'][r['Product'].find("[")-1:]
-                    prodpn = r['Product'][:r['Product'].find("]")+1]
-                else:
-                    prodpn = r['Product']
-                    
-                myproduct= Product(prodpn,str(r['Product/ID']),r['Product'])
-                self.getOperationsManager().getProducts()[myproduct.getID()]= myproduct
-    
-                #print(i,"Product created with PN:",myproduct.getPN())
-                
-           ####### RAW MATERIALS 
-            rawmat_aggrfeats = [x[1] for x in self.getOperationsManager().getDataManager().getObjectFeatures()["RawMaterial"]]
-
-            raw_materials_df = prodorders_df.groupby(rawmat_aggrfeats).size().reset_index()
-            for i,r in raw_materials_df.iterrows():
-                prodpn = None
-                if "[" in r['Components/Product']:
-                    prodpn = r['Components/Product'][r['Components/Product'].find("[")-1:]
-                    prodpn = r['Components/Product'][:r['Components/Product'].find("]")+1]
-                else:
-                    prodpn = r['Components/Product']
-                    
-                myproduct= Product(prodpn,str(r['Components/Product/ID']),r['Components/Product'])
-                self.getOperationsManager().getProducts()[myproduct.getID()]= myproduct
-    
-                #print(i,"Raw Material created with PN:",myproduct.getPN())
-
-            prodorders = []
-
-            ## Create Production Orders
-            for i,r in prodorders_df.iterrows():
-                props = [x[1] for x in self.getOperationsManager().getDataManager().getObjectFeatures()["ProductionOrder"]]
-              
-                myprod = self.getOperationsManager().getProducts()[str(r[props[1]])]
-
-                if str(r[props[9]]) in self.getOperationsManager().getProducts():
-                    myraw = self.getOperationsManager().getProducts()[str(r[props[9]])]
-   
-                    myprod.getPredecessors()[myraw] = r[props[10]]
-                    myraw.getSuccessors()[myprod] = r[props[10]]
-                    
-                prodorder = ProductionOrder(r[props[7]],r[props[2]],myprod,int(r[props[4]]),r['Index']) #ddline,myid,demtype,quantity,dfindex
-
-                self.getOperationsManager().getProductionOrders()[prodorder.getID()] = prodorder
-                prodorders.append((r['Index'],prodorder))
-
-            prodorders.sort(key=lambda x: x[0], reverse=False)
-      
-            #print(TBRM_df.head(25))
-
-            ###### Read the operation sequences 
-            prodordind = 0 
-            for prodordind in range(len(prodorders)):
-                #print(prodordind,"Production order created:",prodorders[prodordind][1].getID()," of prod id",prodorders[prodordind][1].getFinalProduct().getID(),"index ",prodorders[prodordind][0])
-
-                if prodordind < len(prodorders)-1:
-                    for i in range(prodorders[prodordind][0],prodorders[prodordind+1][0]):
-                        TBRM_df.iloc[i, TBRM_df.columns.get_loc('ID')] = prodorders[prodordind][1].getID()
-                
-                prodordind+=1
-
-            TBRM_Operations_df = TBRM_df.groupby(['ID'], dropna=True)[['Work Orders/Work Center','Work Orders/Work Center/ID','Work Orders/Operation','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status']].agg(lambda x:list(x)).reset_index()
-
-
-            machines = [r for r in self.getOperationsManager().getResources() if isinstance(r,Machine)]
-
-            self.getOperationsManager().getSimulator().saveLog("The system has "+str(len(machines))+" machines")
-
-            for i,r in TBRM_Operations_df.iterrows():
-                OprResources = r['Work Orders/Work Center']
-                OprResourceIDs = r['Work Orders/Work Center/ID']
-                OprProcTimes = r['Work Orders/Expected Duration']
-                OprStatus = r['Work Orders/Status']
-                OprStarts = r['Work Orders/Start']
-                OprFinishes = r['Work Orders/End'] 
-
-                #print(OprStatus)
-
-                oprsequence = []
-
-                prodorder = self.getOperationsManager().getProductionOrders()[r['ID']]
-
-              
-                for resid in range(len(OprResources)):
-                    #first find the resource
-
-                    prodorder.getOperationsStatus().append((OprStatus[resid],(OprStarts[resid],OprFinishes[resid])))
-                    oprres = OprResources[resid]
-
-                    
-                    if not pd.isna(oprres): 
-                        for mach in machines:
-                            if mach.getMachineCode() in oprres:
-                                if mach.getID() != OprResourceIDs[resid]:
-                                    mach.setID(OprResourceIDs[resid])
-                                myopr = Operation(oprres,self.getOperationsManager().giveProcessID(),OprProcTimes[resid],None) #name,myid,proctime
-                                myopr.getAlternativeResources().append(mach)
-                                for mach_alternative in mach.getAlternatives():
-                                    for mymach in machines:
-                                        if mymach.getMachineCode() == mach_alternative:
-                                            myopr.getAlternativeResources().append(mymach)
-                                            break
-                                #if len(myopr.getAlternativeResources()) > 1: 
-                                    #print("Opr",myopr.getName(),"has alternative resources: ",len(myopr.getAlternativeResources())-1)
-                                oprsequence.append(myopr)
+            try: 
+                lastdemandid = None
+                for i,r in TBRM_df.iterrows():
+                    if not pd.isna(r["ID"]):
+                        lastdemandid = r["ID"]
                     else:
-                        myopr = Operation("UnknownOperation",self.getOperationsManager().giveProcessID(),0,None) #name,myid,proctime
-                        oprsequence.append(myopr)
+                        TBRM_df.iloc[i, TBRM_df.columns.get_loc('ID')] = lastdemandid
+            except Exception as e:
+                self.getOperationsManager().getSimulator().saveLog("ERROR: In filling order id "+str(e))
+                
+
+            machines = [r for r in self.getOperationsManager().getResources() if isinstance(r,Machine)] 
+            
+            MyOrders_df = TBRM_df.groupby(['ID'], dropna=True)[['Work Orders/Work Center','Work Orders/Work Center/ID','Work Orders/Operation','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status','Product/ID','Product','Deadline','Components/Product','Components/Product/ID','Components/Quantity To Consume','Quantity To Produce']].agg(lambda x:list(x)).reset_index()
+
+             
+            for i,r in MyOrders_df.iterrows():
+
+                prodorder = None
+                try:
+                    myproduct = self.defineProduct(r['Product'],r['Product/ID'])
+                    myraw = self.defineProduct(r['Components/Product'],r['Components/Product/ID'])
+      
+                    myproduct.getPredecessors()[myraw] = r['Components/Quantity To Consume'][0]
+                    myraw.getSuccessors()[myproduct] = r['Components/Quantity To Consume'][0]
+        
+                        
+                    prodorder = ProductionOrder(r['Deadline'][0],r['ID'],myproduct,int(r['Quantity To Produce'][0])) #ddline,myid,demtype,quantity
+                    self.getOperationsManager().getProductionOrders()[r['ID']] = prodorder
+                    
+                except Exception as e:
+                    self.getOperationsManager().getSimulator().saveLog("ERROR: In reading creating product, raw, and order"+str(e))
+
+                try: 
+
+                    oprsequence = []
+                    oprid = 0
+                    
+                    for opr in r['Work Orders/Work Center']:
+
+                        if pd.isna(opr):
+                            oprid+=1
+                            continue
+                        
+                        myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),r['Work Orders/Expected Duration'][oprid],None) 
+                        oprmachs = [m for m in machines if m.getMachineCode() in opr]
+    
+                        if len(oprmachs) > 0:
+                            if oprmachs[0].getID() != r['Work Orders/Work Center/ID'][oprid]:
+                                oprmachs[0].setID(r['Work Orders/Work Center/ID'][oprid]) # set precise ID of the resource..
+                            myopr.getAlternativeResources().append(oprmachs[0])
+                            for mach_alternative in oprmachs[0].getAlternatives():
+                                altmachs = [m for m in machines if m.getMachineCode() == mach_alternative]
+                                if len(altmachs) > 0: 
+                                    myopr.getAlternativeResources().append(altmachs[0])
+                        else:
+                            self.getOperationsManager().getSimulator().saveLog("REPORT: Data Issue, Operation"+myopr.getName()+" has no machine, hence cancelled!")
+                            self.getOperationsManager().getSimulator().saveLog("REPORT: All machines: "+str([m.getMachineCode() for m in machines]))
+                            myopr.setName(myopr.getName()+"_ISSUE!")
+                            myopr.setCancelled()
+                           
+                        
+
+                        if pd.isna(opr) or r['Work Orders/Status'][oprid] == "Cancelled": 
+                            myopr.setStart(datetime(2000, 1, 1))
+                            myopr.setCompletion(datetime(2000, 1, 1))
+    
+                        if r['Work Orders/Status'][oprid] == "Cancelled": 
+                            myopr.setCancelled()
+                   
+                        if r['Work Orders/Status'][oprid] in ["Finished","Completed"]:
+                            myopr.setStart(r['Work Orders/Start'][oprid])
+                            myopr.setCompletion(r['Work Orders/End'][oprid])
+                            myopr.setFinished()
+
+                        if pd.isna(opr) or r['Work Orders/Status'][oprid] in ["Finished","Completed","Cancelled"]:
+                            myopr.setExecutionData(None,self.getOperationsManager().getSimulator())
+    
+                        oprsequence.append(myopr)        
+                        oprid+=1
+       
+                    self.getOperationsManager().getProductionOrders()[r['ID']].getFinalProduct().getOperationSequences()[r['ID']] = oprsequence
+
+                except Exception as e:
+                    self.getOperationsManager().getSimulator().saveLog("ERROR: In creating operations"+str(e))
 
                 
-                
+            self.getOperationsManager().getSimulator().saveLog("Size of input file: "+str(len(TBRM_df)))
+  
+        return latestfiledate
+########################################################################################################################################
+    def defineProduct(self,dataprod,dataid):
 
-                prodorder.getFinalProduct().getOperationSequences()[r['ID']] = oprsequence
+        prodname = dataprod[0]
+        prodpn = prodname
+        
+        if (prodname.find("[") > -1) and (prodname.find("]") > -1):
+            prodpn = prodname[prodname.find("["):]
+            prodpn = prodpn[:prodpn.find("]")+1]
+        myproduct = None
+        productid = dataid[0]
+                        
+        if not productid in self.getOperationsManager().getProducts():
+            myproduct= Product(prodpn,str(productid),prodname)
+            self.getOperationsManager().getProducts()[myproduct.getID()]= myproduct
+        else:
+            myproduct = self.getOperationsManager().getProducts()[str(productid)]
 
-                #print("Product ", prodorder.getFinalProduct().getName()," has ",len(oprsequence),"Operations")
+        return myproduct
+#########################################################################################################################################
+    def setResultDFs(self):
 
-                #print(" Alt res: ",[op.getName()+" @"+str(alt.getMachineCode()) for op in oprsequence for alt in op.getAlternativeResources() ])
+        process_df = pd.read_csv("ProcessData.csv")
+
+        self.res_process_df = process_df.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
+        self.demand_process_df = process_df.groupby(["Demand","Product","OperationName",'Start','Completion'])[['ItemID']].agg(lambda x:list(x)).reset_index()
 
         return
 
-    def setResultDFs(self,processdata):
+    def WriteLog(self):
 
-        #item_process_df = pd.read_csv("ProcessData.csv")
+        log_df= pd.DataFrame(columns=["Time","Info"])
 
-        self.res_process_df = processdata.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
-        self.demand_process_df = processdata.groupby(["Demand","Product","OperationName",'Start','Completion'])[['ItemID']].agg(lambda x:list(x)).reset_index()
+        for time,infolist in self.getOperationsManager().getSimulator().getMyLog().items():
+            for info in infolist:
+                infodata = {"Time":time,"Info":info} 
+                log_df.loc[len(log_df)]= infodata
+        
+        log_df.to_csv("LogData.csv",index = False)
 
-        return
+        return 
+
 
         #Eself.getSimulator().getController().getVisualManager().self.getFurtherText().options = [r for r in self.res_process_df["ResourceID"].unique()]
         

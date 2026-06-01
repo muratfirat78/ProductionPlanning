@@ -11,47 +11,47 @@ __export__.mrp_production_1197_849443cd,[1082700B] Block cooling water TMP,14907
 __export__.mrp_production_5033_ffa23c2e,[4022.684.28993] RS C+H SLAB STAT PLT IL SIDE / CLS,18261.0,1.0,2026-02-09 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-02-06 13:37:06,2026-02-06 13:37:06,Finished,True
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,405.0,2026-02-06 13:38:20,2026-02-06 13:38:20,Finished,True
 ,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,113.0,2026-02-06 13:39:12,2026-02-06 13:39:12,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-01 08:15:00,2026-06-14 11:16:00,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-14 11:25:00,,In Progress,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 08:18:00,2026-06-11 11:19:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,True
 __export__.mrp_production_5034_4d53b4c4,[4022.684.29043] RS C+H DYN ATTACH PLT IL SIDE / CLS,18342.0,1.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,1.0,2026-02-06 13:43:14,2026-02-06 13:43:14,Finished,True
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,335.0,2026-02-06 13:43:09,2026-02-06 13:43:09,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-01 08:19:00,2026-06-14 11:20:00,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-14 11:29:00,,In Progress,True
-__export__.mrp_production_5035_e3dce293,[4022.684.28962] RS C+H DYN ATTACH PLT RH SIDE / CLS,18348.0,1.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,1.0,2026-02-06 13:36:30,2026-02-06 13:36:30,Finished,False
-,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,335.0,2026-02-06 13:36:38,2026-02-06 13:36:38,Finished,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-__export__.mrp_production_5036_bec2ca68,[4022.684.28842] RS C+H SLAB STAT PLT RH SIDE / CLS,18349.0,1.0,2026-02-09 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-02-06 13:44:01,2026-02-06 13:44:01,Finished,False
-,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,405.0,2026-02-06 13:44:10,2026-02-06 13:44:10,Finished,False
-,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,113.0,2026-02-06 13:43:55,2026-02-06 13:43:55,Finished,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-__export__.mrp_production_5037_60eed60d,[4022.656.37971] UXL2 DGF QCK CONNECT MANIFOLD / CLS,18350.0,5.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,5.0,2026-02-06 13:43:33,2026-02-06 13:43:33,Finished,False
-,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,710.0,2026-02-06 13:43:37,2026-02-06 13:43:37,Finished,False
-,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,125.0,2026-02-06 13:43:40,2026-02-06 13:43:40,Finished,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-__export__.mrp_production_5264_e20e4380,[4022.704.19282] RH RED GRIPPER BODY,14210.0,20.0,2026-04-10 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,20.0,2026-02-06 14:35:52,2026-02-06 14:35:52,Finished,False
-,,,,,M5-05 - UMC2 - 5axis  - Manual (UMC750),__export__.mrp_workcenter_83_95c50e96,9660.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 08:22:00,2026-06-11 11:23:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,True
+__export__.mrp_production_5035_e3dce293,[4022.684.28962] RS C+H DYN ATTACH PLT RH SIDE / CLS,18348.0,1.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,1.0,2026-02-06 13:36:30,2026-02-06 13:36:30,Finished,True
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,335.0,2026-02-06 13:36:38,2026-02-06 13:36:38,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 08:26:00,2026-06-11 11:27:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,True
+__export__.mrp_production_5036_bec2ca68,[4022.684.28842] RS C+H SLAB STAT PLT RH SIDE / CLS,18349.0,1.0,2026-02-09 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-02-06 13:44:01,2026-02-06 13:44:01,Finished,True
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,405.0,2026-02-06 13:44:10,2026-02-06 13:44:10,Finished,True
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,113.0,2026-02-06 13:43:55,2026-02-06 13:43:55,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 08:30:00,2026-06-11 11:31:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,True
+__export__.mrp_production_5037_60eed60d,[4022.656.37971] UXL2 DGF QCK CONNECT MANIFOLD / CLS,18350.0,5.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,5.0,2026-02-06 13:43:33,2026-02-06 13:43:33,Finished,True
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,710.0,2026-02-06 13:43:37,2026-02-06 13:43:37,Finished,True
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,125.0,2026-02-06 13:43:40,2026-02-06 13:43:40,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-05-31 08:34:00,2026-06-04 14:05:00,Finished,True
+__export__.mrp_production_5264_e20e4380,[4022.704.19282] RH RED GRIPPER BODY,14210.0,20.0,2026-04-10 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,20.0,2026-02-06 14:35:52,2026-02-06 14:35:52,Finished,True
+,,,,,M5-05 - UMC2 - 5axis  - Manual (UMC750),__export__.mrp_workcenter_83_95c50e96,9660.0,2026-05-31 12:54:00,2026-06-14 13:54:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,True
 __export__.mrp_production_5325_9ceb90b0,[4023-002-36551] filter plate wide Cu0.4 Rh0.06,15014.0,25.0,2026-01-16 08:00:00,MP2 - Mat. prep - manual sawing (ZGN_02),__export__.mrp_workcenter_64_95992ef5,25.0,2026-02-06 14:30:25,2026-02-06 14:30:25,Finished,True
 ,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,165.0,2026-02-06 14:30:36,2026-03-23 10:49:37,Finished,True
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,125.0,2026-06-01 08:13:00,2026-06-01 10:19:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,25.0,2026-06-01 10:29:00,2026-06-01 10:55:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,125.0,2026-05-31 08:14:00,2026-05-31 10:20:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,25.0,2026-05-31 10:58:00,2026-05-31 11:24:00,Finished,True
 __export__.mrp_production_5374_81713afd,[4022-637-29301] Hinge Block Fixed RM,14964.0,40.0,2026-01-16 10:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,55.0,2026-02-06 14:41:00,2026-02-06 14:41:00,Finished,True
 ,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,890.0,2026-03-23 11:11:00,2026-03-23 11:11:01,Finished,True
 ,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,290.0,2026-03-23 11:11:02,2026-03-23 11:11:04,Finished,True
 ,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,290.0,2026-03-23 11:11:17,2026-03-23 11:11:38,Finished,True
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,120.0,2026-06-01 10:22:00,2026-06-01 12:23:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,40.0,2026-06-01 12:32:00,2026-06-01 13:13:00,Finished,True
-__export__.mrp_production_5484_c81e293e,[4022.622.61092] RH RED GRIPPER CABLE COVER ,7366.0,29.0,2026-03-24 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,44.0,2026-02-06 14:47:10,2026-02-06 14:47:10,Finished,False
-,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,640.0,2026-02-04 16:05:49,2026-03-23 10:50:23,Finished,False
-,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,988.0,2026-03-23 10:50:25,2026-03-23 10:50:26,Cancelled,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-03-18 12:50:02,2026-03-18 12:50:02,Finished,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-03-23 10:36:35,2026-04-17 13:09:28,Finished,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,6750.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,29.0,,,To Do,False
-__export__.mrp_production_5495_6bea93ed,[1207568A] Cable clamp,14912.0,30.0,2026-03-16 09:00:00,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,660.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30.0,,,To Do,False
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,120.0,2026-05-31 10:40:00,2026-05-31 12:41:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,40.0,2026-05-31 15:45:00,2026-05-31 16:26:00,Finished,True
+__export__.mrp_production_5484_c81e293e,[4022.622.61092] RH RED GRIPPER CABLE COVER ,7366.0,29.0,2026-03-24 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,44.0,2026-02-06 14:47:10,2026-02-06 14:47:10,Finished,True
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,640.0,2026-02-04 16:05:49,2026-03-23 10:50:23,Finished,True
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,988.0,2026-03-23 10:50:25,2026-03-23 10:50:26,Cancelled,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-03-18 12:50:02,2026-03-18 12:50:02,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-03-23 10:36:35,2026-04-17 13:09:28,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,6750.0,2026-05-31 09:25:00,,In Progress,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,29.0,,,To Do,True
+__export__.mrp_production_5495_6bea93ed,[1207568A] Cable clamp,14912.0,30.0,2026-03-16 09:00:00,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,660.0,2026-05-31 09:21:00,2026-05-31 22:00:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30.0,2026-06-01 09:54:00,2026-06-01 10:25:00,Finished,True
 __export__.mrp_production_5661_117b54ab,[4512-127-05186B] Anschlag,15017.0,850.0,2026-05-13 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,865.0,2026-03-23 09:45:09,2026-03-23 09:45:49,Finished,False
 ,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),__export__.mrp_workcenter_58_a525d5b9,1790.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,850.0,,,To Do,False
@@ -60,25 +60,25 @@ __export__.mrp_production_5666_83c93799,[7005-2400-0100] 02200903 encoder scale 
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,100.0,2026-04-15 11:51:26,2026-04-15 11:51:30,Finished,False
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,68.0,2026-04-15 11:51:34,2026-04-15 11:51:35,Finished,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,60.0,,,To Do,False
-__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,7359.0,24.0,2026-03-30 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,24.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,9000.0,,,To Do,False
+__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,7359.0,24.0,2026-03-30 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,24.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,9000.0,2026-05-31 09:46:00,,In Progress,True
 __export__.mrp_production_5770_bc7d7b8f,[7005-2580-0017] GP Z-Adjustment Lever V02-01 / 26241001,18142.0,15.0,2026-04-27 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,30.0,2026-03-23 09:50:13,2026-03-23 09:50:51,Finished,False
 ,,,,,M5-05 - UMC2 - 5axis  - Manual (UMC750),__export__.mrp_workcenter_83_95c50e96,1785.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
 __export__.mrp_production_5775_ce67fb3a,[7005-2580-0005] Single Rail V01-00-A (IGUS / WSQ-06S) / NFI / 26224401,16257.0,20.0,2026-04-27 02:00:00,MP2 - Mat. prep - manual sawing (ZGN_02),__export__.mrp_workcenter_64_95992ef5,20.0,2026-04-02 16:31:02,2026-04-02 16:31:02,Finished,False
 ,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,180.0,,,To Do,False
-__export__.mrp_production_5778_3ba5ef49,[7005-2580-0007] Support block  / 07201506 v02-00 - Drawing in RED,16269.0,12.0,2026-04-13 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,27.0,2026-03-23 09:45:11,2026-03-23 09:45:58,Finished,False
-,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),__export__.mrp_workcenter_59_d6deab7b,1890.0,,,To Do,False
-,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,456.0,,,To Do,False
-__export__.mrp_production_5793_f5c01175,[4022.648.92451] FIB MFM PARKTL FEET BLOCK 1 PX,19144.0,2.0,2026-04-02 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,17.0,2026-03-23 09:45:15,2026-03-23 09:46:22,Finished,False
-,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,180.0,,,To Do,False
-__export__.mrp_production_5794_ae796e75,[4022.648.92461] FIB MFM PARKTL FEET BLOCK 2 PX,19145.0,2.0,2026-04-02 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,17.0,2026-03-23 09:45:15,2026-03-23 09:46:20,Finished,False
-,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,180.0,,,To Do,False
-__export__.mrp_production_5799_ae914a97,[4022.648.92481] FIB MFM TL NX FEET BLOCK 2,19150.0,2.0,2026-04-02 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,17.0,2026-03-23 09:45:15,2026-03-23 09:46:19,Finished,False
-,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,120.0,,,To Do,False
-__export__.mrp_production_5802_60e1ae22,[7005-2580-0014] Backplate V01-00 / NFI / 27244701,17992.0,6.0,2026-04-06 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,6.0,2026-03-23 09:46:48,2026-03-23 09:46:59,Finished,False
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,1962.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
+__export__.mrp_production_5778_3ba5ef49,[7005-2580-0007] Support block  / 07201506 v02-00 - Drawing in RED,16269.0,12.0,2026-04-13 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,27.0,2026-03-23 09:45:11,2026-03-23 09:45:58,Finished,True
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),__export__.mrp_workcenter_59_d6deab7b,1890.0,2026-05-31 14:04:00,2026-06-01 23:08:00,Finished,True
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,456.0,2026-06-04 14:46:00,2026-06-04 23:30:00,Finished,True
+__export__.mrp_production_5793_f5c01175,[4022.648.92451] FIB MFM PARKTL FEET BLOCK 1 PX,19144.0,2.0,2026-04-02 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,17.0,2026-03-23 09:45:15,2026-03-23 09:46:22,Finished,True
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,180.0,2026-05-31 10:47:00,2026-05-31 13:56:00,Finished,True
+__export__.mrp_production_5794_ae796e75,[4022.648.92461] FIB MFM PARKTL FEET BLOCK 2 PX,19145.0,2.0,2026-04-02 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,17.0,2026-03-23 09:45:15,2026-03-23 09:46:20,Finished,True
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,180.0,2026-05-31 15:34:00,2026-05-31 18:43:00,Finished,True
+__export__.mrp_production_5799_ae914a97,[4022.648.92481] FIB MFM TL NX FEET BLOCK 2,19150.0,2.0,2026-04-02 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,17.0,2026-03-23 09:45:15,2026-03-23 09:46:19,Finished,True
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,120.0,2026-06-01 08:56:00,2026-06-01 11:02:00,Finished,True
+__export__.mrp_production_5802_60e1ae22,[7005-2580-0014] Backplate V01-00 / NFI / 27244701,17992.0,6.0,2026-04-06 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,6.0,2026-03-23 09:46:48,2026-03-23 09:46:59,Finished,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,1962.0,,,To Do,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,True
 __export__.mrp_production_5812_86bac601,[BD50-5075-015F] bracket,15030.0,27.0,2026-05-07 02:00:00,MP2 - Mat. prep - manual sawing (ZGN_02),__export__.mrp_workcenter_64_95992ef5,27.0,2026-04-02 16:31:05,2026-04-02 16:31:05,Finished,False
 ,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,252.0,2026-04-21 12:09:07,2026-04-21 12:09:09,Finished,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,54.0,2026-04-21 12:09:10,2026-04-21 12:09:12,Finished,False
@@ -107,17 +107,17 @@ __export__.mrp_production_5822_d253f190,[4512-127-05186B] Anschlag,15017.0,979.0
 ,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),__export__.mrp_workcenter_58_a525d5b9,2048.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,979.0,,,To Do,False
 ,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,979.0,,,To Do,False
-__export__.mrp_production_5850_e0fd2318,[00429-00-249-A] Plint adjust strip,14894.0,424.0,2026-04-02 12:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-03-23 09:45:12,2026-03-23 09:46:05,Finished,False
-,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,96.0,2026-04-17 13:02:53,2026-04-17 13:02:53,Finished,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,1.0,2026-04-21 09:13:23,2026-04-21 09:36:59,Finished,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,2.0,,,To Do,False
-__export__.mrp_production_5851_eb3587d0,[B620261-5] COOLING HOUSE,15026.0,2.0,2026-04-02 12:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,0.0,2026-03-23 09:52:13,2026-03-23 09:52:18,Finished,False
-,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,210.0,,,To Do,False
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,1050.0,,,To Do,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,180.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,2.0,,,To Do,False
+__export__.mrp_production_5850_e0fd2318,[00429-00-249-A] Plint adjust strip,14894.0,424.0,2026-04-02 12:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-03-23 09:45:12,2026-03-23 09:46:05,Finished,True
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,96.0,2026-04-17 13:02:53,2026-04-17 13:02:53,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,1.0,2026-04-21 09:13:23,2026-04-21 09:36:59,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-05-31 11:09:00,2026-06-07 08:40:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,2.0,,,To Do,True
+__export__.mrp_production_5851_eb3587d0,[B620261-5] COOLING HOUSE,15026.0,2.0,2026-04-02 12:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,0.0,2026-03-23 09:52:13,2026-03-23 09:52:18,Finished,True
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,210.0,2026-05-31 12:21:00,2026-05-31 16:22:00,Finished,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,1050.0,,,To Do,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,180.0,,,To Do,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,2.0,,,To Do,True
 __export__.mrp_production_5869_871b667c,[7005-2580-0007] Support block  / 07201506 v02-00 - Drawing in RED,16269.0,8.0,2026-05-22 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,23.0,2026-03-23 09:50:14,2026-03-23 09:51:02,Finished,False
 ,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),__export__.mrp_workcenter_59_d6deab7b,1290.0,,,To Do,False
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,324.0,,,To Do,False
@@ -197,33 +197,33 @@ __export__.mrp_production_5978_fa57ba3b,[7001-2580-0037] SA Lens Mount / FM / FM
 __export__.mrp_production_5979_70dde6de,[7001-2580-0038] Swing / FM / FM-02-019-B,17788.0,10.0,2026-05-04 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,25.0,2026-04-02 15:26:45,2026-04-02 15:26:46,Finished,False
 ,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,340.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-__export__.mrp_production_5980_7c410dbf,[7001-2580-0039] Lens Shim / FM / FM-02-061-B,17789.0,30.0,2026-03-24 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,19.0,2026-03-23 09:45:14,2026-03-23 09:46:16,Finished,False
-,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,72.0,2026-03-27 14:41:14,2026-03-27 14:41:16,Finished,False
+__export__.mrp_production_5980_7c410dbf,[7001-2580-0039] Lens Shim / FM / FM-02-061-B,17789.0,30.0,2026-03-24 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,19.0,2026-03-23 09:45:14,2026-03-23 09:46:16,Finished,True
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,72.0,2026-03-27 14:41:14,2026-03-27 14:41:16,Finished,True
 __export__.mrp_production_5983_dcf32b91,[7001-2540-0009] Mirror Holder V2 / FM-02-034 ,17904.0,10.0,2026-05-04 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,25.0,2026-04-02 15:28:17,2026-04-02 15:28:18,Finished,False
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,480.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
 __export__.mrp_production_6008_501a9ae7,[7017-2600-0006] VTPQ CSR 2 TARGET IF / JPE / P183559A,19235.0,2.0,2026-04-13 02:00:00,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,150.0,,,To Do,False
 ,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,150.0,,,To Do,False
 ,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,,,To Do,False
-__export__.mrp_production_6016_1de5774c,[4022.704.19302] RH RED STATIC STRAIN RELIEF A,6974.0,75.0,2026-04-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,90.0,2026-03-23 09:45:16,2026-03-23 09:46:23,Finished,False
-,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1635.0,2026-04-15 11:07:19,2026-04-17 13:09:01,Cancelled,False
-,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,210.0,2026-04-17 13:09:09,2026-04-17 13:09:09,Cancelled,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,75.0,,,To Do,False
-__export__.mrp_production_6017_db3c6cdd,[4022.704.19332] RH RED STATIC STRAIN RELIEF B ,7365.0,75.0,2026-04-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,90.0,2026-03-23 09:45:16,2026-03-23 09:46:24,Finished,False
-,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1860.0,,,Cancelled,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,75.0,,,To Do,False
-__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022.0,80.0,2026-03-19 10:00:00,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,410.0,2026-03-23 10:50:40,2026-03-23 10:50:42,Finished,False
-,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,95.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,2090.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,240.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,9000.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,80.0,,,To Do,False
-__export__.mrp_production_6021_b002acfc,[4022.684.32031] RH RED DYNAMIC STRAIN RELIEF A,6965.0,38.0,2026-03-18 09:51:59,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,53.0,2026-03-23 09:45:16,2026-03-23 09:46:25,Finished,False
-,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1390.0,,,Cancelled,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,38.0,,,To Do,False
+__export__.mrp_production_6016_1de5774c,[4022.704.19302] RH RED STATIC STRAIN RELIEF A,6974.0,75.0,2026-04-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,90.0,2026-03-23 09:45:16,2026-03-23 09:46:23,Finished,True
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1635.0,2026-04-15 11:07:19,2026-04-17 13:09:01,Cancelled,True
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,210.0,2026-04-17 13:09:09,2026-04-17 13:09:09,Cancelled,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 11:19:00,2026-06-11 14:20:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,75.0,,,To Do,True
+__export__.mrp_production_6017_db3c6cdd,[4022.704.19332] RH RED STATIC STRAIN RELIEF B ,7365.0,75.0,2026-04-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,90.0,2026-03-23 09:45:16,2026-03-23 09:46:24,Finished,True
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1860.0,,,Cancelled,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 11:31:00,2026-06-11 14:32:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,75.0,,,To Do,True
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022.0,80.0,2026-03-19 10:00:00,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,410.0,2026-03-23 10:50:40,2026-03-23 10:50:42,Finished,True
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,95.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,2090.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,240.0,2026-06-01 09:12:00,2026-06-01 13:13:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,9000.0,2026-06-01 13:31:00,,In Progress,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,80.0,,,To Do,True
+__export__.mrp_production_6021_b002acfc,[4022.684.32031] RH RED DYNAMIC STRAIN RELIEF A,6965.0,38.0,2026-03-18 09:51:59,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,53.0,2026-03-23 09:45:16,2026-03-23 09:46:25,Finished,True
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1390.0,,,Cancelled,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 09:09:00,2026-06-11 12:10:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,38.0,,,To Do,True
 __export__.mrp_production_6045_ace1c669,[7005-2580-0017] GP Z-Adjustment Lever V02-01 / 26241001,18142.0,15.0,2026-06-22 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,30.0,2026-04-02 15:30:55,2026-04-02 15:30:56,Finished,False
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,1785.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
@@ -469,21 +469,21 @@ __export__.mrp_production_6179_e4b58cbd,[4022.451.20441] HALFFAB_M_AG_CLMP_RH_SP
 ,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),__export__.mrp_workcenter_58_a525d5b9,270.0,,,To Do,False
 ,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,270.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,15042.0,50.0,2026-02-23 11:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,65.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,240.0,2026-04-17 13:07:31,2026-04-17 13:07:33,Finished,False
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,1490.0,,,To Do,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,100.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,50.0,,,To Do,False
-__export__.mrp_production_6193_869219d7,[00429-00-662-B] Arret lever,14895.0,178.0,2026-02-16 09:47:04,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,20.0,2026-04-15 13:26:14,2026-04-15 13:26:16,Finished,False
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,160.0,,,To Do,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,10.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,5.0,,,To Do,False
-__export__.mrp_production_6194_00aea810,[1508130 B] [Q] excenter housing z,16893.0,115.0,2026-02-16 10:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,130.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),__export__.mrp_workcenter_58_a525d5b9,5840.0,,,To Do,False
-,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,635.0,,,To Do,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,575.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,115.0,,,To Do,False
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,15042.0,50.0,2026-02-23 11:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,65.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,240.0,2026-04-17 13:07:31,2026-04-17 13:07:33,Finished,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,1490.0,2026-06-01 14:39:00,2026-06-02 23:29:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,100.0,,,To Do,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,50.0,,,To Do,True
+__export__.mrp_production_6193_869219d7,[00429-00-662-B] Arret lever,14895.0,178.0,2026-02-16 09:47:04,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,20.0,2026-04-15 13:26:14,2026-04-15 13:26:16,Finished,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,160.0,2026-06-01 10:09:00,2026-06-01 13:13:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,10.0,2026-06-02 08:14:00,2026-06-02 08:25:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,5.0,2026-06-02 10:25:00,2026-06-02 10:31:00,Finished,True
+__export__.mrp_production_6194_00aea810,[1508130 B] [Q] excenter housing z,16893.0,115.0,2026-02-16 10:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,130.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),__export__.mrp_workcenter_58_a525d5b9,5840.0,2026-05-31 09:38:00,2026-06-04 15:50:00,Finished,True
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,635.0,,,To Do,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,575.0,,,To Do,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,115.0,,,To Do,True
 __export__.mrp_production_6197_e6c5263e,[4598-011-70891B] ENDPLATE,15023.0,200.0,2026-05-07 12:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,215.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,200.0,,,To Do,False
 ,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,1690.0,,,To Do,False
@@ -495,18 +495,18 @@ __export__.mrp_production_6198_d0f32215,[4022-674-3569] MBI WS LTT HS MAN PLUG,1
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,38.0,,,To Do,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
 ,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,38.0,,,To Do,False
-__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,15022.0,92.0,2026-04-10 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,107.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,2390.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,458.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,276.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,9000.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,92.0,,,To Do,False
-__export__.mrp_production_6200_0df5452c,[00385-00-346-A] Plint fixing strip right,14892.0,264.0,2026-03-13 11:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,279.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,2202.0,2026-04-20 16:12:52,2026-04-20 16:12:54,Finished,False
-,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1116.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,528.0,,,To Do,False
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,264.0,,,To Do,False
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,15022.0,92.0,2026-04-10 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,107.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,2390.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,458.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,276.0,2026-06-02 08:40:00,2026-06-02 13:17:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,9000.0,2026-06-02 13:31:00,,In Progress,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,92.0,,,To Do,True
+__export__.mrp_production_6200_0df5452c,[00385-00-346-A] Plint fixing strip right,14892.0,264.0,2026-03-13 11:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,279.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,2202.0,2026-04-20 16:12:52,2026-04-20 16:12:54,Finished,True
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,1116.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,528.0,2026-05-31 14:40:00,2026-05-31 23:29:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,2026-06-01 09:25:00,2026-06-07 14:56:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,264.0,,,To Do,True
 __export__.mrp_production_6201_cc5870f3,[BD50-5075-013F] bracket,15029.0,25.0,2026-05-26 12:22:44,MP2 - Mat. prep - manual sawing (ZGN_02),__export__.mrp_workcenter_64_95992ef5,25.0,,,To Do,False
 ,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,240.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,50.0,,,To Do,False
@@ -559,13 +559,13 @@ __export__.mrp_production_6213_c32f4f9c,[E06581] 4598-013-97781 WA2 VIBRATION PA
 __export__.mrp_production_6214_77a6e3d4,[m05537] Spacer pos 1,18608.0,100.0,2026-05-28 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,100.0,,,To Do,False
 ,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,390.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,100.0,,,To Do,False
-__export__.mrp_production_6217_755fbf9a,[7007-2500-0009] 263 - EL5 Base Plate (Dark) With Coating / IAH / 2026.SPX.0263.10.10,19198.0,10.0,2026-04-09 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,10.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,660.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
-,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,660.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
+__export__.mrp_production_6217_755fbf9a,[7007-2500-0009] 263 - EL5 Base Plate (Dark) With Coating / IAH / 2026.SPX.0263.10.10,19198.0,10.0,2026-04-09 02:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,10.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,660.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,660.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,True
 __export__.mrp_production_6224_60bd1d38,[4022-666-3837-1] LSPH Bellow Clamp,14985.0,115.0,2025-11-19 09:00:00,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,665.0,2026-04-24 12:49:26,2026-04-24 12:49:28,Finished,True
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,435.0,2026-06-01 09:08:00,2026-06-01 17:28:00,Finished,True
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,230.0,2026-06-01 18:42:00,2026-06-01 22:33:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,115.0,2026-06-01 22:42:00,2026-06-02 08:38:00,Finished,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,435.0,2026-05-31 09:12:00,2026-05-31 17:32:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,230.0,2026-06-01 13:26:00,2026-06-01 17:17:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,115.0,2026-06-02 08:16:00,2026-06-02 10:12:00,Finished,True
 __export__.mrp_production_6225_bd3b962b,[4022-486-33041] Connector Block,14938.0,183.0,2026-07-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,198.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,549.0,,,To Do,False
 ,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,183.0,,,To Do,False

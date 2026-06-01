@@ -390,10 +390,12 @@ class ShopFloorManager(OperationsManager):
                                         event.setProcessTime(self.getProcessTime(event))
                                            
                                     if decision_type == "Assign Equipment":
-                                        event.setEquipment(alg_return) # process: inserts this start into progress dict of equip     
+                                        event.setEquipment(alg_return) # process: inserts this start into progress dict of equip
+                                        event.setProgress(self.getSimulator().getTime(), "Equipment Assigned")
                                         self.getSimulator().saveLog(keyword+" Equipment assigned: "+str(alg_return.getName())+event.print())
                                     if decision_type == "Assign Resource":
                                         event.setResource(alg_return) # preemptable: inserts resource into progress dict, adds event to events of the resource 
+                                        event.setProgress(self.getSimulator().getTime(), "Resource Assigned")
                                         self.getSimulator().saveLog("Resource assigned: "+str(alg_return.getName())+event.print())
                                         alg_return.getAssignedEvents().append(event)  
                                         if not event in event.getResource().getMyEvents():
@@ -467,6 +469,7 @@ class ShopFloorManager(OperationsManager):
             event.getResource().setIdle(False)
             event.getEquipment().setIdle(False)
             event.setActive()
+            event.setProgress(self.getSimulator().getTime(), "Started")
     
             ##############################################################################################################
             # event progress updates..
@@ -590,6 +593,7 @@ class ShopFloorManager(OperationsManager):
                 # no previous event necessary
                 event.getResource().setIdle(False)
                 event.setActive()
+                event.setProgress(self.getSimulator().getTime(), "Resumed")
      
                 if not event.getResource() in event.getProgressDict():
                     event.getProgressDict()[event.getResource()] = []
@@ -701,7 +705,8 @@ class ShopFloorManager(OperationsManager):
                 self.getSimulator().saveLog(" event: "+event.getName()+"["+str(event.getID())+"], opr getting compltd "+(event.getItems()[0].getActiveOperation().getName() if event.getItems()[0].getActiveOperation()!= None else "Opr None.."))
                 event.getItems()[0].getActiveOperation().setSimPlanned()
                 event.getItems()[0].getActiveOperation().setExecutionData(event,self.getSimulator())
-    
+
+            event.setProgress(self.getSimulator().getTime(),"Completed")
               
             # manage next event: if there is a direct successor just use it, otherwise use successor of eventtype
 
@@ -980,7 +985,7 @@ class ShopFloorManager(OperationsManager):
 
             # first get end of this shift
             curr_shiftstart = (currtime//self.getSimulator().getShiftMinutes())*self.getSimulator().getShiftMinutes()
-            curr_shiftsend = curr_shiftstart+self.getSimulator().getShiftMinutes()*int((self.getSimulator().getTime()%self.getSimulator().getShiftMinutes())>0)
+            curr_shiftsend = curr_shiftstart+self.getSimulator().getShiftMinutes()*int((currtime%self.getSimulator().getShiftMinutes())>0)
             
             shiftno = self.getSimulator().getShift((self.getSimulator().getStartDay()+timedelta(minutes = curr_shiftstart)).hour)
 
