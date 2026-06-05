@@ -60,8 +60,29 @@ class VisualManager():
         self.milpresultbox = None
         self.milpprogress = None
         self.milprunbutton = None
+        self.milpresults = None
+        self.milpresultinfo = None
+        self.milpdetails = None
+        self.milporders = dict()
 
+    def setmilpdetails(self,myitem):
+       self.milpdetails = myitem
+       return 
+    def getmilpdetails(self):
+       return self.milpdetails
 
+    def setMILPResultInfo(self,myitem):
+       self.milpresultinfo = myitem
+       return 
+    def getMILPResultInfo(self):
+       return self.milpresultinfo
+
+    def setmilpresults(self,myitem):
+       self.milpresults = myitem
+       return 
+    def getmilpresults(self):
+       return self.milpresults
+    
     def setmilpprogress(self,myitem):
        self.milpprogress = myitem
        return 
@@ -415,6 +436,29 @@ class VisualManager():
 
         return 
 
+    def ViewMILPResults(self,event):
+
+        #getRes_process_df(self):
+        #getDemand_process_df(self):
+        
+        result = self.getmilpresults().value
+
+        self.milporders.clear()
+
+
+        OrdList = []
+        
+        if result == 'Orders': 
+            for prodorder in self.getController().getWorkManager().getSelectedOrders():
+                self.milporders[len(OrdList)]=  prodorder
+                OrdList.append(prodorder.getFinalProduct().getPN()+"- Q: "+str(prodorder.getQuantity())+", d: "+str(prodorder.getDeadline()))
+                
+            self.getmilpdetails().options = [x for x in OrdList]
+            
+        
+
+        return 
+
     def ViewDetails(self,event):
 
         #getRes_process_df(self):
@@ -462,6 +506,38 @@ class VisualManager():
 
         return 
 
+    def ViewMILPDetails(self,event):
+
+        result_type = self.getmilpresults().value
+        result_detail = self.getmilpdetails().value
+
+        selectid = 0
+        for x in self.getmilpdetails().options:
+            if self.getmilpdetails().options[selectid] == result_detail:
+                break
+            selectid+=1
+
+        if selectid in self.milporders:
+            prodorder =  self.milporders[selectid]
+
+            if result_type == 'Orders': 
+                
+                order_df = pd.DataFrame(columns=["Operation","Alternatives","Start","Completion","ProcessTime"])
+
+                operation_sequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
+                 
+                for operation in operation_sequence:
+                    infodata = {"Operation":operation.getName(),"Alternatives":len(operation.getAlternativeResources()),"Start":operation.getStart(),"Completion":operation.getCompletion(),"ProcessTime":operation.getRandVar().sampleValue()  } 
+                    order_df.loc[len(order_df)]= infodata
+
+                with self.getMILPResultInfo():
+                    clear_output()
+                    display(order_df.head(50))
+           
+       
+
+        return 
+
     def updateSimProgress(self,info):
 
         self.getRunProgress().value+=str(info)+ "\n"
@@ -470,7 +546,7 @@ class VisualManager():
 
     def RunMILP(self,event):
 
-        self.getController().getMILPManager().constructInstance()
+        self.getController().getMILPManager().constructSchedule()
 
         
         return 
@@ -644,14 +720,37 @@ class VisualManager():
 
         self.setmilpprogress(widgets.Textarea(value='', placeholder='',description='',disabled=True))
 
-        self.getmilpprogress().layout.width = '750px'
+        self.getmilpprogress().layout.width = '850px'
         self.getmilpprogress().layout.height = '300px'
 
+  
+         # Single Select
+        self.setmilpresults(widgets.Select(options=['Orders','Machines'],value='Orders',description='',disabled=False))
+        self.setmilpdetails(widgets.Select(options=[],description='',disabled=False))
+
+        
+        
+        self.getmilpresults().layout.width = '350px'
+        self.getmilpresults().layout.height = '150px'
+        self.getmilpdetails().layout.width = '350px'
+        self.getmilpdetails().layout.height = '150px'
+
+       
+
+        self.getmilpresults().observe(self.ViewMILPResults,'value')
+        self.getmilpdetails().observe(self.ViewMILPDetails,'value')
+
+        self.setMILPResultInfo(widgets.Output())
+        self.getMILPResultInfo().layout.width = '750px'
+        self.getMILPResultInfo().layout.height = '250px'
+        
         self.setmilpresultbox(VBox(children=[self.getmilpprogress()]))
 
         self.getmilprunbutton().on_click(self.RunMILP)
 
         
-        tab = VBox(children = [self.getmilpmainbox(),self.getmilpresultbox()])    
+        tab = VBox(children = [self.getmilpmainbox(),self.getmilpresultbox(),HBox(children= [self.getmilpresults(),self.getmilpdetails()]),
+                               self.getMILPResultInfo()])    
 
         return tab
+

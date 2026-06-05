@@ -316,6 +316,13 @@ class Resource(object):
         else:
             self.Name = myname
         self.Itemcriteria = dict()
+        self.processtype = None
+
+    def getProcessType(self):
+        return self.processtype
+    def setProcessType(self,mypr):
+        self.processtype = mypr
+        return
 
     def getLocationData(self):
         return self.LocationData
@@ -440,6 +447,7 @@ class Process(object):
         self.completion = None
         self.Demand = demand
         self.simplanned = False
+    
 
 
     def setSimPlanned(self):

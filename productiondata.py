@@ -66,6 +66,7 @@ class ProductionDataManager(DataManager):
                     #myname,avshifts,mycap,sim,workmngr
                     optr = Operator(r['Name'],AvlShifts,1,self.getSimulator(),self.getOperationsManager())
                     optr.setLocation(self.getOperationsManager().getCentralInventory())
+                    optr.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(optr) 
                 if r['ResourceType'] == 'Machine': #mycap,sim,workmngr  
 
@@ -94,6 +95,7 @@ class ProductionDataManager(DataManager):
                     mach = Machine(mcode,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
                 
                     mach.setLocation(mach)
+                    mach.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(mach)
                     
             
