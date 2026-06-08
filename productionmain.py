@@ -707,6 +707,38 @@ class ShopFloorManager(OperationsManager):
                 event.getItems()[0].getActiveOperation().setExecutionData(event,self.getSimulator())
 
             event.setProgress(self.getSimulator().getTime(),"Completed")
+
+            try:
+                etype = event.getEventType().getName()
+            
+                # 1. Trailer Loading → capture origin + order
+                if etype == "Trailer Loading":
+                    trailer = event.getEquipment()
+                    trailer._last_move_from = event.getLocation()[0].getName() \
+                        if isinstance(event.getLocation(), tuple) else event.getLocation().getName()
+                    trailer._last_move_order = event.getItems()[0].getDemand()
+            
+                # 2. Trailer Unloading → capture destination + write row
+                if etype == "Trailer Unloading":
+                    trailer = event.getEquipment()
+                    order = trailer._last_move_order
+                    loc_from = trailer._last_move_from
+                    loc_to = event.getLocation()[1].getName() \
+                        if isinstance(event.getLocation(), tuple) else event.getLocation().getName()
+            
+                    # Extract order info
+                    pn = order.getFinalProduct().getPN()
+                    qty = order.getQuantity()
+            
+                    # Append to your dataframe
+                    self.getSimulator().locationDf.loc[len(self.getSimulator().locationDf)] = {
+                        "Order": pn,
+                        "LocationFrom": loc_from,
+                        "LocationTo": loc_to
+                    }
+            
+            except Exception as e:
+                self.getSimulator().saveLog("ERROR capturing trailer move: " + str(e))
               
             # manage next event: if there is a direct successor just use it, otherwise use successor of eventtype
 

@@ -12,9 +12,12 @@ class Simulator(object):
         
         self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
         self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
+        self.allEvents = []
+        self.completedEvents = []
         self.queue = {} #key: time (start/completion times of events) , val: [event]
         self.time = 0
         self.eventno = 0
+        self.locationDf = pd.DataFrame(columns=["Order", "LocationFrom", "LocationTo"])
     
      
         self.queue["Pending"] = [] # list of pending events, to be hanlded
@@ -198,25 +201,39 @@ class Simulator(object):
 
             eventStuckThreshold = 60  # minutes with no progress
 
+            remainingEvents = [e for e in self.allEvents if e not in self.completedEvents]
             # check for stuck events
-            for time, events in self.getEventQueue().items():
-                for ev in events:
-                    if ev.lastProgressTime is None:
-                        self.saveLog("REPORT: Event "+ev.print()+" never progressed")
-                    elif self.getTime() - ev.lastProgressTime > eventStuckThreshold:
-                        self.saveLog("REPORT: Event "+ev.print()+
-                                     " last progressed at "+str(ev.lastProgressTime)+
-                                     " state="+ev.progressState)
 
-            # Check for resources that have stuck events
+            for ev in remainingEvents:
+                
+                # Determine if stuck
+                if ev.lastProgressTime is None:
+                    reason = "never progressed"
+                elif self.getTime() - ev.lastProgressTime > eventStuckThreshold:
+                    reason = "no progress for " + str(self.getTime() - ev.lastProgressTime)
+                else:
+                    continue
+
+                # Extract order (assumed all items belong to same order)
+                order = ev.getItems()[0].getDemand()
             
-            for res in OperationsMgr.getResources():
-            for ev, prog in res.getProgressDict().items():
-                if ev.lastProgressTime is None or \
-                   self.getTime() - ev.lastProgressTime > STUCK_THRESHOLD:
-                    self.saveLog("REPORT: Resource "+res.getName()+
-                                 " still running event "+ev.print()+
-                                 " last progressed at "+str(ev.lastProgressTime))
+                # Extract order info
+                pn = order.getFinalProduct().getPN()
+                qty = order.getQuantity()
+                deadline = order.getDeadline()
+            
+                # Event state
+                state = ev.progressState
+            
+                self.saveLog(
+                    "REPORT: PN: " + str(pn) +
+                    ", Q: " + str(qty) +
+                    ", Deadline: " + str(deadline) +
+                    " marked because event " + ev.print() +
+                    " is in state '" + state + "'" +
+                    " (" + reason + ")"
+                )
+
             
             try:
                 self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
@@ -226,6 +243,8 @@ class Simulator(object):
             self.getController().getVisualManager().updateSimProgress("Writing data")
             OperationsMgr.writeData()
             OperationsMgr.writeDataTBRMOutPut()
+            self.locationDf = self.locationDf.sort_values(by=["Order"])
+            self.locationDf.to_csv('LocationTest.csv')
             end = timer()
             self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
 
@@ -276,6 +295,8 @@ class Simulator(object):
                                     break
     
                     if eventprogress == event.getProcessTime():
+                        self.completedEvents.append(event)
+                        event.setProgress(self.getTime(), "Completed")
                         workmgr.commpleteSimEvent(event)   
         except Exception as e:
             self.saveLog("ERROR: Handling of preemptable events "+str(e))
@@ -302,7 +323,9 @@ class Simulator(object):
                                     workmgr.commpleteSimEvent(event)
                                 except Exception as e:
                                     self.saveLog("ERROR: complete non/pending-preemptable events "+str(e))  
-                                
+
+                                event.setProgress(self.getTime(), "Completed")
+                                self.completedEvents.append(event)
                                 self.queue[self.time].remove(event) 
                         else:
                             if event.getEquipment() == None or event.getResource() == None:
@@ -339,7 +362,10 @@ class Simulator(object):
         workmgr = self.getController().getWorkManager()
         
         self.saveLog(" scheduling "+event.print()+", preemptable "+str(event.getEventType().isPreemptable()))
-
+        
+        if event not in self.allEvents:
+            self.allEvents.append(event)
+            
         try: 
             if event.getEquipment() == None or event.getResource() == None:
                 if not event in self.getEventQueue()["Pending"]:
