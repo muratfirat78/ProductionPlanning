@@ -214,6 +214,7 @@ class Trailer(Resource):
 class Operation(Process):
     def __init__(self,demand,name,myid,proctime,processtimedist):
         super().__init__(demand,name,myid,processtimedist)
+        
         self.getRandVar().getSampling().append(proctime) 
         
 #_______________________________________________________________________          
