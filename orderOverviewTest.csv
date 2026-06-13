@@ -1,0 +1,6 @@
+,PN,Q,Deadline,Status,LocationFrom,LocationTo,CycleStatus
+0,[4022-637-29301],40,2026-01-16 10:00:00,['Completed'],"['Central_Inventory', 'BW_(BKW_01)', 'PACK_(VERP_P)']","['BW_(BKW_01)', 'PACK_(VERP_P)', 'Central_Inventory']",OK
+1,[4022-666-3837-1],115,2025-11-19 09:00:00,"['Completed', 'Completed']","['Central_Inventory', 'M3-02_(FR3_02)', 'BW_(BKW_01)', 'PACK_(VERP_P)']","['M3-02_(FR3_02)', 'BW_(BKW_01)', 'PACK_(VERP_P)', 'Central_Inventory']",OK
+2,[4022.684.28993],1,2026-02-09 01:00:00,['Completed'],"['Central_Inventory', 'OUT - Outsourced activity_(OUT - Outsourced)']","['OUT - Outsourced activity_(OUT - Outsourced)', 'OUT - Outsourced activity_(OUT - Outsourced)']",Problem — cycle did not end at Central
+3,[4022.684.29043],1,2026-02-09 01:00:00,['Completed'],"['Central_Inventory', 'OUT - Outsourced activity_(OUT - Outsourced)']","['OUT - Outsourced activity_(OUT - Outsourced)', 'OUT - Outsourced activity_(OUT - Outsourced)']",Problem — cycle did not end at Central
+4,[4023-002-36551],25,2026-01-16 08:00:00,['Completed'],"['Central_Inventory', 'BW_(BKW_01)', 'PACK_(VERP_P)']","['BW_(BKW_01)', 'PACK_(VERP_P)', 'Central_Inventory']",OK

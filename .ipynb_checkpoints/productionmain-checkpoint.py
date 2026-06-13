@@ -707,6 +707,108 @@ class ShopFloorManager(OperationsManager):
                 event.getItems()[0].getActiveOperation().setExecutionData(event,self.getSimulator())
 
             event.setProgress(self.getSimulator().getTime(),"Completed")
+
+            try:
+                etype = event.getEventType().getName()
+            
+                # 1. Trailer Loading → capture origin + order
+                if etype == "Trailer Loading":
+                    trailer = event.getEquipment()
+                    trailer._last_move_from = (
+                        event.getLocation()[0].getName()
+                        if isinstance(event.getLocation(), tuple) 
+                        else event.getLocation().getName()
+                    )
+                    trailer._last_move_order = event.getItems()[0].getDemand()
+            
+                # 2. Trailer Unloading → capture destination + write row
+                if etype == "Trailer Unloading":
+                    trailer = event.getEquipment()
+                    order = trailer._last_move_order
+                    loc_from = trailer._last_move_from
+                    loc_to = (
+                        event.getLocation()[1].getName() 
+                        if isinstance(event.getLocation(), tuple) 
+                        else event.getLocation().getName()
+                    )
+            
+                    # Extract order info
+                    pn = order.getFinalProduct().getPN()
+                    qty = order.getQuantity()
+                    dl = order.getDeadline()
+            
+                    # Append to your dataframe
+                    self.getSimulator().locationDf.loc[len(self.getSimulator().locationDf)] = {
+                        "PN": pn,
+                        "Q": qty,
+                        "Deadline": dl,
+                        "LocationFrom": loc_from,
+                        "LocationTo": loc_to
+                    }
+            
+            except Exception as e:
+                self.getSimulator().saveLog("ERROR capturing trailer move: " + str(e))
+
+            try:
+                if event.getEventType().getName() == "Processing":
+                    item = event.getItems()[0]
+                    order = item.getDemand()
+                    op = item.getActiveOperation()
+                    pt = event.getProcessTime()
+                    sim_end = self.getSimulator().getTime()
+                    stuckThreshold = 60
+
+                    try:
+                        start = list(event.getProgressDict().values())[0][0][0]
+                    except:
+                        start = None  # event never started
+
+                    #This handles case where event never started
+                    if start is None:
+                        status = "Not started — simulation ended before event could start"
+                    
+                        self.getSimulator().processingDf.loc[len(self.getSimulator().processingDf)] = {
+                            "PN": order.getFinalProduct().getPN(),
+                            "Q": order.getQuantity(),
+                            "Deadline": order.getDeadline(),
+                            "ItemID": item.getID(),
+                            "EventID": event.getID(),
+                            "Operation": op.getName(),
+                            "StartTime": None,
+                            "ProcessTime": pt,
+                            "ExpectedEnd": None,
+                            "SimEnd": sim_end,
+                            "Status": status
+                        }
+                    
+                    else:
+                        expected_end = start + pt                       
+                
+                        # Determine status
+                        if expected_end > sim_end:
+                            status = "Not stuck — long event"
+                        else:
+                            if event.lastProgressTime is None:
+                                status = "Stuck — never progressed"
+                            elif sim_end - event.lastProgressTime > stuckThreshold:
+                                status = "Stuck — no progress"
+                            else:
+                                status = "Completed"
+                
+                        self.getSimulator().processingDf.loc[len(self.getSimulator().processingDf)] = {
+                            "PN": order.getFinalProduct().getPN(),
+                            "Q": order.getQuantity(),
+                            "Deadline": order.getDeadline(),
+                            "Operation": op.getName(),
+                            "StartTime": start,
+                            "ProcessTime": pt,
+                            "ExpectedEnd": expected_end,
+                            "SimEnd": sim_end,
+                            "Status": status
+                        }
+            
+            except Exception as e:
+                self.getSimulator().saveLog("ERROR capturing processing event: " + str(e))
               
             # manage next event: if there is a direct successor just use it, otherwise use successor of eventtype
 

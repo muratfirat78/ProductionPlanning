@@ -17,7 +17,9 @@ class Simulator(object):
         self.queue = {} #key: time (start/completion times of events) , val: [event]
         self.time = 0
         self.eventno = 0
-        self.locationDf = pd.DataFrame(columns=["Order", "LocationFrom", "LocationTo"])
+        self.locationDf = pd.DataFrame(columns=["PN","Q","Deadline", "LocationFrom", "LocationTo"])
+        self.processingDf = pd.DataFrame(columns=["PN", "Q", "Deadline", "Operation", "StartTime", "ProcessTime", "ExpectedEnd", "SimEnd", "Status"])
+        self.orderOverviewDf = pd.DataFrame(columns =["PN", "Q", "Deadline", "Operation", "StartTime", "ProcessTime", "ExpectedEnd", "SimEnd", "Status", "LocationFrom", "LocationTo"])
     
      
         self.queue["Pending"] = [] # list of pending events, to be hanlded
@@ -243,8 +245,18 @@ class Simulator(object):
             self.getController().getVisualManager().updateSimProgress("Writing data")
             OperationsMgr.writeData()
             OperationsMgr.writeDataTBRMOutPut()
-            self.locationDf = self.locationDf.sort_values(by=["Order"])
+            self.getController().getVisualManager().updateSimProgress("Hoi")
+            self.locationDf = self.locationDf.sort_values(by=["PN"])
+            self.getController().getVisualManager().updateSimProgress("Hoi2")
+            self.processingDf = self.processingDf.sort_values(by=["PN","StartTime"])
+            self.getController().getVisualManager().updateSimProgress("Hoi3")
             self.locationDf.to_csv('LocationTest.csv')
+            self.getController().getVisualManager().updateSimProgress("Hoi4")
+            self.processingDf.to_csv('processingTest.csv')
+            self.getController().getVisualManager().updateSimProgress("Hoi5")
+            self.orderOverview()
+            self.orderOverviewDf.to_csv('orderOverviewTest.csv')
+            self.getController().getVisualManager().updateSimProgress("Hoi6")
             end = timer()
             self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
 
@@ -437,6 +449,18 @@ class Simulator(object):
         return self.eventno
     def getEventQueue(self):
         return self.queue
+
+    def orderOverview(self):
+        locationsGrouped = self.locationDf.groupby(["PN","Q","Deadline"]).agg({"LocationFrom": list, "LocationTo": list}).reset_index()
+        
+        operationsGrouped = self.processingDf.groupby(["PN", "Q", "Deadline"]).agg({"Status": list}).reset_index()
+        
+        merged = pd.merge(operationsGrouped, locationsGrouped, on=["PN", "Q", "Deadline"], how="left")
+
+        self.orderOverviewDf = pd.merge(operationsGrouped, locationsGrouped, on=["PN", "Q", "Deadline"], how="left")
+        
+        self.orderOverviewDf["CycleStatus"] = self.orderOverviewDf.apply(check_cycle, axis=1)
+        return    
 #__________________________________________________________________________________________________________________________________
 class OperationsManager(object):
     def __init__(self,sim):
@@ -634,3 +658,31 @@ class DataManager(object):
     def getSimulator(self):
         return self.simulator
 
+#########################################################################################
+
+def check_cycle(row):
+    statuses = row["Status"]
+    loc_from = row["LocationFrom"]
+    loc_to = row["LocationTo"]
+
+    # Case 1: Not all operations completed
+    if not all(s == "Completed" for s in statuses):
+        return "Problem — operations incomplete"
+
+    # Case 2: No moves recorded
+    if loc_from is None or loc_to is None:
+        return "Problem — no logistics cycle"
+
+    # Case 3: Empty move lists
+    if len(loc_from) == 0 or len(loc_to) == 0:
+        return "Problem — empty logistics cycle"
+
+    # Case 4: Cycle must start at Central
+    if loc_from[0] != "Central_Inventory":
+        return "Problem — cycle did not start at Central"
+
+    # Case 5: Cycle must end at Central
+    if loc_to[-1] != "Central_Inventory":
+        return "Problem — cycle did not end at Central"
+
+    return "OK"

@@ -1,15 +1,15 @@
-,Order,LocationFrom,LocationTo
-2,[4022-637-29301],Central_Inventory,BW_(BKW_01)
-7,[4022-637-29301],BW_(BKW_01),PACK_(VERP_P)
-8,[4022-637-29301],PACK_(VERP_P),Central_Inventory
-0,[4022-666-3837-1],Central_Inventory,M3-02_(FR3_02)
-9,[4022-666-3837-1],M3-02_(FR3_02),BW_(BKW_01)
-10,[4022-666-3837-1],BW_(BKW_01),PACK_(VERP_P)
-11,[4022-666-3837-1],PACK_(VERP_P),Central_Inventory
-3,[4022.684.28993],Central_Inventory,OUT - Outsourced activity_(OUT - Outsourced)
-12,[4022.684.28993],OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)
-4,[4022.684.29043],Central_Inventory,OUT - Outsourced activity_(OUT - Outsourced)
-13,[4022.684.29043],OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)
-1,[4023-002-36551],Central_Inventory,BW_(BKW_01)
-5,[4023-002-36551],BW_(BKW_01),PACK_(VERP_P)
-6,[4023-002-36551],PACK_(VERP_P),Central_Inventory
+,PN,Q,Deadline,LocationFrom,LocationTo
+2,[4022-637-29301],40,2026-01-16 10:00:00,Central_Inventory,BW_(BKW_01)
+7,[4022-637-29301],40,2026-01-16 10:00:00,BW_(BKW_01),PACK_(VERP_P)
+8,[4022-637-29301],40,2026-01-16 10:00:00,PACK_(VERP_P),Central_Inventory
+0,[4022-666-3837-1],115,2025-11-19 09:00:00,Central_Inventory,M3-02_(FR3_02)
+9,[4022-666-3837-1],115,2025-11-19 09:00:00,M3-02_(FR3_02),BW_(BKW_01)
+10,[4022-666-3837-1],115,2025-11-19 09:00:00,BW_(BKW_01),PACK_(VERP_P)
+11,[4022-666-3837-1],115,2025-11-19 09:00:00,PACK_(VERP_P),Central_Inventory
+3,[4022.684.28993],1,2026-02-09 01:00:00,Central_Inventory,OUT - Outsourced activity_(OUT - Outsourced)
+12,[4022.684.28993],1,2026-02-09 01:00:00,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)
+4,[4022.684.29043],1,2026-02-09 01:00:00,Central_Inventory,OUT - Outsourced activity_(OUT - Outsourced)
+13,[4022.684.29043],1,2026-02-09 01:00:00,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)
+1,[4023-002-36551],25,2026-01-16 08:00:00,Central_Inventory,BW_(BKW_01)
+5,[4023-002-36551],25,2026-01-16 08:00:00,BW_(BKW_01),PACK_(VERP_P)
+6,[4023-002-36551],25,2026-01-16 08:00:00,PACK_(VERP_P),Central_Inventory

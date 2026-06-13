@@ -1,0 +1,7 @@
+,PN,Q,Deadline,Operation,StartTime,ProcessTime,ExpectedEnd,SimEnd,Status
+1,[4022-637-29301],40,2026-01-16 10:00:00,PACK - Packaging (VERP_P),2063,120.0,2183.0,2183,Completed
+2,[4022-666-3837-1],115,2025-11-19 09:00:00,BW - Benchwork (BKW_01),2053,435.0,2488.0,2488,Completed
+3,[4022-666-3837-1],115,2025-11-19 09:00:00,PACK - Packaging (VERP_P),2563,230.0,2793.0,2793,Completed
+4,[4022.684.28993],1,2026-02-09 01:00:00,OUT - Outsourced activity,1936,4500.0,6436.0,17956,Completed
+5,[4022.684.29043],1,2026-02-09 01:00:00,OUT - Outsourced activity,1940,4500.0,6440.0,17960,Completed
+0,[4023-002-36551],25,2026-01-16 08:00:00,PACK - Packaging (VERP_P),1934,125.0,2059.0,2059,Completed
