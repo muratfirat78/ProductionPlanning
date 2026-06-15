@@ -202,12 +202,15 @@ class ProductionDataManager(DataManager):
                             self.getOperationsManager().getSimulator().saveLog("REPORT: All machines: "+str([m.getMachineCode() for m in machines]))
                             myopr.setName(myopr.getName()+"_ISSUE!")
                             myopr.setCancelled()
+
+                        myopr.setStatus("To do")
                            
                         
 
                         if pd.isna(opr) or r['Work Orders/Status'][oprid] == "Cancelled": 
                             myopr.setStart(datetime(2000, 1, 1))
                             myopr.setCompletion(datetime(2000, 1, 1))
+                            myopr.setStatus("Cancelled")
     
                         if r['Work Orders/Status'][oprid] == "Cancelled": 
                             myopr.setCancelled()
@@ -216,6 +219,7 @@ class ProductionDataManager(DataManager):
                             myopr.setStart(r['Work Orders/Start'][oprid])
                             myopr.setCompletion(r['Work Orders/End'][oprid])
                             myopr.setFinished()
+                            myopr.setStatus("Finished")
 
                         if pd.isna(opr) or r['Work Orders/Status'][oprid] in ["Finished","Completed","Cancelled"]:
                             myopr.setExecutionData(None,self.getOperationsManager().getSimulator())

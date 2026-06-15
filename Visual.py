@@ -454,6 +454,15 @@ class VisualManager():
                 OrdList.append(prodorder.getFinalProduct().getPN()+"- Q: "+str(prodorder.getQuantity())+", d: "+str(prodorder.getDeadline()))
                 
             self.getmilpdetails().options = [x for x in OrdList]
+
+    
+        if result == 'Machines':
+            for res in self.getController().getWorkManager().getResources():
+                OrdList.append(res.getName()+" ["+str(res.getID())+"]")
+
+            self.getmilpdetails().options = [x for x in OrdList]
+                
+          
             
         
 
@@ -522,12 +531,12 @@ class VisualManager():
 
             if result_type == 'Orders': 
                 
-                order_df = pd.DataFrame(columns=["Operation","Alternatives","Start","Completion","ProcessTime"])
+                order_df = pd.DataFrame(columns=["Operation","Alternatives","Status","Start","Completion","ProcessTime"])
 
                 operation_sequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
                  
                 for operation in operation_sequence:
-                    infodata = {"Operation":operation.getName(),"Alternatives":len(operation.getAlternativeResources()),"Start":operation.getStart(),"Completion":operation.getCompletion(),"ProcessTime":operation.getRandVar().sampleValue()  } 
+                    infodata = {"Operation":operation.getName(),"Alternatives":len(operation.getAlternativeResources()),"Status":operation.getStatus(),"Start":operation.getStart(),"Completion":operation.getCompletion(),"ProcessTime":operation.getRandVar().sampleValue()  } 
                     order_df.loc[len(order_df)]= infodata
 
                 with self.getMILPResultInfo():
@@ -557,7 +566,7 @@ class VisualManager():
 
         self.setInputText(widgets.Text(description ='Use Case: ',value=''))
 
-        self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,5)],value = 4,description = 'Weeks:'))
+        self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,10)],value = 4,description = 'Weeks:'))
         self.getWeeksDrop().observe(self.setDropSimWeeks,'value')
         
         self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
@@ -600,7 +609,7 @@ class VisualManager():
         self.setRunBox(runbox)
 
 
-        orders = widgets.Dropdown(options = [w for w in range(1,250)],value = 45,description = 'Orders:')
+        orders = widgets.Dropdown(options = [w for w in range(1,250)],value = 249,description = 'Orders:')
         self.setOrders(orders)
         self.getOrders().observe(self.setDropSimOrders,'value')
         self.getController().getWorkManager().setNoOrders(self.getOrders().value)

@@ -447,6 +447,14 @@ class Process(object):
         self.completion = None
         self.Demand = demand
         self.simplanned = False
+        self.status = None
+
+    def setStatus(self,myst):
+        self.status = myst
+        return
+
+    def getStatus(self):
+        return self.status
     
 
 

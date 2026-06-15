@@ -1057,9 +1057,10 @@ class ShopFloorManager(OperationsManager):
 
     def writeDataTBRMOutPut(self):
 
-        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Work Orders/Work Center","Work Orders/Work Center/ID","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Simulation_Planned"])
+        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Work Orders/Work Center","Work Orders/Work Center/ID","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Scheduled"])
 
         currentdate =  datetime.now()
+        currentdate = currentdate-timedelta(days = 2)
         startday = datetime(currentdate.year, currentdate.month, currentdate.day)
 
         try: 
@@ -1090,9 +1091,9 @@ class ShopFloorManager(OperationsManager):
                     
                     if oprid == 0:
                          
-                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Simulation_Planned":prodorder in self.getSelectedOrders()}
+                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
                     else:
-                        myorddata = {"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Simulation_Planned":prodorder in self.getSelectedOrders()}
+                        myorddata = {"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
 
                     TBRM_df.loc[len(TBRM_df)] = myorddata
                     oprid+=1
