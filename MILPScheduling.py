@@ -394,7 +394,7 @@ class ProductionMILPManager(MILPManager):
         self.optimalitygap = 0.05
         self.machinedict = dict()
         self.MILPModel = None
-        self.writeMILP = False
+        self.writeMILP = True
         self.deadlinemax = None
         self.deadlinemin = None
         self.modeljobs = 50 
@@ -402,6 +402,10 @@ class ProductionMILPManager(MILPManager):
         self.MILPRound = 1
         self.bigM = 100000000
         self.epsilon = 0.001
+        self.OperationJobDict = dict()
+
+    def getOperationJobDict(self):
+        return self.OperationJobDict
 
     def getModelJobs(self):
         return self.modeljobs
@@ -630,7 +634,7 @@ class ProductionMILPManager(MILPManager):
 
             
             for job in joblisttomatch:
-                progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"  is schedulable"+"\n"
+                progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is schedulable"+"\n"
     
             succstartindex = len(joblisttomatch)
             # now add some successors
@@ -638,8 +642,8 @@ class ProductionMILPManager(MILPManager):
                 if job.getSuccessor()!= None:
                     succ = job.getSuccessor()
                     if jobsinlist < 25:
-                        progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"  is schedulable"+"\n"
-                        progress.value+=" Sucessor  Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"  is schedulable"+"\n"
+                        progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is schedulable"+"\n"
+                        progress.value+=" Sucessor  Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is in model"+"\n"
                         joblisttomatch.append(succ)
                         jobsinlist+=1
 
@@ -655,8 +659,8 @@ class ProductionMILPManager(MILPManager):
                     if job.getSuccessor()!= None:
                         succ = job.getSuccessor()
                         if jobsinlist < 28:
-                            progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"  is schedulable"+"\n"
-                            progress.value+=" Sucessor-successor Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"  is schedulable"+"\n"
+                            progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is in model"+"\n"
+                            progress.value+=" Sucessor-successor Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is schedulable"+"\n"
                             joblisttomatch.append(succ)
                             jobsinlist+=1  
 
@@ -728,6 +732,33 @@ class ProductionMILPManager(MILPManager):
          
             self.MILPRound+=1
 
+         # check precedence feasibility:  
+        for prodorder in self.getSimulator().getController().getWorkManager().getSelectedOrders():
+            operation_sequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
+
+            active_predecessor = None
+            
+            for oprind in range(len(operation_sequence)):
+                operation = operation_sequence[oprind]
+                if operation.isCancelled():
+                    continue
+
+                if operation.isFinished():
+                    active_predecessor = operation
+                    continue
+                    
+                if  not self.getOperationJobDict()[operation].isScheduled():
+                    break
+
+                
+                if active_predecessor != None:
+                    if active_predecessor.getCompletion() > operation.getStart():
+                        progress.value+="Precedence violation: operation "+str(operation.getName())+" starts "+str(operation.getStart())+" before pred "+str(active_predecessor.getName())+" gets completed"+str(active_predecessor.getCompletion())+"\n"
+                        
+                active_predecessor = operation
+
+
+            
         try: 
             self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut()
         except Exception as e:
@@ -762,6 +793,9 @@ class ProductionMILPManager(MILPManager):
                 oprid = 1
                 for operation in operation_sequence:
                     myjob = Job(operation,"Processing",True,self.giveJobID()) # args: myopr,mytype,preempt,myid
+
+                    self.getOperationJobDict()[operation] = myjob
+                   
                     self.getJobs().append(myjob);
 
                     progress.value+=" job "+str(myjob.getOperation().getName())+" defined oprid "+str(oprid)+"\n" 
@@ -1043,7 +1077,7 @@ class ProductionMILPManager(MILPManager):
                             
                         nrmatches+=1
                         mymatch = MatchVar(mymach,job,currentstart,slotshift,funcreturn[1])
-                        matchvar = self.MILPModel.IntVar(0.0,1,'x_'+str(mach.getMachineCode())+'_'+str(job.getID())+"_"+str(matchid))  # x_{m,j}
+                        matchvar = self.MILPModel.IntVar(0.0,1,'x_'+str(mach.getMachineCode())+'_'+str(job.getID())+"_"+str(job.getOperation().getDemand().getID())+"_"+str(matchid))  # x_{m,j}
                         deadline_coeff =((self.getMaxDeadLine()-job.getDeadLine()).days) /((self.getMaxDeadLine() -self.getMinDeadLine()).days)
                         obj_coeff = 10*deadline_coeff+25*(self.getTimeHorizon()-funcreturn[1])/self.getTimeHorizon()+5*job.getProcessTime()/self.getTimeHorizon()
                         matchid+=1
@@ -1242,7 +1276,7 @@ class ProductionMILPManager(MILPManager):
             unscheduleds = [job for job in self.getSchedulableJobs() if not job.isScheduled()]
 
             for job in unscheduleds:
-                progress.value+= "Unscheduled Job: "+job.getProduct().getPN()+", opr: "+job.getOperation().getName()+"\n"
+                progress.value+= "Unscheduled Job: "+job.getProduct().getPN()+", opr: "+job.getOperation().getName()+" - "+str(job.getOperation().getDemand().getID())+"\n"
                 
                 
                 
