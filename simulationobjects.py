@@ -92,6 +92,7 @@ class Event(object):
     def __init__(self,loc,start,proctime,sim,eventype):
         self.EventType = eventype    
         self.ID = sim.getEventNo()   
+        self.CreationTime = sim.getTime()
         self.Location = loc  # static: resource, dynamic: (from buffer,to buffer)   
         self.StartTime = start
         self.ProcessTime = proctime  
@@ -117,12 +118,17 @@ class Event(object):
 
         self.lastProgressTime = None
         self.progressState = "Created"
+
+        sim.recordCreatedEvent(self)
         
 
     def getLogisticEvents(self):
         return self.logisticevents
     def getStartDelay(self):
         return self.startdelay
+
+    def getCreationTime(self):
+        return self.CreationTime
 
     def increaseStartDelay(self):
         self.startdelay+=1
@@ -213,6 +219,23 @@ class Event(object):
         return
     def getSuccessor(self):
         return self.successor
+
+    def getSuccessorDebugString(self):
+        successor = self.getSuccessor()
+        successor_text = "None" if successor == None else successor.getName()+"["+str(successor.getID())+"]"
+
+        defined_successors = []
+        for succ_type, succ_event in self.getDefinedSuccessors().items():
+            succ_type_text = succ_type.getName() if succ_type != None else "None"
+            succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+            defined_successors.append(succ_type_text+"->"+succ_event_text)
+
+        precedence_entries = []
+        for succ_event, precedence_type in self.getPrecedenceTypes().items():
+            succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+            precedence_entries.append(succ_event_text+":"+str(precedence_type))
+
+        return self.getName()+"["+str(self.getID())+"] successor="+successor_text+" defined_successors="+str(defined_successors)+" precedence_types="+str(precedence_entries)
     
 
     def getEventType(self):

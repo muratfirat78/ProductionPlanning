@@ -406,6 +406,7 @@ class ShopFloorManager(OperationsManager):
                                     return False
 
         if event.getEquipment() == None or event.getResource() == None:
+            event.setProgress(self.getSimulator().getTime(), "Pending")
             event.increaseStartDelay()
             return False
 
@@ -616,6 +617,8 @@ class ShopFloorManager(OperationsManager):
         try: 
 
             self.getSimulator().saveLog("Finalizing event: "+event.getName()+"start time "+str(event.getStartTime())+" sim time "+str(self.getSimulator().getTime()))
+            self.getSimulator().saveLog("DEBUG successor state: "+event.getSuccessorDebugString())
+            self.getSimulator().recordSuccessorTrace(event)
     
             if event in event.getResource().getMyEvents():
                 if len([ev for ev in event.getResource().getMyEvents() if ev == event]) > 1:
@@ -808,9 +811,7 @@ class ShopFloorManager(OperationsManager):
                         }
             
             except Exception as e:
-                self.getSimulator().saveLog("ERROR capturing processing event: " + str(e))
-              
-            # manage next event: if there is a direct successor just use it, otherwise use successor of eventtype
+                self.getSimulator().saveLog("ERROR capturing processing event: " + str(e))                          # manage next event: if there is a direct successor just use it, otherwise use successor of eventtype
 
         ################################################################################################################
         ####### M A N A G I N G   N E X T   E V E N T 

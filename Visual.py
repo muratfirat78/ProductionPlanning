@@ -375,16 +375,16 @@ class VisualManager():
         self.getShowLogButton().disabled = True
 
       
-        #allinfo = []
+        allinfo = []
         
-        #for time,infolist in self.getController().getSimulator().getMyLog().items():
+        for time,infolist in self.getController().getSimulator().getMyLog().items():
 
-        #    for info in infolist:
-        #        allinfo.append(str(time)+": "+str(info))
+           for info in infolist:
+               allinfo.append(str(time)+": "+str(info))
 
        
 
-        #self.getLogSelect().options = allinfo
+        self.getLogSelect().options = allinfo
 
         return
 

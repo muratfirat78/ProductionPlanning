@@ -11,12 +11,12 @@ __export__.mrp_production_1197_849443cd,[1082700B] Block cooling water TMP,14907
 __export__.mrp_production_5033_ffa23c2e,[4022.684.28993] RS C+H SLAB STAT PLT IL SIDE / CLS,18261.0,1.0,2026-02-09 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-02-06 13:37:06,2026-02-06 13:37:06,Finished,True
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,405.0,2026-02-06 13:38:20,2026-02-06 13:38:20,Finished,True
 ,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,113.0,2026-02-06 13:39:12,2026-02-06 13:39:12,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-14 08:15:00,2026-06-25 11:16:00,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-25 11:25:00,,In Progress,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-21 08:15:00,2026-07-02 11:16:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-07-02 11:25:00,,In Progress,True
 __export__.mrp_production_5034_4d53b4c4,[4022.684.29043] RS C+H DYN ATTACH PLT IL SIDE / CLS,18342.0,1.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,1.0,2026-02-06 13:43:14,2026-02-06 13:43:14,Finished,True
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,335.0,2026-02-06 13:43:09,2026-02-06 13:43:09,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-14 08:19:00,2026-06-25 11:20:00,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-25 11:29:00,,In Progress,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-06-21 08:19:00,2026-07-02 11:20:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-07-02 11:29:00,,In Progress,True
 __export__.mrp_production_5035_e3dce293,[4022.684.28962] RS C+H DYN ATTACH PLT RH SIDE / CLS,18348.0,1.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,1.0,2026-02-06 13:36:30,2026-02-06 13:36:30,Finished,False
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,335.0,2026-02-06 13:36:38,2026-02-06 13:36:38,Finished,False
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,False
@@ -35,14 +35,14 @@ __export__.mrp_production_5264_e20e4380,[4022.704.19282] RH RED GRIPPER BODY,142
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,2250.0,,,To Do,False
 __export__.mrp_production_5325_9ceb90b0,[4023-002-36551] filter plate wide Cu0.4 Rh0.06,15014.0,25.0,2026-01-16 08:00:00,MP2 - Mat. prep - manual sawing (ZGN_02),__export__.mrp_workcenter_64_95992ef5,25.0,2026-02-06 14:30:25,2026-02-06 14:30:25,Finished,True
 ,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,165.0,2026-02-06 14:30:36,2026-03-23 10:49:37,Finished,True
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,125.0,2026-06-14 08:13:00,2026-06-14 10:19:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,25.0,2026-06-14 10:29:00,2026-06-14 10:55:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,125.0,2026-06-21 08:13:00,2026-06-21 10:19:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,25.0,2026-06-21 10:29:00,2026-06-21 10:55:00,Finished,True
 __export__.mrp_production_5374_81713afd,[4022-637-29301] Hinge Block Fixed RM,14964.0,40.0,2026-01-16 10:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,55.0,2026-02-06 14:41:00,2026-02-06 14:41:00,Finished,True
 ,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,890.0,2026-03-23 11:11:00,2026-03-23 11:11:01,Finished,True
 ,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,290.0,2026-03-23 11:11:02,2026-03-23 11:11:04,Finished,True
 ,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),__export__.mrp_workcenter_57_6faf5319,290.0,2026-03-23 11:11:17,2026-03-23 11:11:38,Finished,True
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,120.0,2026-06-14 10:22:00,2026-06-14 12:23:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,40.0,2026-06-14 12:32:00,2026-06-14 13:13:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,120.0,2026-06-21 10:22:00,2026-06-21 12:23:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,40.0,2026-06-21 12:32:00,2026-06-21 13:13:00,Finished,True
 __export__.mrp_production_5484_c81e293e,[4022.622.61092] RH RED GRIPPER CABLE COVER ,7366.0,29.0,2026-03-24 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,44.0,2026-02-06 14:47:10,2026-02-06 14:47:10,Finished,False
 ,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,640.0,2026-02-04 16:05:49,2026-03-23 10:50:23,Finished,False
 ,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,-,988.0,2026-03-23 10:50:25,2026-03-23 10:50:26,Cancelled,False
@@ -563,9 +563,9 @@ __export__.mrp_production_6217_755fbf9a,[7007-2500-0009] 263 - EL5 Base Plate (D
 ,,,,,M3-03 - VF - 3axis - Manual (VF2SS),__export__.mrp_workcenter_60_6593b576,660.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
 ,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),__export__.mrp_workcenter_62_468a38e5,660.0,2000-01-01 00:00:00,2000-01-01 00:00:00,Cancelled,False
 __export__.mrp_production_6224_60bd1d38,[4022-666-3837-1] LSPH Bellow Clamp,14985.0,115.0,2025-11-19 09:00:00,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),__export__.mrp_workcenter_56_d6637dea,665.0,2026-04-24 12:49:26,2026-04-24 12:49:28,Finished,True
-,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,435.0,2026-06-14 09:08:00,2026-06-14 17:28:00,Finished,True
-,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,230.0,2026-06-14 18:42:00,2026-06-14 22:33:00,Finished,True
-,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,115.0,2026-06-14 22:42:00,2026-06-15 08:38:00,Finished,True
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),__export__.mrp_workcenter_55_15609e22,435.0,2026-06-21 09:08:00,2026-06-21 17:28:00,Finished,True
+,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,230.0,2026-06-21 18:42:00,2026-06-21 22:33:00,Finished,True
+,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,115.0,2026-06-21 22:42:00,2026-06-22 08:38:00,Finished,True
 __export__.mrp_production_6225_bd3b962b,[4022-486-33041] Connector Block,14938.0,183.0,2026-07-03 02:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,198.0,,,To Do,False
 ,,,,,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,549.0,,,To Do,False
 ,,,,,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,183.0,,,To Do,False

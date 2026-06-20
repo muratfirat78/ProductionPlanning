@@ -20,6 +20,10 @@ class Simulator(object):
         self.locationDf = pd.DataFrame(columns=["PN","Q","Deadline", "LocationFrom", "LocationTo"])
         self.processingDf = pd.DataFrame(columns=["PN", "Q", "Deadline", "Operation", "StartTime", "ProcessTime", "ExpectedEnd", "SimEnd", "Status"])
         self.orderOverviewDf = pd.DataFrame(columns =["PN", "Q", "Deadline", "Operation", "StartTime", "ProcessTime", "ExpectedEnd", "SimEnd", "Status", "LocationFrom", "LocationTo"])
+        self.successorDf = pd.DataFrame(columns=["Time", "EventID", "Event", "SuccessorID", "Successor", "DefinedSuccessors", "PrecedenceTypes", "Place", "Equipment", "Resource", "ItemIDs", "ProgressState"])
+        self.eventStatusDf = pd.DataFrame(columns=["CreationTime", "OrderID", "Product", "Quantity", "Deadline", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
+        self.orderTraceDf = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "CreationTime", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
+        self.validationDf = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "EventID", "Event", "EventType", "Status", "IssueLevel", "Issue", "Expected", "Actual", "CreationTime", "StartTime", "CompletionTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
     
      
         self.queue["Pending"] = [] # list of pending events, to be hanlded
@@ -120,6 +124,273 @@ class Simulator(object):
         return self.EventData
     def getExecutionData(self):
         return self.ExecutionData
+
+    def getSuccessorDf(self):
+        return self.successorDf
+
+    def getEventStatusDf(self):
+        return self.eventStatusDf
+
+    def getOrderTraceDf(self):
+        return self.orderTraceDf
+
+    def getValidationDf(self):
+        return self.validationDf
+
+    def getEventOrderInfo(self,event):
+        order = None
+        if len(event.getItems()) > 0:
+            order = event.getItems()[0].getDemand()
+
+        if order == None:
+            return (None, "", None, None)
+
+        product = order.getFinalProduct()
+        return (order.getID(), product.getPN(), order.getQuantity(), order.getDeadline())
+
+    def recordCreatedEvent(self,event):
+        if event not in self.allEvents:
+            self.allEvents.append(event)
+
+    def recordSuccessorTrace(self,event):
+        successor = event.getSuccessor()
+
+        defined_successors = []
+        for succ_type, succ_event in event.getDefinedSuccessors().items():
+            succ_type_text = succ_type.getName() if succ_type != None else "None"
+            succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+            defined_successors.append(succ_type_text+"->"+succ_event_text)
+
+        precedence_types = []
+        for succ_event, precedence_type in event.getPrecedenceTypes().items():
+            succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+            precedence_types.append(succ_event_text+":"+str(precedence_type))
+
+        place = event.getPlace()
+        equipment = event.getEquipment()
+        resource = event.getResource()
+
+        self.successorDf.loc[len(self.successorDf)] = [
+            self.getTime(),
+            event.getID(),
+            event.getName(),
+            None if successor == None else successor.getID(),
+            None if successor == None else successor.getName(),
+            "; ".join(defined_successors),
+            "; ".join(precedence_types),
+            "" if place == None else place.getName(),
+            "" if equipment == None else equipment.getName(),
+            "" if resource == None else resource.getName(),
+            ",".join([str(item.getID()) for item in event.getItems()]),
+            event.progressState,
+        ]
+
+    def buildEventStatusDf(self):
+        event_status_df = pd.DataFrame(columns=["CreationTime", "OrderID", "Product", "Quantity", "Deadline", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
+
+        for event in self.allEvents:
+            successor = event.getSuccessor()
+            order_id, product, quantity, deadline = self.getEventOrderInfo(event)
+
+            defined_successors = []
+            for succ_type, succ_event in event.getDefinedSuccessors().items():
+                succ_type_text = succ_type.getName() if succ_type != None else "None"
+                succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+                defined_successors.append(succ_type_text+"->"+succ_event_text)
+
+            precedence_types = []
+            for succ_event, precedence_type in event.getPrecedenceTypes().items():
+                succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+                precedence_types.append(succ_event_text+":"+str(precedence_type))
+
+            place = event.getPlace()
+            equipment = event.getEquipment()
+            resource = event.getResource()
+            location = event.getLocation()
+
+            if isinstance(location, tuple):
+                location_text = location[0].getName()+"->"+location[1].getName()
+            elif location == None:
+                location_text = ""
+            else:
+                location_text = location.getName()
+
+            event_status_df.loc[len(event_status_df)] = [
+                event.getCreationTime(),
+                order_id,
+                product,
+                quantity,
+                deadline,
+                event.getID(),
+                event.getName(),
+                event.getEventType().getName(),
+                event.progressState,
+                event.IsActive(),
+                event.getStartTime(),
+                event.getCompletionTime(),
+                event.getProcessTime(),
+                "" if place == None else place.getName(),
+                "" if equipment == None else equipment.getName(),
+                "" if resource == None else resource.getName(),
+                location_text,
+                ",".join([str(item.getID()) for item in event.getItems()]),
+                None if successor == None else successor.getName()+"["+str(successor.getID())+"]",
+                "; ".join(defined_successors),
+                "; ".join(precedence_types),
+            ]
+
+        self.eventStatusDf = event_status_df.sort_values(by=["CreationTime","EventID"])
+
+    def buildOrderTraceDf(self):
+        order_trace_df = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "CreationTime", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
+
+        for event in self.allEvents:
+            successor = event.getSuccessor()
+            order_id, product, quantity, deadline = self.getEventOrderInfo(event)
+
+            if order_id == None:
+                continue
+
+            defined_successors = []
+            for succ_type, succ_event in event.getDefinedSuccessors().items():
+                succ_type_text = succ_type.getName() if succ_type != None else "None"
+                succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+                defined_successors.append(succ_type_text+"->"+succ_event_text)
+
+            precedence_types = []
+            for succ_event, precedence_type in event.getPrecedenceTypes().items():
+                succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+                precedence_types.append(succ_event_text+":"+str(precedence_type))
+
+            place = event.getPlace()
+            equipment = event.getEquipment()
+            resource = event.getResource()
+            location = event.getLocation()
+
+            if isinstance(location, tuple):
+                location_text = location[0].getName()+"->"+location[1].getName()
+            elif location == None:
+                location_text = ""
+            else:
+                location_text = location.getName()
+
+            order_trace_df.loc[len(order_trace_df)] = [
+                order_id,
+                product,
+                quantity,
+                deadline,
+                event.getCreationTime(),
+                event.getID(),
+                event.getName(),
+                event.getEventType().getName(),
+                event.progressState,
+                event.IsActive(),
+                event.getStartTime(),
+                event.getCompletionTime(),
+                event.getProcessTime(),
+                "" if place == None else place.getName(),
+                "" if equipment == None else equipment.getName(),
+                "" if resource == None else resource.getName(),
+                location_text,
+                ",".join([str(item.getID()) for item in event.getItems()]),
+                None if successor == None else successor.getName()+"["+str(successor.getID())+"]",
+                "; ".join(defined_successors),
+                "; ".join(precedence_types),
+            ]
+
+        self.orderTraceDf = order_trace_df.sort_values(by=["OrderID","CreationTime","EventID"])
+
+    def buildValidationDf(self):
+        validation_df = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "EventID", "Event", "EventType", "Status", "IssueLevel", "Issue", "Expected", "Actual", "CreationTime", "StartTime", "CompletionTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
+
+        def add_issue(event, issue_level, issue, expected, actual):
+            order_id, product, quantity, deadline = self.getEventOrderInfo(event)
+
+            successor = event.getSuccessor()
+            defined_successors = []
+            for succ_type, succ_event in event.getDefinedSuccessors().items():
+                succ_type_text = succ_type.getName() if succ_type != None else "None"
+                succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+                defined_successors.append(succ_type_text+"->"+succ_event_text)
+
+            precedence_types = []
+            for succ_event, precedence_type in event.getPrecedenceTypes().items():
+                succ_event_text = "None" if succ_event == None else succ_event.getName()+"["+str(succ_event.getID())+"]"
+                precedence_types.append(succ_event_text+":"+str(precedence_type))
+
+            place = event.getPlace()
+            equipment = event.getEquipment()
+            resource = event.getResource()
+            location = event.getLocation()
+
+            if isinstance(location, tuple):
+                location_text = location[0].getName()+"->"+location[1].getName()
+            elif location == None:
+                location_text = ""
+            else:
+                location_text = location.getName()
+
+            validation_df.loc[len(validation_df)] = [
+                order_id,
+                product,
+                quantity,
+                deadline,
+                event.getID(),
+                event.getName(),
+                event.getEventType().getName(),
+                event.progressState,
+                issue_level,
+                issue,
+                expected,
+                actual,
+                event.getCreationTime(),
+                event.getStartTime(),
+                event.getCompletionTime(),
+                "" if place == None else place.getName(),
+                "" if equipment == None else equipment.getName(),
+                "" if resource == None else resource.getName(),
+                location_text,
+                ",".join([str(item.getID()) for item in event.getItems()]),
+                None if successor == None else successor.getName()+"["+str(successor.getID())+"]",
+                "; ".join(defined_successors),
+                "; ".join(precedence_types),
+            ]
+
+        for event in self.allEvents:
+            event_type = event.getEventType()
+            status = event.progressState
+
+            if status not in ["Created", "Pending"]:
+                if event_type.getEquipmentType() != None and event.getEquipment() != None and event.getEquipment().getType() != event_type.getEquipmentType():
+                    add_issue(event, "Error", "Equipment type mismatch", event_type.getEquipmentType(), event.getEquipment().getType())
+
+                if event_type.getResourceType() != None and event.getResource() != None and event.getResource().getType() != event_type.getResourceType():
+                    add_issue(event, "Error", "Resource type mismatch", event_type.getResourceType(), event.getResource().getType())
+
+                if event.getEquipment() == None:
+                    add_issue(event, "Error", "Missing equipment", "Assigned equipment", "None")
+
+                if event.getResource() == None:
+                    add_issue(event, "Error", "Missing resource", "Assigned resource", "None")
+
+            if status in ["Started", "Progressed", "Completed"] and event.getEventType().isStatic() and event.getPlace() == None:
+                add_issue(event, "Error", "Missing place for static event", "Assigned place", "None")
+
+            if event.getEventType().getName() in ["Machine Loading", "Trailer Loading", "Trailer Unloading", "Machine Unloading", "Processing"]:
+                if len(event.getItems()) == 0:
+                    add_issue(event, "Error", "No items assigned", "At least one item", "0 items")
+
+            if event.getEventType().getName() == "Processing":
+                if event.getEquipment() != None and event.getResource() != None and event.getResource() != event.getEquipment():
+                    add_issue(event, "Warning", "Process resource and equipment differ", event.getEquipment().getName(), event.getResource().getName())
+
+            if event.getEventType().getSuccessorType() != None and event.getSuccessor() == None and status not in ["Created", "Pending"]:
+                add_issue(event, "Warning", "Missing successor for wired event", event.getEventType().getSuccessorType().getName(), "None")
+
+            if event.getEventType().isPreemptable() and event.getEventType().isProcess() and status in ["Started", "Progressed", "Completed"] and len(event.getProgressDict()) == 0:
+                add_issue(event, "Warning", "Missing progress tracking for preemptable process", "ProgressDict entry", "Empty")
+
+        self.validationDf = validation_df.sort_values(by=["IssueLevel", "OrderID", "EventID"], kind="stable")
           
     def getTimeLimit(self):
         return self.TimeLimit
@@ -257,6 +528,15 @@ class Simulator(object):
             self.orderOverview()
             self.orderOverviewDf.to_csv('orderOverviewTest.csv')
             self.getController().getVisualManager().updateSimProgress("Hoi6")
+            self.successorDf = self.successorDf.sort_values(by=["Time","EventID"])
+            self.buildEventStatusDf()
+            self.buildOrderTraceDf()
+            self.buildValidationDf()
+            with pd.ExcelWriter('SuccessorTrace.xlsx') as writer:
+                self.successorDf.to_excel(writer, sheet_name='SuccessorTrace', index=False)
+                self.eventStatusDf.to_excel(writer, sheet_name='EventStatus', index=False)
+                self.orderTraceDf.to_excel(writer, sheet_name='OrderTrace', index=False)
+                self.validationDf.to_excel(writer, sheet_name='ValidationReport', index=False)
             end = timer()
             self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
 
@@ -344,6 +624,7 @@ class Simulator(object):
                                 self.saveLog(" event moved to pending.. "+str(self.time))
                                 self.getEventQueue()["Pending"].append(event)
                                 self.getEventQueue()[self.getTime()].remove(event) 
+                                event.setProgress(self.getTime(), "Pending")
                             else:
                                 try: 
                                     if  workmgr.startSimEvent(event):
