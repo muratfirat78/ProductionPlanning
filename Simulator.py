@@ -12,6 +12,7 @@ class Simulator(object):
         
         self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
         self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
+        self.EventUpdateData = [] # [{"Time":...,"EventID":...,"Field":...,"OldValue":...,"NewValue":...}]
         self.allEvents = []
         self.completedEvents = []
         self.queue = {} #key: time (start/completion times of events) , val: [event]
@@ -21,6 +22,7 @@ class Simulator(object):
         self.processingDf = pd.DataFrame(columns=["PN", "Q", "Deadline", "Operation", "StartTime", "ProcessTime", "ExpectedEnd", "SimEnd", "Status"])
         self.orderOverviewDf = pd.DataFrame(columns =["PN", "Q", "Deadline", "Operation", "StartTime", "ProcessTime", "ExpectedEnd", "SimEnd", "Status", "LocationFrom", "LocationTo"])
         self.successorDf = pd.DataFrame(columns=["Time", "EventID", "Event", "SuccessorID", "Successor", "DefinedSuccessors", "PrecedenceTypes", "Place", "Equipment", "Resource", "ItemIDs", "ProgressState"])
+        self.eventUpdateDf = pd.DataFrame(columns=["Time", "RealTime", "EventID", "Event", "Field", "OldValue", "NewValue", "Active", "ProgressState", "Equipment", "Resource", "Location"])
         self.eventStatusDf = pd.DataFrame(columns=["CreationTime", "OrderID", "Product", "Quantity", "Deadline", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
         self.orderTraceDf = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "CreationTime", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
         self.validationDf = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "EventID", "Event", "EventType", "Status", "IssueLevel", "Issue", "Expected", "Actual", "CreationTime", "StartTime", "CompletionTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
@@ -125,6 +127,9 @@ class Simulator(object):
     def getExecutionData(self):
         return self.ExecutionData
 
+    def getEventUpdateData(self):
+        return self.EventUpdateData
+
     def getSuccessorDf(self):
         return self.successorDf
 
@@ -151,6 +156,42 @@ class Simulator(object):
     def recordCreatedEvent(self,event):
         if event not in self.allEvents:
             self.allEvents.append(event)
+
+    def recordEventUpdate(self,event,field,old_value,new_value):
+        if event == None:
+            return
+
+        def format_value(value):
+            if value == None:
+                return "None"
+            if hasattr(value, "getName") and hasattr(value, "getID"):
+                return value.getName()+"["+str(value.getID())+"]"
+            if isinstance(value, tuple):
+                return "->".join([format_value(part) for part in value])
+            return str(value)
+
+        location = event.getLocation()
+        if isinstance(location, tuple):
+            location_text = "->".join([location[0].getName() if location[0] != None else "None", location[1].getName() if location[1] != None else "None"])
+        elif location == None:
+            location_text = ""
+        else:
+            location_text = location.getName()
+
+        self.EventUpdateData.append({
+            "Time": self.getTime(),
+            "RealTime": self.getRealTime(),
+            "EventID": event.getID(),
+            "Event": event.getName(),
+            "Field": field,
+            "OldValue": format_value(old_value),
+            "NewValue": format_value(new_value),
+            "Active": event.IsActive(),
+            "ProgressState": event.progressState,
+            "Equipment": "" if event.getEquipment() == None else event.getEquipment().getName(),
+            "Resource": "" if event.getResource() == None else event.getResource().getName(),
+            "Location": location_text,
+        })
 
     def recordSuccessorTrace(self,event):
         successor = event.getSuccessor()
@@ -240,6 +281,15 @@ class Simulator(object):
             ]
 
         self.eventStatusDf = event_status_df.sort_values(by=["CreationTime","EventID"])
+
+    def buildEventUpdateDf(self):
+        event_update_df = pd.DataFrame(self.EventUpdateData, columns=["Time", "RealTime", "EventID", "Event", "Field", "OldValue", "NewValue", "Active", "ProgressState", "Equipment", "Resource", "Location"])
+
+        if len(event_update_df) > 0:
+            self.eventUpdateDf = event_update_df.sort_values(by=["Time", "EventID"])
+        else:
+            self.eventUpdateDf = event_update_df
+        
 
     def buildOrderTraceDf(self):
         order_trace_df = pd.DataFrame(columns=["OrderID", "Product", "Quantity", "Deadline", "CreationTime", "EventID", "Event", "EventType", "Status", "Active", "StartTime", "CompletionTime", "ProcessTime", "Place", "Equipment", "Resource", "Location", "ItemIDs", "Successor", "DefinedSuccessors", "PrecedenceTypes"])
@@ -469,44 +519,6 @@ class Simulator(object):
                     
     
             end = timer()
-
-            self.getController().getVisualManager().updateSimProgress("Checking for stuck events")
-
-            eventStuckThreshold = 60  # minutes with no progress
-
-            remainingEvents = [e for e in self.allEvents if e not in self.completedEvents]
-            # check for stuck events
-
-            for ev in remainingEvents:
-                
-                # Determine if stuck
-                if ev.lastProgressTime is None:
-                    reason = "never progressed"
-                elif self.getTime() - ev.lastProgressTime > eventStuckThreshold:
-                    reason = "no progress for " + str(self.getTime() - ev.lastProgressTime)
-                else:
-                    continue
-
-                # Extract order (assumed all items belong to same order)
-                order = ev.getItems()[0].getDemand()
-            
-                # Extract order info
-                pn = order.getFinalProduct().getPN()
-                qty = order.getQuantity()
-                deadline = order.getDeadline()
-            
-                # Event state
-                state = ev.progressState
-            
-                self.saveLog(
-                    "REPORT: PN: " + str(pn) +
-                    ", Q: " + str(qty) +
-                    ", Deadline: " + str(deadline) +
-                    " marked because event " + ev.print() +
-                    " is in state '" + state + "'" +
-                    " (" + reason + ")"
-                )
-
             
             try:
                 self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
@@ -530,11 +542,13 @@ class Simulator(object):
             self.getController().getVisualManager().updateSimProgress("Hoi6")
             self.successorDf = self.successorDf.sort_values(by=["Time","EventID"])
             self.buildEventStatusDf()
+            self.buildEventUpdateDf()
             self.buildOrderTraceDf()
             self.buildValidationDf()
             with pd.ExcelWriter('SuccessorTrace.xlsx') as writer:
                 self.successorDf.to_excel(writer, sheet_name='SuccessorTrace', index=False)
                 self.eventStatusDf.to_excel(writer, sheet_name='EventStatus', index=False)
+                self.eventUpdateDf.to_excel(writer, sheet_name='EventUpdates', index=False)
                 self.orderTraceDf.to_excel(writer, sheet_name='OrderTrace', index=False)
                 self.validationDf.to_excel(writer, sheet_name='ValidationReport', index=False)
             end = timer()
@@ -557,7 +571,7 @@ class Simulator(object):
         try: 
             self.getEventQueue()["Pending"] = [e for e in self.getEventQueue()["Pending"] if not workmgr.HandleSimEvent(e)]
         except Exception as e:
-            self.saveLog("ERROR: Handling of pending events"+str(e))
+            self.saveLog("ERROR: Handling of lala pending events"+str(e))
 
 
         # continue with preemptable events...
@@ -689,7 +703,8 @@ class Simulator(object):
             if completion > curr_shiftsend: 
                 # do not schedule event in this shift since it cannot finish..
                 self.saveLog(" non-preemptable event "+event.getName()+"["+str(event.getID())+"]"+" cannot be completed in this shift, so scheduled to shiftend.")
-                try: 
+                try:
+                    event.getResource().setIdle(True) 
                     event.setResource(None)
                     if not curr_shiftsend+1 in self.getEventQueue():
                         self.getEventQueue()[curr_shiftsend+1] = []

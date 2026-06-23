@@ -63,17 +63,23 @@ class ProductionAlgManager(AlgorithmManager):
 
         else:
             
-
-            av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
-    
-            self.getSimulator().saveLog(" av_equip: "+str(len(av_equip)))
-            
-            comp_equip = [r for r in av_equip if (r.isIdle())]
-    
-            self.getSimulator().saveLog(" comp_equip: "+str(len(comp_equip)))
-            if len(comp_equip) > 0:  
-                onloc_equip = [r for r in comp_equip if r.getLocation() == event.getLocation()]
-                selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
+            if event.getResource() != None and event.getResource().getName().startswith("OUT"):
+                av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getName() == event.getResource().getName())]
+                if len(av_equip) > 0:
+                    selected_equip = av_equip[0]
+                else:
+                    selected_equip = None
+            else:
+                av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
+        
+                self.getSimulator().saveLog(" av_equip: "+str(len(av_equip)))
+                
+                comp_equip = [r for r in av_equip if (r.isIdle())]
+        
+                self.getSimulator().saveLog(" comp_equip: "+str(len(comp_equip)))
+                if len(comp_equip) > 0:  
+                    onloc_equip = [r for r in comp_equip if r.getLocation() == event.getLocation()]
+                    selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
                 
    
         return selected_equip

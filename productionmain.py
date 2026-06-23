@@ -277,7 +277,11 @@ class ShopFloorManager(OperationsManager):
                     self.getSimulator().saveLog("WARNING: event "+event.getName()+"["+str(event.getID())+"]"+" is not in process match of equip "+event.getEquipment().getName()) 
 
                 if event.getEventType().isProcess():
-                    event.setEquipment(None) # process events only suspend if the machine gets unavailable, resource is defaulty the equipment.  
+                    old_eqp = event.getEquipment()
+                    old_eqp.setIdle(True)
+                    self.getSimulator().recordEventUpdate(event,"Equipement shift change",old_eqp,None)
+                    event.setEquipment(None) # process events only suspend if the machine gets unavailable, resource is defaulty the equipment.
+                      
                     
 
                 
@@ -286,7 +290,11 @@ class ShopFloorManager(OperationsManager):
                 else:
                     self.getSimulator().saveLog("WARNING: event "+event.getName()+"["+str(event.getID())+"]"+" is not in myevents of its resource "+event.getResource().getName()) 
                 
-                event.setResource(None) # cases of machine loading anf unloading: equipment is machine, but operators should be reassigned.
+                # TODO: Only clear resource in case of machine loadin and unloading.
+                if event.getName() in ["Machine Loading","Machine Unloading"]:
+                    event.getResource().setIdle(True)
+                    event.setResource(None) # cases of machine loading and unloading: equipment is machine, but operators should be reassigned.
+
                
                 
             except Exception as e:
@@ -298,7 +306,7 @@ class ShopFloorManager(OperationsManager):
         ##############################################################################################################
         avalable_res = [] 
         for res in self.getResources():
-            if isinstance(res,Machine) or isinstance(res,Operator):
+            if isinstance(res,Machine) or isinstance(res, Operator):
                 res.setAvailable(self.getSimulator().getCurrentShift() in res.getAvailableShifts())
                 res.setIdle(True)
                 if res.isAvailable():
@@ -328,15 +336,7 @@ class ShopFloorManager(OperationsManager):
                     if lastres.isAvailable(): 
                         processr = lastres.getProcessor()
                         self.getSimulator().saveLog(" processor found ? "+str(processr != None)) 
-                        if processr!= None:
-                            event.getProgressDict()[lastres].append((self.getSimulator().getTime(),0)) # make an open progress
-                            lastres.getProcessMatch()[event] = processr
-                            event.setEquipment(lastres)  # make assignments..
-                            event.setResource(lastres) # make assignments..
-                            if not event in lastres.getMyEvents():
-                                lastres.getMyEvents().append(event)
-                         
-                            event.setActive()
+                        event._resumeOn = lastres
 
         self.getSimulator().saveLog(" Apply Shift Change completed..") 
         return
@@ -345,7 +345,6 @@ class ShopFloorManager(OperationsManager):
 
         keyword = ""
 
-     
         self.getSimulator().saveLog(keyword+" Handling event.. "+str(event.getName())+"("+str(event.getID())+")"+",eqp none? "+str(event.getEquipment() == None)+", res none? "+str(event.getResource() == None))
 
         
@@ -390,7 +389,9 @@ class ShopFloorManager(OperationsManager):
                                         event.setProcessTime(self.getProcessTime(event))
                                            
                                     if decision_type == "Assign Equipment":
+                                        old_eqp = event.getEquipment()
                                         event.setEquipment(alg_return) # process: inserts this start into progress dict of equip
+                                        self.getSimulator().recordEventUpdate(event,"Equipment handle event",old_eqp,alg_return)
                                         event.setProgress(self.getSimulator().getTime(), "Equipment Assigned")
                                         self.getSimulator().saveLog(keyword+" Equipment assigned: "+str(alg_return.getName())+event.print())
                                     if decision_type == "Assign Resource":
@@ -466,7 +467,7 @@ class ShopFloorManager(OperationsManager):
     
             if event.getEventType().isProcess():
                 event.getItems()[0].getActiveOperation().setStart(self.getSimulator().getTime())
-                
+  
             event.getResource().setIdle(False)
             event.getEquipment().setIdle(False)
             event.setActive()
@@ -530,6 +531,8 @@ class ShopFloorManager(OperationsManager):
 #############################################################################################################################################
     def resumeSimEvent(self,event):
 
+        old_eqp = event.getEquipment()
+
         keyword = ""
         evloc = "No Location!!"
         if event.getLocation()!= None:
@@ -575,6 +578,13 @@ class ShopFloorManager(OperationsManager):
                                     self.getSimulator().saveLog("Equipment assigned: "+str(alg_return.getName())+event.print())
                             else:
                                 return
+        new_eqp = event.getEquipment()
+        self.getSimulator().recordEventUpdate(event,"Equipment resume",old_eqp,new_eqp)
+
+        if hasattr(event, "_resumeOn"):
+            event.setEquipment(event._resumeOn)
+            event.setResource(event._resumeOn)
+            del event._resumeOn
 
         # check necessary conditions..
 
@@ -833,8 +843,8 @@ class ShopFloorManager(OperationsManager):
                     self.getSimulator().saveLog(" Logistic event "+event.getName()+"["+str(event.getID())+"] is removed from loglist of succ"+nextevent.getName()+"["+str(nextevent.getID())+"]")
                     if len(nextevent.getLogisticEvents()) == 0:
                         if len(nextevent.getProgressDict()) > 0:
-                                    
-                            nextevent.getResource().setIdle(False)
+                            if nextevent.getResource().getName() != "OUT - Outsourced activity_(OUT - Outsourced)":        
+                                nextevent.getResource().setIdle(False)
                             nextevent.setActive()
      
                             if not nextevent.getResource() in nextevent.getProgressDict():
