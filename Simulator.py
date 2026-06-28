@@ -82,7 +82,7 @@ class Simulator(object):
         return
         
     def setRunWeeks(self,weeks):
-        self.TimeLimit =  weeks*60*self.shifthours*self.shiftsperday*self.weekdays
+        self.TimeLimit =  20*60*self.shifthours*self.shiftsperday*self.weekdays
 
         return
 

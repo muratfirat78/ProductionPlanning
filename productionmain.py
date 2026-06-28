@@ -290,7 +290,7 @@ class ShopFloorManager(OperationsManager):
                 else:
                     self.getSimulator().saveLog("WARNING: event "+event.getName()+"["+str(event.getID())+"]"+" is not in myevents of its resource "+event.getResource().getName()) 
                 
-                # TODO: Only clear resource in case of machine loadin and unloading.
+                # Only clear resource in case of machine loadin and unloading.
                 if event.getName() in ["Machine Loading","Machine Unloading"]:
                     event.getResource().setIdle(True)
                     event.setResource(None) # cases of machine loading and unloading: equipment is machine, but operators should be reassigned.
@@ -304,19 +304,19 @@ class ShopFloorManager(OperationsManager):
           
 
         ##############################################################################################################
-        avalable_res = [] 
+        available_res = [] 
         for res in self.getResources():
             if isinstance(res,Machine) or isinstance(res, Operator):
                 res.setAvailable(self.getSimulator().getCurrentShift() in res.getAvailableShifts())
                 res.setIdle(True)
                 if res.isAvailable():
-                    avalable_res.append(res.getName())
+                    available_res.append(res.getName())
             else:
                 res.setAvailable(True)
                 res.setIdle(True)
 
             
-        self.getSimulator().saveLog(" available res: "+str(avalable_res)) 
+        self.getSimulator().saveLog(" available res: "+str(available_res)) 
 
 
         for event in self.getSimulator().getEventQueue()["Preemptables"]:
@@ -324,6 +324,7 @@ class ShopFloorManager(OperationsManager):
             if event.getEventType().isProcess():
                 # now find its last equipment to immediately start..
                 lastgrstrt = 0 ; lastres = None
+                totalprogress = 0
                 for resource,proglist in event.getProgressDict().items():
                     totalprogress+= sum([(p[1]-p[0]) for p in proglist if p[1] != 0])
                     if lastgrstrt < proglist[-1][0]:
@@ -336,7 +337,6 @@ class ShopFloorManager(OperationsManager):
                     if lastres.isAvailable(): 
                         processr = lastres.getProcessor()
                         self.getSimulator().saveLog(" processor found ? "+str(processr != None)) 
-                        event._resumeOn = lastres
 
         self.getSimulator().saveLog(" Apply Shift Change completed..") 
         return
@@ -608,7 +608,7 @@ class ShopFloorManager(OperationsManager):
      
                 if not event.getResource() in event.getProgressDict():
                     event.getProgressDict()[event.getResource()] = []
-                event.getProgressDict()[event.getResource()] = [(self.getSimulator().getTime(),0)]
+                event.getProgressDict()[event.getResource()].append((self.getSimulator().getTime(),0))
 
         self.getSimulator().saveLog("REPORT: "+event.print()+" resumed.")
        

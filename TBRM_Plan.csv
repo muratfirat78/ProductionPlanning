@@ -1,4 +1,4 @@
-ID,Product,Product/ID,Quantity To Produce,Deadline,Work Orders/Work Center,Work Orders/Work Center/ID,Work Orders/Expected Duration,Work Orders/Start,Work Orders/End,Work Orders/Status,Simulation_Planned
+"ID",Product,Product/ID,Quantity To Produce,Deadline,Work Orders/Work Center,Work Orders/Work Center/ID,Work Orders/Expected Duration,Work Orders/Start,Work Orders/End,Work Orders/Status,Simulation_Planned
 __export__.mrp_production_1104_d3ae4426,[4022-651-55002A] Gpas preamp CB Box + cover assy,14975.0,27.0,2026-10-27 12:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,42.0,2025-02-28 11:30:57,2026-03-23 08:51:57,Finished,False
 ,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),__export__.mrp_workcenter_59_d6deab7b,1710.0,,,To Do,False
 ,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),__export__.mrp_workcenter_59_d6deab7b,1035.0,,,To Do,False
@@ -11,8 +11,8 @@ __export__.mrp_production_1197_849443cd,[1082700B] Block cooling water TMP,14907
 __export__.mrp_production_5033_ffa23c2e,[4022.684.28993] RS C+H SLAB STAT PLT IL SIDE / CLS,18261.0,1.0,2026-02-09 01:00:00,MP1 - Mat. prep - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16.0,2026-02-06 13:37:06,2026-02-06 13:37:06,Finished,True
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,405.0,2026-02-06 13:38:20,2026-02-06 13:38:20,Finished,True
 ,,,,,M3-01 - AW - 3axis - Manual (FR3_01),__export__.mrp_workcenter_54_3f0243e1,113.0,2026-02-06 13:39:12,2026-02-06 13:39:12,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 08:18:00,2026-06-11 11:19:00,Finished,True
-,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,,,To Do,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500,2026-05-31 08:18:00,2026-06-11 11:19:00,Finished,True
+,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500,,,To Do,True
 __export__.mrp_production_5034_4d53b4c4,[4022.684.29043] RS C+H DYN ATTACH PLT IL SIDE / CLS,18342.0,1.0,2026-02-09 01:00:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",__export__.mrp_workcenter_65_c1e1b939,1.0,2026-02-06 13:43:14,2026-02-06 13:43:14,Finished,True
 ,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),__export__.mrp_workcenter_61_bcb50df3,335.0,2026-02-06 13:43:09,2026-02-06 13:43:09,Finished,True
 ,,,,,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,4500.0,2026-05-31 08:22:00,2026-06-11 11:23:00,Finished,True
