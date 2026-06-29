@@ -316,27 +316,7 @@ class ShopFloorManager(OperationsManager):
                 res.setIdle(True)
 
             
-        self.getSimulator().saveLog(" available res: "+str(available_res)) 
-
-
-        for event in self.getSimulator().getEventQueue()["Preemptables"]:
-            # make process events get assigned to their equipments if they become available. 
-            if event.getEventType().isProcess():
-                # now find its last equipment to immediately start..
-                lastgrstrt = 0 ; lastres = None
-                totalprogress = 0
-                for resource,proglist in event.getProgressDict().items():
-                    totalprogress+= sum([(p[1]-p[0]) for p in proglist if p[1] != 0])
-                    if lastgrstrt < proglist[-1][0]:
-                        lastgrstrt = proglist[-1][0]
-                        lastres = resource
-
-                if lastres!=None:
-                    self.getSimulator().saveLog(" process event: "+str(event.print())+", lastres: "+str(lastres.getName())+("" if lastres == None else " av? "+str(lastres.isAvailable()))) 
-                if lastres!= None:
-                    if lastres.isAvailable(): 
-                        processr = lastres.getProcessor()
-                        self.getSimulator().saveLog(" processor found ? "+str(processr != None)) 
+        self.getSimulator().saveLog(" available res: "+str(available_res))  
 
         self.getSimulator().saveLog(" Apply Shift Change completed..") 
         return

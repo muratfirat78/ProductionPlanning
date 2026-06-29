@@ -62,14 +62,23 @@ class ProductionAlgManager(AlgorithmManager):
                     selected_equip = event_mach
 
         else:
-            
-            if event.getResource() != None and event.getResource().getName().startswith("OUT"):
-                av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getName() == event.getResource().getName())]
-                if len(av_equip) > 0:
-                    selected_equip = av_equip[0]
-                else:
-                    selected_equip = None
+
+            if event.getEventType().isProcess():
+                lastgrstrt = 0 ; lastres = None
+                for resource,proglist in event.getProgressDict().items():
+                    for exectuple in proglist:
+                        if lastgrstrt < exectuple[0]:
+                            lastgrstrt = exectuple[0]
+                            lastres = resource
+
+                if lastres != None:
+                    if lastres.isAvailable():
+                        processor = lastres.getProcessor()
+                        if processr != None:
+                            lastres.getProcessMatch()[event] = processr
+                            selected_equip = lastres
             else:
+            
                 av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
         
                 self.getSimulator().saveLog(" av_equip: "+str(len(av_equip)))
