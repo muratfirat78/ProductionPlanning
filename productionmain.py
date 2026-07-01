@@ -290,10 +290,10 @@ class ShopFloorManager(OperationsManager):
                 else:
                     self.getSimulator().saveLog("WARNING: event "+event.getName()+"["+str(event.getID())+"]"+" is not in myevents of its resource "+event.getResource().getName()) 
                 
-                # Only clear resource in case of machine loadin and unloading.
+                # For loading/unloading, keep the event linked to the old resource until a fresh operator is explicitly reassigned.
                 if event.getName() in ["Machine Loading","Machine Unloading"]:
                     event.getResource().setIdle(True)
-                    event.setResource(None) # cases of machine loading and unloading: equipment is machine, but operators should be reassigned.
+                    event._pendingResourceReassignment = True
 
                
                 
@@ -536,7 +536,7 @@ class ShopFloorManager(OperationsManager):
                             continue
                         if dec_type  == "Assign Equipment" and event.getEquipment()!= None:
                             continue
-                        if dec_type  == "Assign Resource" and event.getResource()!= None:
+                        if dec_type  == "Assign Resource" and event.getResource()!= None and not getattr(event, "_pendingResourceReassignment", False):
                             continue
                         decision_alg = seltuple[1]; decision_type = dec_type;
                         if (decision_type,decision_alg) in self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()]:
@@ -549,6 +549,7 @@ class ShopFloorManager(OperationsManager):
                             if alg_return!= None:
                                 if decision_type == "Assign Resource":
                                     event.setResource(alg_return)
+                                    event._pendingResourceReassignment = False
                                     self.getSimulator().saveLog("Resource assigned: "+str(alg_return.getName())+event.print())
                                     alg_return.getAssignedEvents().append(event)  
                                     if not event in event.getResource().getMyEvents():
@@ -609,7 +610,11 @@ class ShopFloorManager(OperationsManager):
             self.getSimulator().saveLog("Finalizing event: "+event.getName()+"start time "+str(event.getStartTime())+" sim time "+str(self.getSimulator().getTime()))
             self.getSimulator().saveLog("DEBUG successor state: "+event.getSuccessorDebugString())
             self.getSimulator().recordSuccessorTrace(event)
-    
+
+            if event not in event.getResource().getMyEvents():
+                event.getResource().getMyEvents().append(event)
+                self.getSimulator().saveLog("INFO: registered missing event "+event.getName()+"["+str(event.getID())+"] to resource "+event.getResource().getName())
+            
             if event in event.getResource().getMyEvents():
                 if len([ev for ev in event.getResource().getMyEvents() if ev == event]) > 1:
                     self.getSimulator().saveLog("ERROR: in event completion, event "+event.getName()+" is more than once in events list of res "+event.getResource().getName())
@@ -997,16 +1002,14 @@ class ShopFloorManager(OperationsManager):
         if 'Resource' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
             #self.getSimulator().saveLog("Resource goes to next event..")
             nextevent.setResource(event.getResource())
-            if prectype != "Simultaneous Finish":
-                if not nextevent in nextevent.getResource().getMyEvents():
-                     nextevent.getResource().getMyEvents().append(nextevent)
             
         else:
             if nextevent.getEventType().isProcess():
                 nextevent.setResource(nextevent.getEquipment())
-                if prectype != "Simultaneous Finish":
-                    if not nextevent in nextevent.getResource().getMyEvents():
-                        nextevent.getResource().getMyEvents().append(nextevent)
+                
+        if nextevent.getResource() != None:
+            if not nextevent in nextevent.getResource().getMyEvents():
+                nextevent.getResource().getMyEvents().append(nextevent)
                     
         if 'Location' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
             if isinstance(event.getLocation(),tuple):

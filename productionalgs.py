@@ -74,8 +74,8 @@ class ProductionAlgManager(AlgorithmManager):
                 if lastres != None:
                     if lastres.isAvailable():
                         processor = lastres.getProcessor()
-                        if processr != None:
-                            lastres.getProcessMatch()[event] = processr
+                        if processor != None:
+                            lastres.getProcessMatch()[event] = processor
                             selected_equip = lastres
             else:
             
