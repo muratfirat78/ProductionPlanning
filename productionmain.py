@@ -1055,9 +1055,10 @@ class ShopFloorManager(OperationsManager):
         process_df.to_csv("ProcessData.csv",index = False)
         
 
-    def writeDataTBRMOutPut(self):
+    def writeDataTBRMOutPut(self,myround):
 
-        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Work Orders/Work Center","Work Orders/Work Center/ID","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Scheduled"])
+
+        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Work Orders/Work Center","Processing Machine","Work Orders/Work Center/ID","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Scheduled"])
 
         currentdate =  datetime.now()
         currentdate = currentdate-timedelta(days = 2)
@@ -1080,6 +1081,8 @@ class ShopFloorManager(OperationsManager):
                     if myopr.isCancelled():
                         status = "Cancelled"
 
+                    status = ("Scheduled" if myopr.getProcessMachine()!= None else status)
+
                     #self.getSimulator().saveLog("REPORT: mystrt "+str(mystrt)+", mycomp "+str(mycomp))
                     
                     if  isinstance(mystrt,int) and mystrt!= None :
@@ -1090,10 +1093,9 @@ class ShopFloorManager(OperationsManager):
                         
                     
                     if oprid == 0:
-                         
-                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
+                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
                     else:
-                        myorddata = {"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
+                        myorddata = {"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
 
                     TBRM_df.loc[len(TBRM_df)] = myorddata
                     oprid+=1
@@ -1102,13 +1104,10 @@ class ShopFloorManager(OperationsManager):
             if self.inputdate !=None:
                 inputdate = str(self.inputdate.date())
             
-            TBRM_df.to_csv("TBRM_Plan_"+inputdate+".csv",index = False)
+            TBRM_df.to_csv("TBRM_Plan_"+inputdate+"_R"+str(myround)+".csv",index = False)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
             
-
-        
-
 
 
         return

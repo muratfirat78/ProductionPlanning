@@ -65,6 +65,15 @@ class VisualManager():
         self.milpdetails = None
         self.milporders = dict()
 
+
+        self.ResourceBox = None
+
+    def setResourceBox(self,myres):
+        self.ResourceBox = myres
+        return
+    def getResourceBox(self):
+        return self.ResourceBox
+
     def setmilpdetails(self,myitem):
        self.milpdetails = myitem
        return 
@@ -458,7 +467,7 @@ class VisualManager():
     
         if result == 'Machines':
             for res in self.getController().getWorkManager().getResources():
-                OrdList.append(res.getName()+" ["+str(res.getID())+"]")
+                OrdList.append(res.getName())
 
             self.getmilpdetails().options = [x for x in OrdList]
                 
@@ -482,10 +491,7 @@ class VisualManager():
                 break
             selectid+=1
         
-            
-
         
-
         process_df = pd.read_csv("ProcessData.csv")
     
         process_df=process_df.reset_index()
@@ -520,6 +526,8 @@ class VisualManager():
         result_type = self.getmilpresults().value
         result_detail = self.getmilpdetails().value
 
+        
+
         selectid = 0
         for x in self.getmilpdetails().options:
             if self.getmilpdetails().options[selectid] == result_detail:
@@ -542,6 +550,79 @@ class VisualManager():
                 with self.getMILPResultInfo():
                     clear_output()
                     display(order_df.head(50))
+
+        if result_type == 'Machines': 
+
+            strings = ''
+
+            try: 
+                rel_path = '/'+self.getController().getWorkManager().getUseCase()
+                abs_file_path = os.path.dirname(os.path.realpath(__file__))+rel_path
+    
+                latestfiledate = None
+                filename = None
+    
+                for root, dirs, files in os.walk(abs_file_path):
+                    for file in files: 
+                        if ".csv" in file:                  
+                            try: 
+                                filedate = datetime.strptime(file[file.find("TBRM_Plan_")+10:-4],"%Y-%m-%d")
+                                strings+=file[file.find("TBRM_Plan_")+10:-5]+"  ----   "
+                                if latestfiledate == None:
+                                    latestfiledate = filedate
+                                    filename = file
+                                else:
+                                    if latestfiledate < filedate:
+                                        latestfiledate = filedate
+                                        filename = file
+                       
+                            except Exception as e:
+                                pass
+    
+
+                
+                TBRM_df = pd.read_csv(abs_file_path+'/'+filename)
+
+                try: 
+                    lastdemandid = None
+                    for i,r in TBRM_df.iterrows():
+                        if not pd.isna(r["ID"]):
+                            lastdemandid = r["ID"]
+                        else:
+                            TBRM_df.iloc[i, TBRM_df.columns.get_loc('ID')] = lastdemandid
+                except Exception as e:
+                    
+                    with self.getMILPResultInfo():
+                        clear_output()
+                        display("ERROR: In filling order id "+str(e))
+                    
+               
+                Schedule_df = pd.DataFrame(columns=["Operation","StartShift","Start Time","CompletionShift","Completion Time"])
+                #for prodorder in self.getController().getWorkManager().getSelectedOrders():
+    
+                resplan = TBRM_df[TBRM_df['Processing Machine']== result_detail]
+                resplan['Work Orders/Start']  = pd.to_datetime(resplan['Work Orders/Start'],dayfirst=True )
+
+          
+                
+                resplan['PN'] = [(self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() if x in self.getController().getWorkManager().getProductionOrders() else "-") for x in resplan['ID']]
+                resplan['Quantity'] = [(self.getController().getWorkManager().getProductionOrders()[x].getQuantity()  if x in self.getController().getWorkManager().getProductionOrders() else "-") for x in resplan['ID']]
+
+                resplan = resplan[['PN','Quantity','Work Orders/Start','Work Orders/End','Work Orders/Work Center','Work Orders/Expected Duration','Processing Machine']]
+
+
+                resplan = resplan.sort_values(by='Work Orders/Start')
+
+                with self.getMILPResultInfo():
+                    clear_output()
+                    display(resplan)
+                
+            except Exception as e:
+                with self.getMILPResultInfo():
+                    clear_output()
+                    display("ERROR: in showing plan of "+result_detail+", str: "+strings+"-> "+str(e))
+                
+          
            
        
 
@@ -566,7 +647,7 @@ class VisualManager():
 
         self.setInputText(widgets.Text(description ='Use Case: ',value=''))
 
-        self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,10)],value = 4,description = 'Weeks:'))
+        self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,10)],value = 8,description = 'Weeks:'))
         self.getWeeksDrop().observe(self.setDropSimWeeks,'value')
         
         self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
@@ -578,7 +659,7 @@ class VisualManager():
         # Single Select
         select = widgets.Select(options=['Orders','Main Settings','Run','Log Information'
                                          #'Define Event Type','Event Type Precedence'
-                                         ,'Results','Diagnostics'],value='Main Settings',description='Select:',disabled=False)
+                                         ,'Results','Resources','Diagnostics'],value='Main Settings',description='Select:',disabled=False)
 
         select.observe(self.menu_click,'value')
         self.setMainmenu(select)

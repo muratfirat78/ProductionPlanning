@@ -448,10 +448,46 @@ class Process(object):
         self.Demand = demand
         self.simplanned = False
         self.status = None
+        self.ProcessMachine = None
+        self.orgStart = None 
+        self.orgCompletion = None
+        self.orgMachine = None
+        self.orgStatus = None
+
+    def setOriginalStart(self,myst):
+        self.orgStart = myst
+        return
+    def getOriginalStart(self):
+        return self.orgStart 
+
+    def setOriginalCompletion(self,myst):
+        self.orgCompletion = myst
+        return
+    def getOriginalCompletion(self):
+        return self.orgCompletion
+
+    def setOriginalMachine(self,myst):
+        self.orgMachine = myst
+        return
+    def getOriginalMachine(self):
+        return self.orgMachine 
+
+
+    
+
+
 
     def setStatus(self,myst):
         self.status = myst
         return
+
+    def setProcessMachine(self,mymach):
+        self.ProcessMachine = mymach
+        return 
+
+    def getProcessMachine(self):
+        return self.ProcessMachine 
+         
 
     def getStatus(self):
         return self.status

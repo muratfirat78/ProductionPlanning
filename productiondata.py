@@ -201,10 +201,14 @@ class ProductionDataManager(DataManager):
                             self.getOperationsManager().getSimulator().saveLog("REPORT: Data Issue, Operation"+myopr.getName()+" has no machine, hence cancelled!")
                             self.getOperationsManager().getSimulator().saveLog("REPORT: All machines: "+str([m.getMachineCode() for m in machines]))
                             myopr.setName(myopr.getName()+"_ISSUE!")
+                            
                             myopr.setCancelled()
 
                         myopr.setStatus("To do")
-                           
+                        myopr.setOriginalStart(r['Work Orders/Start'][oprid])
+                        myopr.setOriginalCompletion(r['Work Orders/End'][oprid])
+                        myopr.setOriginalMachine(r['Work Orders/Work Center'][oprid])
+
                         
 
                         if pd.isna(opr) or r['Work Orders/Status'][oprid] == "Cancelled": 

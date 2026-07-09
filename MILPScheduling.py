@@ -26,7 +26,10 @@ class Job(object):
         self.MILPConstraint = None # sum(x_jm) <= 1
         self.PrecedenceConstraint = None # sum(x_j'm) <= sum(x_jm) for j -> j'
         self.PrecedenceConstraint2 = None # sum(c_{jm}x_{jm}) <= sum(st_{j'm}x_{j'm})+M*(1-sum(x_j'm))  for j -> j'
+        self.Matches = []
 
+    def getMyMatches(self):
+        return self.Matches
 
     def getPrecedenceConstraint(self):
         return self.PrecedenceConstraint
@@ -184,6 +187,11 @@ class MatchVar(object):
         self.Completion = comp
         self.MILPVar = None
         self.StartShift = stshift
+        self.ShiftUse = dict()  #key: shift, val: used man-hour capacity
+
+
+    def getShiftUse(self):
+        return self.ShiftUse
 
     def getStartShift(self):
         return self.StartShift
@@ -209,49 +217,6 @@ class MatchVar(object):
 
     def printMatch(self):
         return " Match: "+self.getJob().getOperation().getName()+", mach  "+self.getMachine().getMachine().getName()+" start "+str(self.getStart())+" comp "+str(self.getCompletion())
-
-    def updateCapacityConstraints(self,slotshifts,startshift,milpmgr):
-        
-       
-       # tracking the start till the completion 
-        currenttime = self.getStart()
-        procss_shft_strt = currenttime
-        proctime = self.getJob().getProcessTime()
-    
-        shiftid = 0
-            
-        for slotshift in slotshifts:
-            if slotshift == startshift:
-                break
-            shiftid+=1
-    
-        currentshift = slotshifts[shiftid]
-        procss_shft_strt = self.getStart()
-    
-            
-        while proctime > 0: 
-            if proctime <= currentshift.getEndTime() - procss_shft_strt: 
-                currenttime = proctime+procss_shft_strt
-                if self.getMachine().getMachine().getProcessType() == "Metal forming":
-                    currentshift.getMFCapconstraint().SetCoefficient(self.getMILPVar(),self.getMachine().getMachine().getOperatingEffort()*(proctime))
-                if self.getMachine().getMachine().getProcessType() == "Benchwork":
-                    currentshift.getBWCapconstraint().SetCoefficient(self.getMILPVar(),self.getMachine().getMachine().getOperatingEffort()*(proctime))
-                    
-                proctime = 0       
-            else: 
-                shiftid+=1
-                proctime -= (currentshift.getEndTime() - procss_shft_strt)
-                if self.getMachine().getMachine().getProcessType() == "Metal forming":
-                    currentshift.getMFCapconstraint().SetCoefficient(self.getMILPVar(),self.getMachine().getMachine().getOperatingEffort()*(currentshift.getEndTime() - procss_shft_strt))
-                if self.getMachine().getMachine().getProcessType() == "Benchwork":
-                    currentshift.getBWCapconstraint().SetCoefficient(self.getMILPVar(),self.getMachine().getMachine().getOperatingEffort()*(currentshift.getEndTime() - procss_shft_strt))
-       
-                currentshift = slotshifts[shiftid]
-                procss_shft_strt = currentshift.getStartTime()
-                currenttime = procss_shft_strt
-
-        return
-        
         
 ################################################################################
 class SchMachine(object):
@@ -324,6 +289,10 @@ class Shift(object):
 
         self.MFCapconstraint = None
         self.BWCapconstraint = None
+        self.FTEUse = dict() # key: process type, val: available man-hour in the shift. 
+
+    def getFTEUse(self):
+        return self.FTEUse
 
     def setMFCapconstraint(self,mycon):
         self.MFCapconstraint = mycon
@@ -390,11 +359,11 @@ class ProductionMILPManager(MILPManager):
         self.CurrentJobID = 0
         self.matchesperslot = 3
         self.matchincrement = 30
-        self.timelimitsecs = 60
+        self.timelimitsecs = 600
         self.optimalitygap = 0.05
         self.machinedict = dict()
         self.MILPModel = None
-        self.writeMILP = True
+        self.writeMILP = False
         self.deadlinemax = None
         self.deadlinemin = None
         self.modeljobs = 50 
@@ -509,6 +478,7 @@ class ProductionMILPManager(MILPManager):
         Reason = ""
         completion = None
         progress = self.getProgress()
+        shiftfteuse = dict()
 
 
         #progress.value+=" > feasibility check 1.."+str(job.getEarliestStart())+"\n"
@@ -516,13 +486,13 @@ class ProductionMILPManager(MILPManager):
         
 
         if starttime < job.getEarliestStart(self.getSchedulableJobs()):
-            return (False,completion)
+            return (False,completion,shiftfteuse)
 
         #progress.value+=" > feasibility check 2.."+"\n"
 
         if job.getProcessTime() > slotlength:
             Reason+=" Slot has shorter length than job proceess time"
-            return (False,completion)
+            return (False,completion,shiftfteuse)
 
 
         #progress.value+=" > feasibility check 3.."+"\n"
@@ -531,7 +501,7 @@ class ProductionMILPManager(MILPManager):
             # check start conflicting jobs      
             for jobsch in machine.getSchedule():
                 if jobsch[0][1] <= starttime and jobsch[1][1] >= starttime:
-                    return (False,completion) 
+                    return (False,completion,shiftfteuse) 
 
 
         #progress.value+=" > feasibility check finding completion time .."+"\n"
@@ -555,9 +525,10 @@ class ProductionMILPManager(MILPManager):
         while proctime > 0: 
             if proctime <= currentshift.getEndTime() - procss_shft_strt: 
                 currenttime = proctime+procss_shft_strt
+                shiftfteuse[currentshift] = proctime
                 proctime = 0       
             else: 
-            
+                shiftfteuse[currentshift] = (currentshift.getEndTime()+1 - procss_shft_strt)
                 shiftid+=1
                 if shiftid >= len(slotshifts):
                     return (False,completion) 
@@ -570,17 +541,17 @@ class ProductionMILPManager(MILPManager):
         # check completion conflicting jobs
             for jobsch in machine.getSchedule():
                 if jobsch[0][1] <= currenttime and jobsch[1][1] >= currenttime:
-                    return (False,completion) 
+                    return (False,completion,shiftfteuse) 
 
         if machine.getMachine().getName() != "OUT - Outsourced activity_(OUT - Outsourced)":
         # now only jobs that are processed between start and completions times are left. 
             for jobsch in machine.getSchedule():
                 if jobsch[0][1] >= starttime and jobsch[1][1] <= currenttime:
-                    return (False,completion) 
+                    return (False,completion,shiftfteuse) 
 
         completion = currenttime
 
-        return (True,completion)     
+        return (True,completion,shiftfteuse)     
 
 #############################################################################################################################
  
@@ -628,7 +599,7 @@ class ProductionMILPManager(MILPManager):
             #count jobs
             jobsinlist = 0
             for j in EDDordered:
-                if jobsinlist < 20:
+                if jobsinlist < 50:
                     joblisttomatch.append(j)
                     jobsinlist+=1
 
@@ -641,7 +612,7 @@ class ProductionMILPManager(MILPManager):
             for job in joblisttomatch:
                 if job.getSuccessor()!= None:
                     succ = job.getSuccessor()
-                    if jobsinlist < 25:
+                    if jobsinlist < 70:
                         progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is schedulable"+"\n"
                         progress.value+=" Sucessor  Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is in model"+"\n"
                         joblisttomatch.append(succ)
@@ -658,7 +629,7 @@ class ProductionMILPManager(MILPManager):
                     job = joblisttomatch[jobind]
                     if job.getSuccessor()!= None:
                         succ = job.getSuccessor()
-                        if jobsinlist < 28:
+                        if jobsinlist < 80:
                             progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is in model"+"\n"
                             progress.value+=" Sucessor-successor Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is schedulable"+"\n"
                             joblisttomatch.append(succ)
@@ -692,6 +663,12 @@ class ProductionMILPManager(MILPManager):
         
         self.constructInstance()
 
+
+        for date,noshiftdict in self.getShifts().items():
+            for shiftno,myshift in noshiftdict.items():
+                myshift.getFTEUse()["Metal forming"] = 0
+                myshift.getFTEUse()["Benchwork"] = 0
+       
         nrscheduled = 1
 
         while nrscheduled > 0: 
@@ -729,8 +706,11 @@ class ProductionMILPManager(MILPManager):
 
             #if self.MILPRound > 1:
             #    break
+
+            #self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut(self.MILPRound)
          
             self.MILPRound+=1
+
 
          # check precedence feasibility:  
         for prodorder in self.getSimulator().getController().getWorkManager().getSelectedOrders():
@@ -756,11 +736,9 @@ class ProductionMILPManager(MILPManager):
                         progress.value+="Precedence violation: operation "+str(operation.getName())+" starts "+str(operation.getStart())+" before pred "+str(active_predecessor.getName())+" gets completed"+str(active_predecessor.getCompletion())+"\n"
                         
                 active_predecessor = operation
-
-
-            
+    
         try: 
-            self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut()
+            self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut(self.MILPRound+1)
         except Exception as e:
                 progress.value+="ERROR: in writing the output "+str(e)+"\n"
         
@@ -798,7 +776,7 @@ class ProductionMILPManager(MILPManager):
                    
                     self.getJobs().append(myjob);
 
-                    progress.value+=" job "+str(myjob.getOperation().getName())+" defined oprid "+str(oprid)+"\n" 
+                    #progress.value+=" job "+str(myjob.getOperation().getName())+" defined oprid "+str(oprid)+"\n" 
   
                     if previous_job!= None:
                         previous_job.setSuccessor(myjob)
@@ -809,12 +787,12 @@ class ProductionMILPManager(MILPManager):
 
                         curr_deadline = self.convertSimTime(prodorder.getDeadline())
 
-                        progress.value+="  hour  "+str(prodorder.getDeadline().hour)+"min "+str(prodorder.getDeadline().minute)+", daymins "+str(1440*(prodorder.getDeadline() - self.getSimulator().getStartDay()).days)+"\n" 
+                        #progress.value+="  hour  "+str(prodorder.getDeadline().hour)+"min "+str(prodorder.getDeadline().minute)+", daymins "+str(1440*(prodorder.getDeadline() - self.getSimulator().getStartDay()).days)+"\n" 
 
                        
                        
 
-                        progress.value+=" last job "+str(myjob.getOperation().getName())+"deadline "+str(myjob.getDeadLine())+", simtime "+str(curr_deadline)+", proctime: "+str(myjob.getProcessTime())+"\n" 
+                        #progress.value+=" last job "+str(myjob.getOperation().getName())+"deadline "+str(myjob.getDeadLine())+", simtime "+str(curr_deadline)+", proctime: "+str(myjob.getProcessTime())+"\n" 
                         #deadline = myjob.getDeadLine()-timedelta(minutes=myjob.getOperation().getRandVar().sampleValue())
                         successorlst = self.giveLST(myjob,curr_deadline)
                         predjob = myjob.getPredecessor()
@@ -822,7 +800,7 @@ class ProductionMILPManager(MILPManager):
                         while predjob!= None:
                             
                             predjob.setDeadLine(self.convertSimTimeToLSTDate(successorlst))
-                            progress.value+=" job "+str(predjob.getOperation().getName())+" in prec depth "+str(preddepth)+" has deadline "+str(predjob.getDeadLine())+" simtime "+str(successorlst)+", proctime: "+str(predjob.getProcessTime())+"\n" 
+                            #progress.value+=" job "+str(predjob.getOperation().getName())+" in prec depth "+str(preddepth)+" has deadline "+str(predjob.getDeadLine())+" simtime "+str(successorlst)+", proctime: "+str(predjob.getProcessTime())+"\n" 
                             successorlst = self.giveLST(predjob,successorlst)
                             #deadline = deadline - timedelta(minutes=currentjob.getOperation().getRandVar().sampleValue())
                             predjob = predjob.getPredecessor()
@@ -944,6 +922,7 @@ class ProductionMILPManager(MILPManager):
                 job.setMILPConstraint(self.MILPModel.Constraint(0,1,job.getProduct().getPN()+"_"+job.getOperation().getName()+"_"+str(jobid)+'_cons'))
                 job.setPrecedenceConstraint(None)
                 job.setPrecedenceConstraint2(None)
+                job.getMyMatches().clear()
 
                 progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"  is matchmodel"+"\n"
 
@@ -1019,6 +998,9 @@ class ProductionMILPManager(MILPManager):
                     timelength = mymach.getTimeLength(slotstart,lastshift.getEndTime())
 
                     #progress.value+=">>> timelength: "+str(timelength)+"\n"
+
+                    if mach.getName() == "OUT - Outsourced activity_(OUT - Outsourced)":
+                        progress.value+= "OUT - Outsourced activity_(OUT - Outsourced) >>> timelength: "+str(timelength)+"\n"
                     
                     if timelength >= job.getProcessTime():
                         currentslotshifts = []
@@ -1039,7 +1021,8 @@ class ProductionMILPManager(MILPManager):
                         prev_matches = nrmatches
                         nrmatches,matchid = self.findSlotMatches(objective,mymach,mach,job,timelength,currentslotshifts,slotstart,lastshift.getEndTime(),nrmatches,matchid)
                         if mach.getName() == "OUT - Outsourced activity_(OUT - Outsourced)":
-                            progress.value+="  >>>>>>>> Operation "+job.getOperation().getName()+" has "+str(nrmatches-prev_matches)+" matches at mach "+mach.getName()+"\n"
+                            progress.value+="  >>>>>>>>OUT - Operation "+job.getOperation().getName()+" has "+str(nrmatches-prev_matches)+" matches at mach "+mach.getName()+"\n"
+                            progress.value+="  >>>>>>>>OUT - timelength "+str(timelength)+", slotstart "+str(slotstart)+",end time  "+str(lastshift.getEndTime())+"\n"
                             #for match in mymach.getMatches():
                             #    progress.value+=">> Match: "+str(match.printMatch())+", job: "+str(job.getProduct().getPN())+"\n"
                                 
@@ -1065,6 +1048,8 @@ class ProductionMILPManager(MILPManager):
     
                 slotshift = currentslotshifts[shiftid]
                 currentstart = max(slotstart,slotshift.getStartTime())
+                if slotshift.getShiftNo() == 3:
+                    continue
                 currentincrement = (1+int(shiftid>0))*currentincrement
 
                 #if mach.getName() == "OUT - Outsourced activity_(OUT - Outsourced)":
@@ -1077,7 +1062,7 @@ class ProductionMILPManager(MILPManager):
                             
                         nrmatches+=1
                         mymatch = MatchVar(mymach,job,currentstart,slotshift,funcreturn[1])
-                        matchvar = self.MILPModel.IntVar(0.0,1,'x_'+str(mach.getMachineCode())+'_'+str(job.getID())+"_"+str(job.getOperation().getDemand().getID())+"_"+str(matchid))  # x_{m,j}
+                        matchvar = self.MILPModel.IntVar(0.0,1,'x_'+str(mach.getMachineCode())+'_'+str(job.getID())+" "+str(job.getOperation().getDemand().getID())+" "+str(matchid))  # x_{m,j}
                         deadline_coeff =((self.getMaxDeadLine()-job.getDeadLine()).days) /((self.getMaxDeadLine() -self.getMinDeadLine()).days)
                         obj_coeff = 10*deadline_coeff+25*(self.getTimeHorizon()-funcreturn[1])/self.getTimeHorizon()+5*job.getProcessTime()/self.getTimeHorizon()
                         matchid+=1
@@ -1094,14 +1079,26 @@ class ProductionMILPManager(MILPManager):
                                     #progress.value+="++++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessor().getOperation().getName()+" has constraints \n"
                                     job.getPredecessor().getPrecedenceConstraint().SetCoefficient(matchvar,1)
                                     job.getPredecessor().getPrecedenceConstraint2().SetCoefficient(matchvar,(self.bigM-currentstart)) 
+
+
+                        #progress.value+= "processtype "+str(mach.getProcessType())+", man-hour use : "+str(funcreturn[2])+" \n"
+                        for shifttuple in funcreturn[2].items():
+                            mymatch.getShiftUse()[shifttuple[0]] = shifttuple[1]
+                            if shifttuple[0].getShiftNo() != 3: 
+                                if mach.getProcessType() == "Metal forming":
+                                    shifttuple[0].getMFCapconstraint().SetCoefficient(matchvar,mach.getOperatingEffort()*(shifttuple[1]))
+                                if mach.getProcessType() == "Benchwork":
+                                    shifttuple[0].getBWCapconstraint().SetCoefficient(matchvar,mach.getOperatingEffort()*(shifttuple[1]))
+                                
                             
-                        mymatch.updateCapacityConstraints(currentslotshifts,slotshift,self)
+                        #mymatch.updateCapacityConstraints(currentslotshifts,slotshift,self)
                         objective.SetCoefficient(matchvar,obj_coeff)
                         
           
                         mymach.getMatches().append(mymatch)
+                        job.getMyMatches().append(mymatch)
                         mymatch.setMILPVar(matchvar)
-                        #mymach.getMatches().append(mymatch)
+        
     
                         #if mach.getName() == "M3-01_(FR3_01)":
                         #    progress.value+=">> Match: "+str(mymatch.printMatch())+", job: "+str(job.getProduct().getPN())+"\n"
@@ -1128,34 +1125,23 @@ class ProductionMILPManager(MILPManager):
         
 
                 if mach.getMachine().getName() != "OUT - Outsourced activity_(OUT - Outsourced)":
-                    for mymatch in mach.getMatches():
-                        for mymatch2 in mach.getMatches():
-            
-                            if mymatch == mymatch2:
-                                continue
-            
-                            if mymatch2.getStart() < mymatch.getStart():
-                                continue
-            
-                            if mymatch2.getStart() > mymatch.getCompletion():
-                                continue
+                    for matchid in range(len(mach.getMatches())):
+                        mymatch = mach.getMatches()[matchid]
+                        confcons = None
+                        for matchid2 in range(matchid+1,len(mach.getMatches())):      
+                            mymatch2 = mach.getMatches()[matchid2]
             
                             # st2 >= cp1 or cp2 <= st1 
                             if (mymatch.getCompletion() <= mymatch2.getStart()) or (mymatch2.getCompletion() <= mymatch.getStart()) :
                                 continue
              
-                               
-                            confcons = self.MILPModel.Constraint(0,1,mach.getMachine().getName()+'_'+mymatch.getJob().getOperation().getName()+'_'+mymatch2.getJob().getOperation().getName()+"_"+str(confid)+'_conf')
-                            confid+=1
-            
-                                    #if mach.getMachine().getName() == "M3-01_(FR3_01)":
-                                    #    progress.value+="Conflict "+"\n"
-                                    #    progress.value+=mymatch.printMatch()+"\n"
-                                    #    progress.value+=mymatch2.printMatch()+"\n"
-                                    #    progress.value+="Conflict "+"\n"
-                                   
-                            confcons.SetCoefficient(mymatch.getMILPVar(),1)
-                            confcons.SetCoefficient(mymatch2.getMILPVar(),1)
+                            if confcons == None:
+                                confcons = self.MILPModel.Constraint(0,1,mach.getMachine().getName()+'_'+mymatch.getJob().getOperation().getName()+"_"+str(confid)+'_conf')
+                                confcons.SetCoefficient(mymatch.getMILPVar(),1)
+                                confid+=1
+                            else:
+                                confcons.SetCoefficient(mymatch2.getMILPVar(),1)
+                                
             
                 progress.value+="Conflict constraints: mach "+str(mach.getMachine().getName())+": "+str(confid)+"\n"
         except Exception as e:
@@ -1245,28 +1231,38 @@ class ProductionMILPManager(MILPManager):
                 machschs = 0
                 for mymatch in mach.getMatches():
                     
-                    if mymatch.getMILPVar().solution_value() > 0:
+                    if mymatch.getMILPVar().solution_value() > 0.5:
                         nrscheduled+=1
                         machschs+=1
-                        #progress.value+= "Variable: "+str(mymatch.getMILPVar().name)+", val: "+str(mymatch.getMILPVar().solution_value())+"\n"
+                        progress.value+= "Variable: "+str(mymatch.getJob().getProduct().getPN())+"\n"
+                        progress.value+= "start: "+str(self.convertSimTimeToDate(mymatch.getStart()))+", completion: "+str(self.convertSimTimeToDate(mymatch.getCompletion()))+"\n"
+                        progress.value+= "start: "+str(mymatch.getStart())+", completion: "+str(mymatch.getCompletion())+"\n"
                         currshift = mymatch.getStartShift()
                         while currshift.getEndTime() < mymatch.getCompletion():
                             currshift = currshift.getNext()
 
                         mymatch.getJob().getOperation().setStart(self.convertSimTimeToDate(mymatch.getStart()))
                         mymatch.getJob().getOperation().setCompletion(self.convertSimTimeToDate(mymatch.getCompletion()))
+                       
+                        mymatch.getJob().getOperation().setProcessMachine(mach.getMachine())
                         mach.getSchedule().append(((mymatch.getStartShift(),mymatch.getStart()),(currshift,mymatch.getCompletion())))
                         mach.getJobStarts().append((mymatch.getJob(),mymatch.getStart()))
 
                         mymatch.getJob().setStart(mymatch.getStart())
                         mymatch.getJob().setCompletion(mymatch.getCompletion())
                         mymatch.getJob().setScheduled()
-                     
-                        
-                        
+
+                        processmachine = mach.getMachine()
+
+                        #if processmachine.getProcessType() in  ["Metal forming","Benchwork"]:
+                            #progress.value+= " Match selected at machine  "+str(processmachine.getName())+", job "+str(mymatch.getJob().getOperation().getName())+"\n"
+                            
+                            #for usetuple in mymatch.getShiftUse().items():
+                            #    usetuple[0].getFTEUse()[processmachine.getProcessType()]+=processmachine.getOperatingEffort()*usetuple[1]
+
                         #self.scheduleJob(mymatch.getJob(),mymatch.getStart(),mymatch.getCompletion(),mach)
     
-                mach.getSchedule().sort(key=lambda x:x[1][1], reverse=False)
+                mach.getSchedule().sort(key=lambda x:x[0][1], reverse=False)
                 mach.getJobStarts().sort(key=lambda x: x[1], reverse=False)
                 progress.value+= "Schedule of mach: "+mach.getMachine().getName()+"\n"
                 for schid in range(len(mach.getJobStarts())):
@@ -1276,10 +1272,15 @@ class ProductionMILPManager(MILPManager):
             unscheduleds = [job for job in self.getSchedulableJobs() if not job.isScheduled()]
 
             for job in unscheduleds:
-                progress.value+= "Unscheduled Job: "+job.getProduct().getPN()+", opr: "+job.getOperation().getName()+" - "+str(job.getOperation().getDemand().getID())+"\n"
+                progress.value+= "Unscheduled Job: "+job.getProduct().getPN()+", opr: "+job.getOperation().getName()+" - "+str(job.getOperation().getDemand().getID())+", p: "+str(job.getProcessTime())+"\n"
+
                 
                 
-                
+
+            progress.value+="____________________________________________________________________"+"\n"
+
+           
+                 
         except Exception as e:
             progress.value+="ERROR: in reading the solution "+str(e)+"\n"
 

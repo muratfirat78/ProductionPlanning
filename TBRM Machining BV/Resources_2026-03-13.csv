@@ -4,16 +4,17 @@ Operator,Operator 2,Metal forming,1,,,,,1
 Operator,Operator 3,Metal forming,1,,,,,2
 Operator,Manual worker 1,Benchwork,2,,,,,1
 Operator,Manual worker 2,Benchwork,2,,,,,1
-Machine,M3-01_(FR3_01),Metal forming,2,False,,60,0.3,1_2
-Machine,M3-02_(FR3_02),Metal forming,2,False,M3-03,60,0.3,1_2
-Machine,M4-01_(FR4_01),Metal forming,3,True,FR4_02,60,0.1,1_2_3
-Machine,M4-02_(FR4_02),Metal forming,3,True,FR4_01,60,0.1,1_2_3
+Machine,M3-01_(FR3_01),Metal forming,2,False,FR3_02~M3-03,60,0.3,1_2
+Machine,M3-02_(FR3_02),Metal forming,2,False,FR3_01~M3-03,60,0.3,1_2
+Machine,M4-01_(FR4_01),Metal forming,3,True,,60,0.1,1_2_3
+Machine,M4-02_(FR4_02),Metal forming,3,True,,60,0.1,1_2_3
 Machine,VF2SS_(M3-03),Metal forming,2,False,M5-03~M5-04~M5-05,30,0.3,1_2
-Machine,M5-01_(FR5_01),Metal forming,3,True,,60,0.1,1_2_3
-Machine,M5-02_(FR5_02),Metal forming,3,True,,60,0.1,1_2_3
-Machine,UMC750_(M5-03),Metal forming,2,False,M5-04~M5-05,30,0.3,1_2
-Machine,UMC750SS_(M5-04),Metal forming,3,True,M5-03~M5-05,30,0.1,1_2_3
-Machine,UMC750SS_(M5-05),Metal forming,2,False,M5-03~M5-04,30,0.3,1_2
+Machine,M5-01_(FR5_01),Metal forming,3,True,FR5_02~M5-03~M5-04~M5-05~M5-06,60,0.1,1_2_3
+Machine,M5-02_(FR5_02),Metal forming,3,True,FR5_01~M5-03~M5-04~M5-05~M5-06,60,0.1,1_2_3
+Machine,UMC750_(M5-03),Metal forming,2,False,M5-04~M5-05~M3-03,30,0.3,1_2
+Machine,UMC750SS_(M5-04),Metal forming,3,True,M5-03~M5-05~M3-03,30,0.1,1_2_3
+Machine,UMC400_(M5-06),Metal forming,3,False,M5-04~M3-03,30,0.1,1_2
+Machine,UMC750SS_(M5-05),Metal forming,2,False,M5-03~M5-04~M3-03,30,0.3,1_2
 Machine,MP2_(ZGN_02),Preparation,2,False,,1,0,1_2
 Machine,BW_(BKW_01),Benchwork,2,False,,1,0,1_2
 Machine,PACK_(VERP_P),Packaging,2,False,,1,0,1_2
