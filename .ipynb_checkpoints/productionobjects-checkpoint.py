@@ -6,13 +6,13 @@ from productionChecker import *
 
 class Inventory(Resource):
     
-    def __init__(self,mycap,sim,workmngr):
-        super().__init__("Inventory",mycap,sim,workmngr)
+    def __init__(self,mycap,myloc,sim,workmngr):
+        super().__init__("Central_Inventory","Inventory",mycap,sim,workmngr)
         self.InputBuffer = Buffer("Input",None,1000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",None,1000,sim,workmngr)
-
-        self.InputBuffer.setLocation(self)
-        self.OutputBuffer.setLocation(self)
+        self.setLocation(myloc)
+        self.InputBuffer.setLocation(myloc)
+        self.OutputBuffer.setLocation(myloc)
 
 
     def getInputBuffer(self):
@@ -23,7 +23,8 @@ class Inventory(Resource):
 #_________________________________________________________________________
 class Buffer(Resource):
     def __init__(self,buftype,mach,mycap,sim,workmngr):
-        super().__init__("Buffer",mycap,sim,workmngr)
+       
+        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,"Buffer",mycap,sim,workmngr)
         self.BufferType = buftype
         self.machine = mach
         self.PendingEvent = None
@@ -46,7 +47,7 @@ class Buffer(Resource):
         
 
     def addItem(self,myitem):     
-        print(" > "+str(self.getSimulator().getTime())+": adding item to "+self.getName())
+        #print(" > "+str(self.getSimulator().getTime())+": adding item to "+self.getName())
         self.getItems().append(myitem)
         self.generateEvent()
         myitem.setLocation(self.getLocation())
@@ -56,56 +57,94 @@ class Buffer(Resource):
     def removeItem(self,myit):  
         self.getItems().remove(myit)  
         return
-  
+##########################################################################################################  
     def generateEvent(self):
         
         if len(self.getItems()) == 0 or self.getPendingEvent() != None:
+            self.getSimulator().saveLog("Returning event generation: items "+str(len(self.getItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
+            if self.getPendingEvent() != None:
+                self.getSimulator().saveLog(" pending event "+self.getPendingEvent().print())
             return
 
+        self.getSimulator().saveLog("In generating event "+self.getName()+"@"+self.getLocation().getName()+" output buffer? "+str(not self.isInputType()))
+        
         if not self.isInputType(): #output buffer
-            load_event_type = self.getWorkMgr().getEventTypes()["Trailer Loading"]    
-            self.setPendingEvent(Event(self.getLocation(),"Pending",1,self.getSimulator(),load_event_type)) 
-            self.getSimulator().ScheduleEvent(self.getPendingEvent(),"Pending")
-      
+            self.setPendingEvent(ExecEvent(self,None,self.getWorkMgr().getEventTypes()["Trailer Loading"]))         
         else: # input buffer
-            if self.getMachine() != None:   
-                if len(self.getMachine().getItems()) == 0:
-                    if self.getMachine().IsAutomated():
-                        print(" > "+str(self.getSimulator().getTime())+": "+self.getName()," automated loading generated..")
-                        load_event_type = self.getWorkMgr().getEventTypes()["Machine Loading Automated"]
-                        self.setPendingEvent(Event(self.getLocation(),self.getSimulator().getTime(),1,self.getSimulator(),load_event_type))
-                        self.getPendingEvent().setEquipment(self.getMachine()); self.getPendingEvent().setResource(self.getMachine())
-                        self.getSimulator().ScheduleEvent(self.getPendingEvent(),self.getSimulator().getTime())
-   
-                    else:
-                        load_event_type = self.getWorkMgr().getEventTypes()["Machine Loading Manual"]
-                        self.setPendingEvent(Event(self.getLocation(),self.getSimulator().getTime(),1,self.getSimulator(),load_event_type))
-                        self.getSimulator().getEventQueue()["Pending"].append(self.getPendingEvent()) 
-                        self.getPendingEvent().setEquipment(self.getMachine())
-            else:
-                return
+            if self.getMachine() != None:
+                ms_event = ExecEvent(self,None,self.getWorkMgr().getEventTypes()["Machine Setup"])
+                self.setPendingEvent(ms_event)
+            
 
-     
         if self.getPendingEvent()!= None: 
-            print(" > "+str(self.getSimulator().getTime())+": "+self.getPendingEvent().print()+" generated.")
-            self.getPendingEvent().setPlace(self)
-            self.getPendingEvent().setItemSource(self)
+            self.getSimulator().saveLog("   "+self.getPendingEvent().print()+" generated.")
 
         return
-        
+############################################################################################################        
     
 #_______________________________________________________________________  
 class Machine(Resource):
     
-    def __init__(self,mycap,sim,workmngr):
-        super().__init__("Machine",mycap,sim,workmngr)
+    def __init__(self,machcode,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
+        super().__init__(myname,"Machine",mycap,sim,workmngr)
         self.InputBuffer = Buffer("Input",self,1000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000,sim,workmngr)
-        self.automated = True
-
-        self.InputBuffer.setLocation(self)
-        self.OutputBuffer.setLocation(self)
+        self.setLocation(myloc)
+        self.InputBuffer.setLocation(myloc)
+        self.OutputBuffer.setLocation(myloc)
+        self.automated = automated
+        self.ProcessType = processtype
+        self.OperatingEffort = OprtingEffort
+        self.AvailableShifts = OprtingShifts
+        self.Alternatives = Alternatives
+        self.MachineCode = machcode
+        self.setuptime = Setup
+    
+        self.ProgressDict = dict() # key: processevent, val: (start,end), all in simtime
+        self.ProcessMatch = dict() #key: processorid  val: processevent
+        self.NoProcessors = 1
+        self.suspendedEvent = None
    
+
+        if myname == "OUT - Outsourced activity_(OUT - Outsourced)":
+            self.NoProcessors = 1000
+
+
+    def getSuspendedEvent(self):
+        return self.suspendedEvent
+    def setSuspendedEvent(self,myev):
+        self.suspendedEvent = myev
+        return
+
+    def getProcessor(self):
+
+        used_pocessors = [p for p in self.ProcessMatch.values()]
+
+        available_processors = [p for p in range(self.NoProcessors) if not p in used_pocessors]
+
+        if len(available_processors) > 0:
+            return available_processors[0]
+                
+        return None
+
+    def getProcessMatch(self):
+        return self.ProcessMatch
+            
+    def getNoProcessors(self):
+        return self.NoProcessors
+
+    def getProgressDict(self):
+        return self.ProgressDict
+
+    def getSetupTime(self):
+        return self.setuptime
+
+
+    def getOperatingEffort(self):
+        return self.OperatingEffort
+
+    def getMachineCode(self):
+        return self.MachineCode
         
     def getInputBuffer(self):
         return self.InputBuffer 
@@ -120,23 +159,41 @@ class Machine(Resource):
         if len(self.getItems()) == 0 and len(self.getInputBuffer().getItems()) > 0:
             self.getInputBuffer().generateEvent()
         return
+
+    def getAvailableShifts(self):
+        return self.AvailableShifts
+
+    def checkShiftChange(self,shift):
+        self.Available = shift in self.getAvailableShifts()
+        return
+
+    def getAlternatives(self):
+        return self.Alternatives
         
 #___________________________________________________________________________________________
 class Operator(Resource):
     
-    def __init__(self,avshift,mycap,sim,workmngr):
-        super().__init__("Operator",mycap,sim,workmngr)
-        self.AvailableShift = avshift
-      
-        
-        
-    def GetAvailableShift(self):
-        return self.AvailableShift
+    def __init__(self,myname,avshifts,mycap,sim,workmngr):
+        super().__init__(myname,"Operator",mycap,sim,workmngr)
+        self.AvailableShifts = avshifts
+     
+
+
+    def getAvailableShifts(self):
+        return self.AvailableShifts
+
+    def checkShiftChange(self,shift):
+        if not shift in self.getAvailableShifts():
+            self.Status = "Unavailable"
+        else:
+            self.Status = "Idle" # assuming that an operator only works in one shift during the day.
+            
+        return
 
 #_________________________________________________________________________________________
 class Trailer(Resource):
     def __init__(self,mycap,sim,workmngr):
-        super().__init__("Trailer",mycap,sim,workmngr)  
+        super().__init__(None,"Trailer",mycap,sim,workmngr)  
         self.location = None
         self.outputbuffers = []  
         self.destination = None
@@ -150,418 +207,35 @@ class Trailer(Resource):
         return
     def getDestination(self):
         return self.destination
-
-
-    
+ 
 #_______________________________________________________________________       
 class Operation(Process):
-    def __init__(self,name,myid,proctime):
-        super().__init__(name,myid)
+    def __init__(self,demand,name,myid,proctime,processtimedist):
+        super().__init__(demand,name,myid,processtimedist)
+        
         self.getRandVar().getSampling().append(proctime) 
         
 #_______________________________________________________________________          
-class Product(object):
-    def __init__(self,pn):
-        self.PN = pn
-        self.Operations = []
-        self.Predecessors = []
-        self.Successor =  None
-        
-    def getOperations(self):
-        return self.Operations
+class Product(DemandType):
+    def __init__(self,pn,myid,name):
+        super().__init__(pn,myid,name)
+        self.OperationSequences = dict() #key: Order_ID, val: [Operations]
+       
 
-    def getActiveOperation(self,item):
-        
-        for opr in self.getOperations():
-            if len([x[0][0] for x in item.getExecutions() if x[0][0] == opr]) == 0:
-                return opr    
-                
-        return None
-        
-
-    def getPredecessors(self):
-        return self.Predecessors
-        
-    def setSuccessor(self,myscss):
-        self.Successor = myscss
-        return 
-        
-    def getSuccessor(self):
-        return self.Successor
-
-   
-        
-    def getPN(self):
-        return self.PN
-
-
-        
-#################################################################################
-class ShopFloorManager(OperationsManager): 
-    def __init__(self,sim,demandtypename):
-        super().__init__(sim,demandtypename)
-        
-        self.CentralInventory = Inventory(10000,sim,self) 
-        self.all_pns = [str(x) for x in range(1000)]
-        self.ProductionAlgManager = ProductionAlgManager(sim,self)
-        self.Checker = productionFeasibilityChecker(sim,self)
-    
-        # Trailer Loading -> Trailer Transport -> Trailer Unloading
-
-        # Inputbuffer: Items change, it creates pending machine loading event. 
-
-        #EventType: (myname,restype,equiptype,static,loading,process)
-        trailerLoading = EventType("Trailer Loading","Operator","Trailer",True,True,False)
-        self.getEventTypes()["Trailer Loading"]= trailerLoading
-        trailerTransport = EventType("Trailer Transport","Operator","Trailer",False,False,False)
-        self.getEventTypes()["Trailer Transport"]= trailerTransport
-        trailerUnloading = EventType("Trailer Unloading","Operator","Trailer",True,False,False);
-        self.getEventTypes()["Trailer Unloading"]= trailerUnloading 
-        bringEquipment = EventType("Bring Equipment","Operator","Trailer",False,False,False)
-        self.getEventTypes()["Bring Equipment"]= bringEquipment 
-   
-        bringEquipment.getPrecendenceDict()[trailerLoading.getName()] = ['Equipment','Resource'] 
-        trailerLoading.getPrecendenceDict()[trailerTransport.getName()] = ['Equipment','Resource','Items']
-        trailerTransport.getPrecendenceDict()[trailerUnloading.getName()] = ['Equipment','Resource']
-
-        bringEquipment.setSuccessorType(trailerLoading)
-        trailerLoading.setSuccessorType(trailerTransport)
-        trailerTransport.setSuccessorType(trailerUnloading)
-        
-
-        machineLoadingAutomated = EventType("Machine Loading Automated","Machine","Machine",True,True,False)
-        self.getEventTypes()["Machine Loading Automated"]= machineLoadingAutomated  
-        machineLoadingManual = EventType("Machine Loading Manual","Operator","Machine",True,True,False)
-        self.getEventTypes()["Machine Loading Manual"]= machineLoadingManual
-        machineProcessing = EventType("Processing","Machine","Machine",True,False,True)
-        self.getEventTypes()["Processing"]= machineProcessing
-        machineProcessingAutomated = EventType("Processing Automated","Machine","Machine",True,False,True)
-        self.getEventTypes()["Processing Automated"]= machineProcessingAutomated
-        machineUnloadingAutomated = EventType("Machine Unloading Automated","Machine","Machine",True,False,False)
-        self.getEventTypes()["Machine Loading Automated"]= machineLoadingAutomated  
-        machineUnloadingManual = EventType("Machine Unloading Manual","Operator","Machine",True,False,False)
-        self.getEventTypes()["Machine Loading Manual"]= machineLoadingManual
-
-        # Machine Loading -> Processing -> Machine Unloading (manual and automated)
-
-        # Outputbuffer: Items change, it creates pending trailer loading event. 
-        
-        machineLoadingAutomated.setSuccessorType(machineProcessingAutomated)
-        machineLoadingAutomated.getPrecendenceDict()[machineProcessingAutomated.getName()] = ['Equipment','Resource','Items']
-        machineProcessingAutomated.setSuccessorType(machineUnloadingAutomated)
-        machineProcessingAutomated.getPrecendenceDict()[machineUnloadingAutomated.getName()] = ['Equipment','Resource','Items']
-
-        machineLoadingManual.setSuccessorType(machineProcessing)
-        machineProcessing.setSuccessorType(machineUnloadingManual)
-    
-   
-    def getChecker(self):
-        return self.Checker
-    
-    def printDemand(self,demand):
-        print("Demand: Ref.No ",demand.getReferenceNo(),", Oprs: ",[(x.getAlternativeMachines()[0].getName(),x.getProcessTime()) for x in demand.getOperations()])
-
-########################################################
-    def createInstance(self,res_dict,notypes,nodemands):
-  
-        for mytype,resinfo in res_dict.items():
-
-            for resparam in resinfo:
-                
-                if mytype == "Machines":
-                    mach = Machine(resparam,self.getSimulator(),self); mach.setLocation(mach)
-                    self.getResources().append(mach)
-                if mytype == "Operators":
-                    optr = Operator(1,resparam,self.getSimulator(),self); optr.setLocation(self.getCentralInventory())
-                    self.getResources().append(optr) # avshift,mycap,sim,workmngr
-                if mytype == "Trailers":
-                    trlr = Trailer(resparam,self.getSimulator(),self); trlr.setLocation(self.getCentralInventory())
-                    self.getResources().append(trlr)
-
-        for res in self.getResources():
-            if isinstance(res,Machine) or isinstance(res,Inventory):
-                print("Resource",res.getType(),'id: ',res.getID(),("" if res.getInputBuffer() == None else res.getInputBuffer().getName()),("" if res.getOutputBuffer() == None else res.getOutputBuffer().getName())," created.")
-            else:
-                print("Resource",res.getType(),'id: ',res.getID()," created.")
-
-        for mytype in range(notypes):
-            mydemandtype = DemandType(random.choice(self.all_pns),self.getDemandTypeName())
-            self.all_pns.remove(mydemandtype.getReferenceNo())
-            self.setOperations(mydemandtype)
-            print("Demantype: ",[p.getName()+str([r.getName() for r in p.getAlternativeResources()])+"("+str(p.getRandVar().sampleValue())+")" for p in mydemandtype.getProcesses()])
-            self.getDemandTypes().append(mydemandtype)
-
-
-        deadline_min = date.today(); deadline_max = deadline_min+timedelta(days = 7)
-        daterange = pd.date_range(deadline_min,deadline_max)
-        
-        for ordno in range(nodemands):
-            dadlne = random.choice(daterange)
-            myord = Demand(dadlne,self.giveDemandID(),random.choice(self.getDemandTypes()),1) #ddline,myid,demtype,quantity
-            self.getDemands().append(myord)
-
-        for myord in self.getDemands():
-            self.createDemandItems(myord)
-
-        return
-#################################################################################################################################
-    def getProductionAlgManager(self):
-        return  self.ProductionAlgManager 
-#########################################################
-    def setOperations(self,demandtype):
-
-        nooprs = random.choice(range(1,3))      
-        machs = [x for x in self.getResources() if x.getType() == "Machine"]
-        
-        prevs= []
-        
-        for opr in range(1,nooprs+1):
-            
-            myopr = Operation(demandtype.getReferenceNo()+"_Opr_"+str(opr),self.giveProcessID(),random.choice(range(1,5)))
-          
-            mach = random.choice([x for x in machs if not x in prevs])
-            myopr.getAlternativeResources().append(mach)
-            prevs.append(mach)
-            demandtype.getProcesses().append(myopr)      
-
-        return
-#_____________________________________________________________________
-    def createDemandItems(self,demand): # Physical products
-        
-        if len(demand.getDemandType().getPredecessors()) == 0:
-            for itm in range(demand.getQuantity()):
-                myitem = Item(demand,self.giveItemID())
-                print("Item",myitem.getID()," of prod ",demand.getDemandType().getTypeName(), demand.getDemandType().getReferenceNo(),' id ',demand.getMyID()," created.")
-                self.getCentralInventory().getOutputBuffer().addItem(myitem) # generate trailer loading event.
-                demand.getItems().append(myitem)
-        else:
-            for preddemnd in demand.getDemandType().getPredecessors():
-                self.createDemandItems(preddemnd)
-
-        return
-         
-#______________________________________________________________________
-
-    def handleEvent(self,event):
-
-        if not self.handlePendingEvent(event):
-            return False
-
-        timedelay = 0
-        opr_move = None
-        if event.getEquipment().getLocation() != event.getLocation():
-                            
-            if event.getResource().getLocation() != event.getEquipment().getLocation():
-                loc_tuple = (event.getResource().getLocation(),event.getEquipment().getLocation())
-                opr_move = Event(loc_tuple,"Resource Move","Operator","Operator",self.getSimulator().getTime(),1,self.getSimulator())
-                opr_move.setResource(event.getResource()); opr_move.setEquipment(event.getResource());  
-                event.getResource().getAssignedEvents().append(opr_move)
-                self.getSimulator().ScheduleEvent(opr_move,self.getSimulator().getTime())
-                timedelay+=1
-        
-            loc_tuple = (event.getEquipment().getLocation(),event.getLocation())   
-            bring_event_type = self.getEventTypes()["Bring Equipment"]    
-            # loc,start,proctime,sim,eventype
-            bring_event = Event(loc_tuple,self.getSimulator().getTime()+timedelay,1,self.getSimulator(),bring_event_type)
-            bring_event.setEquipment(event.getEquipment()); bring_event.setResource(event.getResource())
-            self.getSimulator().ScheduleEvent(bring_event,self.getSimulator().getTime()+timedelay)
-            if opr_move != None:
-                opr_move.setSuccessor(bring_event)
-            bring_event.setSuccessor(event)
-            timedelay+=1
-        
-        else: 
-            if event.getLocation() != event.getResource().getLocation():
-                loc_tuple = (event.getResource().getLocation(),event.getLocation())
-                opr_move = Event(loc_tuple,"Resource Move","Operator","Operator",self.getSimulator().getTime(),1,self.getSimulator())
-                opr_move.setSuccessor(event)
-                timedelay+=1
-        
-        self.getSimulator().ScheduleEvent(event,self.getSimulator().getTime()+timedelay)
-        print(" > "+str(self.getSimulator().getTime())+": "+event.print()+" handled.")
-
-        return True
-
-
-               
-    def getProducts(self):
-        return self.Products
-        
-    def getOrders(self):
-        return self.Orders
-        
-    def getResources(self):
-        return self.Resources 
-        
-    def setCentralInventory(self,mybuff):
-        self.CentralInventory = mybuff
-        return
-
-    def getCentralInventory(self):
-        return self.CentralInventory
-
-########################################################################################################################
-    def commpleteEvent(self,event):
-
-        event.getResource().setIdle()
-        event.getEquipment().setIdle()  
-        
-        if event in event.getEquipment().getMyEvents():
-            event.getEquipment().getMyEvents().remove(event)
-
-        
-        if event.getEventType().isStatic():
-            if not event.getEventType().isProcess():
-                for item in event.getItems():
-                    location_update = {"Entity":"Item","EntityID":item.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":event.getPlace().getID(),"LocationName":event.getPlace().getName(),"Time":self.getSimulator().getTime()}   
-                    item.getLocationData().append(location_update)
-                    if event.getEventType().isLoading():
-                        event.getPlace().removeItem(item)
-                        event.getEquipment().getItems().append(item)
-   
-                    else:
-                        event.getEquipment().getItems().remove(item)
-                        event.getPlace().addItem(item)
-                     
-                            
-                        if item.getActiveOperation() == None:
-                            print(" > "+str(self.getSimulator().getTime())+":"+" item_"+str(item.getID())+" completed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                if not event.getEventType().isLoading() and isinstance(event.getPlace(),Buffer) and isinstance(event.getEquipment(),Machine):
-                
-                   
-                    if len(event.getEquipment().getItems()) == 0:
-                        event.getEquipment().getInputBuffer().generateEvent()
-
-                
-                if event.getPlace().getPendingEvent() == event:
-                    event.getPlace().setPendingEvent(None)
-                if (event.getLocation() != event.getEquipment()): # trailer
-                    if event.getEventType().isLoading():
-                        event.getPlace().generateEvent()
-                else:
-                    if isinstance(event.getLocation(),Machine):
-                        if not event.getEventType().isLoading():
-                            event.getLocation().getInputBuffer().generateEvent()
-                        
-                
-    
-            else:
-                for item in event.getItems():
-                    myprocessdata = {"ItemID":item.getID(),"OperationName":item.getActiveOperation().getName(),"ProcessID":event.getID(),"ResourceID":event.getResource().getID(),"Start":event.getStartTime(),"Completion":self.getSimulator().getTime()}                 
-                    item.getProcessData().append(myprocessdata)
-                    location_update = {"Entity":"Item","EntityID":item.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":event.getLocation().getID(),"LocationName":event.getLocation().getName(),"Time":self.getSimulator().getTime()}   
-                    item.getLocationData().append(location_update)
-                    
-        else: # make location updates for dynamic event
-            event.getResource().setLocation(event.getLocation()[1]) 
-            location_update = {"Entity":event.getResource().getName(),"EntityID":event.getResource().getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":event.getLocation()[1].getID(),"LocationName":event.getLocation()[1].getName(),"Time":self.getSimulator().getTime()}  
-            event.getResource().getLocationData().append(location_update)
-
-            location_update = {"Entity":event.getEquipment().getName(),"EntityID":event.getEquipment().getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":event.getLocation()[1].getID(),"LocationName":event.getLocation()[1].getName(),"Time":self.getSimulator().getTime()}  
-            event.getEquipment().getLocationData().append(location_update)
-            
-            if event.getResource()!= event.getEquipment():
-                event.getEquipment().setLocation(event.getLocation()[1])
-
-            for item in event.getEquipment().getItems():
-                location_update = {"Entity":"Item","EntityID":item.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":event.getLocation()[1].getID(),"LocationName":event.getLocation()[1].getName(),"Time":self.getSimulator().getTime()}   
-                item.getLocationData().append(location_update)
-          
-        nexteventtype = event.getEventType().getSuccessorType() 
-
-        
-        if nexteventtype != None: 
-            print(" > "+str(self.getSimulator().getTime())+": successor event "+event.getEventType().getSuccessorType().getName()+", stc: "+str(nexteventtype.isStatic())) 
-
-            
-            proctime = 1
-            if nexteventtype.isProcess():
-                proctime = event.getItems()[0].getActiveOperation().getRandVar().sampleValue()
-
-            nextloc = event.getLocation() if event.getEventType().isStatic() else event.getLocation()[1]
-          
-
-            if not isinstance(event.getEquipment(),Machine): # trailer
-                if not event.getEventType().isStatic(): # trailer and current is TT, next TU 
-                    nextloc = nextloc.getInputBuffer()
-            else: # machine
-                if event.getEventType().isProcess(): # machine and current is Proc, next MU
-                    nextloc = nextloc.getOutputBuffer()
-                else:
-                    if not event.getEventType().isLoading():
-                        event.getLocation().getInputBuffer().generateEvent()
-                        
-                    
-
-            nextevent = event.getSuccessor() if event.getSuccessor()!= None else Event(nextloc,"Pending",proctime,self.getSimulator(),nexteventtype)        
-            event.setSuccessor(nextevent)
-
-            
-            if 'Equipment' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-                nextevent.setEquipment(event.getEquipment()); event.getEquipment().setAssigned()
-            if 'Resource' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-                nextevent.setResource(event.getResource()); event.getResource().setAssigned()
-            if 'Items' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-                for item in event.getItems():
-                    nextevent.getItems().append(item)
-
-            if (nextevent.getLocation() != nextevent.getEquipment()): # trailer
-                if nextevent.getEventType().isStatic():
-                    print(" > "+str(self.getSimulator().getTime())+": setPlace>>>>>>>>>>>>>  "+nextevent.getLocation().getName()+".")
-                    if nextevent.getPlace() == None: 
-                        nextevent.setPlace(nextevent.getLocation())
+    def getOperationSequences(self):
+        return self.OperationSequences
+#_______________________________________________________________________  
+class ProductionOrder(Demand):
+    def __init__(self,ddline,myid,demtype,quantity):
+        super().__init__(ddline,myid,demtype,quantity)
+       
      
-            print(" > "+str(self.getSimulator().getTime())+": nextevent "+nextevent.print()+" defined.")
-    
+    def getFinalProduct(self):
+        return self.getDemandType() #converting terminology
 
-            if (nextevent.getEquipment() != None) and (nextevent.getResource() != None):
-                nextevent.setStartTime(self.getSimulator().getTime())
-                self.getSimulator().ScheduleEvent(nextevent,self.getSimulator().getTime())
-            else: 
-                self.getSimulator().ScheduleEvent(nextevent,"Pending")
+    def printOrder(self):
 
-        print(" > "+str(self.getSimulator().getTime())+": "+event.print()+" finalized.")
-        
-      
-        return
-        
-    def getLocationDF(self):
+   
+        return "Order "+self.getFinalProduct().getPN()+", Q: "+str(self.getQuantity())+", d: "+str(self.getDeadline())+", oprs: "+str([o.getName() for o in self.getFinalProduct().getOperationSequences()[self.getID()]])
 
-        location_df= pd.DataFrame(columns=["Entity","EntityID","EventName","EventID","LocationID","LocationName","Time"])
-
-
-        for demand in self.getDemands():
-            for item in demand.getItems():
-                for dt in item.getLocationData():
-                     location_df.loc[len(location_df)] = dt
-        for resource in self.getResources():
-            for dt in resource.getLocationData():
-                location_df.loc[len(location_df)] = dt
-
-  
-        return location_df
-    
-    def getProcessDF(self):
-
-        process_df = pd.DataFrame(columns=["ItemID","OperationName","ProcessID","ResourceID","Start","Completion"])
-
-
-        for demand in self.getDemands():
-            for item in demand.getItems():
-                for dt in item.getProcessData():
-                    process_df.loc[len(process_df)] = dt
-              
-  
-        return process_df
-#########################################################################################################################
-    def writeData(self):
-        
-        process_df = self.getProcessDF()
-        location_df = self.getLocationDF()
-        process_df.to_csv("ProcessData.csv",index = False)
-        location_df.to_csv("LocationData.csv",index = False)  
-
-        return 
-
-        
-#################################################################################################
+   

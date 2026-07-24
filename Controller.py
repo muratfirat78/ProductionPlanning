@@ -14,33 +14,6 @@ class Controller:
         self.WorkManager.setDemandType("Product")
         self.MILPManager = ProductionMILPManager(self.Simulator)
 
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"] = []
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(("Select Items",'EDDOrder'))
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(('Assign Resource',"Straight Available"))
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Loading"].append(("Assign Equipment","Straight Available"))
-
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Transport"] = []
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Transport"].append(("Select Destination",'MostDemanded'))
-
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Unloading"] = []
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Trailer Unloading"].append(("Select Items", 'UnloadFeasible'))
-
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"] = []
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"].append(("Assign Equipment","Straight Available"))
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"].append(("Assign Resource","Straight Available"))
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Setup"].append(("Select Items",'EDDOrder'))
-
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Loading"] = []
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Loading"].append(("Assign Resource","Straight Available"))
-
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Processing"] = []
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Processing"].append(("Assign Equipment","Straight Available"))
-        
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Unloading"] =[]
-        self.WorkManager.getProductionAlgManager().getAlgorithmSetting()["Machine Unloading"].append(("Assign Resource","Straight Available"))
-      
-        self.WorkManager.getProductionAlgManager().setPriorityFunctions()
-
 
     def getVisualManager(self):
         return self.VisualManager

@@ -4,76 +4,68 @@ import pandas as pd
 from stochastic import *
 
 
-class EventType(object):
-    def __init__(self,myname,restype,equiptype,static,loading,process,myset):
-        self.Name = myname
-        self.ResourceType = restype # to help assigning 
-        self.EquipmentType = equiptype # to help selecting    
-     
-        self.precendenceDict = dict() #key: successor event name, val: properties directly transformed to successor event
-        self.decisionsDict = dict() #key: successor event name, val: decision to be made before the successor event scheduled
-        self.static = static
-        self.loading = loading # if static is False, this is not relevant. If static True and Loading false, then this is unloading. 
-        self.process = process
-        self.setup = myset
-        self.successortype = None
-        self.predecessortype = None
-        self.preemptable = False
-        self.decisions = [] # of tuples (stage,type). 
-                            # Stage: handle, start, or complete. Type: SelectItems, SelectDestination, Assign Equipment, Assign Resource. 
-
-        self.itemdirection = True # Place -> Equipment, False means Equipment -> Place
 
 
-    def isSetup(self):
-        return self.setup
+class Layout(object):
+    def __init__(self,usecasename):
+        self.Locations = []
+
+    def getLocations(self):
+        return self.Locations
         
-    def setItemDirection(self,myst):
-        self.itemdirection = myst
-        return
+    def getDistance(self,fromloc,toloc):
+        return 1
 
-    def getItemDirection(self):
-        return self.itemdirection
 
-    def getDecisions(self):
-        return self.decisions
+class Location():
+    def __init__(self,locname,locid):
+        self.name = locname
+        self.resources = []
 
-    def setPredecessorType(self,myev):
-        self.predecessortype = myev
-        myev.setSuccessorType(self)
-        return
-    def getPredecessorType(self):
-        return self.predecessortype
-    def setSuccessorType(self,mysucc):
-        self.successortype = mysucc
-        return
-    def getSuccessorType(self):
-        return self.successortype
+    def getResources(self):
+        return self.resources
+    def getName(self):
+        return self.name
+        
 
-    def setPreemptable(self,status):
-        self.preemptable = status
+class SimEvent(object):
+    def __init__(self,sim,myname,mytype,restype,equiptype,preemptable):
+        self.Name = myname
+        self.type = mytype
+        self.ResourceType = restype # to help assigning 
+        self.EquipmentType = equiptype # to help selecting        
+        self.precendenceDict = dict() #key: successor event name, val: properties directly transformed to successor event
+        self.decisionsDict = dict() #key: progress case name, val: list of decision names
+        self.successorDict = dict() #key: successor, val: preceence type, e.g. "Finish to Start" or "Simultaneous Start" or "Simultaneous Finish" 
+        self.predecessorDict = dict() #key: predecessor, val: preceence type, e.g. "Finish to Start" or "Simultaneous Start" or "Simultaneous Finish"   
+        self.preemptable = preemptable
+        self.Simulator = sim
+        
+        
+    def getSimulator(self):
+        return self.Simulator
+
+    def getType(self):
+        return self.type # this can be "transport", "loading","unloading","process","logistical"
+
+    def generateEvent(self):
         return
 
     def isPreemptable(self):
-        return self.preemptable 
-
-    def isStatic(self):
-        return self.static
-
-    def isLoading(self):
-        return self.loading
-
-    def isProcess(self):
-        return self.process
-    
+        return self.preemptable  
 
     def getDecisionsDict(self):
         return self.decisionsDict
 
     def getPrecendenceDict(self):
         return self.precendenceDict
-   
 
+    def getSuccessorDict(self):
+        return self.successorDict
+
+    def getPredecessorDict(self):
+        return self.predecessorDict
+        
     def getName(self):
         return self.Name
 
@@ -83,41 +75,100 @@ class EventType(object):
     def getEquipmentType(self):
         return self.EquipmentType
 
- 
-
-
-############################################################################
-
-class Event(object):
-    def __init__(self,loc,start,proctime,sim,eventype):
+############################################################################################################################
+class ExecEvent(object):
+    def __init__(self,fromloc,toloc,eventype):
         self.EventType = eventype    
-        self.ID = sim.getEventNo()   
-        self.Location = loc  # static: resource, dynamic: (from buffer,to buffer)   
-        self.StartTime = start
-        self.ProcessTime = proctime  
+        self.ID = eventype.getSimulator().getEventNo()   
+        self.FromLocation = fromloc  
+        self.ToLocation = toloc  
+        self.ProcessTime = None
+        self.StartTime = None  
         self.CompletionTime = None
         self.active = False    
-        self.InfoDictionary = dict() # processing: ("operation",operation obj)
-        self.ItemSource = None # this is where items will be selected
-        self.Simulator = sim
+        self.Operation = None
         self.Resource = None 
         self.Equipment = None
         self.Items = []
-        self.Place = None
         self.successor = None
         self.predecessor = None
-        # events: ML,MU resources are operators and Processing resources are machines.  
-        self.definedsuccessors = dict() #key: successor type, val: successor event defined
-        self.ProgressDict = dict() # key: resource, val: [(start,end)], all in simtime
-
-        self.precedencetypes = dict() # key: successor or predecessor, val: "F2S", "SS", "SF"
-
-        self.startdelay = 0
-        self.logisticevents = []
+        self.ProgressList = [] #[(resource,(start,end))]
+        self.status = "Pending"
+        self.Place = None
+        self.suspendedpredecessor = None
         
 
-    def getLogisticEvents(self):
-        return self.logisticevents
+        self.startdelay = 0
+        self.logisticalevents = []
+
+       #  Event  -  From       -   To
+       # TL       OutputBuffer    Trailer
+       # TT       OutputBuffer   InputBuffer
+       # TU        Trailer       InputBuffer
+       # MS       InputBuffer      ---
+       # ML       InputBuffer     Machine
+       # PROC       Machine        ---
+       # MU         Machine      OutputBuffer 
+
+
+    def getLocation(self):
+        
+        if self.getName() in ["Trailer Loading","Machine Setup","Machine Loading","Machine Processing","Machine Unloading"]:
+            return self.getFromLocation().getLocation()
+        if self.getName() == "Trailer Transport":
+            return self.getEquipment()
+        if self.getName() == "Trailer Unloading":
+            return self.getToLocation().getLocation()
+        
+        return None 
+
+    def setSuspendedPredecessor(self,pr):
+        self.suspendedpredecessor = pr
+        return
+
+    def getSuspendedPredecessor(self):
+        return self.suspendedpredecessor 
+        
+
+    def setPlace(self,pl):
+        self.Place = pl
+        return
+    def getPlace(self):
+        return self.Place
+        
+    def getStatus(self):
+        return self.status
+
+    ######################################################################################
+    def sampleProcessTime(self,workmgr):
+        if self.getName() == "Machine Setup":
+            self.ProcessTime = self.getFromLocation().getMachine().getSetupTime()
+        if self.getName() == "Machine Loading":
+            self.ProcessTime = max(1,int(0.5*self.getFromLocation().getMachine().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
+
+        if self.getName() == "Machine Unloading":
+            if not self.getFromLocation().IsAutomated():
+                self.ProcessTime = max(1,int(0.5*self.getEquipment().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
+
+
+        if self.getName() == "Machine Processing":   
+            self.ProcessTime = self.getItems()[0].getActiveOperation().getRandVar().sampleValue()
+
+        if self.getName() in ["Trailer Loading","Trailer Unloading"]:
+            self.ProcessTime = 1
+
+        if self.getName() == "Trailer Transport":
+            self.ProcessTime = workmgr.getLayout().getDistance(self.getFromLocation(),self.getToLocation())
+
+        return
+    #######################################################################################
+   
+        
+    def setStatus(self,st):
+        self.status = st
+
+    def getLogisticalEvents(self):
+        return self.logisticalevents
     def getStartDelay(self):
         return self.startdelay
 
@@ -125,79 +176,32 @@ class Event(object):
         self.startdelay+=1
         return 
         
-    def getPrecedenceTypes(self):
-        return self.precedencetypes
-
-    def getProgressDict(self):
-        return self.ProgressDict
+    def getProgressList(self):
+        return self.ProgressList
         
     def setProcessTime(self,mytime):
         self.ProcessTime = mytime
         return
-
-    def getDefinedSuccessors(self):
-        return self.definedsuccessors
-
 
     def setCompletionTime(self,mytime):
         self.CompletionTime = mytime
         return
 
     def getCompletionTime(self):
-        return self.CompletionTime 
-        
-    
-    def setPlace(self,myown):
-        self.Place = myown
-        return
-    def getPlace(self):
-        return self.Place
-
+        return self.CompletionTime    
+   
+   
 
     def getTotalProgress(self):
-
-        totalprogress = 0; openprogresses = 0
-
-        if len(self.getLogisticEvents()) > 0:
-            return totalprogress
-        
-        if self.getEventType().isPreemptable():
-
-            for resource,proglist in self.getProgressDict().items():
-                totalprogress+= sum([((p[1] if p[1] != 0 else self.getSimulator().getTime())-p[0]) for p in proglist])
-                openprogresses+=sum([1 for p in proglist if p[1] == 0])
-                
-            if openprogresses > 1:
-                self.getSimulator().saveLog("ERROR: Premeptable Event "+self.getName()+"["+str(self.getID())+"]"+" has more than one open progresses..")
-                for resource,proglist in self.getProgressDict().items():
-                    self.getSimulator().saveLog("REPORT: Res "+resource.getName()+"Progresses of "+self.getName()+"["+str(self.getID())+"]"+": "+str([(p[0],p[1]) for p in proglist]))
-
-            pred = self.getPredecessor()
-            
-            if pred!= None:
-                for nextevent,prectype in pred.getPrecedenceTypes().items(): 
-                    if prectype == 'Simultaneous Start' and nextevent == self:
-                        totalprogress-= pred.getStartDelay()
-                        break
-
-       
-            for nextevent,prectype in self.getPrecedenceTypes().items(): 
-                if prectype == 'Simultaneous Finish':
-                    totalprogress-= nextevent.getStartDelay()
-                    break
-
-        else:
-            totalprogress+=min(self.getSimulator().getTime(),self.getCompletionTime()) - self.getStartTime()
-           
-
-        return totalprogress
-
-    
+        return sum([(x[1][1] - x[1][0]) for x in self.getProgressList()])
+ 
     def setPredecessor(self,myev):
         self.predecessor = myev
         return
+        
     def getPredecessor(self):
         return self.predecessor
+        
     def setSuccessor(self,mysucc):
         self.successor = mysucc
         if mysucc.getPredecessor() == None:
@@ -206,12 +210,8 @@ class Event(object):
     def getSuccessor(self):
         return self.successor
     
-
     def getEventType(self):
         return self.EventType
-
-    def getSimulator(self):
-        return self.Simulator
 
     def getName(self):
         return self.EventType.getName()
@@ -241,42 +241,26 @@ class Event(object):
         return
 
     def print(self):
-
-        try: 
-            equip = "Pending" if self.getEquipment() == None else self.getEquipment().getName()+"("+str(len(self.getEquipment().getItems()))+")"
-    
-            res = "Pending" if self.Resource == None else self.Resource.getName()
-    
-            loc_str = ""
-            
-            if isinstance(self.getLocation(),tuple):
-                loc_str =("no location" if self.getLocation()[0] == None else self.getLocation()[0].getName())
-                loc_str +="->"+("no location" if self.getLocation()[1] == None else self.getLocation()[1].getName())
-               
-            else:
-                loc_str = "no location" if self.getLocation() == None else self.getLocation().getName()
-    
-    
-            return str(self.getName())+"("+str(self.getID())+"): loc "+loc_str+(" no place " if self.getPlace() == None else ", place  "+self.getPlace().getName()+"("+str(len(self.getPlace().getItems()))+")")+", equip: "+equip+", res: "+res+", "+str(len(self.getItems()))+" items, proctime: "+str(self.ProcessTime)
-        except Exception as e:
-            self.getSimulator().saveLog("ERROR in event printing: "+str(e))
+        return
         
     def getProcessTime(self):
         return self.ProcessTime 
 
-    def getInfoDict(self):
-        return self.InfoDictionary
-
-    def getLocation(self):
-        return self.Location
-
+    def getFromLocation(self):
+        return self.FromLocation
     
-    def setLocation(self,myloc):
-        self.Location = myloc
+    def setFromLocation(self,myloc):
+        self.FromLocation = myloc
         return 
 
-
-        
+    
+    def getToLocation(self):
+        return self.ToLocation
+    
+    def setToLocation(self,myloc):
+        self.ToLocation = myloc
+        return 
+   
     def getID(self):
         return self.ID
  
@@ -294,7 +278,22 @@ class Event(object):
         self.StartTime = mystrt
     def getStartTime(self):
         return self.StartTime 
-  
+
+    def setCompletionTime(self,mystrt):
+        self.CompletionTime = mystrt
+    def getCompletionTime(self):
+        return self.CompletionTime 
+
+    def getName(self):
+        return self.getEventType().getName()
+
+    def getType(self):
+        return self.getEventType().getType()
+        
+        
+##################################################################################################################################      
+
+
 
 ##################################################################################################################################    
 class Resource(object):
@@ -355,9 +354,6 @@ class Resource(object):
         return
     def getLocation(self):
         return self.location
-
-     
-   
 
     
     def setAvailable(self,status):

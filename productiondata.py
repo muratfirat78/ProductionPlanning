@@ -51,7 +51,7 @@ class ProductionDataManager(DataManager):
                         pass
 
         if latestfiledate != None:
-            self.getOperationsManager().getSimulator().saveLog("Latest Date resources file date: "+str(latestfiledate))
+            self.getOperationsManager().getSimulator().saveLog("REPORT:  Latest Date resources file date: "+str(latestfiledate))
             TBRMResources_df = pd.read_csv(abs_file_path+'/'+filename)
 
             self.getOperationsManager().getSimulator().saveLog(str(TBRMResources_df.info()))
@@ -92,14 +92,15 @@ class ProductionDataManager(DataManager):
                     #myname,machcode,OprtingShifts,processtype,automated,mycap,Alternatives,OprtingEffort,sim,workmngr
                     if len(Alternatives) > 0:
                         self.getOperationsManager().getSimulator().saveLog(str(Alternatives))
-                    mach = Machine(mcode,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
-                
-                    mach.setLocation(mach)
+                    
+                    machloc = Location(r['Name']+"_Location",len(self.getOperationsManager().getLayout().getLocations()))
+                    self.getOperationsManager().getLayout().getLocations().append(machloc)
+                    mach = Machine(mcode,machloc,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
                     mach.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(mach)
                     
             
-            self.getOperationsManager().getSimulator().saveLog("No resources: "+str(len(self.getOperationsManager().getResources())))      
+            self.getOperationsManager().getSimulator().saveLog("REPORT: No resources: "+str(len(self.getOperationsManager().getResources())))      
            
         return
         

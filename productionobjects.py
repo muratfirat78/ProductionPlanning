@@ -6,13 +6,13 @@ from productionChecker import *
 
 class Inventory(Resource):
     
-    def __init__(self,mycap,sim,workmngr):
+    def __init__(self,mycap,myloc,sim,workmngr):
         super().__init__("Central_Inventory","Inventory",mycap,sim,workmngr)
         self.InputBuffer = Buffer("Input",None,1000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",None,1000,sim,workmngr)
-
-        self.InputBuffer.setLocation(self)
-        self.OutputBuffer.setLocation(self)
+        self.setLocation(myloc)
+        self.InputBuffer.setLocation(myloc)
+        self.OutputBuffer.setLocation(myloc)
 
 
     def getInputBuffer(self):
@@ -57,48 +57,49 @@ class Buffer(Resource):
     def removeItem(self,myit):  
         self.getItems().remove(myit)  
         return
-  
+##########################################################################################################  
     def generateEvent(self):
-        
         if len(self.getItems()) == 0 or self.getPendingEvent() != None:
-            self.getSimulator().saveLog("Returning event generation: items "+str(len(self.getItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
+            self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items "+str(len(self.getItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
             if self.getPendingEvent() != None:
-                self.getSimulator().saveLog(" pending event "+self.getPendingEvent().print())
+                self.getSimulator().saveLog(" pending event "+self.getPendingEvent().getName())
             return
 
-        self.getSimulator().saveLog("In generating event "+self.getName()+"@"+self.getLocation().getName()+" output? "+str(not self.isInputType()))
+        #self.getSimulator().saveLog("In generating event "+self.getName()+"@ loc none?"+str(self.getLocation() == None)+" output buffer? "+str(not self.isInputType()))
+       
+        
+        #self.getSimulator().saveLog("In generating event "+self.getName()+"@"+self.getLocation().getName()+" output buffer? "+str(not self.isInputType()))
         
         if not self.isInputType(): #output buffer
-            load_event_type = self.getWorkMgr().getEventTypes()["Trailer Loading"]    
-            self.setPendingEvent(Event(self.getLocation(),"Pending",1,self.getSimulator(),load_event_type)) 
-            
+            tl_event = ExecEvent(self,None,self.getWorkMgr().getEventTypes()["Trailer Loading"])        
+            self.getSimulator().getEventQueue()["Pending"].append(tl_event)       
+            tl_event.setPlace(self)
+            self.setPendingEvent(tl_event)  
+            self.getSimulator().saveLog("REPORT: Trailer loading from loc: "+str(self.getName()))
         else: # input buffer
-            self.getSimulator().saveLog("Input... ")
-            self.getSimulator().saveLog("Machine none? "+str(self.getMachine()))
             if self.getMachine() != None:
-                setup_event_type = self.getWorkMgr().getEventTypes()["Machine Setup"]
-                setup_event = Event(self.getLocation(),"Pending",1,self.getSimulator(),setup_event_type)
-                self.setPendingEvent(setup_event); 
-    
-            else:
-                return
-
-        if self.getPendingEvent()!= None: 
-            self.getSimulator().saveLog("   "+self.getPendingEvent().print()+" generated.")
-            self.getSimulator().ScheduleEvent(self.getPendingEvent())  
-            self.getPendingEvent().setPlace(self)
+                ms_event = ExecEvent(self,None,self.getWorkMgr().getEventTypes()["Machine Setup"])
+                self.getSimulator().getEventQueue()["Pending"].append(ms_event)
+                ms_event.setEquipment(self.getMachine()) 
+                ms_event.setPlace(self)
+                self.setPendingEvent(ms_event)
             
-          
+        if self.getPendingEvent()!= None: 
+            self.getSimulator().saveLog("REPORT: "+self.getPendingEvent().getName()+" generated, pendings "+str(len(self.getSimulator().getEventQueue()["Pending"])))
+
         return
-        
+############################################################################################################        
     
 #_______________________________________________________________________  
 class Machine(Resource):
     
-    def __init__(self,machcode,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
+    def __init__(self,machcode,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
         super().__init__(myname,"Machine",mycap,sim,workmngr)
         self.InputBuffer = Buffer("Input",self,1000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000,sim,workmngr)
+        self.setLocation(myloc)
+        self.InputBuffer.setLocation(myloc)
+        self.OutputBuffer.setLocation(myloc)
         self.automated = automated
         self.ProcessType = processtype
         self.OperatingEffort = OprtingEffort
@@ -106,17 +107,22 @@ class Machine(Resource):
         self.Alternatives = Alternatives
         self.MachineCode = machcode
         self.setuptime = Setup
-        self.InputBuffer.setLocation(self)
-        self.OutputBuffer.setLocation(self)
+    
         self.ProgressDict = dict() # key: processevent, val: (start,end), all in simtime
         self.ProcessMatch = dict() #key: processorid  val: processevent
         self.NoProcessors = 1
+        self.suspendedEvent = None
    
 
         if myname == "OUT - Outsourced activity_(OUT - Outsourced)":
             self.NoProcessors = 1000
 
-  
+
+    def getSuspendedEvent(self):
+        return self.suspendedEvent
+    def setSuspendedEvent(self,myev):
+        self.suspendedEvent = myev
+        return
 
     def getProcessor(self):
 
@@ -135,8 +141,6 @@ class Machine(Resource):
     def getNoProcessors(self):
         return self.NoProcessors
 
-    def getProgressDict(self):
-        return self.ProgressDict
 
     def getSetupTime(self):
         return self.setuptime

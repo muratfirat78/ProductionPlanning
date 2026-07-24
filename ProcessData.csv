@@ -3,209 +3,86 @@ MP1 - Mat. prep - automatic sawing (ZGN_01),1,-,-,2025-02-28 11:30:57,2026-03-23
 MP1 - Mat. prep - automatic sawing (ZGN_01),10,-,-,2026-02-06 13:37:06,2026-02-06 13:37:06,__export__.mrp_production_5033_ffa23c2e,[4022.684.28993],1
 M5-03 - UMC1 - 5axis - Manual (UMC750),11,-,-,2026-02-06 13:38:20,2026-02-06 13:38:20,__export__.mrp_production_5033_ffa23c2e,[4022.684.28993],1
 M3-01 - AW - 3axis - Manual (FR3_01),12,-,-,2026-02-06 13:39:12,2026-02-06 13:39:12,__export__.mrp_production_5033_ffa23c2e,[4022.684.28993],1
-OUT - Outsourced activity,13,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 08:18:00,2026-06-12 11:19:00,__export__.mrp_production_5033_ffa23c2e,[4022.684.28993],1
 "MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",15,-,-,2026-02-06 13:43:14,2026-02-06 13:43:14,__export__.mrp_production_5034_4d53b4c4,[4022.684.29043],1
 M5-03 - UMC1 - 5axis - Manual (UMC750),16,-,-,2026-02-06 13:43:09,2026-02-06 13:43:09,__export__.mrp_production_5034_4d53b4c4,[4022.684.29043],1
-OUT - Outsourced activity,17,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 08:22:00,2026-06-12 11:23:00,__export__.mrp_production_5034_4d53b4c4,[4022.684.29043],1
 "MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",19,-,-,2026-02-06 13:36:30,2026-02-06 13:36:30,__export__.mrp_production_5035_e3dce293,[4022.684.28962],1
 M5-03 - UMC1 - 5axis - Manual (UMC750),20,-,-,2026-02-06 13:36:38,2026-02-06 13:36:38,__export__.mrp_production_5035_e3dce293,[4022.684.28962],1
-OUT - Outsourced activity,21,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 08:26:00,2026-06-12 11:27:00,__export__.mrp_production_5035_e3dce293,[4022.684.28962],1
 MP1 - Mat. prep - automatic sawing (ZGN_01),23,-,-,2026-02-06 13:44:01,2026-02-06 13:44:01,__export__.mrp_production_5036_bec2ca68,[4022.684.28842],1
 M5-03 - UMC1 - 5axis - Manual (UMC750),24,-,-,2026-02-06 13:44:10,2026-02-06 13:44:10,__export__.mrp_production_5036_bec2ca68,[4022.684.28842],1
 M3-01 - AW - 3axis - Manual (FR3_01),25,-,-,2026-02-06 13:43:55,2026-02-06 13:43:55,__export__.mrp_production_5036_bec2ca68,[4022.684.28842],1
-OUT - Outsourced activity,26,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 08:30:00,2026-06-12 11:31:00,__export__.mrp_production_5036_bec2ca68,[4022.684.28842],1
 "MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",28,-,-,2026-02-06 13:43:33,2026-02-06 13:43:33,__export__.mrp_production_5037_60eed60d,[4022.656.37971],5
 M5-03 - UMC1 - 5axis - Manual (UMC750),29,-,-,2026-02-06 13:43:37,2026-02-06 13:43:37,__export__.mrp_production_5037_60eed60d,[4022.656.37971],5
 M5-03 - UMC1 - 5axis - Manual (UMC750),30,-,-,2026-02-06 13:43:40,2026-02-06 13:43:40,__export__.mrp_production_5037_60eed60d,[4022.656.37971],5
-OUT - Outsourced activity,31,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 08:34:00,2026-06-05 14:05:00,__export__.mrp_production_5037_60eed60d,[4022.656.37971],5
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",32,-,-,2026-02-06 14:35:52,2026-02-06 14:35:52,__export__.mrp_production_5264_e20e4380,[4022.704.19282],20
-M5-05 - UMC2 - 5axis  - Manual (UMC750),33,__export__.mrp_workcenter_83_95c50e96,UMC750SS_(M5-05),2026-06-01 12:54:00,2026-06-15 13:54:00,__export__.mrp_production_5264_e20e4380,[4022.704.19282],20
-MP2 - Mat. prep - manual sawing (ZGN_02),35,-,-,2026-02-06 14:30:25,2026-02-06 14:30:25,__export__.mrp_production_5325_9ceb90b0,[4023-002-36551],25
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),36,-,-,2026-02-06 14:30:36,2026-03-23 10:49:37,__export__.mrp_production_5325_9ceb90b0,[4023-002-36551],25
-BW - Benchwork (BKW_01),37,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-01 08:14:00,2026-06-01 10:20:00,__export__.mrp_production_5325_9ceb90b0,[4023-002-36551],25
-PACK - Packaging (VERP_P),38,__export__.mrp_workcenter_67_d1ac8ce6,PACK_(VERP_P),2026-06-01 10:58:00,2026-06-01 11:24:00,__export__.mrp_production_5325_9ceb90b0,[4023-002-36551],25
-MP1 - Mat. prep - automatic sawing (ZGN_01),39,-,-,2026-02-06 14:41:00,2026-02-06 14:41:00,__export__.mrp_production_5374_81713afd,[4022-637-29301],40
-M4-02 - AW - 4axis - Conveyor Automation (FR4_02),40,-,-,2026-03-23 11:11:00,2026-03-23 11:11:01,__export__.mrp_production_5374_81713afd,[4022-637-29301],40
-M4-02 - AW - 4axis - Conveyor Automation (FR4_02),41,-,-,2026-03-23 11:11:02,2026-03-23 11:11:04,__export__.mrp_production_5374_81713afd,[4022-637-29301],40
-M4-02 - AW - 4axis - Conveyor Automation (FR4_02),42,-,-,2026-03-23 11:11:17,2026-03-23 11:11:38,__export__.mrp_production_5374_81713afd,[4022-637-29301],40
-BW - Benchwork (BKW_01),43,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-01 10:40:00,2026-06-01 12:41:00,__export__.mrp_production_5374_81713afd,[4022-637-29301],40
-PACK - Packaging (VERP_P),44,__export__.mrp_workcenter_67_d1ac8ce6,PACK_(VERP_P),2026-06-01 15:45:00,2026-06-01 16:26:00,__export__.mrp_production_5374_81713afd,[4022-637-29301],40
-MP1 - Mat. prep - automatic sawing (ZGN_01),45,-,-,2026-02-06 14:47:10,2026-02-06 14:47:10,__export__.mrp_production_5484_c81e293e,[4022.622.61092],29
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),46,-,-,2026-02-04 16:05:49,2026-03-23 10:50:23,__export__.mrp_production_5484_c81e293e,[4022.622.61092],29
-M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,47,Cancelled,Cancelled,2026-03-23 10:50:25,2026-03-23 10:50:26,__export__.mrp_production_5484_c81e293e,[4022.622.61092],29
-OUT - Outsourced activity,48,-,-,2026-03-18 12:50:02,2026-03-18 12:50:02,__export__.mrp_production_5484_c81e293e,[4022.622.61092],29
-OUT - Outsourced activity,49,-,-,2026-03-23 10:36:35,2026-04-17 13:09:28,__export__.mrp_production_5484_c81e293e,[4022.622.61092],29
-M5-03 - UMC1 - 5axis - Manual (UMC750),52,__export__.mrp_workcenter_61_bcb50df3,UMC750_(M5-03),2026-06-01 09:21:00,2026-06-01 22:00:00,__export__.mrp_production_5495_6bea93ed,[1207568A],30
-PACK - Packaging (VERP_P),53,__export__.mrp_workcenter_67_d1ac8ce6,PACK_(VERP_P),2026-06-02 09:55:00,2026-06-02 10:26:00,__export__.mrp_production_5495_6bea93ed,[1207568A],30
-MP1 - Mat. prep - automatic sawing (ZGN_01),54,-,-,2026-03-23 09:45:09,2026-03-23 09:45:49,__export__.mrp_production_5661_117b54ab,[4512-127-05186B],850
-MP1 - Mat. prep - automatic sawing (ZGN_01),58,-,-,2026-03-23 09:48:19,2026-03-23 09:48:19,__export__.mrp_production_5666_83c93799,[7005-2400-0100],56
-M5-03 - UMC1 - 5axis - Manual (UMC750),59,-,-,2026-04-15 11:51:26,2026-04-15 11:51:30,__export__.mrp_production_5666_83c93799,[7005-2400-0100],56
-M5-03 - UMC1 - 5axis - Manual (UMC750),60,-,-,2026-04-15 11:51:34,2026-04-15 11:51:35,__export__.mrp_production_5666_83c93799,[7005-2400-0100],56
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",62,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_5680_ed5f1e28,[4022.622.61481],24
-MP1 - Mat. prep - automatic sawing (ZGN_01),64,-,-,2026-03-23 09:50:13,2026-03-23 09:50:51,__export__.mrp_production_5770_bc7d7b8f,[7005-2580-0017],15
-MP2 - Mat. prep - manual sawing (ZGN_02),67,-,-,2026-04-02 16:31:02,2026-04-02 16:31:02,__export__.mrp_production_5775_ce67fb3a,[7005-2580-0005],20
-MP1 - Mat. prep - automatic sawing (ZGN_01),69,-,-,2026-03-23 09:45:11,2026-03-23 09:45:58,__export__.mrp_production_5778_3ba5ef49,[7005-2580-0007],12
-M5-02 - AW - 5axis - Pallet Automation (FR5_02),70,__export__.mrp_workcenter_59_d6deab7b,M5-02_(FR5_02),2026-06-01 14:04:00,2026-06-02 23:08:00,__export__.mrp_production_5778_3ba5ef49,[7005-2580-0007],12
-M5-03 - UMC1 - 5axis - Manual (UMC750),71,__export__.mrp_workcenter_61_bcb50df3,UMC750_(M5-03),2026-06-05 14:46:00,2026-06-05 23:30:00,__export__.mrp_production_5778_3ba5ef49,[7005-2580-0007],12
-MP1 - Mat. prep - automatic sawing (ZGN_01),72,-,-,2026-03-23 09:45:15,2026-03-23 09:46:22,__export__.mrp_production_5793_f5c01175,[4022.648.92451],2
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),73,__export__.mrp_workcenter_62_468a38e5,UMC750SS_(M5-04),2026-06-01 10:47:00,2026-06-01 13:56:00,__export__.mrp_production_5793_f5c01175,[4022.648.92451],2
-MP1 - Mat. prep - automatic sawing (ZGN_01),74,-,-,2026-03-23 09:45:15,2026-03-23 09:46:20,__export__.mrp_production_5794_ae796e75,[4022.648.92461],2
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),75,__export__.mrp_workcenter_62_468a38e5,UMC750SS_(M5-04),2026-06-01 15:34:00,2026-06-01 18:43:00,__export__.mrp_production_5794_ae796e75,[4022.648.92461],2
-MP1 - Mat. prep - automatic sawing (ZGN_01),76,-,-,2026-03-23 09:45:15,2026-03-23 09:46:19,__export__.mrp_production_5799_ae914a97,[4022.648.92481],2
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),77,__export__.mrp_workcenter_62_468a38e5,UMC750SS_(M5-04),2026-06-02 08:56:00,2026-06-02 11:02:00,__export__.mrp_production_5799_ae914a97,[4022.648.92481],2
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",78,-,-,2026-03-23 09:46:48,2026-03-23 09:46:59,__export__.mrp_production_5802_60e1ae22,[7005-2580-0014],6
-MP2 - Mat. prep - manual sawing (ZGN_02),81,-,-,2026-04-02 16:31:05,2026-04-02 16:31:05,__export__.mrp_production_5812_86bac601,[BD50-5075-015F],27
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),82,-,-,2026-04-21 12:09:07,2026-04-21 12:09:09,__export__.mrp_production_5812_86bac601,[BD50-5075-015F],27
-BW - Benchwork (BKW_01),83,-,-,2026-04-21 12:09:10,2026-04-21 12:09:12,__export__.mrp_production_5812_86bac601,[BD50-5075-015F],27
-PACK - Packaging (VERP_P),84,-,-,2026-04-21 12:09:13,2026-04-21 12:09:14,__export__.mrp_production_5812_86bac601,[BD50-5075-015F],27
-MP2 - Mat. prep - manual sawing (ZGN_02),87,-,-,2026-04-21 12:07:05,2026-04-21 12:07:07,__export__.mrp_production_5813_a4a87adc,[BD50-5085-013-C],15
-M3-01 - AW - 3axis - Manual (FR3_01),88,-,-,2026-04-21 12:07:09,2026-04-21 12:07:10,__export__.mrp_production_5813_a4a87adc,[BD50-5085-013-C],15
-BW - Benchwork (BKW_01),89,-,-,2026-04-21 12:07:11,2026-04-21 12:07:12,__export__.mrp_production_5813_a4a87adc,[BD50-5085-013-C],15
-PACK - Packaging (VERP_P),90,-,-,2026-04-21 12:07:13,2026-04-21 12:07:15,__export__.mrp_production_5813_a4a87adc,[BD50-5085-013-C],15
-MP2 - Mat. prep - manual sawing (ZGN_02),93,-,-,2026-04-02 16:31:08,2026-04-21 12:04:34,__export__.mrp_production_5814_7c413313,[BD50-5085-011-C],32
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),94,-,-,2026-04-21 12:04:36,2026-04-21 12:04:40,__export__.mrp_production_5814_7c413313,[BD50-5085-011-C],32
-BW - Benchwork (BKW_01),95,-,-,2026-04-21 12:04:44,2026-04-21 12:04:45,__export__.mrp_production_5814_7c413313,[BD50-5085-011-C],32
-PACK - Packaging (VERP_P),96,-,-,2026-04-21 12:04:46,2026-04-21 12:04:48,__export__.mrp_production_5814_7c413313,[BD50-5085-011-C],32
-MP2 - Mat. prep - manual sawing (ZGN_02),99,-,-,2026-04-02 16:31:14,2026-04-02 16:31:14,__export__.mrp_production_5817_4d74da74,[BD50-5085-009-C],27
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),100,-,-,2026-04-21 12:02:51,2026-04-21 12:02:52,__export__.mrp_production_5817_4d74da74,[BD50-5085-009-C],27
-BW - Benchwork (BKW_01),101,-,-,2026-04-21 12:02:54,2026-04-21 12:02:55,__export__.mrp_production_5817_4d74da74,[BD50-5085-009-C],27
-PACK - Packaging (VERP_P),102,-,-,2026-04-21 12:02:56,2026-04-21 12:02:58,__export__.mrp_production_5817_4d74da74,[BD50-5085-009-C],27
-MP1 - Mat. prep - automatic sawing (ZGN_01),105,-,-,2026-03-23 09:45:11,2026-03-23 09:46:04,__export__.mrp_production_5822_d253f190,[4512-127-05186B],979
-MP1 - Mat. prep - automatic sawing (ZGN_01),109,-,-,2026-03-23 09:45:12,2026-03-23 09:46:05,__export__.mrp_production_5850_e0fd2318,[00429-00-249-A],424
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),110,-,-,2026-04-17 13:02:53,2026-04-17 13:02:53,__export__.mrp_production_5850_e0fd2318,[00429-00-249-A],424
-BW - Benchwork (BKW_01),111,-,-,2026-04-21 09:13:23,2026-04-21 09:36:59,__export__.mrp_production_5850_e0fd2318,[00429-00-249-A],424
-OUT - Outsourced activity,112,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 11:09:00,2026-06-08 08:40:00,__export__.mrp_production_5850_e0fd2318,[00429-00-249-A],424
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",114,-,-,2026-03-23 09:52:13,2026-03-23 09:52:18,__export__.mrp_production_5851_eb3587d0,[B620261-5],2
-M3-01 - AW - 3axis - Manual (FR3_01),115,__export__.mrp_workcenter_54_3f0243e1,M3-01_(FR3_01),2026-06-01 12:21:00,2026-06-01 16:22:00,__export__.mrp_production_5851_eb3587d0,[B620261-5],2
-MP1 - Mat. prep - automatic sawing (ZGN_01),120,-,-,2026-03-23 09:50:14,2026-03-23 09:51:02,__export__.mrp_production_5869_871b667c,[7005-2580-0007],8
-MP1 - Mat. prep - automatic sawing (ZGN_01),123,-,-,2026-03-23 09:50:15,2026-03-23 09:51:06,__export__.mrp_production_5901_3f7c036f,[7005-2480-0070],20
-MP1 - Mat. prep - automatic sawing (ZGN_01),127,-,-,2026-03-23 09:45:13,2026-03-23 09:46:14,__export__.mrp_production_5957_b64800cf,[7001-2580-0016],12
-MP1 - Mat. prep - automatic sawing (ZGN_01),129,-,-,2026-04-02 15:24:27,2026-04-02 15:24:28,__export__.mrp_production_5958_ce25fead,[7001-2580-0017],12
-MP1 - Mat. prep - automatic sawing (ZGN_01),131,-,-,2026-04-02 15:24:36,2026-04-02 15:24:37,__export__.mrp_production_5959_f032bf61,[7001-2580-0018],60
-MP1 - Mat. prep - automatic sawing (ZGN_01),134,-,-,2026-04-02 15:24:41,2026-04-02 15:24:43,__export__.mrp_production_5960_b459580d,[7001-2580-0019],24
-MP1 - Mat. prep - automatic sawing (ZGN_01),137,-,-,2026-04-02 15:24:45,2026-04-02 15:24:47,__export__.mrp_production_5961_94d699af,[7001-2580-0020],24
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",140,-,-,2026-03-23 09:46:48,2026-03-23 09:47:03,__export__.mrp_production_5962_6486115a,[7001-2580-0021],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),142,-,-,2026-04-02 15:25:00,2026-04-02 15:25:02,__export__.mrp_production_5963_1e2deec0,[7001-2580-0022],12
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",146,-,-,2026-03-23 09:52:40,2026-03-23 09:52:43,__export__.mrp_production_5964_c63bebb1,[7001-2580-0023],10
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",150,-,-,2026-03-23 09:52:40,2026-03-23 09:52:44,__export__.mrp_production_5965_cc4e8bda,[7001-2580-0024],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),153,-,-,2026-04-02 15:25:16,2026-04-02 15:25:20,__export__.mrp_production_5966_a6c52579,[7001-2580-0025],10
-MP2 - Mat. prep - manual sawing (ZGN_02),154,-,-,2026-04-02 15:25:21,2026-04-02 15:25:23,__export__.mrp_production_5966_a6c52579,[7001-2580-0025],10
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),155,-,-,2026-04-15 13:12:39,2026-04-15 13:12:41,__export__.mrp_production_5966_a6c52579,[7001-2580-0025],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),157,-,-,2026-04-02 15:25:31,2026-04-02 15:25:33,__export__.mrp_production_5967_b9280095,[7001-2580-0026],10
-MP2 - Mat. prep - manual sawing (ZGN_02),158,-,-,2026-04-02 15:25:34,2026-04-02 15:25:35,__export__.mrp_production_5967_b9280095,[7001-2580-0026],10
-M5-05 - UMC2 - 5axis  - Manual (UMC750),159,-,-,2026-04-15 13:17:00,2026-04-15 13:17:02,__export__.mrp_production_5967_b9280095,[7001-2580-0026],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),161,-,-,2026-04-02 15:25:41,2026-04-02 15:25:43,__export__.mrp_production_5968_5f06fe03,[7001-2580-0027],10
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),162,-,-,2026-04-15 13:13:01,2026-04-15 13:13:03,__export__.mrp_production_5968_5f06fe03,[7001-2580-0027],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),164,-,-,2026-04-02 15:25:50,2026-04-02 15:25:51,__export__.mrp_production_5969_6dfec934,[7001-2580-0028],20
-M5-03 - UMC1 - 5axis - Manual (UMC750),165,-,-,2026-04-15 13:13:19,2026-04-15 13:13:20,__export__.mrp_production_5969_6dfec934,[7001-2580-0028],20
-MP1 - Mat. prep - automatic sawing (ZGN_01),167,-,-,2026-04-02 15:25:55,2026-04-02 15:25:56,__export__.mrp_production_5970_ae2421b9,[7001-2580-0029],20
-M5-05 - UMC2 - 5axis  - Manual (UMC750),168,-,-,2026-04-15 13:13:38,2026-04-15 13:13:39,__export__.mrp_production_5970_ae2421b9,[7001-2580-0029],20
-MP1 - Mat. prep - automatic sawing (ZGN_01),170,-,-,2026-04-02 15:26:00,2026-04-02 15:26:01,__export__.mrp_production_5971_d207f1af,[7001-2580-0030],20
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",173,-,-,2026-03-23 09:52:41,2026-03-23 09:52:46,__export__.mrp_production_5972_394722b8,[7001-2580-0031],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),176,-,-,2026-03-23 09:45:14,2026-03-23 09:46:15,__export__.mrp_production_5973_16542a9e,[7001-2580-0032],10
-MP2 - Mat. prep - manual sawing (ZGN_02),177,-,-,2026-04-02 15:26:11,2026-04-02 15:26:13,__export__.mrp_production_5973_16542a9e,[7001-2580-0032],10
-M5-05 - UMC2 - 5axis  - Manual (UMC750),178,-,-,2026-04-15 13:16:48,2026-04-15 13:16:49,__export__.mrp_production_5973_16542a9e,[7001-2580-0032],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),180,-,-,2026-04-02 15:26:16,2026-04-02 15:26:18,__export__.mrp_production_5974_6991d0d9,[7001-2580-0033],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),184,-,-,2026-04-02 15:26:22,2026-04-02 15:26:23,__export__.mrp_production_5975_f18ff1af,[7001-2580-0034],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),187,-,-,2026-04-02 15:26:28,2026-04-02 15:26:30,__export__.mrp_production_5976_40901ffc,[7001-2580-0035],10
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),188,-,-,2026-04-17 11:56:49,2026-04-17 11:56:51,__export__.mrp_production_5976_40901ffc,[7001-2580-0035],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),190,-,-,2026-04-02 15:26:35,2026-04-02 15:26:36,__export__.mrp_production_5977_2e3e07da,[7001-2580-0036],10
-M5-05 - UMC2 - 5axis  - Manual (UMC750),191,-,-,2026-04-17 11:57:07,2026-04-17 11:57:09,__export__.mrp_production_5977_2e3e07da,[7001-2580-0036],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),193,-,-,2026-04-02 15:26:40,2026-04-02 15:26:41,__export__.mrp_production_5978_fa57ba3b,[7001-2580-0037],12
-MP1 - Mat. prep - automatic sawing (ZGN_01),196,-,-,2026-04-02 15:26:45,2026-04-02 15:26:46,__export__.mrp_production_5979_70dde6de,[7001-2580-0038],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),199,-,-,2026-03-23 09:45:14,2026-03-23 09:46:16,__export__.mrp_production_5980_7c410dbf,[7001-2580-0039],30
-M3-03 - VF - 3axis - Manual (VF2SS),200,-,-,2026-03-27 14:41:14,2026-03-27 14:41:16,__export__.mrp_production_5980_7c410dbf,[7001-2580-0039],30
-MP1 - Mat. prep - automatic sawing (ZGN_01),201,-,-,2026-04-02 15:28:17,2026-04-02 15:28:18,__export__.mrp_production_5983_dcf32b91,[7001-2540-0009],10
-MP1 - Mat. prep - automatic sawing (ZGN_01),207,-,-,2026-03-23 09:45:16,2026-03-23 09:46:23,__export__.mrp_production_6016_1de5774c,[4022.704.19302],75
-M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,208,Cancelled,Cancelled,2026-04-15 11:07:19,2026-04-17 13:09:01,__export__.mrp_production_6016_1de5774c,[4022.704.19302],75
-M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,209,Cancelled,Cancelled,2026-04-17 13:09:09,2026-04-17 13:09:09,__export__.mrp_production_6016_1de5774c,[4022.704.19302],75
-OUT - Outsourced activity,210,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 11:19:00,2026-06-12 14:20:00,__export__.mrp_production_6016_1de5774c,[4022.704.19302],75
-MP1 - Mat. prep - automatic sawing (ZGN_01),212,-,-,2026-03-23 09:45:16,2026-03-23 09:46:24,__export__.mrp_production_6017_db3c6cdd,[4022.704.19332],75
-OUT - Outsourced activity,214,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 11:31:00,2026-06-12 14:32:00,__export__.mrp_production_6017_db3c6cdd,[4022.704.19332],75
-M3-02 - AW - 3axis - Manual (FR3_02),216,-,-,2026-03-23 10:50:40,2026-03-23 10:50:42,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
-MP1 - Mat. prep - automatic sawing (ZGN_01),217,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
-M4-02 - AW - 4axis - Conveyor Automation (FR4_02),218,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
-BW - Benchwork (BKW_01),219,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-02 09:12:00,2026-06-02 13:13:00,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
-MP1 - Mat. prep - automatic sawing (ZGN_01),222,-,-,2026-03-23 09:45:16,2026-03-23 09:46:25,__export__.mrp_production_6021_b002acfc,[4022.684.32031],38
-OUT - Outsourced activity,224,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-01 09:09:00,2026-06-12 12:10:00,__export__.mrp_production_6021_b002acfc,[4022.684.32031],38
-MP1 - Mat. prep - automatic sawing (ZGN_01),226,-,-,2026-04-02 15:30:55,2026-04-02 15:30:56,__export__.mrp_production_6045_ace1c669,[7005-2580-0017],15
-MP2 - Mat. prep - manual sawing (ZGN_02),229,-,-,2026-04-02 15:31:04,2026-04-02 15:31:05,__export__.mrp_production_6050_c6e1bf21,[7005-2580-0005],20
-MP1 - Mat. prep - automatic sawing (ZGN_01),231,-,-,2026-04-10 11:44:54,2026-04-10 11:44:54,__export__.mrp_production_6052_27860231,[4022-656-73531],90
-MP1 - Mat. prep - automatic sawing (ZGN_01),235,-,-,2026-04-02 15:21:03,2026-04-02 15:21:03,__export__.mrp_production_6053_82316f6e,[4022-673-67281],21
-M3-01 - AW - 3axis - Manual (FR3_01),236,-,-,2026-04-17 13:08:07,2026-04-17 13:08:07,__export__.mrp_production_6053_82316f6e,[4022-673-67281],21
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",245,-,-,2026-03-27 13:03:54,2026-03-27 13:03:54,__export__.mrp_production_6056_6257d170,[4022.704.19282],20
-M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,246,Cancelled,Cancelled,2026-03-27 14:48:18,2026-03-27 14:48:18,__export__.mrp_production_6056_6257d170,[4022.704.19282],20
-MP1 - Mat. prep - automatic sawing (ZGN_01),250,-,-,2026-04-17 13:01:51,2026-04-17 13:01:51,__export__.mrp_production_6060_f6e02d38,[50224615],3
-MP1 - Mat. prep - automatic sawing (ZGN_01),254,-,-,2026-04-17 13:01:48,2026-04-17 13:01:48,__export__.mrp_production_6061_7d09e5b9,[50224506],3
-MP1 - Mat. prep - automatic sawing (ZGN_01),257,-,-,2026-04-17 13:01:44,2026-04-17 13:01:44,__export__.mrp_production_6062_975aaffb,[50224700],3
-MP1 - Mat. prep - automatic sawing (ZGN_01),260,-,-,2026-04-17 13:01:40,2026-04-17 13:01:40,__export__.mrp_production_6063_f2136fb6,[50224606],6
-MP1 - Mat. prep - automatic sawing (ZGN_01),263,-,-,2026-04-17 13:01:37,2026-04-17 13:01:37,__export__.mrp_production_6064_bcabe145,[50224501],3
-MP1 - Mat. prep - automatic sawing (ZGN_01),266,-,-,2026-04-17 13:01:34,2026-04-17 13:01:34,__export__.mrp_production_6065_50f85472,[50224605],3
-MP1 - Mat. prep - automatic sawing (ZGN_01),269,-,-,2026-04-17 13:01:31,2026-04-17 13:01:31,__export__.mrp_production_6066_cbedb4a4,[50224602],6
-MP1 - Mat. prep - automatic sawing (ZGN_01),272,-,-,2026-04-02 15:32:22,2026-04-02 15:32:24,__export__.mrp_production_6090_9a0dc3dd,[7305419],5
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",275,-,-,2026-04-02 15:32:31,2026-04-02 15:32:47,__export__.mrp_production_6091_0e1b5165,[7306642],12
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",277,-,-,2026-04-02 15:33:00,2026-04-02 15:33:03,__export__.mrp_production_6094_9d777ea1,[08200614],5
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",279,-,-,2026-04-02 15:33:09,2026-04-02 15:33:10,__export__.mrp_production_6095_bea3cc35,[7320299],5
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",281,-,-,2026-04-02 15:33:13,2026-04-02 15:33:14,__export__.mrp_production_6096_707cd3b1,[7321951],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),283,-,-,2026-04-02 15:33:19,2026-04-02 15:33:21,__export__.mrp_production_6097_28a7fa95,[7322837],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),286,-,-,2026-04-02 15:33:24,2026-04-02 15:33:25,__export__.mrp_production_6098_6ee49b63,[7323523],8
-MP1 - Mat. prep - automatic sawing (ZGN_01),289,-,-,2026-04-02 15:33:30,2026-04-02 15:33:32,__export__.mrp_production_6099_ae15df1b,[7324140],8
-MP1 - Mat. prep - automatic sawing (ZGN_01),292,-,-,2026-04-02 15:33:36,2026-04-02 15:33:37,__export__.mrp_production_6100_74eae82a,[7325878],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),295,-,-,2026-04-10 11:44:58,2026-04-10 11:44:58,__export__.mrp_production_6101_1eab1499,[7326975],5
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",298,-,-,2026-04-17 13:02:12,2026-04-17 13:02:12,__export__.mrp_production_6102_e06b2dd9,[22203901],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),301,-,-,2026-04-02 15:34:38,2026-04-02 15:34:39,__export__.mrp_production_6103_885b696d,[7317649],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),304,-,-,2026-04-02 15:34:45,2026-04-02 15:34:47,__export__.mrp_production_6104_24e5226c,[7318302],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),307,-,-,2026-04-02 15:34:51,2026-04-02 15:34:53,__export__.mrp_production_6105_9171430e,[7319962],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),310,-,-,2026-04-02 15:35:06,2026-04-02 15:35:07,__export__.mrp_production_6106_10e912ef,[22212103],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),312,-,-,2026-04-02 15:35:11,2026-04-02 15:35:12,__export__.mrp_production_6107_46ff3b0e,[22212107],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),314,-,-,2026-04-02 15:35:16,2026-04-02 15:35:18,__export__.mrp_production_6108_0f4fe190,[22212106],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),316,-,-,2026-04-10 11:44:47,2026-04-10 11:44:47,__export__.mrp_production_6109_43a165d0,[22212117],5
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",318,-,-,2026-04-02 15:35:32,2026-04-02 15:35:33,__export__.mrp_production_6110_771ee578,[26222404],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),320,-,-,2026-04-10 11:45:01,2026-04-10 11:45:01,__export__.mrp_production_6111_81ca87ad,[GO3220T101B],20
-M3-01 - AW - 3axis - Manual (FR3_01),325,-,-,2026-04-17 13:03:11,2026-04-17 13:03:11,__export__.mrp_production_6112_05186945,[4022 690 33861],13
-M3-01 - AW - 3axis - Manual (FR3_01),326,-,-,2026-04-17 13:03:14,2026-04-17 13:03:14,__export__.mrp_production_6112_05186945,[4022 690 33861],13
-MP1 - Mat. prep - automatic sawing (ZGN_01),327,-,-,2026-04-10 11:45:04,2026-04-10 11:45:04,__export__.mrp_production_6113_8c0e7b6a,[4022-631-99701],124
-MP1 - Mat. prep - automatic sawing (ZGN_01),332,-,-,2026-04-02 15:36:03,2026-04-02 15:36:04,__export__.mrp_production_6117_609a3f83,[7353584],5
-MP1 - Mat. prep - automatic sawing (ZGN_01),334,-,-,2026-04-02 15:36:24,2026-04-02 15:36:26,__export__.mrp_production_6119_075768cd,[4022.622.61092],60
-MP1 - Mat. prep - automatic sawing (ZGN_01),341,-,-,2026-04-02 15:36:35,2026-04-02 15:36:36,__export__.mrp_production_6121_b99b66ea,[100159725],4
-M5-03 - UMC1 - 5axis - Manual (UMC750),342,-,-,2026-04-15 13:56:34,2026-04-15 13:56:35,__export__.mrp_production_6121_b99b66ea,[100159725],4
-MP1 - Mat. prep - automatic sawing (ZGN_01),356,-,-,2026-04-17 13:00:16,2026-04-17 13:00:16,__export__.mrp_production_6126_02e4cab5,[4022-333-11506],86
-MP1 - Mat. prep - automatic sawing (ZGN_01),371,-,-,2026-04-17 13:00:21,2026-04-17 13:00:21,__export__.mrp_production_6129_70c8cd1f,[4022-337-33842],145
-MP1 - Mat. prep - automatic sawing (ZGN_01),378,-,-,2026-04-17 13:01:27,2026-04-17 13:01:27,__export__.mrp_production_6130_ba3bb714,[48260701 V02-00],3
-MP1 - Mat. prep - automatic sawing (ZGN_01),382,-,-,2026-04-17 13:01:24,2026-04-17 13:01:24,__export__.mrp_production_6133_ab97924d,[48261205 V01-00],3
-OUT - Outsourced activity,387,-,-,2026-04-07 10:54:07,2026-04-28 13:03:52,__export__.mrp_production_6135_7a4fa595,[4598-008-08901B POS 1],389
-MP1 - Mat. prep - automatic sawing (ZGN_01),388,-,-,2026-04-13 09:28:03,2026-04-13 09:28:05,__export__.mrp_production_6135_7a4fa595,[4598-008-08901B POS 1],389
-MP1 - Mat. prep - automatic sawing (ZGN_01),393,-,-,2026-04-10 11:45:12,2026-04-10 11:45:12,__export__.mrp_production_6138_dbf06a79,[4022.719.28491],16
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",397,-,-,2026-04-17 13:02:16,2026-04-17 13:02:16,__export__.mrp_production_6139_500ed6e7,[4022.719.44971],8
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",401,-,-,2026-04-17 13:02:19,2026-04-17 13:02:19,__export__.mrp_production_6140_6fe0ed89,[4022.719.44981],8
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",405,-,-,2026-04-17 13:02:23,2026-04-17 13:02:23,__export__.mrp_production_6141_4031788a,[4022.719.44991],8
-MP1 - Mat. prep - automatic sawing (ZGN_01),407,-,-,2026-04-10 11:45:20,2026-04-10 11:45:21,__export__.mrp_production_6143_61892801,[4022-333-13805],120
-MP1 - Mat. prep - automatic sawing (ZGN_01),413,-,-,2026-04-15 10:26:15,2026-04-15 10:26:15,__export__.mrp_production_6144_c071ebc2,[M0216-01-091-A],1500
-MP1 - Mat. prep - automatic sawing (ZGN_01),421,-,-,2026-04-17 13:00:25,2026-04-17 13:00:25,__export__.mrp_production_6146_1fc3cff0,[4022.632.63021],1300
-MP1 - Mat. prep - automatic sawing (ZGN_01),424,-,-,2026-04-10 11:45:28,2026-04-10 11:45:28,__export__.mrp_production_6153_46960345,[4022-637-29291],50
-MP1 - Mat. prep - automatic sawing (ZGN_01),429,-,-,2026-04-17 13:00:31,2026-04-17 13:00:31,__export__.mrp_production_6157_3611ba68,[4022-455-01702],2
-MP1 - Mat. prep - automatic sawing (ZGN_01),471,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B],50
-M3-02 - AW - 3axis - Manual (FR3_02),472,-,-,2026-04-17 13:07:31,2026-04-17 13:07:33,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B],50
-M3-02 - AW - 3axis - Manual (FR3_02),473,__export__.mrp_workcenter_55_15609e22,M3-02_(FR3_02),2026-06-02 14:39:00,2026-06-03 23:29:00,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B],50
-MP1 - Mat. prep - automatic sawing (ZGN_01),477,-,-,2026-04-15 13:26:14,2026-04-15 13:26:16,__export__.mrp_production_6193_869219d7,[00429-00-662-B],178
-M3-02 - AW - 3axis - Manual (FR3_02),478,__export__.mrp_workcenter_55_15609e22,M3-02_(FR3_02),2026-06-02 10:09:00,2026-06-02 13:13:00,__export__.mrp_production_6193_869219d7,[00429-00-662-B],178
-BW - Benchwork (BKW_01),479,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-03 08:14:00,2026-06-03 08:25:00,__export__.mrp_production_6193_869219d7,[00429-00-662-B],178
-PACK - Packaging (VERP_P),480,__export__.mrp_workcenter_67_d1ac8ce6,PACK_(VERP_P),2026-06-03 10:25:00,2026-06-03 10:31:00,__export__.mrp_production_6193_869219d7,[00429-00-662-B],178
-MP1 - Mat. prep - automatic sawing (ZGN_01),481,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6194_00aea810,[1508130 B],115
-M5-01 - AW - 5axis - Conveyor Automation (FR5_01),482,__export__.mrp_workcenter_58_a525d5b9,M5-01_(FR5_01),2026-06-01 09:38:00,2026-06-05 15:50:00,__export__.mrp_production_6194_00aea810,[1508130 B],115
-MP1 - Mat. prep - automatic sawing (ZGN_01),497,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
-M4-02 - AW - 4axis - Conveyor Automation (FR4_02),498,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
-M3-01 - AW - 3axis - Manual (FR3_01),499,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
-BW - Benchwork (BKW_01),500,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-03 08:40:00,2026-06-03 13:17:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
-MP1 - Mat. prep - automatic sawing (ZGN_01),503,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6200_0df5452c,[00385-00-346-A],264
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),504,-,-,2026-04-20 16:12:52,2026-04-20 16:12:54,__export__.mrp_production_6200_0df5452c,[00385-00-346-A],264
-M5-06 - UMC400 - 5axis  - Manual (UMC400)_ISSUE!,505,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6200_0df5452c,[00385-00-346-A],264
-BW - Benchwork (BKW_01),506,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-01 14:40:00,2026-06-01 23:29:00,__export__.mrp_production_6200_0df5452c,[00385-00-346-A],264
-OUT - Outsourced activity,507,__export__.mrp_workcenter_68_8bff6631,OUT - Outsourced activity_(OUT - Outsourced),2026-06-02 09:25:00,2026-06-08 14:56:00,__export__.mrp_production_6200_0df5452c,[00385-00-346-A],264
-"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",561,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6217_755fbf9a,[7007-2500-0009],10
-M3-03 - VF - 3axis - Manual (VF2SS),562,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6217_755fbf9a,[7007-2500-0009],10
-M5-04 - UMCSS - 5axis  - Manual (UMC750SS),563,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6217_755fbf9a,[7007-2500-0009],10
-M4-01 - AW - 4axis - Conveyor Automation (FR4_01),564,-,-,2026-04-24 12:49:26,2026-04-24 12:49:28,__export__.mrp_production_6224_60bd1d38,[4022-666-3837-1],115
-M3-02 - AW - 3axis - Manual (FR3_02),565,__export__.mrp_workcenter_55_15609e22,M3-02_(FR3_02),2026-06-01 09:12:00,2026-06-01 17:32:00,__export__.mrp_production_6224_60bd1d38,[4022-666-3837-1],115
-BW - Benchwork (BKW_01),566,__export__.mrp_workcenter_66_9f807a30,BW_(BKW_01),2026-06-02 13:26:00,2026-06-02 17:17:00,__export__.mrp_production_6224_60bd1d38,[4022-666-3837-1],115
-PACK - Packaging (VERP_P),567,__export__.mrp_workcenter_67_d1ac8ce6,PACK_(VERP_P),2026-06-03 08:16:00,2026-06-03 10:12:00,__export__.mrp_production_6224_60bd1d38,[4022-666-3837-1],115
+MP2 - Mat. prep - manual sawing (ZGN_02),32,-,-,2026-02-06 14:30:25,2026-02-06 14:30:25,__export__.mrp_production_5325_9ceb90b0,[4023-002-36551],25
+M4-01 - AW - 4axis - Conveyor Automation (FR4_01),33,-,-,2026-02-06 14:30:36,2026-03-23 10:49:37,__export__.mrp_production_5325_9ceb90b0,[4023-002-36551],25
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",38,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_5680_ed5f1e28,[4022.622.61481],24
+MP1 - Mat. prep - automatic sawing (ZGN_01),40,-,-,2026-03-23 09:45:11,2026-03-23 09:46:04,__export__.mrp_production_5822_d253f190,[4512-127-05186B],979
+M5-01 - AW - 5axis - Conveyor Automation (FR5_01),43,-,-,2026-05-06 13:02:49,2026-05-06 13:02:50,__export__.mrp_production_5822_d253f190,[4512-127-05186B],979
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",44,-,-,2026-03-23 09:52:13,2026-03-23 09:52:18,__export__.mrp_production_5851_eb3587d0,[B620261-5],2
+M3-01 - AW - 3axis - Manual (FR3_01),46,-,-,2026-06-09 13:05:33,2026-06-09 13:05:35,__export__.mrp_production_5851_eb3587d0,[B620261-5],2
+M3-02 - AW - 3axis - Manual (FR3_02),47,-,-,2026-06-09 13:05:36,2026-06-09 13:05:38,__export__.mrp_production_5851_eb3587d0,[B620261-5],2
+BW - Benchwork (BKW_01),48,-,-,2026-06-09 13:05:40,2026-06-09 13:05:41,__export__.mrp_production_5851_eb3587d0,[B620261-5],2
+M3-02 - AW - 3axis - Manual (FR3_02),50,-,-,2026-03-23 10:50:40,2026-03-23 10:50:42,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
+MP1 - Mat. prep - automatic sawing (ZGN_01),51,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
+M4-02 - AW - 4axis - Conveyor Automation (FR4_02),52,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1],80
+MP1 - Mat. prep - automatic sawing (ZGN_01),56,-,-,2026-04-17 13:00:16,2026-04-17 13:00:16,__export__.mrp_production_6126_02e4cab5,[4022-333-11506],86
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",62,-,-,2026-06-10 15:44:57,2026-06-10 15:44:58,__export__.mrp_production_6127_8d0cae6b,[00385-00-113A],700
+MP1 - Mat. prep - automatic sawing (ZGN_01),66,-,-,2026-06-10 15:45:11,2026-06-10 15:45:13,__export__.mrp_production_6128_adce9df4,[00385-00-329-A],319
+OUT - Outsourced activity,71,-,-,2026-04-07 10:54:07,2026-04-28 13:03:52,__export__.mrp_production_6135_7a4fa595,[4598-008-08901B POS 1],389
+MP1 - Mat. prep - automatic sawing (ZGN_01),72,-,-,2026-04-13 09:28:03,2026-04-13 09:28:05,__export__.mrp_production_6135_7a4fa595,[4598-008-08901B POS 1],389
+MP1 - Mat. prep - automatic sawing (ZGN_01),77,-,-,2026-04-10 11:45:20,2026-04-10 11:45:21,__export__.mrp_production_6143_61892801,[4022-333-13805],120
+MP1 - Mat. prep - automatic sawing (ZGN_01),83,-,-,2026-04-15 10:26:15,2026-04-15 10:26:15,__export__.mrp_production_6144_c071ebc2,[M0216-01-091-A],1500
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",88,-,-,2026-05-12 13:49:04,2026-05-12 13:49:07,__export__.mrp_production_6160_45a88c11,[4022.704.19282],60
+OUT - Outsourced activity,93,-,-,2026-05-12 13:49:09,2026-06-02 15:51:35,__export__.mrp_production_6160_45a88c11,[4022.704.19282],60
+MP1 - Mat. prep - automatic sawing (ZGN_01),94,-,-,2026-06-09 13:03:44,2026-06-09 13:03:46,__export__.mrp_production_6163_61e3daa7,[00429-00-249-A],418
+M4-01 - AW - 4axis - Conveyor Automation (FR4_01),95,-,-,2026-06-09 13:03:47,2026-06-09 13:03:55,__export__.mrp_production_6163_61e3daa7,[00429-00-249-A],418
+BW - Benchwork (BKW_01),96,-,-,2026-06-09 13:03:53,2026-06-09 13:03:56,__export__.mrp_production_6163_61e3daa7,[00429-00-249-A],418
+MP1 - Mat. prep - automatic sawing (ZGN_01),99,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B],50
+M3-02 - AW - 3axis - Manual (FR3_02),100,-,-,2026-04-17 13:07:31,2026-04-17 13:07:33,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B],50
+MP1 - Mat. prep - automatic sawing (ZGN_01),105,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6194_00aea810,[1508130 B],115
+M5-01 - AW - 5axis - Conveyor Automation (FR5_01),106,-,-,2026-04-15 13:49:48,2026-06-10 15:53:48,__export__.mrp_production_6194_00aea810,[1508130 B],115
+MP1 - Mat. prep - automatic sawing (ZGN_01),110,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
+M4-02 - AW - 4axis - Conveyor Automation (FR4_02),111,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
+M3-01 - AW - 3axis - Manual (FR3_01),112,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1],92
+MP1 - Mat. prep - automatic sawing (ZGN_01),116,-,-,2026-06-10 15:57:20,2026-06-10 15:57:21,__export__.mrp_production_6204_58badac8,[4022-470-85441],20
+MP1 - Mat. prep - automatic sawing (ZGN_01),121,-,-,2026-06-10 15:51:47,2026-06-10 15:51:48,__export__.mrp_production_6205_8e927596,[00385-00-274-D],616
+MP1 - Mat. prep - automatic sawing (ZGN_01),126,-,-,2026-06-10 15:52:24,2026-06-10 15:52:26,__export__.mrp_production_6206_24cb6a6a,[00385-00-320-A],654
+MP1 - Mat. prep - automatic sawing (ZGN_01),131,-,-,2026-06-10 15:52:29,2026-06-10 15:52:31,__export__.mrp_production_6207_1e14eead,[00385-00-321-A],714
+MP1 - Mat. prep - automatic sawing (ZGN_01),137,-,-,2026-06-10 15:52:39,2026-06-10 15:52:40,__export__.mrp_production_6208_1095546a,[00385-00-346-A],714
+OUT - Outsourced activity,141,-,-,2026-04-30 09:35:26,2026-05-21 12:31:31,__export__.mrp_production_6208_1095546a,[00385-00-346-A],714
+MP1 - Mat. prep - automatic sawing (ZGN_01),143,-,-,2026-06-10 15:53:08,2026-06-10 15:53:10,__export__.mrp_production_6209_9f61b525,[00429-00-662-B],420
+MP1 - Mat. prep - automatic sawing (ZGN_01),147,-,-,2026-06-10 15:53:52,2026-06-10 15:53:53,__export__.mrp_production_6210_afc3a4ad,[1508130 B],160
+MP1 - Mat. prep - automatic sawing (ZGN_01),152,-,-,2026-06-10 15:59:03,2026-06-10 15:59:05,__export__.mrp_production_6226_16fa701d,[4022-651-14271],100
+MP1 - Mat. prep - automatic sawing (ZGN_01),158,-,-,2026-06-10 15:59:14,2026-06-10 15:59:16,__export__.mrp_production_6233_88adf94a,[4022.647.81691],15
+M5-01 - AW - 5axis - Conveyor Automation (FR5_01),159,-,-,2026-06-10 15:59:17,2026-06-10 15:59:18,__export__.mrp_production_6233_88adf94a,[4022.647.81691],15
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",160,-,-,2026-06-10 15:59:24,2026-06-10 15:59:25,__export__.mrp_production_6238_c3622eeb,[7005-2580-0014],7
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",163,-,-,2026-06-10 15:59:28,2026-06-10 15:59:30,__export__.mrp_production_6239_138faa60,[7005-2580-0010],4
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",166,-,-,2026-06-10 15:59:33,2026-06-10 15:59:35,__export__.mrp_production_6240_135bf573,[7005-2580-0015],7
+MP1 - Mat. prep - automatic sawing (ZGN_01),169,-,-,2026-06-10 15:59:44,2026-06-10 15:59:45,__export__.mrp_production_6246_819c34e3,[00385-00-102-C],600
+MP1 - Mat. prep - automatic sawing (ZGN_01),174,-,-,2026-05-05 13:09:10,2026-05-05 13:09:16,__export__.mrp_production_6255_84ac8129,[4022.622.61092],60
+M5-03 - UMC1 - 5axis - Manual (UMC750),175,-,-,2026-06-09 13:05:14,2026-06-09 13:05:16,__export__.mrp_production_6255_84ac8129,[4022.622.61092],60
+M3-03 - VF - 3axis - Manual (VF2SS),176,-,-,2026-06-09 13:05:18,2026-06-09 13:05:19,__export__.mrp_production_6255_84ac8129,[4022.622.61092],60
+OUT - Outsourced activity,177,-,-,2026-06-05 15:25:58,2026-06-23 17:11:51,__export__.mrp_production_6255_84ac8129,[4022.622.61092],60
+MP1 - Mat. prep - automatic sawing (ZGN_01),185,-,-,2026-06-10 16:00:54,2026-06-10 16:00:55,__export__.mrp_production_6258_551385d8,[4512-127-05186B],1000
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",189,-,-,2026-06-10 16:00:59,2026-06-10 16:01:01,__export__.mrp_production_6259_202f1f5f,[4022-333-19505],100
+MP1 - Mat. prep - automatic sawing (ZGN_01),193,-,-,2026-06-10 16:02:49,2026-06-10 16:02:50,__export__.mrp_production_6262_e8dc0d39,[4022.684.32031],80
+MP1 - Mat. prep - automatic sawing (ZGN_01),197,-,-,2026-06-10 16:02:57,2026-06-10 16:02:58,__export__.mrp_production_6276_848a2216,[7005-2580-0007],8
+M5-02 - AW - 5axis - Pallet Automation (FR5_02),198,-,-,2026-06-10 16:03:00,2026-06-10 16:03:01,__export__.mrp_production_6276_848a2216,[7005-2580-0007],8
+MP1 - Mat. prep - automatic sawing (ZGN_01),200,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6300_645dbbde,[4022-637-29301],17
+M4-02 - AW - 4axis - Conveyor Automation (FR4_02),201,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6300_645dbbde,[4022-637-29301],17
+M4-02 - AW - 4axis - Conveyor Automation (FR4_02),202,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6300_645dbbde,[4022-637-29301],17
+M4-02 - AW - 4axis - Conveyor Automation (FR4_02),203,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6300_645dbbde,[4022-637-29301],17
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",210,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6311_b88cd472,[4022.704.19282],17
+M5-06 - UMC400 - 5axis  - Manual (UMC400),211,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_6311_b88cd472,[4022.704.19282],17
+"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",227,-,-,2026-06-10 16:22:58,2026-06-10 16:22:59,__export__.mrp_production_6398_e2f64dab,[4022.689.94981],8
+MP1 - Mat. prep - automatic sawing (ZGN_01),256,-,-,2026-06-09 13:01:33,2026-06-09 13:01:35,__export__.mrp_production_6437_b0914173,[4022.620.02663],3
+M3-01 - AW - 3axis - Manual (FR3_01),257,-,-,2026-06-09 13:01:37,2026-06-09 13:01:38,__export__.mrp_production_6437_b0914173,[4022.620.02663],3
+M3-01 - AW - 3axis - Manual (FR3_01),258,-,-,2026-06-09 13:01:39,2026-06-09 13:01:40,__export__.mrp_production_6437_b0914173,[4022.620.02663],3
+M3-01 - AW - 3axis - Manual (FR3_01),259,-,-,2026-06-09 13:01:41,2026-06-09 13:01:43,__export__.mrp_production_6437_b0914173,[4022.620.02663],3
+OUT - Outsourced activity,260,-,-,2026-06-10 14:44:25,2026-06-17 15:01:19,__export__.mrp_production_6437_b0914173,[4022.620.02663],3
+MP1 - Mat. prep - automatic sawing (ZGN_01),266,-,-,2026-06-10 15:13:51,2026-06-10 15:13:53,__export__.mrp_production_6439_83941002,[4022.684.32071],300
+MP1 - Mat. prep - automatic sawing (ZGN_01),439,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_7069_c01d62c8,[4022.632.63021],1070
+M3-01 - AW - 3axis - Manual (FR3_01),440,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_7069_c01d62c8,[4022.632.63021],1070
+MP1 - Mat. prep - automatic sawing (ZGN_01),441,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_7069_c01d62c8,[4022.632.63021],1070
+MP1 - Mat. prep - automatic sawing (ZGN_01),542,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_7098_92dba811,[4022-666-65702(R1)],524
+M4-01 - AW - 4axis - Conveyor Automation (FR4_01),543,Cancelled,Cancelled,2000-01-01 00:00:00,2000-01-01 00:00:00,__export__.mrp_production_7098_92dba811,[4022-666-65702(R1)],524
