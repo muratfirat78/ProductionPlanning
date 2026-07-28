@@ -127,7 +127,7 @@ class ExecEvent(object):
         if self.getName() == "Trailer Transport":
             return self.getEquipment()
             
-        if self.getName() == "Operator Move":
+        if self.getName() == "Operator Move" or self.getName() == "Bring Equipment":
             return self.getToLocation()
         
         if self.getName() == "Trailer Unloading" or self.getName() == "Machine Unloading":
@@ -155,6 +155,10 @@ class ExecEvent(object):
 
     ######################################################################################
     def sampleProcessTime(self,workmgr):
+
+        workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl?: "+str(self.getFromLocation() == None)+", tl?: "+str(self.getToLocation()== None))
+
+        
         if self.getName() == "Machine Setup":
             self.ProcessTime = self.getFromLocation().getMachine().getSetupTime()
         if self.getName() == "Machine Loading":
@@ -172,7 +176,8 @@ class ExecEvent(object):
             self.ProcessTime = 1
 
         
-        if self.getName() == "Trailer Transport" or self.getName() == "Operator Move":
+        if self.getName() == "Trailer Transport" or self.getName() == "Operator Move" or self.getName() == "Bring Equipment":
+            workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl: "+str(self.getFromLocation().getName())+", tl: "+str(self.getToLocation().getName()))
             self.ProcessTime = workmgr.getLayout().getDistance(self.getFromLocation(),self.getToLocation())
         
 
