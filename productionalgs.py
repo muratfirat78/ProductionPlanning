@@ -36,8 +36,7 @@ class ProductionAlgManager(AlgorithmManager):
         #self.getSimulator().saveLog("REPORT: >>> event:  "+str(event.getName()))
         
         if event.getName() == "Machine Setup": 
-            self.getSimulator().saveLog("REPORT: >>> FROM LOCATION NONE?:  "+str(event.getFromLocation() == None))
-            self.getSimulator().saveLog("REPORT: >>> MACHINE NONE?:  "+str(event.getFromLocation().getMachine() == None))
+        
             if event.getFromLocation().getMachine().isAvailable():
                 self.getSimulator().saveLog("REPORT: >>> event in processmatch:  "+str(event in event.getFromLocation().getMachine().getProcessMatch()))
                 if event in event.getFromLocation().getMachine().getProcessMatch():
@@ -49,20 +48,24 @@ class ProductionAlgManager(AlgorithmManager):
                     if processr != None:
                         selected_equip = processr
         else:        
-            if event.getName() == "Machi e Processing": 
+            if event.getName() == "Machine Processing": 
             # only resume case, equipment/processor is only checked for availability. 
                 if event.getEquipment().isAvailable():
                     selected_equip = event.getProgressList()[-1][0] 
                     
             else:
             # event types: trailer loading (case: handle)
+                self.getSimulator().saveLog("REPORT: >>> Algorithm str equip: event location: "+str(event.getLocation().getName()))
+             
                 av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
-                self.getSimulator().saveLog(" av_equip: "+str(len(av_equip)))   
+                
+                self.getSimulator().saveLog("REPORT: av_equip: "+str(len(av_equip)))   
                 comp_equip = [r for r in av_equip if (r.isIdle())]
-                self.getSimulator().saveLog(" comp_equip: "+str(len(comp_equip)))
+                self.getSimulator().saveLog("REPORT: comp_equip: "+str(len(comp_equip)))
                 
                 if len(comp_equip) > 0:  
                     onloc_equip = [r for r in comp_equip if r.getLocation() == event.getFromLocation().getLocation()]
+                    self.getSimulator().saveLog("REPORT: onloc_equip: "+str(len(onloc_equip)))
                     selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
 
                 
@@ -81,13 +84,13 @@ class ProductionAlgManager(AlgorithmManager):
         #self.getSimulator().saveLog(" REPORT: >>> assignStraightResource: avail_comp_res "+str(len(avail_comp_res)))
         
         idle_res = [r for r in avail_comp_res if r.isIdle()] 
-
-        
-
+      
+        self.getSimulator().saveLog("REPORT: >>> Algorithm str res: event location: "+str(event.getLocation().getName()))
+        self.getSimulator().saveLog("REPORT:  >>> Algorithm: idle_res "+str(len(idle_res)))
         if len(idle_res) > 0:
-            if len(idle_res) > 0:
-                onloc_res = [r for r in idle_res if r.getLocation() == event.getFromLocation().getLocation()]
-                self.getSimulator().saveLog(" >>> Algorithm: onloc_res "+str(len(onloc_res)))
+            
+            onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
+            self.getSimulator().saveLog("REPORT: >>> Algorithm: onloc_res "+str(len(onloc_res)))
 
             selected_res = onloc_res[0] if len(onloc_res) > 0 else idle_res[0]
 
@@ -113,6 +116,7 @@ class ProductionAlgManager(AlgorithmManager):
 
         select_id = 0
 
+        self.getSimulator().saveLog("REPORT: >>> Algorithm: findTrailerLoadEarliestOrder <<<  tolocation None? "+str(event.getToLocation() == None))
         
         selection_loc = event.getToLocation() if event.getName() != "Machine Setup" else event.getFromLocation().getMachine()
 

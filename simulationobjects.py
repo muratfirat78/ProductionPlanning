@@ -101,26 +101,40 @@ class ExecEvent(object):
         self.startdelay = 0
         self.logisticalevents = []
 
-       #  Event  -  From       -   To
-       # TL       OutputBuffer    Trailer
-       # TT       OutputBuffer   InputBuffer
-       # TU        Trailer       InputBuffer
-       # MS       InputBuffer      ---
-       # ML       InputBuffer     Machine
-       # PROC       Machine        ---
-       # MU         Machine      OutputBuffer 
+       #            Event  -  From       -   To           Equip        Resource    Event-loc         Equuipment Loc    Resource Loc
+       #(OprMove)-> TL       OutputBuffer    Trailer        Trailer     Operator     From-loc           From-loc         From-loc 
+
+    
+       #            TT       OutputBuffer   InputBuffer     Trailer     Operator     Equipment          Equipment        Equipment
+
+    
+       #             TU        Trailer       InputBuffer     Trailer     Operator     To-loc             To-loc           To-loc
+
+    
+       # (OprMove)-> MS       InputBuffer      ---           Machine     Operator     From-loc            -----           From-loc
+       # (OprMove)-> ML       InputBuffer     Machine        Machine     Operator     From-loc      	 From-loc         From-loc
+       #             PROC       Machine        ---           Machine      ------        --------        ----------       ---------- 
+
+
+    
+       # (OprMove)-> MU         Machine      OutputBuffer    Machine     Operator     To-loc             To-loc           To-loc
+  
+
 
 
     def getLocation(self):
         
-        if self.getName() in ["Trailer Loading","Machine Setup","Machine Loading","Machine Processing","Machine Unloading"]:
-            return self.getFromLocation().getLocation()
         if self.getName() == "Trailer Transport":
             return self.getEquipment()
-        if self.getName() == "Trailer Unloading":
-            return self.getToLocation().getLocation()
+            
+        if self.getName() == "Operator Move":
+            return self.getToLocation()
         
-        return None 
+        if self.getName() == "Trailer Unloading" or self.getName() == "Machine Unloading":
+            return self.getToLocation().getLocation()
+
+        # "Trailer Loading","Machine Setup","Machine Loading","Machine Processing"
+        return self.getFromLocation().getLocation()
 
     def setSuspendedPredecessor(self,pr):
         self.suspendedpredecessor = pr
@@ -157,8 +171,10 @@ class ExecEvent(object):
         if self.getName() in ["Trailer Loading","Trailer Unloading"]:
             self.ProcessTime = 1
 
-        if self.getName() == "Trailer Transport":
+        
+        if self.getName() == "Trailer Transport" or self.getName() == "Operator Move":
             self.ProcessTime = workmgr.getLayout().getDistance(self.getFromLocation(),self.getToLocation())
+        
 
         return
     #######################################################################################

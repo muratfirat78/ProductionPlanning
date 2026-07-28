@@ -153,6 +153,7 @@ class Simulator(object):
 
                 try:
                     if self.getTime() % self.getShiftMinutes() == 0:
+                        
                         self.saveLog(" >>>>>>>>>>>>>>>>>>  Shift start: "+str(self.getRealTime())+"<<<<<<<<<<<<<<<<<<<"+"hour: "+str(self.getRealTime().hour)+"shift: "+str(self.getShift(self.getRealTime().hour))+" sim time: "+str(self.getTime()))
                         self.saveLog(" >>>>>>>>>>>>>>>>>> Current day: "+str(self.getCurrentDay())+" shift: "+str(self.getCurrentShift()))
                         OperationsMgr.applyShiftChange()
@@ -163,6 +164,7 @@ class Simulator(object):
 
                 try: 
                     for event in self.getEventQueue()["Pending"]:
+                        self.saveLog("REPORT: pending event"+str(event.getName()))
                         OperationsMgr.ProgressEvent(event)  
 
                     if self.getTime() in self.getEventQueue():
@@ -171,6 +173,7 @@ class Simulator(object):
             
                         while len(time_events) > 0:
                             for event in time_events:
+                                self.saveLog("REPORT: time event"+str(event.getName()))
                                 OperationsMgr.ProgressEvent(event)
                             execround += 1
                             time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started events

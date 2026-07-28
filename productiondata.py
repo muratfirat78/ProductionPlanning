@@ -65,7 +65,7 @@ class ProductionDataManager(DataManager):
                         self.getOperationsManager().getSimulator().saveLog("Error in reading available shifts of operator "+str(r['Name']))
                     #myname,avshifts,mycap,sim,workmngr
                     optr = Operator(r['Name'],AvlShifts,1,self.getSimulator(),self.getOperationsManager())
-                    optr.setLocation(self.getOperationsManager().getCentralInventory())
+                    optr.setLocation(self.getOperationsManager().getCentralInventory().getLocation())
                     optr.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(optr) 
                 if r['ResourceType'] == 'Machine': #mycap,sim,workmngr  
