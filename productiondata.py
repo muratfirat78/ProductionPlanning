@@ -95,7 +95,9 @@ class ProductionDataManager(DataManager):
                     
                     machloc = Location(r['Name']+"_Location",len(self.getOperationsManager().getLayout().getLocations()))
                     self.getOperationsManager().getLayout().getLocations().append(machloc)
-                    mach = Machine(mcode,machloc,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
+                    NoProcessors = 1000 if r['Name'] == "OUT - Outsourced activity_(OUT - Outsourced)" else 1
+            
+                    mach = Machine(mcode,NoProcessors,machloc,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
                     mach.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(mach)
                     

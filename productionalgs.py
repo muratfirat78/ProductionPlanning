@@ -38,12 +38,12 @@ class ProductionAlgManager(AlgorithmManager):
         if event.getName() == "Machine Setup": 
         
             if event.getFromLocation().getMachine().isAvailable():
-                self.getSimulator().saveLog("REPORT: >>> event in processmatch:  "+str(event in event.getFromLocation().getMachine().getProcessMatch()))
+                
                 if event in event.getFromLocation().getMachine().getProcessMatch():
                     selected_equip = event.getFromLocation().getMachine().getProcessMatch()[event]
                 else:
                     processr = event.getFromLocation().getMachine().getProcessor()
-                    self.getSimulator().saveLog("REPORT: Assign processor at machine "+event.getFromLocation().getMachine().getName()+" processor found? "+str(processr != None))
+                    
                     
                     if processr != None:
                         selected_equip = processr
@@ -85,12 +85,12 @@ class ProductionAlgManager(AlgorithmManager):
         
         idle_res = [r for r in avail_comp_res if r.isIdle()] 
       
-        self.getSimulator().saveLog("REPORT: >>> Algorithm str res: event location: "+str(event.getLocation().getName()))
-        self.getSimulator().saveLog("REPORT:  >>> Algorithm: idle_res "+str(len(idle_res)))
+        #self.getSimulator().saveLog("REPORT: >>> Algorithm str res: event location: "+str(event.getLocation().getName()))
+        #self.getSimulator().saveLog("REPORT:  >>> Algorithm: idle_res "+str(len(idle_res)))
         if len(idle_res) > 0:
             
             onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
-            self.getSimulator().saveLog("REPORT: >>> Algorithm: onloc_res "+str(len(onloc_res)))
+            #self.getSimulator().saveLog("REPORT: >>> Algorithm: onloc_res "+str(len(onloc_res)))
 
             selected_res = onloc_res[0] if len(onloc_res) > 0 else idle_res[0]
 

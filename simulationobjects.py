@@ -21,11 +21,15 @@ class Location():
     def __init__(self,locname,locid):
         self.name = locname
         self.resources = []
+        self.id = locid
 
+        
     def getResources(self):
         return self.resources
     def getName(self):
         return self.name
+    def getID(self):
+        return self.id
         
 
 class SimEvent(object):
@@ -96,6 +100,7 @@ class ExecEvent(object):
         self.status = "Pending"
         self.Place = None
         self.suspendedpredecessor = None
+        self.suspendedsuccessor = None
         
 
         self.startdelay = 0
@@ -119,6 +124,13 @@ class ExecEvent(object):
     
        # (OprMove)-> MU         Machine      OutputBuffer    Machine     Operator     To-loc             To-loc           To-loc
   
+
+    def setSuspendedSuccessor(self,succssr):
+        self.suspendedsuccessor = succssr
+        return
+
+    def getSuspendedSuccessor(self):
+        return self.suspendedsuccessor
 
 
 
@@ -156,7 +168,7 @@ class ExecEvent(object):
     ######################################################################################
     def sampleProcessTime(self,workmgr):
 
-        workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl?: "+str(self.getFromLocation() == None)+", tl?: "+str(self.getToLocation()== None))
+        #workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl?: "+str(self.getFromLocation() == None)+", tl?: "+str(self.getToLocation()== None))
 
         
         if self.getName() == "Machine Setup":
@@ -177,7 +189,7 @@ class ExecEvent(object):
 
         
         if self.getName() == "Trailer Transport" or self.getName() == "Operator Move" or self.getName() == "Bring Equipment":
-            workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl: "+str(self.getFromLocation().getName())+", tl: "+str(self.getToLocation().getName()))
+            #workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl: "+str(self.getFromLocation().getName())+", tl: "+str(self.getToLocation().getName()))
             self.ProcessTime = workmgr.getLayout().getDistance(self.getFromLocation(),self.getToLocation())
         
 

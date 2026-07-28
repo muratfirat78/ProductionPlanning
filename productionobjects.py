@@ -93,7 +93,7 @@ class Buffer(Resource):
 #_______________________________________________________________________  
 class Machine(Resource):
     
-    def __init__(self,machcode,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
+    def __init__(self,machcode,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
         super().__init__(myname,"Machine",mycap,sim,workmngr)
         self.InputBuffer = Buffer("Input",self,1000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000,sim,workmngr)
@@ -110,12 +110,11 @@ class Machine(Resource):
     
         self.ProgressDict = dict() # key: processevent, val: (start,end), all in simtime
         self.ProcessMatch = dict() #key: processorid  val: processevent
-        self.NoProcessors = 1
+        self.NoProcessors = nrprocessors
         self.suspendedEvent = None
    
 
-        if myname == "OUT - Outsourced activity_(OUT - Outsourced)":
-            self.NoProcessors = 1000
+       
 
 
     def getSuspendedEvent(self):

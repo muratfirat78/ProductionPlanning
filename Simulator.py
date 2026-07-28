@@ -12,6 +12,7 @@ class Simulator(object):
         
         self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
         self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
+        self.LocationData = [] # [{"EventID':...,"EventName":...,'Status':...}]
         self.queue = {} #key: time (start/completion times of events) , val: [event]
         self.time = 0
         self.eventno = 0
@@ -114,6 +115,9 @@ class Simulator(object):
         return self.EventData
     def getExecutionData(self):
         return self.ExecutionData
+
+    def getLocationData(self):
+        return self.LocationData
           
     def getTimeLimit(self):
         return self.TimeLimit
@@ -164,7 +168,7 @@ class Simulator(object):
 
                 try: 
                     for event in self.getEventQueue()["Pending"]:
-                        self.saveLog("REPORT: pending event"+str(event.getName()))
+                        #self.saveLog("REPORT: pending event"+str(event.getName()))
                         OperationsMgr.ProgressEvent(event)  
 
                     if self.getTime() in self.getEventQueue():
@@ -173,7 +177,7 @@ class Simulator(object):
             
                         while len(time_events) > 0:
                             for event in time_events:
-                                self.saveLog("REPORT: time event"+str(event.getName()))
+                                #self.saveLog("REPORT: time event"+str(event.getName()))
                                 OperationsMgr.ProgressEvent(event)
                             execround += 1
                             time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started events
@@ -184,12 +188,6 @@ class Simulator(object):
               
                 self.updateTime(1)
 
-                if len(self.getEventQueue()["Pending"]) == 0:
-                    nopending = [ x for x in self.getEventQueue().keys() if x!= "Pending" ]
-                    laterevents = [ x for x in nopending if int(x) >= self.getTime() ]
-                    if len(laterevents) == 0:
-                        break
-           
             end = timer()
             
             try:
