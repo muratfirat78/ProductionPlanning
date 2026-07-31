@@ -105,7 +105,9 @@ class ProductionAlgManager(AlgorithmManager):
         select_dict = dict() #determine order items
         orders = []
     
-        for item in event.getFromLocation().getItems():  
+        for item in event.getFromLocation().getItems():
+            if item.getReservedEvent()!= None:
+                continue
             myorder = item.getDemand()
             if not myorder in select_dict:
                 select_dict[myorder] = []

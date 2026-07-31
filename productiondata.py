@@ -228,8 +228,7 @@ class ProductionDataManager(DataManager):
                             myopr.setFinished()
                             myopr.setStatus("Finished")
 
-                        if pd.isna(opr) or r['Work Orders/Status'][oprid] in ["Finished","Completed","Cancelled"]:
-                            myopr.setExecutionData(None,self.getOperationsManager().getSimulator())
+                       
     
                         oprsequence.append(myopr)        
                         oprid+=1

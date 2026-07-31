@@ -1,0 +1,50 @@
+
+28/07/2026:
+Logistical events are completed. They are never pending and their completion is only scheduled. 
+They have direct precedence relations, not via event types.  
+
+29/07/2026: 
+Problem: Scheduled pending events disappear and never come to consideration.
+Solution: 
+Weekend jump makes a time leap in simtime. The events that are to be suspended at the time when just last shift finishes are not considered due to this. 
+So, events are moved forward and the ones they need handling, they are explicitly moved to pending, from scheduled. 
+(Scheduled pending event is placed in EventQueue at certain time such that at that time it is handled. An event in pending list of EventQueue is continuously checked for handling)  
+ 
+
+30/07/2026: 
+Problem: Machine Loading misses items to move from the input. 
+Solution: 
+Machine setup is triggered by Trainer Unloading and Machine Unloading. 
+When there is already a Machine Setup generated, later Machine Unloading also triggers MS event and unnecessary MS event is created.
+This happens in OutSourced machine, since we do not register there the pendingevent of input buffer. 
+The reason is that the items convenient for lastly generated MS are not selected/reserved.
+
+So Select Item decision is just made during the event creation, moved from handle. 
+Moreover, a property for the items defined: reservedevent. Now, event generation looks for unreserved items, not just items. 
+
+31/07/2026:
+Test: Orders 10 
+Problem: 
+3711: ERROR in execute events: '>' not supported between instances of 'float' and 'NoneType'
+Fixed:
+If machine is automated, then process time of machine unloading is 1.
+
+TEST Orders 9 OK
+TEST Orders 10 
+Problem
+6241: REPORT: Handle : , resource assigned: Operator 2, idle False, Machine Loading-216
+6241: REPORT: event : Machine Loading(216), res on loc? False, equip on loc? True
+6241: REPORT: >>>>>>>>> event location: M3-01_(FR3_01)_Location
+6241: REPORT: >>>>>>>>> event resource location: CentralBuffer_Location
+(if not resource_onlocation and equipment_onlocation: 
+     self.getSimulator().saveLog("REPORT: >>>>>>>>> event Equipment location: "+event.getEquipment().getLocation().getName())
+)
+6241: ERROR in execute events: 'NoneType' object has no attribute 'getLocation'
+  
+Fixed: 
+Due to a typo equipment of Machine Loading event was also reset as None.
+The typo in the following line is fixed. (MachineLoading -> Machine Loading)
+if event.getName() != "Machine Unloading" and event.getName() != "MachineLoading":
+
+TEST Orders 9 OK
+

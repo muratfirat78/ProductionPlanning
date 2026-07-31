@@ -106,7 +106,7 @@ class ExecEvent(object):
         self.startdelay = 0
         self.logisticalevents = []
 
-       #            Event  -  From       -   To           Equip        Resource    Event-loc         Equuipment Loc    Resource Loc
+       #            Event  -   From       -     To           Equip       Resource    location          Equipment Loc    Resource Loc
        #(OprMove)-> TL       OutputBuffer    Trailer        Trailer     Operator     From-loc           From-loc         From-loc 
 
     
@@ -179,6 +179,8 @@ class ExecEvent(object):
         if self.getName() == "Machine Unloading":
             if not self.getFromLocation().IsAutomated():
                 self.ProcessTime = max(1,int(0.5*self.getEquipment().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
+            else:
+                self.ProcessTime = 1
 
 
         if self.getName() == "Machine Processing":   
@@ -191,6 +193,9 @@ class ExecEvent(object):
         if self.getName() == "Trailer Transport" or self.getName() == "Operator Move" or self.getName() == "Bring Equipment":
             #workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+", fl: "+str(self.getFromLocation().getName())+", tl: "+str(self.getToLocation().getName()))
             self.ProcessTime = workmgr.getLayout().getDistance(self.getFromLocation(),self.getToLocation())
+
+        if self.ProcessTime == None:
+            workmgr.getSimulator().saveLog("REPORT: NONE sample process time. "+str(self.getName()))
         
 
         return
@@ -539,36 +544,7 @@ class Process(object):
         self.start = sim.getRealTime()
         return
         
-    def setExecutionData(self,event,sim):
-
-        if event != None: 
-            try: 
-                actual_comp = sim.getRealTime()
-                actual_start = actual_comp - timedelta(minutes = sim.getTime()-self.getStart()) 
-                self.completion = sim.getTime()
-                
-                myexecutedata = {"OperationName":self.getName(),"ProcessID":self.getID(),"ResourceID":event.getResource().getID(),"Resource":event.getResource().getName(),"Start":actual_start,"Completion":actual_comp,"DemandID":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"NrItems":self.getDemand().getQuantity()}
-                self.getExecutionData().append(myexecutedata)
-                self.Finished = True
-                
-            except Exception as e:
-                sim.saveLog("ERROR in executiondata "+str(e))
-
-                
-        else: # cases "cancelled" or "finished", start and completion are already registered is operation in realtime.
-            try: 
-                if self.isCancelled():
-                    myexecutedata = {"OperationName":self.getName(),"ProcessID":self.getID(),"ResourceID":"Cancelled","Resource":"Cancelled","Start":self.getStart(),"Completion":self.getCompletion(),"DemandID":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"NrItems":self.getDemand().getQuantity()}
-                    self.getExecutionData().append(myexecutedata)
-                else:
-                    myexecutedata = {"OperationName":self.getName(),"ProcessID":self.getID(),"ResourceID":"-","Resource":"-","Start":self.getStart(),"Completion":self.getCompletion(),"DemandID":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"NrItems":self.getDemand().getQuantity()}
-                    self.getExecutionData().append(myexecutedata)
-            except Exception as e:
-                sim.saveLog("ERROR in executiondata "+str(e))
-            
-        return 
-
-        
+     
     def setStart(self,mytime):
         self.start = mytime
         return
@@ -700,6 +676,7 @@ class Item(object):
         self.Demand = demand
         self.InfoDictionary = dict()
         self.PriorityScore = 0
+        self.reservedEvent = None
        
 
     def setPriorityScore(self,myscore):
@@ -708,8 +685,13 @@ class Item(object):
     def getPriorityScore(self):
         return self.PriorityScore
 
-   
 
+    def setReservedEvent(self,ev):
+        self.reservedEvent = ev
+        return 
+
+    def getReservedEvent(self):
+        return self.reservedEvent
  
     def getActiveOperation(self):
 
@@ -722,49 +704,7 @@ class Item(object):
                 
         return None
 
-    def setProcessData(self,event,strt,opr,sim):
-
-        if event != None: 
-
-            try: 
-                
-                actual_comp = sim.getRealTime()
-                actual_start = actual_comp - timedelta(minutes = sim.getTime()-strt)
-    
- #{"ItemID":item.getID(),"Demand":item.getDemand().getID(),"Product":self.getFinalProduct().getPN(),"OperationName":oprseq[oprid].getName(),"ProcessID":-1,"ResourceID":-1,"Start":strt,"Completion":comp}               
-                
-                myprocessdata = {"ItemID":self.getID(),"Demand":self.getDemand().getID(),"Product":self.getDemand().getFinalProduct().getPN(),"OperationName":opr.getName(),"ProcessID":event.getID(),"ResourceID":event.getResource().getID(),"Resource":event.getResource().getName(),"Start":actual_start,"Completion":actual_comp}
-                self.getProcessData().append(myprocessdata)
-            except Exception as e:
-                sim.saveLog("ERROR in processdata "+str(e))
-
-        return 
-
-    def setLocationData(self,event,sim):
-
-        if event != None: 
-
-            actual_comp = sim.getRealTime()
-
-            locid = None; locname = None
-            if event.getLocation() != None:
-                if isinstance(event.getLocation(),tuple):
-                    locid =  str(event.getLocation()[0].getID())+"->"+str(event.getLocation()[1].getID())
-                    locname = event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName()
-                else:
-                    locid =  event.getLocation().getID()
-                    locname = event.getLocation().getName()
-            else:
-                sim.saveLog("ERROR in location is None of event "+event.getName()+"["+str(event.getID()))
-            
-            location_update = {"Entity":"Item","EntityID":self.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":locid,"LocationName":locname,"Time":actual_comp}   
-                
-            self.getLocationData().append(location_update)
-          
-
-        return 
-
-
+   
 
     def getInfoDictionary(self):
         return self.InfoDictionary

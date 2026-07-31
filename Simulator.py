@@ -12,7 +12,8 @@ class Simulator(object):
         
         self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
         self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
-        self.LocationData = [] # [{"EventID':...,"EventName":...,'Status':...}]
+        self.LocationData = [] 
+        self.BufferData = [] 
         self.queue = {} #key: time (start/completion times of events) , val: [event]
         self.time = 0
         self.eventno = 0
@@ -35,13 +36,24 @@ class Simulator(object):
         self.TimeLimit =  None
         self.MyLog = dict() #key: sim time, val: [events]
         self.Controller = None
+        self.RunErrors = 0
+        self.Errors = []
 
         self.setStartDay(startday+timedelta(hours= 24))
 
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
 
-    
+    def getErrors(self):
+        return self.Errors 
+        
 
+    def addError(self):
+        self.RunErrors+=1
+        return
+        
+    def getNoErrors(self):
+        return self.RunErrors
+        
     def setController(self,contr):
         self.Controller = contr
         return
@@ -57,6 +69,11 @@ class Simulator(object):
         if not self.getTime() in self.MyLog:
             self.MyLog[self.getTime()] = []
         self.MyLog[self.getTime()].append(info)
+
+
+        if info.find("ERROR")> -1:
+            self.getErrors().append(str(self.getTime())+": "+info)
+            self.addError()
 
         
         if info.find("ERROR")> -1 or info.find("REPORT")> -1 : 
@@ -118,6 +135,9 @@ class Simulator(object):
 
     def getLocationData(self):
         return self.LocationData
+
+    def getBufferData(self):
+        return self.BufferData
           
     def getTimeLimit(self):
         return self.TimeLimit
@@ -145,19 +165,51 @@ class Simulator(object):
             while self.getTime() < self.getTimeLimit():
     
                 self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
-    
-                weekendjump = 0
-                if self.getCurrentDay().weekday() >= self.weekdays:
-                    self.saveLog("Weekend jump..")
-       
+
+                
+                while self.getCurrentDay().weekday() >= self.weekdays:
+
+                   
+                    time_events = []
+                    if self.getTime() in self.getEventQueue():
+                        self.saveLog("REPORT:  currentday "+str(self.getCurrentDay().weekday())+", weekdays? "+str(self.weekdays))
+                        self.saveLog("REPORT:  Weekend jump..before "+str(self.getRealTime()))
+                        time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started event
+                        for e in time_events:
+                            case = OperationsMgr.determineProgressCase(e)
+                            self.saveLog("REPORT:  event "+e.getName()+"  with case"+str(case))
+                            if case == "Suspend" or case == "Handle":
+                                if e.getSuspendedSuccessor() == None: 
+                                    self.saveLog("REPORT:  event to remove from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
+                                    self.getEventQueue()[self.getTime()].remove(e)
+                                    self.saveLog("REPORT:  event removed from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
+                                    if not e in self.getEventQueue()["Pending"]:
+                                        self.getEventQueue()["Pending"].append(e)
+                                        self.saveLog("REPORT: event inserted into pendings ")
+                                else:
+                                    successor = e.getSuspendedSuccessor()
+                                    self.saveLog("REPORT:  event "+e.getName()+" has successor "+str(successor))
+                                    case = OperationsMgr.determineProgressCase(successor)
+                                    if case == "Suspend" or case == "Handle":
+                                        if successor in self.getEventQueue()[self.getTime()]:
+                                            self.saveLog("REPORT:  successor to remove from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
+                                            self.getEventQueue()[self.getTime()].remove(successor)
+                                            self.saveLog("REPORT:  successor removed from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
+                                    if not successor in self.getEventQueue()["Pending"]:
+                                        self.getEventQueue()["Pending"].append(successor)
+                                        self.saveLog("REPORT: successor inserted into pendings ")
+
+                    
                     self.updateTime(self.shiftsperday*self.shifthours*60)
-                    weekendjump+=self.shiftsperday*self.shifthours*60
-               
+                    self.saveLog("REPORT:  Weekend jump..after "+str(self.getRealTime()))
+
+                    self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
+
+                
                 self.setCurrentShift(self.getShift(self.getRealTime().hour))
 
                 try:
                     if self.getTime() % self.getShiftMinutes() == 0:
-                        
                         self.saveLog(" >>>>>>>>>>>>>>>>>>  Shift start: "+str(self.getRealTime())+"<<<<<<<<<<<<<<<<<<<"+"hour: "+str(self.getRealTime().hour)+"shift: "+str(self.getShift(self.getRealTime().hour))+" sim time: "+str(self.getTime()))
                         self.saveLog(" >>>>>>>>>>>>>>>>>> Current day: "+str(self.getCurrentDay())+" shift: "+str(self.getCurrentShift()))
                         OperationsMgr.applyShiftChange()
@@ -167,8 +219,11 @@ class Simulator(object):
     
 
                 try: 
+                    #if len(self.getEventQueue()["Pending"]) > 0:
+                        #self.saveLog("REPORT: pendings "+str(len(self.getEventQueue()["Pending"])))
+                        
                     for event in self.getEventQueue()["Pending"]:
-                        #self.saveLog("REPORT: pending event"+str(event.getName()))
+                        #self.saveLog("REPORT: > pending "+str(event.getName()))
                         OperationsMgr.ProgressEvent(event)  
 
                     if self.getTime() in self.getEventQueue():
@@ -177,10 +232,16 @@ class Simulator(object):
             
                         while len(time_events) > 0:
                             for event in time_events:
-                                #self.saveLog("REPORT: time event"+str(event.getName()))
                                 OperationsMgr.ProgressEvent(event)
                             execround += 1
                             time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started events
+                            if execround > 10:
+                                self.saveLog("REPORT: time "+str(self.getTime())+", time events"+str(len(time_events)))
+                                for event in time_events:
+                                    self.saveLog("REPORT: event "+str(event.getName())+"-"+str(event.getID())+", loc "+str(event.getLocation().getName()))
+                                    for progress_id in range(len(event.getProgressList())):
+                                        self.saveLog("REPORT: progress step: "+str(event.getProgressList()[progress_id][1]))
+                                    self.saveLog("REPORT: TotalProgress: "+str(event.getTotalProgress()))
                         
                 except Exception as e:
                     self.saveLog("ERROR in execute events: "+str(e))
@@ -192,6 +253,10 @@ class Simulator(object):
             
             try:
                 self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
+                
+                self.getController().getVisualManager().updateSimProgress("Simulation errors: "+str(self.getNoErrors()))
+                for err in self.getErrors():
+                    self.getController().getVisualManager().updateSimProgress(err)
             except Exception as e:
                 self.saveLog("ERROR in progress update: "+str(e))
             start = timer()
@@ -199,6 +264,7 @@ class Simulator(object):
             OperationsMgr.writeData()
             #OperationsMgr.writeDataTBRMOutPut(1)
             end = timer()
+            
             self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
 
         except Exception as e:
@@ -417,3 +483,10 @@ class DataManager(object):
     def getSimulator(self):
         return self.simulator
 
+
+
+
+
+
+
+ 
