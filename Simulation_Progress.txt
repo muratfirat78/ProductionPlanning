@@ -1,9 +1,9 @@
-
 28/07/2026:
 Logistical events are completed. They are never pending and their completion is only scheduled. 
 They have direct precedence relations, not via event types.  
 
 29/07/2026: 
+TEST Orders 8
 Problem: Scheduled pending events disappear and never come to consideration.
 Solution: 
 Weekend jump makes a time leap in simtime. The events that are to be suspended at the time when just last shift finishes are not considered due to this. 
@@ -11,7 +11,7 @@ So, events are moved forward and the ones they need handling, they are explicitl
 (Scheduled pending event is placed in EventQueue at certain time such that at that time it is handled. An event in pending list of EventQueue is continuously checked for handling)  
  
 
-30/07/2026: 
+30/07/2026: (Murat)
 Problem: Machine Loading misses items to move from the input. 
 Solution: 
 Machine setup is triggered by Trainer Unloading and Machine Unloading. 
@@ -47,4 +47,4 @@ The typo in the following line is fixed. (MachineLoading -> Machine Loading)
 if event.getName() != "Machine Unloading" and event.getName() != "MachineLoading":
 
 TEST Orders 9 OK
-
+TEST Orders 10 
