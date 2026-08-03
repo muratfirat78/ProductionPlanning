@@ -305,8 +305,8 @@ class ShopFloorManager(OperationsManager):
     def ProgressEvent(self,event):
         # case can be one of the following: "handle","start","suspend","restart","complete"
 
-        if self.getSimulator().getTime() >= 5500 and self.getSimulator().getTime() <= 5550:
-                self.getSimulator().saveLog("REPORT: event : "+str(event.getName()))
+        #if self.getSimulator().getTime() >= 5500 and self.getSimulator().getTime() <= 5550:
+        #        self.getSimulator().saveLog("REPORT: event : "+str(event.getName()))
                       
         case = self.determineProgressCase(event)
     
@@ -351,6 +351,7 @@ class ShopFloorManager(OperationsManager):
                 event.setResource(None)
             #self.getSimulator().saveLog(" REPORT: event in time list? "+str(event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()])) 
 
+            
             if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
                 self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event)
             #self.getSimulator().saveLog(" REPORT: event in time list? "+str(event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()])) 
@@ -475,9 +476,9 @@ class ShopFloorManager(OperationsManager):
                                 res,progress = event.getProgressList()[progress_id]
 
                                 curr_progress = totalprogress+(progress[1]-progress[0])
-                                self.getSimulator().saveLog("REPORT: event process time: "+str(event.getProcessTime()))
-                                self.getSimulator().saveLog("REPORT: proctime: "+str(proctime))
-                                self.getSimulator().saveLog("REPORT: curr_progress: "+str(curr_progress))
+                                #self.getSimulator().saveLog("REPORT: event process time: "+str(event.getProcessTime()))
+                                #self.getSimulator().saveLog("REPORT: proctime: "+str(proctime))
+                                #self.getSimulator().saveLog("REPORT: curr_progress: "+str(curr_progress))
                                 
                                 if event.getProcessTime() - curr_progress > proctime:
                                     totalprogress+=(progress[1]-progress[0])    
@@ -487,9 +488,9 @@ class ShopFloorManager(OperationsManager):
                                     if progress[1] in self.getSimulator().getEventQueue():
                                         self.getSimulator().getEventQueue()[progress[1]].remove(event) 
                                         
-                                    self.getSimulator().saveLog("REPORT: current progresss step: "+str(progress))
+                                    #self.getSimulator().saveLog("REPORT: current progresss step: "+str(progress))
                                     event.getProgressList()[progress_id] = (res,(progress[0],successortime))
-                                    self.getSimulator().saveLog("REPORT: new progresss step: "+str((progress[0],successortime)))
+                                    #self.getSimulator().saveLog("REPORT: new progresss step: "+str((progress[0],successortime)))
                                     if not successortime in self.getSimulator().getEventQueue():
                                         self.getSimulator().getEventQueue()[successortime] = []
                                     if not successor_event in self.getSimulator().getEventQueue()[successortime]:
@@ -582,7 +583,7 @@ class ShopFloorManager(OperationsManager):
                 processor = event_machine.getProcessMatch()[event]
                 del event_machine.getProcessMatch()[event]
                 event_machine.getProcessMatch()[successor_event] = processor
-                self.getSimulator().saveLog("REPORT: processor moved to successor..")
+                #self.getSimulator().saveLog("REPORT: processor moved to successor..")
 
         # setResource 
         if 'Resource' in precedenceinfo: # TL->TT,  TT->TU 
@@ -615,9 +616,9 @@ class ShopFloorManager(OperationsManager):
         if 'FromLocationOutput->ToLocation' in precedenceinfo: # Proc->MU
             successor_event.setToLocation(event.getFromLocation().getOutputBuffer())
 
-        if self.getSimulator().getTime() > 475:
-            self.getSimulator().saveLog("REPORT: event "+str(event.getName())+", eq none? "+str(event.getEquipment() == None)+", res none? "+str(event.getResource() == None)+", fl none? "+str(event.getFromLocation() == None))
-            self.getSimulator().saveLog("REPORT: succcessor created "+str(successor_event.getName())+"("+str(successor_event.getID())+")"+", eq none? "+str(successor_event.getEquipment() == None)+", res none? "+str(successor_event.getResource() == None)+", fl none? "+str(successor_event.getFromLocation() == None))
+        #if self.getSimulator().getTime() > 475:
+            #self.getSimulator().saveLog("REPORT: event "+str(event.getName())+", eq none? "+str(event.getEquipment() == None)+", res none? "+str(event.getResource() == None)+", fl none? "+str(event.getFromLocation() == None))
+            #self.getSimulator().saveLog("REPORT: succcessor created "+str(successor_event.getName())+"("+str(successor_event.getID())+")"+", eq none? "+str(successor_event.getEquipment() == None)+", res none? "+str(successor_event.getResource() == None)+", fl none? "+str(successor_event.getFromLocation() == None))
 
 
         return
@@ -660,7 +661,7 @@ class ShopFloorManager(OperationsManager):
                 
                 if alg_return!= None:
                     if decision_type == "Select Items":   # TL/TU/MS (handle)
-                        self.getSimulator().saveLog("REPORT: "+case+": "+", select items: "+str(len(alg_return)))
+                        #self.getSimulator().saveLog("REPORT: "+case+": "+", select items: "+str(len(alg_return)))
                         for item in alg_return:
                             event.getItems().append(item)  
                  
@@ -719,28 +720,28 @@ class ShopFloorManager(OperationsManager):
                         if decision_type == "Assign Resource":
                             resource_onlocation =  (event.getResource().getLocation() == event.getLocation())
 
-                    self.getSimulator().saveLog("REPORT: event : "+event.getName()+"("+str(event.getID())+")"+", res on loc? "+str(resource_onlocation)+", equip on loc? "+str(equipment_onlocation)) 
+                    #self.getSimulator().saveLog("REPORT: event : "+event.getName()+"("+str(event.getID())+")"+", res on loc? "+str(resource_onlocation)+", equip on loc? "+str(equipment_onlocation)) 
                     
-                    if not resource_onlocation and not equipment_onlocation:
-                        self.getSimulator().saveLog("REPORT:---------- decisions with success: "+str(success_decisions))
-                        self.getSimulator().saveLog("REPORT:---------- event location: "+event.getLocation().getName())
-                        self.getSimulator().saveLog("REPORT:---------- event resource location: "+event.getResource().getLocation().getName())
-                        self.getSimulator().saveLog("REPORT:---------- event Equipment location: "+event.getEquipment().getLocation().getName())
+                    #if not resource_onlocation and not equipment_onlocation:
+                        #self.getSimulator().saveLog("REPORT:---------- decisions with success: "+str(success_decisions))
+                        #self.getSimulator().saveLog("REPORT:---------- event location: "+event.getLocation().getName())
+                        #self.getSimulator().saveLog("REPORT:---------- event resource location: "+event.getResource().getLocation().getName())
+                        #self.getSimulator().saveLog("REPORT:---------- event Equipment location: "+event.getEquipment().getLocation().getName())
                    
 
                     if not equipment_onlocation:
                         operator_move = None
                         if event.getResource().getLocation() != event.getEquipment().getLocation():
                             operator_move = ExecEvent(event.getResource().getLocation(),event.getEquipment().getLocation(),self.getEventTypes()["Operator Move"])
-                            self.getSimulator().saveLog("REPORT: Operator move event (to bring equipment) created.." )
+                            #self.getSimulator().saveLog("REPORT: Operator move event (to bring equipment) created.." )
                             operator_move.setEquipment(None) 
                             operator_move.setResource(event.getResource())
                             
                             operator_move.sampleProcessTime(self)
-                            self.getSimulator().saveLog("REPORT: Operator move process time: "+str(operator_move.getProcessTime()))
+                            #self.getSimulator().saveLog("REPORT: Operator move process time: "+str(operator_move.getProcessTime()))
                             progress_step = (self.getSimulator().getTime(),min(self.getSimulator().getTime()+operator_move.getProcessTime(),self.getCurrentShiftEnd()))
                             operator_move.getProgressList().append((operator_move.getResource(),progress_step))
-                            self.getSimulator().saveLog("REPORT: Operator move progress step: "+str(progress_step))
+                            #self.getSimulator().saveLog("REPORT: Operator move progress step: "+str(progress_step))
                             if not progress_step[1] in self.getSimulator().getEventQueue():
                                 self.getSimulator().getEventQueue()[progress_step[1]] = []
                             # operator move is scheduled for its completion.
@@ -775,9 +776,9 @@ class ShopFloorManager(OperationsManager):
                         
                         
                     if not resource_onlocation and equipment_onlocation: 
-                        self.getSimulator().saveLog("REPORT: >>>>>>>>> event location: "+event.getLocation().getName())
-                        self.getSimulator().saveLog("REPORT: >>>>>>>>> event resource location: "+event.getResource().getLocation().getName())
-                        self.getSimulator().saveLog("REPORT: >>>>>>>>> event Equipment location: "+event.getEquipment().getLocation().getName())
+                        #self.getSimulator().saveLog("REPORT: >>>>>>>>> event location: "+event.getLocation().getName())
+                        #self.getSimulator().saveLog("REPORT: >>>>>>>>> event resource location: "+event.getResource().getLocation().getName())
+                        #self.getSimulator().saveLog("REPORT: >>>>>>>>> event Equipment location: "+event.getEquipment().getLocation().getName())
         
                         operator_move = ExecEvent(event.getResource().getLocation(),event.getLocation(),self.getEventTypes()["Operator Move"])
                         self.getSimulator().saveLog("REPORT: Operator move event created.." )
@@ -829,8 +830,8 @@ class ShopFloorManager(OperationsManager):
             
             if len(event.getItems()) > 0:
                 oprseq = event.getItems()[0].getDemand().getFinalProduct().getOperationSequences()[event.getItems()[0].getDemand().getID()]
-                for opr in oprseq:
-                    self.getSimulator().saveLog("REPORT: opr: "+opr.getName()+", can?"+str(opr.isCancelled())+", fin?"+str(opr.isFinished()))
+                #for opr in oprseq:
+                    #self.getSimulator().saveLog("REPORT: opr: "+opr.getName()+", can?"+str(opr.isCancelled())+", fin?"+str(opr.isFinished()))
                     
                 if event.getItems()[0].getActiveOperation() != None:
                     event.getItems()[0].getActiveOperation().setFinished()
@@ -859,8 +860,8 @@ class ShopFloorManager(OperationsManager):
                             
         if event.getType() in ["Loading","Unloading"]:
 
-            self.getSimulator().saveLog("REPORT: event : "+event.getName()+", event items: "+("None" if len(event.getItems()) == 0 else (str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()))) )
-            self.getSimulator().saveLog("REPORT: event : from location items: "+("None" if len(event.getFromLocation().getItems()) == 0 else str(event.getFromLocation().getItems()[0].getID())+"-"+str(event.getFromLocation().getItems()[-1].getID()))  )
+            #self.getSimulator().saveLog("REPORT: event : "+event.getName()+", event items: "+("None" if len(event.getItems()) == 0 else (str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()))) )
+            #self.getSimulator().saveLog("REPORT: event : from location items: "+("None" if len(event.getFromLocation().getItems()) == 0 else str(event.getFromLocation().getItems()[0].getID())+"-"+str(event.getFromLocation().getItems()[-1].getID()))  )
             
             for item in event.getItems():
                 if item.getReservedEvent() != None:

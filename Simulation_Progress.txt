@@ -47,4 +47,53 @@ The typo in the following line is fixed. (MachineLoading -> Machine Loading)
 if event.getName() != "Machine Unloading" and event.getName() != "MachineLoading":
 
 TEST Orders 9 OK
-TEST Orders 10 
+TEST Orders 10 OK (0 error, all orders come back to central inventory)
+
+02/08/2026:
+TEST Orders 11 OK (0 error, all orders come back to central inventory)
+TEST Orders 12 OK (0 error, all orders come back to central inventory)
+TEST Orders 13 OK (0 error, all orders come back to central inventory)
+TEST Orders 14 OK (0 error, all orders come back to central inventory)
+
+
+
+03/08/2026:
+TEST Orders 20
+Problem: 
+25920: REPORT:  Weekend jump..before 2026-08-22 00:00:00
+25920: REPORT:  event Machine Processing  with caseSuspend
+25920: REPORT: event progress step: (22271, 22560)
+25920: REPORT: event progress step: (22561, 23040)
+25920: REPORT: event progress step: (23520, 24000)
+25920: REPORT: event progress step: (24001, 24480)
+25920: REPORT: event progress step: (24962, 25440)
+25920: REPORT: event progress step: (25441, 25741.0)
+25920: REPORT: event progress step: (25742, 25920)
+25920: REPORT: successor progress step: (25742, 25920)
+25920: REPORT:event Machine Processing has successor  event Machine Unloading  with caseSuspend
+25920: REPORT:  successor to remove from time schedule True
+25920: REPORT:  successor removed from time schedule False
+25920: REPORT: successor inserted into pendings 
+25920: REPORT:  event Machine Unloading  with caseSuspend
+25920: REPORT:  event to remove from time schedule False
+25920: ERROR in sim run: list.remove(x): x not in list
+
+Comment: 
+Both "Machine Processing" and "Machine Unloading" events are in EventQueue at time 25920.
+First "Machine Processing" is considered for weekend jump and its successor, "Machine Unloading" event is placed into "Pending" events of EventQueue. 
+Then "Machine Unloading" event case itself is considered and it was attempted to be removed, but not in list. 
+
+Solution: 
+The following code is added: 
+
+Simulator - RunSimulation function: 
+
+consdered_ev_ids = []
+
+if successor in time_events:
+   consdered_ev_ids.append(time_events.index(successor))
+
+
+TEST Orders 19 OK (0 error, all orders come back to central inventory)
+TEST Orders 20 OK (0 error, all orders come back to central inventory)
+

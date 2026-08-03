@@ -175,26 +175,42 @@ class Simulator(object):
                         self.saveLog("REPORT:  currentday "+str(self.getCurrentDay().weekday())+", weekdays? "+str(self.weekdays))
                         self.saveLog("REPORT:  Weekend jump..before "+str(self.getRealTime()))
                         time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started event
-                        for e in time_events:
+                    
+
+                        consdered_ev_ids = []
+                        for ev_id in range(len(time_events)):
+                            if ev_id in consdered_ev_ids:
+                                continue
+                            self.saveLog("REPORT:  event id"+str(ev_id))
+                            e = time_events[ev_id]
+                            
                             case = OperationsMgr.determineProgressCase(e)
-                            self.saveLog("REPORT:  event "+e.getName()+"  with case"+str(case))
+                            self.saveLog("REPORT:  event "+e.getName()+"  with case "+str(case))
                             if case == "Suspend" or case == "Handle":
-                                if e.getSuspendedSuccessor() == None: 
+                                if e.getSuspendedSuccessor() == None:
                                     self.saveLog("REPORT:  event to remove from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
-                                    self.getEventQueue()[self.getTime()].remove(e)
+                                    if e in self.getEventQueue()[self.getTime()]:
+                                        self.getEventQueue()[self.getTime()].remove(e)
                                     self.saveLog("REPORT:  event removed from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
                                     if not e in self.getEventQueue()["Pending"]:
                                         self.getEventQueue()["Pending"].append(e)
                                         self.saveLog("REPORT: event inserted into pendings ")
                                 else:
                                     successor = e.getSuspendedSuccessor()
-                                    self.saveLog("REPORT:  event "+e.getName()+" has successor "+str(successor))
+                                    for progress_id in range(len(e.getProgressList())):
+                                        self.saveLog("REPORT: event progress step: "+str(e.getProgressList()[progress_id][1]))
+                                    for progress_id in range(len(successor.getProgressList())):
+                                        self.saveLog("REPORT: successor progress step: "+str(successor.getProgressList()[progress_id][1]))
                                     case = OperationsMgr.determineProgressCase(successor)
+                                    self.saveLog("REPORT:event "+e.getName()+" has successor  event "+successor.getName()+"  with case"+str(case))
                                     if case == "Suspend" or case == "Handle":
                                         if successor in self.getEventQueue()[self.getTime()]:
                                             self.saveLog("REPORT:  successor to remove from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
                                             self.getEventQueue()[self.getTime()].remove(successor)
                                             self.saveLog("REPORT:  successor removed from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
+                                    if successor in time_events:
+                                        consdered_ev_ids.append(time_events.index(successor))
+                                        
                                     if not successor in self.getEventQueue()["Pending"]:
                                         self.getEventQueue()["Pending"].append(successor)
                                         self.saveLog("REPORT: successor inserted into pendings ")
