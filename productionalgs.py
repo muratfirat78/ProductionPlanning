@@ -55,17 +55,17 @@ class ProductionAlgManager(AlgorithmManager):
                     
             else:
             # event types: trailer loading (case: handle)
-                self.getSimulator().saveLog("REPORT: >>> Algorithm str equip: event location: "+str(event.getLocation().getName()))
+                #self.getSimulator().saveLog("REPORT: >>> Algorithm str equip: event location: "+str(event.getLocation().getName()))
              
                 av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
                 
-                self.getSimulator().saveLog("REPORT: av_equip: "+str(len(av_equip)))   
+                #self.getSimulator().saveLog("REPORT: av_equip: "+str(len(av_equip)))   
                 comp_equip = [r for r in av_equip if (r.isIdle())]
-                self.getSimulator().saveLog("REPORT: comp_equip: "+str(len(comp_equip)))
+                #self.getSimulator().saveLog("REPORT: comp_equip: "+str(len(comp_equip)))
                 
                 if len(comp_equip) > 0:  
                     onloc_equip = [r for r in comp_equip if r.getLocation() == event.getFromLocation().getLocation()]
-                    self.getSimulator().saveLog("REPORT: onloc_equip: "+str(len(onloc_equip)))
+                    #self.getSimulator().saveLog("REPORT: onloc_equip: "+str(len(onloc_equip)))
                     selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
 
                 

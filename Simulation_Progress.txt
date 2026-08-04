@@ -97,3 +97,85 @@ if successor in time_events:
 TEST Orders 19 OK (0 error, all orders come back to central inventory)
 TEST Orders 20 OK (0 error, all orders come back to central inventory)
 
+
+TEST Orders 25
+
+>> Problem:
+8160:  REPORT: event: Machine Processing(284)-[6254-7253], active opr none? No act opr, loc No loc, tot.prog: 1357, p: 2250.0, succ event? none True, case: Suspend
+8161: REPORT: event : Machine Processing(284), items 1000, active opr none? True event loc OUT - Outsourced activity_(OUT - Outsourced)_Location, item oprs ['True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 'True--False--M3-01 - AW - 3axis - Manual (FR3_01)', 'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 'False--True--M5-05 - UMC2 - 5axis  - Manual (UMC750)', 'False--True--OUT - Outsourced activity'], tot.prog: 1357, p: 2250.0, case: Handle
+
+>> Comment: 
+Items have active operation none during a machine processing. 
+
+8151:  REPORT: event: Machine Processing(166)-[1976-2591], active opr none? M4-01 - AW - 4axis - Conveyor Automation (FR4_01), loc No loc, tot.prog: 4545, p: 5018.0, succ event? none True
+8151: REPORT: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Finished!!!!!
+8151: REPORT: demand of removed one: __export__.mrp_production_7069_c01d62c8
+
+8151: REPORT: demand: __export__.mrp_production_7069_c01d62c8
+8151:  REPORT: event: Machine Processing(284)-[6254-7253], active opr none? No act opr, loc No loc, tot.prog: 1357, p: 2250.0, succ event? none True
+
+Comment: 
+There is something going wrong in "Select Item" decision, since the orders have the following items: 
+0: REPORT: >>>> items [5254-6253]
+0: REPORT:  Selected Order [4512-127-05186B], Q: 1000, d: 2026-05-26 12:00:00, oprs: ['MP1 - Mat. prep - automatic sawing (ZGN_01)', 'M4-01 - AW - 4axis - Conveyor Automation (FR4_01)', 'BW - Benchwork (BKW_01)', 'PACK - Packaging (VERP_P)'] items created.
+0: REPORT: Selected production order deadline: 2026-05-27 11:36:36
+0: REPORT: >>>> items [6254-7323]
+0: REPORT:  Selected Order [4022.632.63021], Q: 1070, d: 2026-05-27 11:36:36, oprs: ['MP1 - Mat. prep - automatic sawing (ZGN_01)', 'M3-01 - AW - 3axis - Manual (FR3_01)', 'MP1 - Mat. prep - automatic sawing (ZGN_01)', 'M5-05 - UMC2 - 5axis  - Manual (UMC750)', 'OUT - Outsourced activity'] items created.
+0: REPORT: Selected production order deadline: 2026-05-28 12:00:00
+
+Selected items [6254-7253] is a subset of order item,  Selected Order [4022.632.63021] with items [6254-7323]. Yes, since input output buffer capacity is 1000!!!!
+
+Solution: In machine class the following code changed: 
+
+        self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
+        self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
+
+04/08/2026:
+
+TEST Orders 25 OK (0 error, all orders come back to central inventory)
+TEST Orders 23 
+>> Problem:
+Simulation errors: 1
+33605: ERROR in execute events: list.remove(x): x not in list
+
+>> Comment: 
+
+Progress step is incorrectly formed. Current time is 33121 and end of current shift is 33120...Then the total progress requirement is fixed with progress time 2. 
+
+
+33605:  REPORT: event: Trailer Loading(869)-[5254-6253], active opr none? BW - Benchwork (BKW_01), loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Complete
+33605: REPORT: progress step: (33121, 33120)
+33605: REPORT: progress step: (33603, 33605)
+33605: REPORT: TotalProgress: 1
+
+Further digging gives the following zero-time progress step:
+
+
+33120:  REPORT: event: Bring Equipment(871)-[-], active opr none? No item , loc No loc, tot.prog: 0, p: 1, succ event? none True, case: Handle
+33120: REPORT: progress step: (33120, 33120)
+
+ if self.getSimulator().getTime()+operator_move.getProcessTime()+bring_equipment.getProcessTime() > self.getCurrentShiftEnd():
+                                # operator move and bring equipment cannot be done in current shift, backtrack all decisions..
+                                self.getSimulator().saveLog("REPORT: ******** Operator move + bring equipment) cannot be finished in same shift" )
+                                self.getSimulator().saveLog("REPORT: ******** Operator move + bring equipment) cannot be finished in same shift" )
+                                casesuccess = False
+                                for decision_type in success_decisions:
+                                    if decision_type == "Assign Equipment":
+                                        if event.getType() == "Processing":
+                                            if event in event.getEquipment().getProcessMatch():
+                                               del event.getEquipment().getProcessMatch()[event]
+                                            else:
+                                                event.getEquipment().setIdle(True)
+                                                event.setEquipment(None)  
+                                    if decision_type == "Assign Resource":
+                                        event.getResource().setIdle(True)
+                                        event.setResource(None)
+                                    if decision_type == 'Select Items':
+                                        for item in event.getItems():
+                                            item.setReservedEvent(None) 
+                                        event.getItems().clear()
+
+
+TEST Orders 23 OK (0 error, all orders come back to central inventory)
+TEST Orders 25 OK (0 error, all orders come back to central inventory)
+TEST Orders 30 OK (0 error, all orders come back to central inventory)

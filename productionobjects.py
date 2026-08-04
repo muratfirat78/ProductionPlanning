@@ -64,7 +64,7 @@ class Buffer(Resource):
     def generateEvent(self):
         
         if len(self.getUnreservedItems()) == 0 or self.getPendingEvent() != None:
-            self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items "+str(len(self.getItems()))+" unreserved items "+str(len(self.getUnreservedItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
+            #self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items "+str(len(self.getItems()))+" unreserved items "+str(len(self.getUnreservedItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
             if self.getPendingEvent() != None:
                 self.getSimulator().saveLog(" pending event "+self.getPendingEvent().getName())
             return
@@ -117,8 +117,8 @@ class Machine(Resource):
     
     def __init__(self,machcode,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
         super().__init__(myname,"Machine",mycap,sim,workmngr)
-        self.InputBuffer = Buffer("Input",self,1000,sim,workmngr)
-        self.OutputBuffer = Buffer("Output",self,1000,sim,workmngr)
+        self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
+        self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
         self.setLocation(myloc)
         self.InputBuffer.setLocation(myloc)
         self.OutputBuffer.setLocation(myloc)
