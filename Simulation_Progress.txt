@@ -264,6 +264,34 @@ Item creation:
 11006: REPORT: event : Trailer Unloading alg_return  none? False
 
 
+11006: REPORT: event : Trailer Unloading(678), res on loc? True, equip on loc? True
+11006:  REPORT: event: Trailer Unloading(678)-[6254-7253], active opr none? No act opr, loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Start
+11006:  REPORT: event: Trailer Unloading(678) , successor dict dict_items([])
+11006: REPORT: event : Trailer Unloading(678), equipment Trailer_60, items 1070
+11006: REPORT: event: Trailer Unloadingprogress step: (11006, 11007)
+11006: REPORT: event: Trailer Unloading, TotalProgress: 1
+11006: REPORT: ______________________________________________________________________
+11006: REPORT: event : Trailer Unloading(678), items 1000, active opr none? True event loc CentralBuffer_Location, item oprs [
+'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'True--False--M3-01 - AW - 3axis - Manual (FR3_01)', 
+'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'False--True--M5-05 - UMC2 - 5axis  - Manual (UMC750)', 
+'False--True--OUT - Outsourced activity'], tot.prog: 1, p: 1, case: Start
+
+Solution: very easy!!
+self.InputBuffer = Buffer("Input",None,1000,sim,workmngr)
+self.OutputBuffer = Buffer("Output",None,1000,sim,workmngr)
+
+changed To:
+
+self.InputBuffer = Buffer("Input",None,1000,sim,workmngr)
+self.OutputBuffer = Buffer("Output",None,1000,sim,workmngr)
+
+
+
+TEST Orders 34 OK (0 error, all orders come back to central inventory)
+
+TEST Orders 35 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
 
 
 
