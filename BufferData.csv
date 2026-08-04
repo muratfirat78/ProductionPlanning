@@ -59,88 +59,98 @@ Central_Output,,Central Inventory,0,7856
 Central_Output,,Central Inventory,0,7856
 Central_Output,,Central Inventory,0,8556
 Central_Output,,Central Inventory,0,8556
-Central_Output,,Central Inventory,481,8531
-Central_Output,,Central Inventory,483,8514
+Central_Output,,Central Inventory,0,8636
+Central_Output,,Central Inventory,0,8636
+Central_Output,,Central Inventory,0,8653
+Central_Output,,Central Inventory,0,8653
+Central_Output,,Central Inventory,0,9632
+Central_Output,,Central Inventory,0,9632
+Central_Output,,Central Inventory,0,9640
+Central_Output,,Central Inventory,0,9640
+Central_Output,,Central Inventory,0,10240
+Central_Output,,Central Inventory,0,10240
+Central_Output,,Central Inventory,481,10215
+Central_Output,,Central Inventory,483,10198
 BW_(BKW_01)_Input,,BW_(BKW_01),483,25
-Central_Output,,Central Inventory,485,8399
+Central_Output,,Central Inventory,485,10083
 BW_(BKW_01)_Input,,BW_(BKW_01),485,42
-Central_Output,,Central Inventory,487,8349
+Central_Output,,Central Inventory,487,10033
 VF2SS_(M3-03)_Input,,VF2SS_(M3-03),487,115
 BW_(BKW_01)_Input,,BW_(BKW_01),488,17
 M3-02_(FR3_02)_Input,,M3-02_(FR3_02),489,50
-Central_Output,,Central Inventory,490,8319
+Central_Output,,Central Inventory,490,10003
 UMC750_(M5-03)_Input,,UMC750_(M5-03),492,30
-Central_Output,,Central Inventory,493,8239
+Central_Output,,Central Inventory,493,9923
 BW_(BKW_01)_Input,,BW_(BKW_01),495,97
-Central_Output,,Central Inventory,498,8215
+Central_Output,,Central Inventory,498,9899
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),500,24
-Central_Output,,Central Inventory,503,8213
+Central_Output,,Central Inventory,503,9897
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),505,26
-Central_Output,,Central Inventory,510,8121
+Central_Output,,Central Inventory,510,9805
 BW_(BKW_01)_Input,,BW_(BKW_01),512,189
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),517,2
-Central_Output,,Central Inventory,521,8035
+Central_Output,,Central Inventory,521,9719
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),522,0
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),523,86
-Central_Output,,Central Inventory,526,8030
+Central_Output,,Central Inventory,526,9714
 Central_Input,,Central Inventory,528,5
-Central_Output,,Central Inventory,553,8018
+Central_Output,,Central Inventory,553,9702
 Central_Input,,Central Inventory,555,17
-Central_Output,,Central Inventory,588,7318
+Central_Output,,Central Inventory,588,9002
 M4-02_(FR4_02)_Input,,M4-02_(FR4_02),590,700
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),618,0
 VF2SS_(M3-03)_Input,,VF2SS_(M3-03),619,0
-Central_Output,,Central Inventory,622,6999
+Central_Output,,Central Inventory,622,8683
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),624,319
 BW_(BKW_01)_Output,,BW_(BKW_01),627,25
 UMC750_(M5-03)_Input,,UMC750_(M5-03),629,0
-Central_Output,,Central Inventory,631,6581
+Central_Output,,Central Inventory,631,8265
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),633,418
 BW_(BKW_01)_Output,,BW_(BKW_01),634,0
-Central_Output,,Central Inventory,636,5965
+Central_Output,,Central Inventory,636,7649
 PACK_(VERP_P)_Input,,PACK_(VERP_P),636,25
 M4-01_(FR4_01)_Input,,M4-01_(FR4_01),638,616
 BW_(BKW_01)_Input,,BW_(BKW_01),639,172
-Central_Output,,Central Inventory,643,5545
+Central_Output,,Central Inventory,643,7229
 M4-02_(FR4_02)_Input,,M4-02_(FR4_02),645,1120
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),648,0
-Central_Output,,Central Inventory,652,5385
+Central_Output,,Central Inventory,652,7069
 M5-02_(FR5_02)_Input,,M5-02_(FR5_02),654,160
 PACK_(VERP_P)_Input,,PACK_(VERP_P),657,0
-Central_Output,,Central Inventory,661,4731
+Central_Output,,Central Inventory,661,6415
 M4-01_(FR4_01)_Input,,M4-01_(FR4_01),663,1270
-Central_Output,,Central Inventory,685,4017
+Central_Output,,Central Inventory,685,5701
 M4-01_(FR4_01)_Input,,M4-01_(FR4_01),687,1984
 PACK_(VERP_P)_Output,,PACK_(VERP_P),690,25
-Central_Output,,Central Inventory,709,3303
+Central_Output,,Central Inventory,709,4987
 M4-01_(FR4_01)_Input,,M4-01_(FR4_01),711,2698
 BW_(BKW_01)_Output,,BW_(BKW_01),714,17
 PACK_(VERP_P)_Output,,PACK_(VERP_P),717,0
 Central_Input,,Central Inventory,719,42
-Central_Output,,Central Inventory,728,2303
+Central_Output,,Central Inventory,728,3987
 M4-01_(FR4_01)_Input,,M4-01_(FR4_01),730,3698
 BW_(BKW_01)_Output,,BW_(BKW_01),737,0
 PACK_(VERP_P)_Input,,PACK_(VERP_P),739,17
 M3-02_(FR3_02)_Input,,M3-02_(FR3_02),780,0
-Central_Output,,Central Inventory,784,1233
+Central_Output,,Central Inventory,784,2917
 UMC750SS_(M5-05)_Input,,UMC750SS_(M5-05),786,1070
 BW_(BKW_01)_Input,,BW_(BKW_01),789,92
 M3-01_(FR3_01)_Output,,M3-01_(FR3_01),820,86
-Central_Output,,Central Inventory,824,709
+Central_Output,,Central Inventory,824,2393
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),826,843
 PACK_(VERP_P)_Input,,PACK_(VERP_P),861,0
 M3-01_(FR3_01)_Output,,M3-01_(FR3_01),925,0
 M5-02_(FR5_02)_Input,,M5-02_(FR5_02),927,246
-Central_Output,,Central Inventory,930,708
+Central_Output,,Central Inventory,930,2392
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),932,1
 PACK_(VERP_P)_Output,,PACK_(VERP_P),962,17
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),1135,524
-Central_Output,,Central Inventory,1138,707
+Central_Output,,Central Inventory,1138,2391
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),1140,2
 M4-02_(FR4_02)_Input,,M4-02_(FR4_02),1403,420
 M4-01_(FR4_01)_Input,,M4-01_(FR4_01),1416,3082
 BW_(BKW_01)_Output,,BW_(BKW_01),1922,80
-Central_Output,,Central Inventory,1925,706
+Central_Output,,Central Inventory,1925,2390
 PACK_(VERP_P)_Output,,PACK_(VERP_P),1926,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),1927,3
 Central_Input,,Central Inventory,1928,59
@@ -149,301 +159,360 @@ UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),1982,1070
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),1985,2
 BW_(BKW_01)_Output,,BW_(BKW_01),1992,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),1994,82
-Central_Output,,Central Inventory,1997,705
+Central_Output,,Central Inventory,1997,2389
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),1999,83
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2003,82
 UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),2006,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2008,1152
 BW_(BKW_01)_Input,,BW_(BKW_01),2011,0
-Central_Output,,Central Inventory,2017,700
+Central_Output,,Central Inventory,2017,2384
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2019,1157
 UMC750_(M5-03)_Output,,UMC750_(M5-03),2020,30
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2023,1156
 VF2SS_(M3-03)_Output,,VF2SS_(M3-03),2024,115
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2025,1076
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2027,6
-Central_Output,,Central Inventory,2027,0
+Central_Output,,Central Inventory,2027,1684
 UMC750_(M5-03)_Output,,UMC750_(M5-03),2028,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2029,5
 MP3_(UITG_M)_Input,,MP3_(UITG_M),2029,700
 PACK_(VERP_P)_Input,,PACK_(VERP_P),2030,30
+Central_Output,,Central Inventory,2032,1604
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2033,0
 VF2SS_(M3-03)_Output,,VF2SS_(M3-03),2033,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),2034,80
 BW_(BKW_01)_Input,,BW_(BKW_01),2035,115
-MP3_(UITG_M)_Input,,MP3_(UITG_M),2036,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),2037,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),2066,30
-PACK_(VERP_P)_Output,,PACK_(VERP_P),2068,0
-Central_Input,,Central Inventory,2070,89
+Central_Output,,Central Inventory,2039,1587
+MP3_(UITG_M)_Input,,MP3_(UITG_M),2040,0
+UMC750SS_(M5-05)_Input,,UMC750SS_(M5-05),2041,17
+PACK_(VERP_P)_Input,,PACK_(VERP_P),2043,0
+Central_Output,,Central Inventory,2044,608
+BW_(BKW_01)_Input,,BW_(BKW_01),2046,1094
+Central_Output,,Central Inventory,2049,600
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),2051,532
+Central_Output,,Central Inventory,2054,0
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),2056,1020
+PACK_(VERP_P)_Output,,PACK_(VERP_P),2073,30
+PACK_(VERP_P)_Output,,PACK_(VERP_P),2077,0
+Central_Input,,Central Inventory,2079,89
 M5-02_(FR5_02)_Input,,M5-02_(FR5_02),2109,86
-BW_(BKW_01)_Output,,BW_(BKW_01),2286,92
-BW_(BKW_01)_Input,,BW_(BKW_01),2290,0
-BW_(BKW_01)_Output,,BW_(BKW_01),2290,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2292,92
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2296,0
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),2531,50
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),2704,319
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),2708,0
-BW_(BKW_01)_Input,,BW_(BKW_01),2710,50
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),2776,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2778,319
-MP3_(UITG_M)_Output,,MP3_(UITG_M),2781,700
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),2812,0
-MP3_(UITG_M)_Output,,MP3_(UITG_M),2816,0
-M4-02_(FR4_02)_Input,,M4-02_(FR4_02),2818,1120
-BW_(BKW_01)_Output,,BW_(BKW_01),2867,115
-BW_(BKW_01)_Output,,BW_(BKW_01),2873,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),2875,115
-BW_(BKW_01)_Input,,BW_(BKW_01),2878,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),3364,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3366,0
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),3459,524
-BW_(BKW_01)_Output,,BW_(BKW_01),3459,50
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),3463,0
-BW_(BKW_01)_Output,,BW_(BKW_01),3464,0
-BW_(BKW_01)_Input,,BW_(BKW_01),3465,524
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3466,50
-BW_(BKW_01)_Input,,BW_(BKW_01),3469,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3470,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),3479,115
-PACK_(VERP_P)_Output,,PACK_(VERP_P),3483,0
-Central_Input,,Central Inventory,3485,204
-BW_(BKW_01)_Output,,BW_(BKW_01),3574,524
-BW_(BKW_01)_Output,,BW_(BKW_01),3578,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3580,524
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3584,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),2210,0
+BW_(BKW_01)_Output,,BW_(BKW_01),2287,92
+BW_(BKW_01)_Input,,BW_(BKW_01),2291,979
+BW_(BKW_01)_Output,,BW_(BKW_01),2291,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2293,92
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),2297,0
+BW_(BKW_01)_Output,,BW_(BKW_01),3362,115
+MP3_(UITG_M)_Output,,MP3_(UITG_M),3363,700
+BW_(BKW_01)_Output,,BW_(BKW_01),3366,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),3368,115
+MP3_(UITG_M)_Output,,MP3_(UITG_M),3375,0
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),3377,1720
+BW_(BKW_01)_Input,,BW_(BKW_01),3383,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),3386,0
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),3492,50
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),3496,0
+BW_(BKW_01)_Input,,BW_(BKW_01),3498,50
+PACK_(VERP_P)_Output,,PACK_(VERP_P),3500,115
+PACK_(VERP_P)_Output,,PACK_(VERP_P),3504,0
+Central_Input,,Central Inventory,3506,204
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),3532,319
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),3536,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3538,319
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),3542,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),3623,8
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),3789,524
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),3793,0
+BW_(BKW_01)_Input,,BW_(BKW_01),3795,574
+UMC750SS_(M5-05)_Input,,UMC750SS_(M5-05),3796,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),4145,0
+BW_(BKW_01)_Output,,BW_(BKW_01),7725,979
+BW_(BKW_01)_Input,,BW_(BKW_01),7729,524
+BW_(BKW_01)_Output,,BW_(BKW_01),7729,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),7731,979
+PACK_(VERP_P)_Input,,PACK_(VERP_P),7735,0
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),7785,80
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),7789,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7791,80
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7795,0
+BW_(BKW_01)_Output,,BW_(BKW_01),7829,50
+BW_(BKW_01)_Input,,BW_(BKW_01),7833,0
+BW_(BKW_01)_Output,,BW_(BKW_01),7834,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7836,50
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7840,0
+BW_(BKW_01)_Output,,BW_(BKW_01),7937,524
+BW_(BKW_01)_Output,,BW_(BKW_01),7941,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7943,524
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7947,0
 M4-01_(FR4_01)_Output,,M4-01_(FR4_01),8633,616
 M4-01_(FR4_01)_Output,,M4-01_(FR4_01),8637,0
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),8639,616
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),9382,2428
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),9476,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),9492,2
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),9496,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),9498,2
-PACK_(VERP_P)_Input,,PACK_(VERP_P),9502,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9503,2
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9505,0
-Central_Input,,Central Inventory,9507,206
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),10584,418
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),10588,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),10590,418
-PACK_(VERP_P)_Input,,PACK_(VERP_P),10594,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),10595,418
-PACK_(VERP_P)_Output,,PACK_(VERP_P),10597,0
-Central_Input,,Central Inventory,10599,624
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11004,1070
+PACK_(VERP_P)_Output,,PACK_(VERP_P),9196,979
+PACK_(VERP_P)_Output,,PACK_(VERP_P),9200,0
+Central_Input,,Central Inventory,9202,1183
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),9372,8
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),9376,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),9378,8
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),9382,0
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),9386,2428
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),9491,2
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),9493,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),9495,2
+PACK_(VERP_P)_Input,,PACK_(VERP_P),9499,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),9500,2
+PACK_(VERP_P)_Output,,PACK_(VERP_P),9502,0
+Central_Input,,Central Inventory,9504,1185
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),9726,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),10581,418
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),10585,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),10587,418
+PACK_(VERP_P)_Input,,PACK_(VERP_P),10591,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),10592,418
+PACK_(VERP_P)_Output,,PACK_(VERP_P),10594,0
+Central_Input,,Central Inventory,10596,1603
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11001,1070
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11005,1075
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11008,5
-Central_Input,,Central Inventory,11010,1624
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11012,0
-Central_Input,,Central Inventory,11014,1629
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),12004,160
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),12008,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),12010,160
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),12090,616
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),12093,0
-BW_(BKW_01)_Input,,BW_(BKW_01),12095,616
-BW_(BKW_01)_Input,,BW_(BKW_01),12099,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),12160,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),12285,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),12339,319
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),12343,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),12345,319
-PACK_(VERP_P)_Input,,PACK_(VERP_P),12349,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),12441,50
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),12445,0
-Central_Input,,Central Inventory,12447,1699
-PACK_(VERP_P)_Output,,PACK_(VERP_P),12669,319
-PACK_(VERP_P)_Output,,PACK_(VERP_P),12673,0
-BW_(BKW_01)_Input,,BW_(BKW_01),12675,319
-BW_(BKW_01)_Output,,BW_(BKW_01),12715,616
-BW_(BKW_01)_Output,,BW_(BKW_01),12719,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),12721,666
-BW_(BKW_01)_Input,,BW_(BKW_01),12724,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),12729,616
-PACK_(VERP_P)_Output,,PACK_(VERP_P),12778,50
-PACK_(VERP_P)_Output,,PACK_(VERP_P),12782,0
-Central_Input,,Central Inventory,12784,1749
-PACK_(VERP_P)_Input,,PACK_(VERP_P),12787,0
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),13444,654
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),13448,0
-BW_(BKW_01)_Input,,BW_(BKW_01),13450,654
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),13516,524
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),13520,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),13522,524
-BW_(BKW_01)_Output,,BW_(BKW_01),13523,319
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),13527,160
-BW_(BKW_01)_Input,,BW_(BKW_01),13527,0
-BW_(BKW_01)_Output,,BW_(BKW_01),13527,0
-Central_Input,,Central Inventory,13529,2068
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),13531,0
-BW_(BKW_01)_Input,,BW_(BKW_01),13533,160
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),13796,1714
-PACK_(VERP_P)_Output,,PACK_(VERP_P),13884,616
-PACK_(VERP_P)_Input,,PACK_(VERP_P),13888,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),13889,0
-Central_Input,,Central Inventory,13891,2684
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),13971,86
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),13975,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),13977,86
-PACK_(VERP_P)_Output,,PACK_(VERP_P),14041,524
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),14121,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),14124,0
-Central_Input,,Central Inventory,14126,3208
-BW_(BKW_01)_Output,,BW_(BKW_01),14182,654
-BW_(BKW_01)_Output,,BW_(BKW_01),14188,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),14190,654
-BW_(BKW_01)_Input,,BW_(BKW_01),14193,0
-M4-02_(FR4_02)_Output,,M4-02_(FR4_02),14196,700
-M4-02_(FR4_02)_Output,,M4-02_(FR4_02),14261,0
-BW_(BKW_01)_Input,,BW_(BKW_01),14263,700
-M4-02_(FR4_02)_Input,,M4-02_(FR4_02),14283,700
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11005,5
+Central_Input,,Central Inventory,11007,2673
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),11009,0
+Central_Input,,Central Inventory,11011,2678
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),12002,160
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),12007,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),12009,160
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),12158,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),12335,616
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),12339,0
+BW_(BKW_01)_Input,,BW_(BKW_01),12341,616
+BW_(BKW_01)_Input,,BW_(BKW_01),12345,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),12534,0
+BW_(BKW_01)_Output,,BW_(BKW_01),13443,616
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),13446,654
+BW_(BKW_01)_Output,,BW_(BKW_01),13447,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),13449,616
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),13450,0
+BW_(BKW_01)_Input,,BW_(BKW_01),13452,654
+PACK_(VERP_P)_Input,,PACK_(VERP_P),13453,0
+BW_(BKW_01)_Input,,BW_(BKW_01),13456,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),13475,319
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),13479,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),13481,319
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),13769,160
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),13773,0
+BW_(BKW_01)_Input,,BW_(BKW_01),13775,160
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),13798,1714
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),13968,86
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),13972,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),13974,86
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),14114,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),14117,616
+BW_(BKW_01)_Output,,BW_(BKW_01),14120,654
+PACK_(VERP_P)_Output,,PACK_(VERP_P),14127,0
+Central_Input,,Central Inventory,14129,3294
+BW_(BKW_01)_Output,,BW_(BKW_01),14136,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),14138,654
+PACK_(VERP_P)_Input,,PACK_(VERP_P),14141,0
+BW_(BKW_01)_Input,,BW_(BKW_01),14144,0
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),14192,700
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),14257,0
+BW_(BKW_01)_Input,,BW_(BKW_01),14259,700
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),14279,1300
 M4-02_(FR4_02)_Output,,M4-02_(FR4_02),17762,420
-M4-02_(FR4_02)_Output,,M4-02_(FR4_02),17765,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),17767,0
-BW_(BKW_01)_Input,,BW_(BKW_01),17767,1120
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),17924,86
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),17928,0
-BW_(BKW_01)_Input,,BW_(BKW_01),17930,1206
-M4-02_(FR4_02)_Input,,M4-02_(FR4_02),18357,0
-BW_(BKW_01)_Output,,BW_(BKW_01),18360,160
-BW_(BKW_01)_Output,,BW_(BKW_01),18366,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),18368,160
-BW_(BKW_01)_Input,,BW_(BKW_01),18371,1120
-PACK_(VERP_P)_Input,,PACK_(VERP_P),18376,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),18535,160
-PACK_(VERP_P)_Output,,PACK_(VERP_P),18537,0
-Central_Input,,Central Inventory,18539,3368
-BW_(BKW_01)_Output,,BW_(BKW_01),18543,86
-BW_(BKW_01)_Output,,BW_(BKW_01),18549,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),18551,86
-BW_(BKW_01)_Input,,BW_(BKW_01),18554,420
-PACK_(VERP_P)_Input,,PACK_(VERP_P),18559,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),18644,86
-PACK_(VERP_P)_Output,,PACK_(VERP_P),18646,0
-Central_Input,,Central Inventory,18648,3454
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20890,1
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20894,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20896,1
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20900,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),17768,0
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),17768,0
+BW_(BKW_01)_Input,,BW_(BKW_01),17770,1120
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),17776,50
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),17780,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),17782,50
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17819,319
+PACK_(VERP_P)_Input,,PACK_(VERP_P),17823,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17823,0
+BW_(BKW_01)_Input,,BW_(BKW_01),17825,1439
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17872,50
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17876,0
+Central_Input,,Central Inventory,17878,3344
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),17879,524
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),17883,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),17885,524
+PACK_(VERP_P)_Input,,PACK_(VERP_P),17889,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),17918,86
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),17922,0
+BW_(BKW_01)_Input,,BW_(BKW_01),17924,1525
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17993,524
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17997,0
+Central_Input,,Central Inventory,17999,3868
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),18355,600
+BW_(BKW_01)_Output,,BW_(BKW_01),19202,160
+BW_(BKW_01)_Input,,BW_(BKW_01),19208,1439
+BW_(BKW_01)_Output,,BW_(BKW_01),19208,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),19210,160
+PACK_(VERP_P)_Input,,PACK_(VERP_P),19214,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),19317,8
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),19321,0
+Central_Input,,Central Inventory,19323,3876
+PACK_(VERP_P)_Output,,PACK_(VERP_P),19374,160
+PACK_(VERP_P)_Output,,PACK_(VERP_P),19378,0
+BW_(BKW_01)_Output,,BW_(BKW_01),19379,86
+Central_Input,,Central Inventory,19380,4036
+BW_(BKW_01)_Input,,BW_(BKW_01),19383,739
+BW_(BKW_01)_Output,,BW_(BKW_01),19383,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),19385,86
+PACK_(VERP_P)_Input,,PACK_(VERP_P),19389,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),19474,86
+PACK_(VERP_P)_Output,,PACK_(VERP_P),19476,0
+Central_Input,,Central Inventory,19478,4122
+UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),20033,17
+UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),20037,0
+UMC400_(M5-06)_Input,,UMC400_(M5-06),20039,17
+UMC400_(M5-06)_Input,,UMC400_(M5-06),20125,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20893,1
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20897,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20899,1
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20903,0
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20909,1
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20911,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20913,1
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20917,0
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20928,1
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20930,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20932,1
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20932,1
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20936,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20937,1
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20939,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20941,1
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20945,0
-BW_(BKW_01)_Output,,BW_(BKW_01),22096,700
-BW_(BKW_01)_Input,,BW_(BKW_01),22100,0
-BW_(BKW_01)_Output,,BW_(BKW_01),22100,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),22102,700
-PACK_(VERP_P)_Input,,PACK_(VERP_P),22106,0
-BW_(BKW_01)_Output,,BW_(BKW_01),22139,420
-BW_(BKW_01)_Output,,BW_(BKW_01),22143,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),22145,420
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),22202,714
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),22206,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),22208,714
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),22554,1000
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),22713,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),22807,700
-PACK_(VERP_P)_Output,,PACK_(VERP_P),22813,0
-Central_Input,,Central Inventory,22815,4154
-PACK_(VERP_P)_Input,,PACK_(VERP_P),22818,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),22837,420
-PACK_(VERP_P)_Output,,PACK_(VERP_P),22841,0
-Central_Input,,Central Inventory,22843,4574
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),23865,654
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),23869,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),23871,654
-PACK_(VERP_P)_Input,,PACK_(VERP_P),23875,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),27890,654
-PACK_(VERP_P)_Output,,PACK_(VERP_P),27894,0
-Central_Input,,Central Inventory,27896,5228
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),29550,714
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),29554,0
-BW_(BKW_01)_Input,,BW_(BKW_01),29556,714
-BW_(BKW_01)_Input,,BW_(BKW_01),29560,0
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),30967,714
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),30971,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),30973,714
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),31133,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),31478,0
-M4-02_(FR4_02)_Output,,M4-02_(FR4_02),31481,700
-BW_(BKW_01)_Output,,BW_(BKW_01),31484,714
-M4-02_(FR4_02)_Output,,M4-02_(FR4_02),31488,0
-BW_(BKW_01)_Input,,BW_(BKW_01),31490,700
-BW_(BKW_01)_Output,,BW_(BKW_01),31492,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),31494,714
-BW_(BKW_01)_Input,,BW_(BKW_01),31499,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),32167,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),20934,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20936,2
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20937,1
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20940,0
+UMC400_(M5-06)_Output,,UMC400_(M5-06),22114,17
+UMC400_(M5-06)_Output,,UMC400_(M5-06),22118,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),22120,17
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),22124,0
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),22204,714
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),22209,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),22211,714
+BW_(BKW_01)_Output,,BW_(BKW_01),22447,700
+BW_(BKW_01)_Input,,BW_(BKW_01),22451,420
+BW_(BKW_01)_Output,,BW_(BKW_01),22452,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),22454,700
+PACK_(VERP_P)_Input,,PACK_(VERP_P),22458,0
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),22556,1000
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),22717,0
+BW_(BKW_01)_Output,,BW_(BKW_01),22773,319
+BW_(BKW_01)_Output,,BW_(BKW_01),22779,0
+Central_Input,,Central Inventory,22781,4441
+BW_(BKW_01)_Input,,BW_(BKW_01),22784,0
+BW_(BKW_01)_Output,,BW_(BKW_01),22823,420
+BW_(BKW_01)_Output,,BW_(BKW_01),22827,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),22829,420
+PACK_(VERP_P)_Output,,PACK_(VERP_P),23641,700
+PACK_(VERP_P)_Input,,PACK_(VERP_P),23645,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),23645,0
+Central_Input,,Central Inventory,23647,5141
+PACK_(VERP_P)_Output,,PACK_(VERP_P),23664,420
+PACK_(VERP_P)_Output,,PACK_(VERP_P),23668,0
+Central_Input,,Central Inventory,23670,5561
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),23818,80
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),23822,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),23824,80
+PACK_(VERP_P)_Input,,PACK_(VERP_P),23828,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),23861,654
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),23865,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),23867,654
+PACK_(VERP_P)_Output,,PACK_(VERP_P),23906,80
+PACK_(VERP_P)_Input,,PACK_(VERP_P),23910,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),23910,0
+Central_Input,,Central Inventory,23912,5641
+PACK_(VERP_P)_Output,,PACK_(VERP_P),27927,654
+PACK_(VERP_P)_Output,,PACK_(VERP_P),27931,0
+Central_Input,,Central Inventory,27933,6295
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),29544,714
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),29548,0
+BW_(BKW_01)_Input,,BW_(BKW_01),29550,714
+BW_(BKW_01)_Input,,BW_(BKW_01),29554,0
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),30965,714
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),30969,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),30971,714
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),31098,17
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),31102,0
+Central_Input,,Central Inventory,31104,6312
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),31131,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),31477,0
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),31480,700
+BW_(BKW_01)_Output,,BW_(BKW_01),31483,714
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),31549,0
+BW_(BKW_01)_Input,,BW_(BKW_01),31551,700
+BW_(BKW_01)_Output,,BW_(BKW_01),31553,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),31555,714
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),32166,0
+BW_(BKW_01)_Input,,BW_(BKW_01),32167,0
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),32282,0
 M4-01_(FR4_01)_Output,,M4-01_(FR4_01),33602,1000
 M4-01_(FR4_01)_Output,,M4-01_(FR4_01),33607,0
 BW_(BKW_01)_Input,,BW_(BKW_01),33609,1000
-BW_(BKW_01)_Output,,BW_(BKW_01),37923,700
-BW_(BKW_01)_Input,,BW_(BKW_01),37927,0
-BW_(BKW_01)_Output,,BW_(BKW_01),37927,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),37929,700
-PACK_(VERP_P)_Input,,PACK_(VERP_P),37933,0
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38309,714
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38313,0
-BW_(BKW_01)_Input,,BW_(BKW_01),38315,714
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38323,24
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38327,0
-Central_Input,,Central Inventory,38329,5252
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38635,700
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38639,0
-Central_Input,,Central Inventory,38641,5952
-BW_(BKW_01)_Output,,BW_(BKW_01),39411,1000
-BW_(BKW_01)_Input,,BW_(BKW_01),39415,0
-BW_(BKW_01)_Output,,BW_(BKW_01),39415,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39417,1000
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39421,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39802,1
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39806,0
-Central_Input,,Central Inventory,39808,5953
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39823,1
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39827,0
-Central_Input,,Central Inventory,39829,5954
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39838,80
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39842,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39844,80
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40805,1
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40809,0
-Central_Input,,Central Inventory,40811,5955
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40820,1
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40824,0
-Central_Input,,Central Inventory,40826,5956
-PACK_(VERP_P)_Output,,PACK_(VERP_P),40904,1000
-PACK_(VERP_P)_Input,,PACK_(VERP_P),40908,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),40908,0
-Central_Input,,Central Inventory,40910,6956
-PACK_(VERP_P)_Output,,PACK_(VERP_P),40987,80
-PACK_(VERP_P)_Output,,PACK_(VERP_P),40991,0
-Central_Input,,Central Inventory,40993,7036
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41071,92
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41075,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),41077,92
-PACK_(VERP_P)_Input,,PACK_(VERP_P),41081,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41143,714
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41147,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),41149,714
-PACK_(VERP_P)_Output,,PACK_(VERP_P),41172,92
-PACK_(VERP_P)_Input,,PACK_(VERP_P),41176,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),41176,0
-Central_Input,,Central Inventory,41178,7128
-BW_(BKW_01)_Output,,BW_(BKW_01),41325,714
-BW_(BKW_01)_Output,,BW_(BKW_01),41329,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),41331,714
-PACK_(VERP_P)_Output,,PACK_(VERP_P),42372,714
-PACK_(VERP_P)_Input,,PACK_(VERP_P),42376,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),42376,0
-Central_Input,,Central Inventory,42378,7842
-PACK_(VERP_P)_Output,,PACK_(VERP_P),43091,714
-PACK_(VERP_P)_Output,,PACK_(VERP_P),43095,0
-Central_Input,,Central Inventory,43097,8556
+BW_(BKW_01)_Output,,BW_(BKW_01),38110,700
+BW_(BKW_01)_Input,,BW_(BKW_01),38114,0
+BW_(BKW_01)_Output,,BW_(BKW_01),38114,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),38116,700
+PACK_(VERP_P)_Input,,PACK_(VERP_P),38120,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38306,714
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38310,0
+BW_(BKW_01)_Input,,BW_(BKW_01),38312,714
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38329,24
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38333,0
+Central_Input,,Central Inventory,38335,6336
+PACK_(VERP_P)_Output,,PACK_(VERP_P),38822,700
+PACK_(VERP_P)_Output,,PACK_(VERP_P),38826,0
+Central_Input,,Central Inventory,38828,7036
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),39362,600
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),39367,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),39369,600
+BW_(BKW_01)_Output,,BW_(BKW_01),39598,1000
+BW_(BKW_01)_Input,,BW_(BKW_01),39602,0
+BW_(BKW_01)_Output,,BW_(BKW_01),39603,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),39605,1000
+PACK_(VERP_P)_Input,,PACK_(VERP_P),39609,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),39714,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39807,1
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39811,0
+Central_Input,,Central Inventory,39813,7037
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39826,1
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39830,0
+Central_Input,,Central Inventory,39832,7038
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39842,1
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39846,0
+Central_Input,,Central Inventory,39848,7039
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40805,80
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40808,81
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40809,1
+PACK_(VERP_P)_Input,,PACK_(VERP_P),40811,80
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),40813,0
+Central_Input,,Central Inventory,40815,7040
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41080,92
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41084,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),41086,172
+PACK_(VERP_P)_Output,,PACK_(VERP_P),41090,1000
+PACK_(VERP_P)_Input,,PACK_(VERP_P),41094,92
+PACK_(VERP_P)_Output,,PACK_(VERP_P),41094,0
+Central_Input,,Central Inventory,41096,8040
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41142,714
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),41146,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),41148,806
+PACK_(VERP_P)_Output,,PACK_(VERP_P),41173,80
+PACK_(VERP_P)_Input,,PACK_(VERP_P),41177,714
+PACK_(VERP_P)_Output,,PACK_(VERP_P),41177,0
+Central_Input,,Central Inventory,41179,8120
+PACK_(VERP_P)_Output,,PACK_(VERP_P),41268,92
+PACK_(VERP_P)_Input,,PACK_(VERP_P),41272,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),41272,0
+Central_Input,,Central Inventory,41274,8212
+BW_(BKW_01)_Output,,BW_(BKW_01),41514,714
+BW_(BKW_01)_Output,,BW_(BKW_01),41518,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),41520,714
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),42287,600
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),42291,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),42293,600
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),42297,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),42467,714
+PACK_(VERP_P)_Input,,PACK_(VERP_P),42471,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),42472,0
+Central_Input,,Central Inventory,42474,8926
+PACK_(VERP_P)_Output,,PACK_(VERP_P),43186,714
+PACK_(VERP_P)_Output,,PACK_(VERP_P),43190,0
+Central_Input,,Central Inventory,43192,9640

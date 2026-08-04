@@ -118,7 +118,7 @@ class ProductionAlgManager(AlgorithmManager):
 
         select_id = 0
 
-        self.getSimulator().saveLog("REPORT: >>> Algorithm: findTrailerLoadEarliestOrder <<<  tolocation None? "+str(event.getToLocation() == None))
+        #self.getSimulator().saveLog("REPORT: >>> Algorithm: findTrailerLoadEarliestOrder <<<  tolocation None? "+str(event.getToLocation() == None))
         
         selection_loc = event.getToLocation() if event.getName() != "Machine Setup" else event.getFromLocation().getMachine()
 

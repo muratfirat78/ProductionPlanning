@@ -152,15 +152,10 @@ class Simulator(object):
     def RunSimulation(self,OperationsMgr): 
 
         try: 
-            self.saveLog("REPORT: simulation starts..")
+            self.getController().getVisualManager().updateSimProgress("------------ SIMULATION START --------------")
             start = timer()
-            try:
-                self.getController().getVisualManager().updateSimProgress("Simulation starts ")
-            except Exception as e:
-                self.saveLog("ERROR in progress update: "+str(e))
-
-           
-
+            remaining_events = []
+    
             # Main simulator time progress 
             while self.getTime() < self.getTimeLimit():
     
@@ -172,8 +167,8 @@ class Simulator(object):
                    
                     time_events = []
                     if self.getTime() in self.getEventQueue():
-                        self.saveLog("REPORT:  currentday "+str(self.getCurrentDay().weekday())+", weekdays? "+str(self.weekdays))
-                        self.saveLog("REPORT:  Weekend jump..before "+str(self.getRealTime()))
+                        #self.saveLog("REPORT:  currentday "+str(self.getCurrentDay().weekday())+", weekdays? "+str(self.weekdays))
+                        #self.saveLog("REPORT:  Weekend jump..before "+str(self.getRealTime()))
                         time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started event
                     
 
@@ -181,43 +176,43 @@ class Simulator(object):
                         for ev_id in range(len(time_events)):
                             if ev_id in consdered_ev_ids:
                                 continue
-                            self.saveLog("REPORT:  event id"+str(ev_id))
+                            #self.saveLog("REPORT:  event id"+str(ev_id))
                             e = time_events[ev_id]
                             
                             case = OperationsMgr.determineProgressCase(e)
-                            self.saveLog("REPORT:  event "+e.getName()+"  with case "+str(case))
+                            #self.saveLog("REPORT:  event "+e.getName()+"  with case "+str(case))
                             if case == "Suspend" or case == "Handle":
                                 if e.getSuspendedSuccessor() == None:
-                                    self.saveLog("REPORT:  event to remove from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
+                                    #self.saveLog("REPORT:  event to remove from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
                                     if e in self.getEventQueue()[self.getTime()]:
                                         self.getEventQueue()[self.getTime()].remove(e)
-                                    self.saveLog("REPORT:  event removed from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
+                                    #self.saveLog("REPORT:  event removed from time schedule "+str(e in self.getEventQueue()[self.getTime()]))
                                     if not e in self.getEventQueue()["Pending"]:
                                         self.getEventQueue()["Pending"].append(e)
-                                        self.saveLog("REPORT: event inserted into pendings ")
+                                        #self.saveLog("REPORT: event inserted into pendings ")
                                 else:
                                     successor = e.getSuspendedSuccessor()
-                                    for progress_id in range(len(e.getProgressList())):
-                                        self.saveLog("REPORT: event progress step: "+str(e.getProgressList()[progress_id][1]))
-                                    for progress_id in range(len(successor.getProgressList())):
-                                        self.saveLog("REPORT: successor progress step: "+str(successor.getProgressList()[progress_id][1]))
+                                    #for progress_id in range(len(e.getProgressList())):
+                                    #    self.saveLog("REPORT: event progress step: "+str(e.getProgressList()[progress_id][1]))
+                                    #for progress_id in range(len(successor.getProgressList())):
+                                        #self.saveLog("REPORT: successor progress step: "+str(successor.getProgressList()[progress_id][1]))
                                     case = OperationsMgr.determineProgressCase(successor)
-                                    self.saveLog("REPORT:event "+e.getName()+" has successor  event "+successor.getName()+"  with case"+str(case))
+                                    #self.saveLog("REPORT:event "+e.getName()+" has successor  event "+successor.getName()+"  with case"+str(case))
                                     if case == "Suspend" or case == "Handle":
                                         if successor in self.getEventQueue()[self.getTime()]:
-                                            self.saveLog("REPORT:  successor to remove from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
+                                            #self.saveLog("REPORT:  successor to remove from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
                                             self.getEventQueue()[self.getTime()].remove(successor)
-                                            self.saveLog("REPORT:  successor removed from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
+                                            #self.saveLog("REPORT:  successor removed from time schedule "+str(successor in self.getEventQueue()[self.getTime()]))
                                     if successor in time_events:
                                         consdered_ev_ids.append(time_events.index(successor))
                                         
                                     if not successor in self.getEventQueue()["Pending"]:
                                         self.getEventQueue()["Pending"].append(successor)
-                                        self.saveLog("REPORT: successor inserted into pendings ")
+                                        #self.saveLog("REPORT: successor inserted into pendings ")
 
                     
                     self.updateTime(self.shiftsperday*self.shifthours*60)
-                    self.saveLog("REPORT:  Weekend jump..after "+str(self.getRealTime()))
+                    #self.saveLog("REPORT:  Weekend jump..after "+str(self.getRealTime()))
 
                     self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
 
@@ -265,6 +260,31 @@ class Simulator(object):
               
                 self.updateTime(1)
 
+                if int(self.getTime()) >= int(self.getTimeLimit()):
+                    remaining_keys = [t for t in self.getEventQueue().keys() if t != "Pending"]
+                    remaining_keys = [t for t in remaining_keys if t >= int(self.getTime())]
+                   
+                    for keytime in remaining_keys:
+                        for e in self.getEventQueue()[keytime]:
+                            remaining_events.append(e)
+                    for event in self.getEventQueue()["Pending"]:
+                        remaining_events.append(event)
+
+            self.getController().getVisualManager().updateSimProgress("------------ SIMULATION END --------------")
+
+            if len(remaining_events) > 0:
+                self.saveLog("REPORT: In-progress events: "+str(len(remaining_events)))
+                for event in remaining_events:
+                    self.saveLog(" REPORT: event: "+str(event.getName())+"("+str(event.getID())+")")
+                    if len(event.getItems()) > 0:
+                        oprseq = event.getItems()[0].getDemand().getFinalProduct().getOperationSequences()[event.getItems()[0].getDemand().getID()]
+                        for opr in oprseq:  
+                            if (not opr.isCancelled()) and (not opr.isFinished()) and opr.getName() != "Unknown":
+                                self.saveLog("REPORT: In-complete operation: "+str(opr.getName()))
+                                if event.getName() == "Machine Processing":
+                                    if event.getItems()[0].getActiveOperation()== opr:
+                                        self.saveLog("REPORT: In-progress operation: "+str(opr.getName()))
+            
             end = timer()
             
             try:

@@ -179,3 +179,91 @@ Further digging gives the following zero-time progress step:
 TEST Orders 23 OK (0 error, all orders come back to central inventory)
 TEST Orders 25 OK (0 error, all orders come back to central inventory)
 TEST Orders 30 OK (0 error, all orders come back to central inventory)
+
+TEST Orders 35 0 error, but there are two orders not returned to central buffer, very last event of them:
+581	Machine Processing	766	1976~1977~1978~1979~1980~1981~1982~1983~1984~1...	PACK_(VERP_P)	PACK_(VERP_P)	PACK_(VERP_P)_Location	14117	2026-08-14 19:17:00
+582	Machine Unloading	789	1976~1977~1978~1979~1980~1981~1982~1983~1984~1...	Operator 3	PACK_(VERP_P)	PACK_(VERP_P)_Location	14117	2026-08-14 19:17:00
+590	Trailer Loading   	804	1976~1977~1978~1979~1980~1981~1982~1983~1984~1...	Operator 3	Trailer_60	PACK_(VERP_P)_Location	14127	2026-08-14 19:27:00
+591	Trailer Transport	812	1976~1977~1978~1979~1980~1981~1982~1983~1984~1...	Operator 3	Trailer_60	Trailer_60	        14128	2026-08-14 19:28:00
+
+        Machine Processing	317	6254~6255~6256~6257~6258~6259~6260~6261~6262~6...	OUT - Outsourced activity_(OUT - Outsourced)	        11001	2026-08-12 15:21:00
+500	Machine Unloading	639	6254~6255~6256~6257~6258~6259~6260~6261~6262~6...	Operator 1	OUT - Outsourced activity_(OUT          11001	2026-08-12 15:21:00
+506	Trailer Loading	        670	6254~6255~6256~6257~6258~6259~6260~6261~6262~6...	Operator 1	Trailer_60	OUT - Outsourced        11005	2026-08-12 15:25:00
+507	Trailer Transport	675	6254~6255~6256~6257~6258~6259~6260~6261~6262~6...	Operator 1	Trailer_60                              11006	2026-08-12 15:26:00
+
+Item creation: 
+
+0: REPORT: >>>> items [5254-6253]
+0: REPORT:  Selected Order [4512-127-05186B], Q: 1000, d: 2026-05-26 12:00:00, oprs: [
+'MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'M4-01 - AW - 4axis - Conveyor Automation (FR4_01)', 
+'BW - Benchwork (BKW_01)', 'PACK - Packaging (VERP_P)'] items created.
+0: REPORT: Selected production order deadline: 2026-05-27 11:36:36
+
+
+0: REPORT: >>>> items [6254-7323]
+0: REPORT:  Selected Order [4022.632.63021], Q: 1070, d: 2026-05-27 11:36:36, oprs: [
+'MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'M3-01 - AW - 3axis - Manual (FR3_01)', 
+'MP1 - Mat. prep - automatic sawing (ZGN_01)',
+'M5-05 - UMC2 - 5axis  - Manual (UMC750)',
+'OUT - Outsourced activity'] items created.
+0: REPORT: Selected production order deadline: 2026-05-28 12:00:00
+
+
+11005:  REPORT: event: Trailer Loading(670) , successor dict dict_items([(<simulationobjects.SimEvent object at 0x00000182AECF4050>, 'Finish to Start')])
+11005: REPORT: event : Trailer Loading(670), equipment Trailer_60, items 0
+11005: REPORT: event: Trailer Loadingprogress step: (11004, 11005)
+11005: REPORT: event: Trailer Loading, TotalProgress: 1
+11005:  REPORT: event: Trailer Loading completion updates start..
+11005: REPORT: Trailer loading from loc: OUT - Outsourced activity_(OUT - Outsourced)_Output
+11005: REPORT: Trailer Loading generated, pendings 1
+11005:  REPORT: completion updates done.. res location: OUT - Outsourced activity_(OUT - Outsourced)_Location
+11005: REPORT: event : Trailer Loading(670), equipment Trailer_60, items 1070
+11005: REPORT: case Complete, successor_type Trailer Transport, pred_type: Finish to Start
+11005: REPORT: **** successor_event Trailer Transport(675)
+11005: REPORT: succcessor progress step (11005, 11006)
+
+
+11005: REPORT: event : Trailer Transport(675), res on loc? True, equip on loc? True
+11005:  REPORT: event: Trailer Transport(675)-[6254-7323], active opr none? No act opr, loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Start
+11005:  REPORT: event: Trailer Transport(675) , successor dict dict_items([(<simulationobjects.SimEvent object at 0x00000182AECF4410>, 'Finish to Start')])
+11005: REPORT: event : Trailer Transport(675), equipment Trailer_60, items 1070
+11005: REPORT: event: Trailer Transportprogress step: (11005, 11006)
+11005: REPORT: event: Trailer Transport, TotalProgress: 1
+11005: REPORT: case Start, successor_type Trailer Unloading, pred_type: Finish to Start
+11005: REPORT: ______________________________________________________________________
+11005: REPORT: event : Trailer Transport(675), items 1070, active opr none? True event loc Trailer_60, item oprs [
+'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'True--False--M3-01 - AW - 3axis - Manual (FR3_01)', 
+'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'False--True--M5-05 - UMC2 - 5axis  - Manual (UMC750)', 
+'False--True--OUT - Outsourced activity'], tot.prog: 1, p: 1, case: Start
+
+
+11006: REPORT: event : Trailer Transport(675), res on loc? True, equip on loc? True
+11006:  REPORT: event: Trailer Transport(675)-[6254-7323], active opr none? No act opr, loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Complete
+11006:  REPORT: event: Trailer Transport(675) , successor dict dict_items([(<simulationobjects.SimEvent object at 0x00000182AECF4410>, 'Finish to Start')])
+11006: REPORT: event : Trailer Transport(675), equipment Trailer_60, items 1070
+11006: REPORT: event: Trailer Transportprogress step: (11005, 11006)
+11006: REPORT: event: Trailer Transport, TotalProgress: 1
+11006:  REPORT: event: Trailer Transport completion updates start..
+11006:  REPORT: completion updates done.. res location: CentralBuffer_Location
+11006: REPORT: event : Trailer Transport(675), equipment Trailer_60, items 1070
+11006: REPORT: case Complete, successor_type Trailer Unloading, pred_type: Finish to Start
+11006: REPORT: **** successor_event Trailer Unloading(678)
+11006: REPORT: succcessor progress step (11006, 11007)
+11006: REPORT: ______________________________________________________________________
+11006: REPORT: event : Trailer Transport(675), items 1070, active opr none? True event loc Trailer_60, item oprs [
+'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'True--False--M3-01 - AW - 3axis - Manual (FR3_01)',
+ 'True--False--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'False--True--M5-05 - UMC2 - 5axis  - Manual (UMC750)', 
+'False--True--OUT - Outsourced activity'], tot.prog: 1, p: 1, case: Complete
+
+11006: REPORT: event : Trailer Unloading alg_return  none? False
+
+
+
+
+
