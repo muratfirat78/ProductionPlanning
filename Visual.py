@@ -64,9 +64,29 @@ class VisualManager():
         self.milpresultinfo = None
         self.milpdetails = None
         self.milporders = dict()
+        self.MILPJobs = None
+        self.MILPParamTxt = None
+
+        self.MILPNoJobs = 20
 
 
         self.ResourceBox = None
+
+    def getMILPJobs(self):
+        return self.MILPJobs
+
+    def setMILPJobs(self,myjb):
+        self.MILPJobs = myjb
+        return 
+
+    def setMILPParamTxt(self,txt):
+        self.MILPParamTxt = txt
+        return
+
+    def getMILPParamTxt(self):
+        return self.MILPParamTxt
+        
+        
 
     def setResourceBox(self,myres):
         self.ResourceBox = myres
@@ -471,10 +491,6 @@ class VisualManager():
 
             self.getmilpdetails().options = [x for x in OrdList]
                 
-          
-            
-        
-
         return 
 
     def ViewDetails(self,event):
@@ -490,6 +506,8 @@ class VisualManager():
             if self.getFurtherText().options[selectid] == result_detail:
                 break
             selectid+=1
+
+
         
         
         process_df = pd.read_csv("ProcessData.csv")
@@ -526,105 +544,18 @@ class VisualManager():
         result_type = self.getmilpresults().value
         result_detail = self.getmilpdetails().value
 
-        
 
-        selectid = 0
-        for x in self.getmilpdetails().options:
-            if self.getmilpdetails().options[selectid] == result_detail:
-                break
-            selectid+=1
-
-        if selectid in self.milporders:
-            prodorder =  self.milporders[selectid]
-
-            if result_type == 'Orders': 
-                
-                order_df = pd.DataFrame(columns=["Operation","Alternatives","Status","Start","Completion","ProcessTime"])
-
-                operation_sequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
-                 
-                for operation in operation_sequence:
-                    infodata = {"Operation":operation.getName(),"Alternatives":len(operation.getAlternativeResources()),"Status":operation.getStatus(),"Start":operation.getStart(),"Completion":operation.getCompletion(),"ProcessTime":operation.getRandVar().sampleValue()  } 
-                    order_df.loc[len(order_df)]= infodata
-
-                with self.getMILPResultInfo():
-                    clear_output()
-                    display(order_df.head(50))
-
-        if result_type == 'Machines': 
-
-            strings = ''
-
-            try: 
-                rel_path = '/'+self.getController().getWorkManager().getUseCase()
-                abs_file_path = os.path.dirname(os.path.realpath(__file__))+rel_path
-    
-                latestfiledate = None
-                filename = None
-    
-                for root, dirs, files in os.walk(abs_file_path):
-                    for file in files: 
-                        if ".csv" in file:                  
-                            try: 
-                                filedate = datetime.strptime(file[file.find("TBRM_Plan_")+10:-4],"%Y-%m-%d")
-                                strings+=file[file.find("TBRM_Plan_")+10:-5]+"  ----   "
-                                if latestfiledate == None:
-                                    latestfiledate = filedate
-                                    filename = file
-                                else:
-                                    if latestfiledate < filedate:
-                                        latestfiledate = filedate
-                                        filename = file
-                       
-                            except Exception as e:
-                                pass
-    
-
-                
-                TBRM_df = pd.read_csv(abs_file_path+'/'+filename)
-
-                try: 
-                    lastdemandid = None
-                    for i,r in TBRM_df.iterrows():
-                        if not pd.isna(r["ID"]):
-                            lastdemandid = r["ID"]
-                        else:
-                            TBRM_df.iloc[i, TBRM_df.columns.get_loc('ID')] = lastdemandid
-                except Exception as e:
+        if result_type == 'Machines':
+            for res in self.getController().getWorkManager().getResources():
+                if res.getName() == result_detail:
+                    if res in self.getController().getMILPManager().getMachineDict():
+                        milpmachine =  self.getController().getMILPManager().getMachineDict()[res]
+                        
+                        with self.getMILPResultInfo():
+                            clear_output()
+                            display(milpmachine.getScheduleDF().head(50))
                     
-                    with self.getMILPResultInfo():
-                        clear_output()
-                        display("ERROR: In filling order id "+str(e))
-                    
-               
-                Schedule_df = pd.DataFrame(columns=["Operation","StartShift","Start Time","CompletionShift","Completion Time"])
-                #for prodorder in self.getController().getWorkManager().getSelectedOrders():
-    
-                resplan = TBRM_df[TBRM_df['Processing Machine']== result_detail]
-                resplan['Work Orders/Start']  = pd.to_datetime(resplan['Work Orders/Start'],dayfirst=True )
-
-          
-                
-                resplan['PN'] = [(self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() if x in self.getController().getWorkManager().getProductionOrders() else "-") for x in resplan['ID']]
-                resplan['Quantity'] = [(self.getController().getWorkManager().getProductionOrders()[x].getQuantity()  if x in self.getController().getWorkManager().getProductionOrders() else "-") for x in resplan['ID']]
-
-                resplan = resplan[['PN','Quantity','Work Orders/Start','Work Orders/End','Work Orders/Work Center','Work Orders/Expected Duration','Processing Machine']]
-
-
-                resplan = resplan.sort_values(by='Work Orders/Start')
-
-                with self.getMILPResultInfo():
-                    clear_output()
-                    display(resplan)
-                
-            except Exception as e:
-                with self.getMILPResultInfo():
-                    clear_output()
-                    display("ERROR: in showing plan of "+result_detail+", str: "+strings+"-> "+str(e))
-                
-          
-           
-       
+         
 
         return 
 
@@ -802,16 +733,32 @@ class VisualManager():
                   )    
         return tab 
 
+    def applyvalue(self,value):
+        
+
+
+        return
+
     def GenerateMILPTab(self):
 
 
         self.setmilprunbutton(widgets.Button(description="Run MILP"))
-        self.setmilpmainbox(VBox(children=[self.getmilprunbutton()]))
+
+        self.setMILPParamTxt(widgets.Text(description ='',value=''))
+      
 
         self.setmilpprogress(widgets.Textarea(value='', placeholder='',description='',disabled=True))
 
+        self.setMILPJobs(widgets.Dropdown(options = ["Jobs","Successors","Successors(2)"],value = "Jobs",description = 'MILP size:'))
+
+        self.getMILPJobs().observe(self.ViewResults,'value')
+
         self.getmilpprogress().layout.width = '850px'
         self.getmilpprogress().layout.height = '300px'
+
+        self.setmilpmainbox(VBox(children=[self.getmilprunbutton(),
+                                           HBox(children = [self.getMILPJobs(),self.getMILPParamTxt()])
+                                          ]))
 
   
          # Single Select

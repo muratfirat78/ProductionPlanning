@@ -134,11 +134,15 @@ class Machine(Resource):
         self.ProcessMatch = dict() #key: processorid  val: processevent
         self.NoProcessors = nrprocessors
         self.suspendedEvent = None
+        self.ProgressList = [] # [(event,(st,cp))]
    
 
        
 
 
+    def getProgressList(self):
+        return self.ProgressList
+    
     def getSuspendedEvent(self):
         return self.suspendedEvent
     def setSuspendedEvent(self,myev):
@@ -196,6 +200,13 @@ class Machine(Resource):
 
     def getAlternatives(self):
         return self.Alternatives
+
+    def calculationUtilization(self):
+
+        # machine processing events
+
+
+        return 
         
 #___________________________________________________________________________________________
 class Operator(Resource):

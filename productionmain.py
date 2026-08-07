@@ -417,6 +417,8 @@ class ShopFloorManager(OperationsManager):
            
             progress_step = (startdelay+self.getSimulator().getTime(),min(self.getSimulator().getTime()+processtime+startdelay,self.getCurrentShiftEnd()))
             event.getProgressList().append((event.getResource(),progress_step))
+            if event.getName() == "Machine Processing":
+                event.getResource().getProgressList().append((event,progress_step))
             #self.getSimulator().saveLog(" REPORT: start delay: "+str(startdelay)+", prog_step "+str(progress_step)) 
        
             if len(event.getLogisticalEvents()) == 0:
@@ -428,6 +430,8 @@ class ShopFloorManager(OperationsManager):
 
             if event.getSuspendedPredecessor() != None:
                 event.getSuspendedPredecessor().getProgressList().append((event.getSuspendedPredecessor().getResource(),progress_step))
+                if event.getSuspendedPredecessor().getName() == "Machine Processing":
+                    event.getSuspendedPredecessor().getResource().getProgressList().append((event.getSuspendedPredecessor(),progress_step))
                 if not progress_step[1] in self.getSimulator().getEventQueue():
                     self.getSimulator().getEventQueue()[progress_step[1]] = []
                     
@@ -454,6 +458,8 @@ class ShopFloorManager(OperationsManager):
                     #self.getSimulator().saveLog(" REPORT: scheduling suspended predecessor: "+str(event.getSuspendedPredecessor().getName())) 
                     progress_step = (progress_start,progress_end)
                     event.getSuspendedPredecessor().getProgressList().append((event.getSuspendedPredecessor().getResource(),progress_step))
+                    if event.getSuspendedPredecessor().getName() == "Machine Processing":
+                        event.getSuspendedPredecessor().getResource().getProgressList().append((event.getSuspendedPredecessor(),progress_step))
                     if not progress_step[1] in self.getSimulator().getEventQueue():
                         self.getSimulator().getEventQueue()[progress_step[1]] = []
                         
@@ -523,6 +529,16 @@ class ShopFloorManager(OperationsManager):
                                         
                                     #self.getSimulator().saveLog("REPORT: current progresss step: "+str(progress))
                                     event.getProgressList()[progress_id] = (res,(progress[0],successortime))
+                                    
+                                    if event.getName() == "Machine Processing":
+                                        
+                                        for resprogress_id in range(len(res.getProgressList())):
+                                            myevent,resprogress = res.getProgressList()[resprogress_id]
+                                            if resprogress[0] == progress[0] and resprogress[1] == progress[1]:
+                                                if myevent == event:
+                                                    res.getProgressList()[resprogress_id]=(event,(progress[0],successortime))
+                                                    break
+                                                    
                                     #self.getSimulator().saveLog("REPORT: new progresss step: "+str((progress[0],successortime)))
                                     if not successortime in self.getSimulator().getEventQueue():
                                         self.getSimulator().getEventQueue()[successortime] = []
@@ -543,6 +559,8 @@ class ShopFloorManager(OperationsManager):
                             if successor_event.getEventType().isPreemptable():
                                 progress_step = (self.getSimulator().getTime(),min(self.getSimulator().getTime()+proctime,self.getCurrentShiftEnd()))
                                 successor_event.getProgressList().append((successor_event.getResource(),progress_step))
+                                if successor_event.getName() == "Machine Processing":
+                                    successor_event.getResource().getProgressList().append((successor_event,progress_step))
                                 self.getSimulator().getEventQueue()[successor_event.getProgressList()[-1][1][0]].append(successor_event) # start of progress step
                                 if self.getSimulator().getTime() in debugtimes:
                                     self.getSimulator().saveLog(" REPORT: successor: "+str(successor_event.getName())+", prog_step "+str(progress_step)) 
@@ -562,6 +580,8 @@ class ShopFloorManager(OperationsManager):
                                 else:
                                     progress_step = (self.getSimulator().getTime(),self.getSimulator().getTime()+proctime)
                                     successor_event.getProgressList().append((successor_event.getResource(),progress_step))
+                                    if successor_event.getName() == "Machine Processing":
+                                        successor_event.getResource().getProgressList().append((successor_event,progress_step))
                                     self.getSimulator().getEventQueue()[successor_event.getProgressList()[-1][1][0]].append(successor_event) #start of progress step
                                     if self.getSimulator().getTime() in debugtimes:
                                         self.getSimulator().saveLog("REPORT: succcessor progress step "+str(progress_step))
@@ -1011,43 +1031,34 @@ class ShopFloorManager(OperationsManager):
   
         return 
 #######################################################################################################################################################
-        
-    
 
-########################################################################################################################
-        
-    def getLocationDF(self):
-
-        location_df= pd.DataFrame(columns=["Entity","EntityID","EventName","EventID","LocationID","LocationName","Time"])
-
-
-        for orderid,order  in self.getProductionOrders().items():
-            for item in order.getItems():
-                for dt in item.getLocationData():
-                     location_df.loc[len(location_df)] = dt
-        for resource in self.getResources():
-            for dt in resource.getLocationData():
-                location_df.loc[len(location_df)] = dt
-
-  
-        return location_df
-    
-    def getProcessDF(self):
-
-        process_df = pd.DataFrame(columns=["ItemID","Demand","Product","OperationName","ProcessID","ResourceID","Resource","Start","Completion"])
-
-
-        for orderid,order in self.getProductionOrders().items():
-            for item in order.getItems():
-                for dt in item.getProcessData():
-                    process_df.loc[len(process_df)] = dt
-              
-  
-        return process_df
 #########################################################################################################################
     def writeData(self):
 
         event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
+
+        for eventname in event_df["EventName"].unique():
+            if eventname == "Machine Processing":
+                eventsub_df = event_df[event_df["EventName"] == eventname]
+                for resource in eventsub_df["Resource"].unique():
+                    eventmach_df = eventsub_df[eventsub_df["Resource"] == resource]
+                    machine = None
+                    
+                    for res in self.getResources():
+                        if res.getName() == resource:
+                            machine = res
+                            break
+
+                    processtime = 0
+                    if machine != None: 
+                        for event,progress in machine.getProgressList():
+                            processtime+= progress[1]-progress[0]
+
+                    
+                            
+                        
+            
+            
 
       
         for eventdata in self.getSimulator().getExecutionData():
@@ -1125,6 +1136,9 @@ class ShopFloorManager(OperationsManager):
             inputdate = ""
             if self.inputdate !=None:
                 inputdate = str(self.inputdate.date())
+
+            TBRM_df["Work Orders/Start"] = pd.to_datetime(df["Work Orders/Start"]).dt.floor('s')
+            TBRM_df["Work Orders/End"] = pd.to_datetime(df["Work Orders/End"]).dt.floor('s')
             
             TBRM_df.to_csv("TBRM_Plan_"+inputdate+"_R"+str(myround)+".csv",index = False)
         except Exception as e:

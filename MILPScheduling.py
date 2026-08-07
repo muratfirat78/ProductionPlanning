@@ -230,26 +230,37 @@ class SchMachine(object):
         self.Shiftjobs = dict() # key: shift, value: [job] , jobs that start in the shift
         self.MILPConstraints = [] # x_jm + x_j'm <= 1
         self.MyShifts = [] 
+        self.Schedule_df = pd.DataFrame(columns=["PN","Quantity","Work Orders/Start","Work Orders/Work Center","Work Orders/Expected Duration","Machine"])
 
     def getMyShifts(self):
         return self.MyShifts
 
-    def getMILPConstraints(self):
-        return self.MILPConstraints
+    def calculateUtilization(self):
 
-    def getJobStarts(self):
-        return self.JobStarts 
+        activetime = 0
 
-    def getShift(self,mytime):
+        for schid in range(len(self.getJobStarts())):
+            starttuple = self.getJobStarts()[schid]
+            activetime+= starttuple[0].getOperation().getRandVar().sampleValue()
+
+
+        totaltime = 0
 
         for shift in self.getMyShifts():
-            if shift.getStartTime() <= mytime and mytime<= shift.getEndTime():
-                return shift
+            totaltime+= shift.getEndTime() - shift.getStartTime()
 
-        return None
-        
 
+        if totaltime > 0:
+            return 100*(activetime/totaltime)
+        else: 
+            return 0
+
+    def getJobStarts(self):
+        return self.JobStarts
  
+
+    def getScheduleDF(self):
+        return self.Schedule_df
 
     def getSchedule(self):
         return self.Schedule
@@ -713,6 +724,7 @@ class ProductionMILPManager(MILPManager):
 
 
          # check precedence feasibility:  
+        progress.value+=" checking precedence feasibilities.. "+"\n"
         for prodorder in self.getSimulator().getController().getWorkManager().getSelectedOrders():
             operation_sequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
 
@@ -738,9 +750,26 @@ class ProductionMILPManager(MILPManager):
                 active_predecessor = operation
     
         try: 
+            progress.value+="writing the output "+"\n"
             self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut(self.MILPRound+1)
         except Exception as e:
                 progress.value+="ERROR: in writing the output "+str(e)+"\n"
+
+        try: 
+            progress.value+="finding machine utilizations and schedules "+"\n"
+            for resource in self.getSimulator().getController().getWorkManager().getResources():
+                if resource in self.getMachineDict():
+
+                    machine = self.getMachineDict()[resource]
+                    progress.value+= "Utilization of machine "+resource.getName()+": "+str(machine.calculateUtilization())+"\n"     
+                    for schid in range(len(machine.getJobStarts())):
+                        schtuple = machine.getSchedule()[schid]; starttuple = machine.getJobStarts()[schid]
+    
+                        schedule_row = {"PN":starttuple[0].getProduct().getPN(),"Quantity":starttuple[0].getOperation().getDemand(),"Work Orders/Start":self.convertSimTimeToDate(schtuple[0][1]),"Work Orders/Work Center":machine.getMachine().getName(),"Work Orders/Expected Duration":starttuple[0].getOperation().getRandVar().sampleValue()}
+                        machine.getScheduleDF().loc[len(machine.getScheduleDF())] = schedule_row
+
+        except Exception as e:
+            progress.value+="ERROR: in writing machine schedules "+str(e)+"\n"            
         
 
         return 
@@ -1234,9 +1263,9 @@ class ProductionMILPManager(MILPManager):
                     if mymatch.getMILPVar().solution_value() > 0.5:
                         nrscheduled+=1
                         machschs+=1
-                        progress.value+= "Variable: "+str(mymatch.getJob().getProduct().getPN())+"\n"
-                        progress.value+= "start: "+str(self.convertSimTimeToDate(mymatch.getStart()))+", completion: "+str(self.convertSimTimeToDate(mymatch.getCompletion()))+"\n"
-                        progress.value+= "start: "+str(mymatch.getStart())+", completion: "+str(mymatch.getCompletion())+"\n"
+                        #progress.value+= "Variable: "+str(mymatch.getJob().getProduct().getPN())+"\n"
+                        #progress.value+= "start: "+str(self.convertSimTimeToDate(mymatch.getStart()))+", completion: "+str(self.convertSimTimeToDate(mymatch.getCompletion()))+"\n"
+                        #progress.value+= "start: "+str(mymatch.getStart())+", completion: "+str(mymatch.getCompletion())+"\n"
                         currshift = mymatch.getStartShift()
                         while currshift.getEndTime() < mymatch.getCompletion():
                             currshift = currshift.getNext()
@@ -1264,11 +1293,11 @@ class ProductionMILPManager(MILPManager):
     
                 mach.getSchedule().sort(key=lambda x:x[0][1], reverse=False)
                 mach.getJobStarts().sort(key=lambda x: x[1], reverse=False)
-                progress.value+= "Schedule of mach: "+mach.getMachine().getName()+"\n"
-                for schid in range(len(mach.getJobStarts())):
-                    schtuple = mach.getSchedule()[schid]; starttuple = mach.getJobStarts()[schid]
+                #progress.value+= "Schedule of mach: "+mach.getMachine().getName()+"\n"
+                #for schid in range(len(mach.getJobStarts())):
+                #    schtuple = mach.getSchedule()[schid]; starttuple = mach.getJobStarts()[schid]
                     
-                    progress.value+= "Job: "+starttuple[0].getProduct().getPN()+" ("+str(self.convertSimTimeToDate(schtuple[0][1]))+"-"+str(self.convertSimTimeToDate(schtuple[1][1]))+"), d: "+str(starttuple[0].getDeadLine())+", p: "+str(starttuple[0].getOperation().getRandVar().sampleValue())+"\n"
+                    #progress.value+= "Job: "+starttuple[0].getProduct().getPN()+" ("+str(self.convertSimTimeToDate(schtuple[0][1]))+"-"+str(self.convertSimTimeToDate(schtuple[1][1]))+"), d: "+str(starttuple[0].getDeadLine())+", p: "+str(starttuple[0].getOperation().getRandVar().sampleValue())+"\n"
             unscheduleds = [job for job in self.getSchedulableJobs() if not job.isScheduled()]
 
             for job in unscheduleds:
