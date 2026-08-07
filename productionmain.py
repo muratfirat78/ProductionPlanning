@@ -1037,6 +1037,9 @@ class ShopFloorManager(OperationsManager):
 
         event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
 
+        ######################################################################
+        ## TO DO: Bryan ( Implementing the utilization ratio of machines
+        """
         for eventname in event_df["EventName"].unique():
             if eventname == "Machine Processing":
                 eventsub_df = event_df[event_df["EventName"] == eventname]
@@ -1055,7 +1058,10 @@ class ShopFloorManager(OperationsManager):
                             processtime+= progress[1]-progress[0]
 
                     
-                            
+        """
+        ## TO DO: Bryan ( Implementing the utilization ratio of machines
+        ######################################################################
+        
                         
             
             
