@@ -35,6 +35,7 @@ class ShopFloorManager(OperationsManager):
         self.AlgorithmSetting = dict() # key: event name, val: (Decision name, Algorithm name)
         self.ProcessTimes = dict()  #key: event type name, val: 
         self.EventStatuses = dict() # key: status change, val: (prev_status,next_status)
+        self.UnloadingCompletionTimes = dict()
        
         # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
@@ -912,9 +913,29 @@ class ShopFloorManager(OperationsManager):
         for item in event.getItems():
             ev_items+=("" if item_id == 0 else "~")+str(item.getID())
             item_id+=1
+
+        trailer_unloading_wait = ""
+        machine_unloading_wait = ""
+        event_start = event.getProgressList()[0][1][0]
+
+        if event.getName() == "Machine Loading":
+            completion_time = self.UnloadingCompletionTimes.pop(event.getFromLocation(), None)
+            if completion_time is not None:
+                trailer_unloading_wait = event_start-completion_time
+
+        if event.getName() == "Trailer Loading":
+            completion_time = self.UnloadingCompletionTimes.pop(event.getFromLocation(), None)
+            if completion_time is not None:
+                machine_unloading_wait = event_start-completion_time
                 
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":self.getSimulator().getRealTime()}  
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"Items":ev_items,"WaitAfterTrailerUnloading":trailer_unloading_wait,"WaitAfterMachineUnloading":machine_unloading_wait,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":self.getSimulator().getRealTime()}  
         self.getSimulator().getExecutionData().append(execution_data)
+
+        if event.getName() == "Trailer Unloading":
+            self.UnloadingCompletionTimes[event.getToLocation()] = self.getSimulator().getTime()
+
+        if event.getName() == "Machine Unloading":
+            self.UnloadingCompletionTimes[event.getToLocation()] = self.getSimulator().getTime()
 
         if event.getResource()!= None: 
             if isinstance(event.getResource(),Operator):
@@ -1035,11 +1056,19 @@ class ShopFloorManager(OperationsManager):
 #########################################################################################################################
     def writeData(self):
 
-        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
+        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","Items","WaitAfterTrailerUnloading","WaitAfterMachineUnloading","Resource","Equipment","Location","SimTime","Date"])
+
+        for eventdata in self.getSimulator().getExecutionData():
+            event_df.loc[len(event_df)] = eventdata
+
+        
+        event_df.to_csv("EventExecutionData.csv",index = False)
 
         ######################################################################
         ## TO DO: Bryan ( Implementing the utilization ratio of machines
-        """
+
+        utilization_data = []
+
         for eventname in event_df["EventName"].unique():
             if eventname == "Machine Processing":
                 eventsub_df = event_df[event_df["EventName"] == eventname]
@@ -1053,25 +1082,46 @@ class ShopFloorManager(OperationsManager):
                             break
 
                     processtime = 0
+                    availabletime = 0
                     if machine != None: 
                         for event,progress in machine.getProgressList():
-                            processtime+= progress[1]-progress[0]
+                            if event.getName() == "Machine Processing":
+                                processtime += progress[1]-progress[0]
+
+                        available_shifts = set(machine.getAvailableShifts())
+                        for simtime in range(self.getSimulator().getTime()):
+                            realtime = self.getSimulator().checkRealTime(simtime)
+
+                            if realtime.weekday() >= self.getSimulator().weekdays:
+                                continue
+
+                            if realtime.hour < 8:
+                                shift = 3
+                            elif realtime.hour < 16:
+                                shift = 1
+                            else:
+                                shift = 2
+
+                            if shift in available_shifts:
+                                availabletime += 1
+
+                        utilization_data.append({
+                            "Machine": machine.getName(),
+                            "ProcessTime": processtime,
+                            "AvailableTime": availabletime,
+                            "Utilization": (
+                                processtime / availabletime
+                                if availabletime > 0
+                                else 0
+                            )
+                        })
+
+        pd.DataFrame(utilization_data).to_csv("MachineUtilizationData.csv", index=False)
 
                     
-        """
+
         ## TO DO: Bryan ( Implementing the utilization ratio of machines
         ######################################################################
-        
-                        
-            
-            
-
-      
-        for eventdata in self.getSimulator().getExecutionData():
-            event_df.loc[len(event_df)] = eventdata
-
-        
-        event_df.to_csv("EventExecutionData.csv",index = False)
 
 
         location_df = pd.DataFrame(columns=["EntityName","EntityID","Time","LocationName","LocationID"])
