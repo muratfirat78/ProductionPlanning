@@ -919,23 +919,29 @@ class ShopFloorManager(OperationsManager):
         event_start = event.getProgressList()[0][1][0]
 
         if event.getName() == "Machine Loading":
-            completion_time = self.UnloadingCompletionTimes.pop(event.getFromLocation(), None)
-            if completion_time is not None:
+            completion_times = self.UnloadingCompletionTimes.get(event.getFromLocation(), None)
+            if completion_times and len(completion_times) > 0:
+                completion_time = completion_times.pop(0)
+                if len(completion_times) == 0:
+                    del self.UnloadingCompletionTimes[event.getFromLocation()]
                 trailer_unloading_wait = event_start-completion_time
 
         if event.getName() == "Trailer Loading":
-            completion_time = self.UnloadingCompletionTimes.pop(event.getFromLocation(), None)
-            if completion_time is not None:
+            completion_times = self.UnloadingCompletionTimes.get(event.getFromLocation(), None)
+            if completion_times and len(completion_times) > 0:
+                completion_time = completion_times.pop(0)
+                if len(completion_times) == 0:
+                    del self.UnloadingCompletionTimes[event.getFromLocation()]
                 machine_unloading_wait = event_start-completion_time
                 
         execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"Items":ev_items,"WaitAfterTrailerUnloading":trailer_unloading_wait,"WaitAfterMachineUnloading":machine_unloading_wait,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":self.getSimulator().getRealTime()}  
         self.getSimulator().getExecutionData().append(execution_data)
 
         if event.getName() == "Trailer Unloading":
-            self.UnloadingCompletionTimes[event.getToLocation()] = self.getSimulator().getTime()
+            self.UnloadingCompletionTimes.setdefault(event.getToLocation(), []).append(self.getSimulator().getTime())
 
         if event.getName() == "Machine Unloading":
-            self.UnloadingCompletionTimes[event.getToLocation()] = self.getSimulator().getTime()
+            self.UnloadingCompletionTimes.setdefault(event.getToLocation(), []).append(self.getSimulator().getTime())
 
         if event.getResource()!= None: 
             if isinstance(event.getResource(),Operator):
