@@ -21,6 +21,9 @@ class ProductionAlgManager(AlgorithmManager):
 
         self.decisionalgs["Select Destination"] = dict() 
         self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestionationMostDemanded
+
+        self.decisionalgs["Assign Processor"] = dict() 
+        self.decisionalgs["Assign Processor"]["Straight Available"] = self.assignStraightProcessor
       
 
     def getDecisionAlgorithms(self):
@@ -32,81 +35,61 @@ class ProductionAlgManager(AlgorithmManager):
         #self.getSimulator().saveLog("REPORT: >>> Algorithm: assignStraightEquipment function <<<")
 
         selected_equip = None 
-
-        #self.getSimulator().saveLog("REPORT: >>> event:  "+str(event.getName()))
-        
-        if event.getName() == "Machine Setup": 
-        
-            if event.getFromLocation().getMachine().isAvailable():
-                
-                if event in event.getFromLocation().getMachine().getProcessMatch():
-                    selected_equip = event.getFromLocation().getMachine().getProcessMatch()[event]
-                else:
-                    processr = event.getFromLocation().getMachine().getProcessor()
-                    
-                    
-                    if processr != None:
-                        selected_equip = processr
-        else:        
-            if event.getName() == "Machine Processing": 
-            # only resume case, equipment/processor is only checked for availability. 
-                if event.getEquipment().isAvailable():
-                    selected_equip = event.getProgressList()[-1][0] 
-                    
-            else:
-            # event types: trailer loading (case: handle)
-                #self.getSimulator().saveLog("REPORT: >>> Algorithm str equip: event location: "+str(event.getLocation().getName()))
              
-                av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
+        av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
+        comp_equip = [r for r in av_equip if (r.isIdle())]
+ 
                 
-                #self.getSimulator().saveLog("REPORT: av_equip: "+str(len(av_equip)))   
-                comp_equip = [r for r in av_equip if (r.isIdle())]
-                #self.getSimulator().saveLog("REPORT: comp_equip: "+str(len(comp_equip)))
-                
-                if len(comp_equip) > 0:  
-                    onloc_equip = [r for r in comp_equip if r.getLocation() == event.getFromLocation().getLocation()]
-                    #self.getSimulator().saveLog("REPORT: onloc_equip: "+str(len(onloc_equip)))
-                    selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
+        if len(comp_equip) > 0:  
+            onloc_equip = [r for r in comp_equip if r.getLocation() == event.getFromLocation().getLocation()]
+            selected_equip = onloc_equip[0] if len(onloc_equip) > 0 else comp_equip[0] 
+        
+        return selected_equip
+###################################################################################################################################################
+    def assignStraightProcessor(self,event):
 
-                
+        #self.getSimulator().saveLog("REPORT: >>> Algorithm: assignStraightProcessor function <<<")
+        selected_equip = None
+        
+        if event.getEquipment().isAvailable():
+            if event.getProcessor() != None: 
+                selected_equip = event.getProcessor()
+            else:
+                processr = event.getEquipment().getProcessor()
+                if processr != None:
+                    selected_equip = processr                 
+        
         return selected_equip
 ###################################################################################################################################################
     def assignStraightResource(self,event):
-
+        
         selected_res = None
-
-        # events requiring this algorithm: 
-        # 1: Trailer loading(handle), Machine Setup(handle), Machine Loading(handle,resume), Machine Unloading (handle,resume), 
-         
     
         avail_comp_res = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and r.getType() == event.getEventType().getResourceType()] 
-
-        #self.getSimulator().saveLog(" REPORT: >>> assignStraightResource: avail_comp_res "+str(len(avail_comp_res)))
-        
         idle_res = [r for r in avail_comp_res if r.isIdle()] 
       
-        #self.getSimulator().saveLog("REPORT: >>> Algorithm str res: event location: "+str(event.getLocation().getName()))
-        #self.getSimulator().saveLog("REPORT:  >>> Algorithm: idle_res "+str(len(idle_res)))
         if len(idle_res) > 0:
-            
             onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
-            #self.getSimulator().saveLog("REPORT: >>> Algorithm: onloc_res "+str(len(onloc_res)))
-
             selected_res = onloc_res[0] if len(onloc_res) > 0 else idle_res[0]
 
-           
-
+          
         return selected_res
     
 ################################################################################################################################################    
     def selectItemsEDDOrder(self,event):
-        self.getSimulator().saveLog(" >>> Algorithm: findTrailerLoadEarliestOrder function <<<")
+        self.getSimulator().saveLog(" >>> Algorithm: selectItemsEDDOrder <<<")
 
         select_dict = dict() #determine order items
         orders = []
-    
-        for item in event.getFromLocation().getItems():
-            if item.getReservedEvent()!= None:
+        event_place = None
+
+        if event.getType() == "Loading":
+            event_place = event.getFromLocation()  
+        if event.getType() == "Setup":
+            event_place = event.getEquipment().getInputBuffer()
+           
+        for item in event_place.getItems():
+            if item.getReservedEvent()!= event:
                 continue
             myorder = item.getDemand()
             if not myorder in select_dict:
@@ -117,13 +100,7 @@ class ProductionAlgManager(AlgorithmManager):
         orders.sort(key=lambda x: x.getDeadline(), reverse= False)      
 
         select_id = 0
-
-        #self.getSimulator().saveLog("REPORT: >>> Algorithm: findTrailerLoadEarliestOrder <<<  tolocation None? "+str(event.getToLocation() == None))
-        
-        selection_loc = event.getToLocation() if event.getName() != "Machine Setup" else event.getFromLocation().getMachine()
-
-        
-        while len(select_dict[orders[select_id]]) > selection_loc.getCapacity():
+        while len(select_dict[orders[select_id]]) > event_place.getCapacity():
             select_id+=1
             if select_id >= len(orders):
                 return None

@@ -5,7 +5,7 @@ They have direct precedence relations, not via event types.
 29/07/2026: 
 TEST Orders 8
 Problem: Scheduled pending events disappear and never come to consideration.
-Solution: 
+++++++++++++++Solution++++++++++++++++++++++++++++ 
 Weekend jump makes a time leap in simtime. The events that are to be suspended at the time when just last shift finishes are not considered due to this. 
 So, events are moved forward and the ones they need handling, they are explicitly moved to pending, from scheduled. 
 (Scheduled pending event is placed in EventQueue at certain time such that at that time it is handled. An event in pending list of EventQueue is continuously checked for handling)  
@@ -13,7 +13,7 @@ So, events are moved forward and the ones they need handling, they are explicitl
 
 30/07/2026: (Murat)
 Problem: Machine Loading misses items to move from the input. 
-Solution: 
+++++++++++++++Solution++++++++++++++++++++++++++++
 Machine setup is triggered by Trainer Unloading and Machine Unloading. 
 When there is already a Machine Setup generated, later Machine Unloading also triggers MS event and unnecessary MS event is created.
 This happens in OutSourced machine, since we do not register there the pendingevent of input buffer. 
@@ -83,7 +83,7 @@ Both "Machine Processing" and "Machine Unloading" events are in EventQueue at ti
 First "Machine Processing" is considered for weekend jump and its successor, "Machine Unloading" event is placed into "Pending" events of EventQueue. 
 Then "Machine Unloading" event case itself is considered and it was attempted to be removed, but not in list. 
 
-Solution: 
+++++++++++++++Solution++++++++++++++++++++++++++++
 The following code is added: 
 
 Simulator - RunSimulation function: 
@@ -278,7 +278,7 @@ Item creation:
 'False--True--M5-05 - UMC2 - 5axis  - Manual (UMC750)', 
 'False--True--OUT - Outsourced activity'], tot.prog: 1, p: 1, case: Start
 
-Solution: very easy!!
+++++++++++++++Solution++++++++++++++++++++++++++++
 self.InputBuffer = Buffer("Input",None,1000,sim,workmngr)
 self.OutputBuffer = Buffer("Output",None,1000,sim,workmngr)
 
@@ -293,5 +293,252 @@ TEST Orders 34 OK (0 error, all orders come back to central inventory)
 
 TEST Orders 35 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
 
+_________________________________________________________________________________________________________________________________
+
+10/08/2026:
+TEST Orders 35 OK 0 error, but there are orders not returned to central buffer. 
+Problem: The following orders do not appear later in the run: 
+
+Machine Loading	  211	854-872	    5853~5854~5855~5856~5857~5858~5859~5860~5861~5...	Operator 2	UMC750SS_(M5-04)	UMC750SS_(M5-04)_Location	872	2026-08-11 14:32:00
+Trailer Unloading 360	1948-1949	6175~6176~6177~6178~6179~6180~6181~6182~6183~6...	Operator 2	Trailer_60	UMC750SS_(M5-04)_Location	1949	2026-08-12 08:29:00
+Trailer Unloading 469	2280-2281	6829~6830~6831~6832~6833~6834~6835~6836~6837~6...	Operator 2	Trailer_60	UMC750SS_(M5-04)_Location	2281	2026-08-12 14:01:00
+
+We the following output:
+962: REPORT: event : Machine Processing(222), items 277, active opr none? False event loc UMC750SS_(M5-04)_Location, item oprs [
+'False--True--MP1 - Mat. prep - automatic sawing (ZGN_01)', 
+'False--False--M5-04 - UMCSS - 5axis  - Manual (UMC750SS)', 
+'False--False--M3-03 - VF - 3axis - Manual (VF2SS)',
+ 'False--False--OUT - Outsourced activity', 
+'False--False--PACK - Packaging (VERP_P)'], equip none? False, tot.prog: 365.5, p: 365.5, case: Handle
+
+A completed event is in handle. 
+The reason was the processing time was fractional as below:
+962: REPORT: event: Machine Processingprogress step: (854, 960)
+962: REPORT: event: Machine Processingprogress step: (962, 1221.5)
+
+++++++++++++++Solution++++++++++++++++++++++++++++
+simulationobjects.py file changed in sampleProcessTime function as:
+ self.ProcessTime = math.ceil(self.getFromLocation().getMachine().getSetupTime())
+
+Also the following corrected: 
+productionmain.py in Progressevent function: 
+if event.getName() != "Machine Unloading" or event.getName() != "Machine Loading":
+changed to 
+if not event.getName() in ["Machine Unloading","Machine Loading"]:
+
+--------------------------------------------------------------------------------------------------------------------------
+TEST Orders 33 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+TEST Orders 34
+
+Simulation errors: 1
+20642: ERROR in execute events: list.remove(x): x not in list
+
+20642: REPORT: eventTrailer Loading(1100) success in decisions: [], decisions: 
+20642: REPORT: event : Trailer Loading(1100), res on loc? True, equip on loc? True
+20642:  REPORT: event: Trailer Loading(1100)-[1441-1574], equip none? False, active opr none? BW - Benchwork (BKW_01), loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Complete
+20642:  REPORT: event: Trailer Loading(1100) , successor dict dict_items([(<simulationobjects.SimEvent object at 0x000002D08E84BED0>, 'Finish to Start')])
+20642: REPORT: event : Trailer Loading(1100), equipment Trailer_60, items 0
+20642: REPORT: event: Trailer Loadingprogress step: (20160, 20160)
+20642: REPORT: event: Trailer Loadingprogress step: (20641, 20642)
+20642: REPORT: event: Trailer Loading, TotalProgress: 1
+20642:  REPORT: event: Trailer Loading completion updates start..
+20642: ERROR in execute events: list.remove(x): x not in list
+
+Comment: 
+Trailer loading just coincided with shift end and zero progress step is created. 
+
+20160: REPORT: eventBring Equipment(1104) success in decisions: [], decisions: 
+20160: REPORT: event : Bring Equipment(1104), res on loc? True, equip on loc? True
+20160:  REPORT: event: Bring Equipment(1104)-[-], equip none? False, active opr none? No item , loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Complete
+20160:  REPORT: event: Bring Equipment(1104) , successor dict dict_items([])
+20160: REPORT: event : Bring Equipment(1104), equipment Trailer_60, items 0
+20160: REPORT: event: Bring Equipmentprogress step: (20159, 20160)
+20160: REPORT: event: Bring Equipment, TotalProgress: 1
+20160:  REPORT: event: Bring Equipment completion updates start..
+20160:  REPORT: completion updates done.. res location: M3-01_(FR3_01)_Location
+20160: REPORT: event : Bring Equipment(1104), equipment Trailer_60, items 0
+20160: ERROR in execute events: list index out of range
+
+++++++++++++++Solution++++++++++++++++++++++++++++
+The packing of BringEquipment and OperatorMove logistical events into the same shift is handled correctly. 
+
+-----------------------------------------------------------------------------------------------------------
+TEST Orders 34 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 35 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 36 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 37 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 40
+Problem: The order that did not continue to processing:
+Trailer Unloading	333	954-955	9724~9725~9726~9727~9728~9729~9730~9731	Operator 2	Trailer_61	UMC750_(M5-03)_Location	955	2026-08-12 15:55:00
+
+Trailer Unloading event does not trigger machine setup event, as below: 
+
+955: REPORT: eventTrailer Unloading(333) success in decisions: [], decisions: 
+955: REPORT: event : Trailer Unloading(333), res on loc? True, equip on loc? True
+955:  REPORT: event: Trailer Unloading(333)-[9724-9731], equip none? False, active opr none? M5-03 - UMC1 - 5axis - Manual (UMC750), loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Complete
+955:  REPORT: event: Trailer Unloading(333) , successor dict dict_items([])
+955: REPORT: event : Trailer Unloading(333), equipment Trailer_61, items 8
+955: REPORT: event: Trailer Unloadingprogress step: (954, 955)
+955: REPORT: event: Trailer Unloading, TotalProgress: 1
+955:  REPORT: event: Trailer Unloading completion updates start..
+955:  REPORT: completion updates done.. res location: UMC750_(M5-03)_Location
+955: REPORT: event : Trailer Unloading(333), equipment Trailer_61, items 0
+955: REPORT: ______________________________________________________________________
+955: REPORT: event : Trailer Unloading(333), items 8, active opr none? False event loc UMC750_(M5-03)_Location, item oprs ['False--True--MP1 - Mat. prep - automatic sawing (ZGN_01)', 'False--True--M5-02 - AW - 5axis - Pallet Automation (FR5_02)', 'False--False--M5-03 - UMC1 - 5axis - Manual (UMC750)'], equip none? False, tot.prog: 1, p: 1, case: Complete
+
+Completed machine setup event is not removed as pending event: 
+955: REPORT: Returning event generation at UMC750_(M5-03)_Input, items: [6155-9731], pend_ev none?  False, unreserved items: [6155-9731], pending items: [93-122], pend: Machine Setup(20), prog: ['(490-520)'], p: 30
+
+The above problem hints two important improvement points: 
+1- tweaking processors in the form of equipment for processing events results in the code a lot of case handling. 
+2- overall code needs to be refined for generic flow, now it includes lots of case handling. By case handling, it means actions are for specific events, but they should be for event types. 
+
+#################################################################
+__________SIGNIFICANY CODE EDITING_________________
+- Events have now processors, besides resource and equipment. In handling now we have "Assign Processor" decision. 
+- The function "ProgressEvent" has been changed such that case handling is mainly not the case. 
+#################################################################
+
+12/08/2026:
+
+The code revision took from morning of 11Aug to noon 12 Aug.
+After maintaining that the code run for 3 orders, testing continues. 
 
 
+TEST Orders 3 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 4 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 5 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 6 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 7 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 8 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 9 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 10 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 11 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 12 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 13 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+TEST Orders 14:
+Simulation errors: 1
+18383: ERROR in execute events: list.remove(x): x not in list
+
+The items get not loaded to the machine
+
+18383:  REPORT: ~~~ event : Machine Unloading(617) items [3099-3798]
+18383:  REPORT: ~~~ event.getFromLocation() : M4-02_(FR4_02) items [[]]
+18383: ERROR in execute events: list.remove(x): x not in list
+
+since machine loading is not completed:
+==================================================================================================
+2001: REPORT: event : Machine Loading(260), loc :M4-02_(FR4_02)_Location, res none? False, processor none? False, p: 529, in pendings? False, pred? False
+2001: REPORT: tot.prog: 399['(2001-2400)']
+
+the following code is fixed:
+progress_start = self.getSimulator().getTime(); 
+progress_end = progress_start+(successor_event.getProcessTime()-successor_event.getTotalProgress())
+
+also typo fixed: if successor_event != "Logistical": => if successor_event.getType() != "Logistical": 
+
+____________________________________________
+
+TEST Orders 3 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 4 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 5 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 6 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 7 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 8 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 9 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 10 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 11 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 12 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 13 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 14 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 15 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+TEST Order 16:
+Simulation errors: 1
+12482: ERROR in execute events: list.remove(x): x not in list
+
+more detailed report:
+==================================================================================================
+12482: REPORT: event : Trailer Loading(625), loc :OUT - Outsourced activity_(OUT - Outsourced)_Location, res none? False, processor none? True, p: 1, in pendings? False, pred? True
+12482: REPORT: tot.prog: 1['(12481-12482)']
+12482: REPORT: case Complete
+12482: REPORT: eventTrailer Loading(625) success in decisions: [], decisions: 
+12482: REPORT: eventTrailer Loading(625) checking logistical events
+12482: REPORT: event : Trailer Loading(625), res on loc? True, equip on loc? True
+12482: REPORT: eventTrailer Loading(625) checking logistical events feas.: True
+12482: REPORT: Handling of pending event: Trailer Loading(625) successful with logistical events []
+12482:  REPORT: event: Trailer Loading(625)-[203-226], equip none? False, active opr none? No act opr, loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Complete
+12482:  REPORT: event: Trailer Loading(625) , successor dict dict_items([(<simulationobjects.SimEvent object at 0x000001E0073FFD90>, 'Finish to Start')])
+12482: REPORT: event : Trailer Loading(625), equipment Trailer_60, equip-items 0
+12482: REPORT: event: Trailer Loadingprogress step: (12481, 12482)
+12482: REPORT: event: Trailer Loading, TotalProgress: 1
+12482:  REPORT: event: Trailer Loading completion updates start..
+12482:  REPORT: event : Trailer Loading(625) items [203-226]
+12482:  REPORT: event.getFromLocation() : OUT - Outsourced activity_(OUT - Outsourced)_Output items [['203,', '204,', '205,', '206,', '207,', '208,', '209,', '210,', '211,', '212,', '213,', '214,', '215,', '216,', '217,', '218,', '219,', '220,', '221,', '222,', '223,', '224,', '225,', '226,']]
+12482:  REPORT: ~~~ event : Trailer Loading(625) items [203-226]
+12482:  REPORT: ~~~ event.getFromLocation() : OUT - Outsourced activity_(OUT - Outsourced)_Output items [['203,', '204,', '205,', '206,', '207,', '208,', '209,', '210,', '211,', '212,', '213,', '214,', '215,', '216,', '217,', '218,', '219,', '220,', '221,', '222,', '223,', '224,', '225,', '226,']]
+12482: ERROR in execute events: list.remove(x): x not in list
+
+++++++++++++++++Solution++++++++++
+The following code is added to resetDecisions function:
+   if decision_type == "Select Items":
+                event.getItems().clear()
+
+
+TEST Orders 10 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 15 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 16 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 17 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 18 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 19 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 20 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 21 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 22 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 23 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 24 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 25 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 26 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 27 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 28 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 29 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 30 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 31 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 32 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 33 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 34 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+
+TEST Orders 35: 
+The following order does not come back to central buffer. 
+845	Machine Processing	1151	17207-17208	7281~	BW_(BKW_01)	BW_(BKW_01)	BW_(BKW_01)_Location	17208	2026-08-24 22:48:00
+
+The issue is having process time one, then we cannot find a completion ratio for machine unloading, all must be one. 
+==================================================================================================
+17207: REPORT: event : Machine Processing(1151), loc :BW_(BKW_01)_Location, res none? False, processor none? False, p: 1, in pendings? False, pred? False,420 items [7281-7700]
+17207: REPORT: tot.prog: 1['(17207-17208)']
+17207: REPORT: case Start
+
+Solution:
+A special care for processing time value 1 is added in "ProgressEvent" function. 
+if (remaining_time + last_prog_len > proctime) and (remaining_time < proctime):
+            successor_start = last_progress[0] + (remaining_time + last_prog_len - proctime)
+            successor_end = successor_start+proctime
+else:
+      if event.getProcessTime() == 1:
+           successor_end = successor_start+1
+      else:
+           successor_end = successor_start-1 # do not activate successor, negative progress step.
+
+
+TEST Orders 15 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 20 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 25 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 35 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 36 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 37 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+TEST Orders 38
+The following order does not come back to central buffer. 
+1204	Machine Processing	1570	20779-21120~21121-21122	6909~6910~6911~6912~6913~6914~6915~6916~6917~6...	PACK_(VERP_P)	PACK_(VERP_P)	PACK_(VERP_P)_Location	21122	2026-08-27 16:02:00

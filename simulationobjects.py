@@ -1,6 +1,7 @@
 from datetime import timedelta,date
 import random
 import pandas as pd
+import math
 from stochastic import *
 
 
@@ -93,7 +94,9 @@ class ExecEvent(object):
         self.Operation = None
         self.Resource = None 
         self.Equipment = None
+        self.Processor = None
         self.Items = []
+        self.ReservedItems = []
         self.successor = None
         self.predecessor = None
         self.ProgressList = [] #[(resource,(start,end))]
@@ -101,29 +104,35 @@ class ExecEvent(object):
         self.Place = None
         self.suspendedpredecessor = None
         self.suspendedsuccessor = None
+        self.decisionwaitingtime = 0
         
 
         self.startdelay = 0
         self.logisticalevents = []
 
-       #            Event  -   From       -     To           Equip       Resource    location          Equipment Loc    Resource Loc
-       #(OprMove)-> TL       OutputBuffer    Trailer        Trailer     Operator     From-loc           From-loc         From-loc 
+       #            Event  -   From       -     To           Equip       Resource    location     Processor    
+       #(OprMove)-> TL       OutputBuffer    Trailer        Trailer     Operator     From-loc                    
+       #            TT       OutputBuffer   InputBuffer     Trailer     Operator     Equipment                   
+       #            TU       Trailer       InputBuffer      Trailer      Operator     To-loc                 
 
     
-       #            TT       OutputBuffer   InputBuffer     Trailer     Operator     Equipment          Equipment        Equipment
+       # (OprMove)-> MS       --------        -------        Machine     Operator    Equip-loc    Integer       
+       # (OprMove)-> ML       InputBuffer     Machine        Machine     Operator    Equip-loc    Integer     	
+       #             MPROC      ------         -------       Machine     Machine     Equip-loc    Integer       
+       # (OprMove)-> MU        Machine      OutputBuffer     Machine     Operator    Equip-loc    Integer               
 
-    
-       #             TU        Trailer       InputBuffer     Trailer     Operator     To-loc             To-loc           To-loc
+    def setProcessor(self,pro):
+        self.Processor = pro
+        return
+    def getProcessor(self):
+        return self.Processor
 
-    
-       # (OprMove)-> MS       InputBuffer      ---           Machine     Operator     From-loc            -----           From-loc
-       # (OprMove)-> ML       InputBuffer     Machine        Machine     Operator     From-loc      	 From-loc         From-loc
-       #             PROC       Machine        ---           Machine      ------        --------        ----------       ---------- 
+    def getDecisionWaitingTime(self):
+        return self.decisionwaitingtime
 
-
-    
-       # (OprMove)-> MU         Machine      OutputBuffer    Machine     Operator     To-loc             To-loc           To-loc
-  
+    def increaseDecisionWaitingTime(self):
+        self.decisionwaitingtime+=1
+        return
 
     def setSuspendedSuccessor(self,succssr):
         self.suspendedsuccessor = succssr
@@ -132,20 +141,42 @@ class ExecEvent(object):
     def getSuspendedSuccessor(self):
         return self.suspendedsuccessor
 
+    def getReservedItems(self):
+        return self.ReservedItems
 
+    def checkAllAssigned(self,case):
+
+        if case in self.getEventType().getDecisionsDict():
+            for decision_type in self.getEventType().getDecisionsDict()[case]:
+                if decision_type == "Assign Processor": 
+                    if self.getProcessor() == None:
+                        return False
+                if decision_type == "Assign Equipment":
+                    if self.getEquipment() == None:
+                        return False
+                if decision_type == "Assign Resource":
+                    if self.getResource() == None:
+                        return False
+                if decision_type == 'Select Destination':
+                    if self.getToLocation() == None: 
+                        return False
+
+        return True
 
     def getLocation(self):
-        
-        if self.getName() == "Trailer Transport":
-            return self.getEquipment()
-            
-        if self.getName() == "Operator Move" or self.getName() == "Bring Equipment":
-            return self.getToLocation()
-        
-        if self.getName() == "Trailer Unloading" or self.getName() == "Machine Unloading":
-            return self.getToLocation().getLocation()
 
-        # "Trailer Loading","Machine Setup","Machine Loading","Machine Processing"
+        if self.getType() == "Loading":
+            return self.getFromLocation().getLocation()
+        if self.getType() == "Unloading":
+            return self.getToLocation().getLocation()
+        if self.getType() == "Transport":
+            return self.getEquipment()
+        if self.getType() in ["Processing","Setup"]: 
+            return self.getEquipment().getLocation()     
+        if self.getType() == "Logistical":
+            return self.getToLocation()
+            
+        
         return self.getFromLocation().getLocation()
 
     def setSuspendedPredecessor(self,pr):
@@ -172,12 +203,17 @@ class ExecEvent(object):
 
         
         if self.getName() == "Machine Setup":
-            self.ProcessTime = self.getFromLocation().getMachine().getSetupTime()
+            self.ProcessTime = self.getEquipment().getSetupTime()
         if self.getName() == "Machine Loading":
-            self.ProcessTime = max(1,int(0.5*self.getFromLocation().getMachine().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
+            if self.getEquipment() == None:
+                workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+"("+str(self.getID())+")"+", fl?: "+str(self.getFromLocation() == None)+", tl?: "+str(self.getToLocation()== None))
+                
+            self.ProcessTime = max(1,int(0.5*self.getEquipment().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
 
         if self.getName() == "Machine Unloading":
-            if not self.getFromLocation().IsAutomated():
+            if not self.getEquipment().IsAutomated():
+                if self.getEquipment() == None:
+                    workmgr.getSimulator().saveLog("REPORT: sample process time, eqp none... "+str(self.getName())+"("+str(self.getID())+")"+", fl: "+(str(self.getFromLocation().getName()) if  self.getFromLocation() != None else "None")+", tl: "+(str(self.getToLocation().getName()) if  self.getToLocation() != None else "None"))
                 self.ProcessTime = max(1,int(0.5*self.getEquipment().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
             else:
                 self.ProcessTime = 1
@@ -196,6 +232,9 @@ class ExecEvent(object):
 
         if self.ProcessTime == None:
             workmgr.getSimulator().saveLog("REPORT: NONE sample process time. "+str(self.getName()))
+
+        else:
+            self.ProcessTime = math.ceil(self.ProcessTime)
         
 
         return
@@ -270,7 +309,7 @@ class ExecEvent(object):
     def setResource(self,myres):
         self.Resource = myres
         return 
-        
+        F
     def getEquipment(self):
         return self.Equipment
         
@@ -435,30 +474,7 @@ class Resource(object):
     def getAssignedEvents(self):
         return self.AssignedEvents
 
-    def setLocationData(self,event,sim):
-
-        if event != None: 
-
-            actual_comp = sim.getRealTime()
-
-            locid = None; locname = None
-
-            if event.getLocation() != None:
-                if isinstance(event.getLocation(),tuple):
-                    locid =  str(event.getLocation()[0].getID())+"->"+str(event.getLocation()[1].getID())
-                    locname = event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName()
-                else:
-                    locid =  event.getLocation().getID()
-                    locname = event.getLocation().getName()
-            else:
-                sim.saveLog("ERROR location is None of event "+event.getName()+"["+str(event.getID())+"]")
-            
-            location_update = {"Entity":self.getName(),"EntityID":self.getID(),"EventName":event.getName(),"EventID":event.getID(),"LocationID":locid,"LocationName":locname,"Time":actual_comp}  
-            self.getLocationData().append(location_update)
-          
-
-        return 
-        
+    
 #_______________________________________________________________________       
 class Process(object):
     def __init__(self,demand,name,myid,dist):

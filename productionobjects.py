@@ -27,7 +27,7 @@ class Buffer(Resource):
         super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,"Buffer",mycap,sim,workmngr)
         self.BufferType = buftype
         self.machine = mach
-        self.PendingEvent = None
+
 
     def getMachine(self):
         return self.machine
@@ -37,19 +37,11 @@ class Buffer(Resource):
             return True
         return False
 
-    def getPendingEvent(self):
-        return self.PendingEvent
-
-    def setPendingEvent(self,myev):
-        self.PendingEvent = myev
-        return 
-        
-        
-
+ 
     def addItem(self,myitem):     
         #print(" > "+str(self.getSimulator().getTime())+": adding item to "+self.getName())
         self.getItems().append(myitem)
-        self.generateEvent()
+        
         myitem.setLocation(self.getLocation())
         
         return
@@ -59,56 +51,37 @@ class Buffer(Resource):
         return
 
     def getUnreservedItems(self):
-        return [i for i in self.getItems() if i.getReservedEvent()== None]
+        return [i for i in self.getItems() if i.getReservedEvent() == None]
 ##########################################################################################################  
-    def generateEvent(self):
+    def generateEvent(self,display):
+
+        unreserved_items = [i for i in self.getItems() if i.getReservedEvent() == None]
         
-        if len(self.getUnreservedItems()) == 0 or self.getPendingEvent() != None:
-            #self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items "+str(len(self.getItems()))+" unreserved items "+str(len(self.getUnreservedItems()))+", pend_ev none?  "+str(self.getPendingEvent() == None))
-            if self.getPendingEvent() != None:
-                self.getSimulator().saveLog(" pending event "+self.getPendingEvent().getName())
+        if len(unreserved_items) == 0:
+            if display: 
+                self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items: "+str(len(self.getItems())))
+                self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items: "+("["+str(self.getItems()[0].getID())+"-"+str(self.getItems()[-1].getID())+"]" if len(self.getItems())>0 else ''))
+                self.getSimulator().saveLog("REPORT: Returning event generation at "+self.getName()+", items: "+(("["+str(self.getItems()[0].getID()) if len(self.getItems()) >0 else '')+"-"+(str(self.getItems()[-1].getID())+"]" if len(self.getItems())>0 else ''))+", unreserved items: "+(("["+str(self.getUnreservedItems()[0].getID()) if len(self.getUnreservedItems()) >0 else '')+"-"+(str(self.getUnreservedItems()[-1].getID())+"]" if len(self.getUnreservedItems())>0 else 'No unreserved items!')))
+                                            
+            return
+        if (self.isInputType() and self.getMachine() == None):
             return
 
-        #self.getSimulator().saveLog("In generating event "+self.getName()+"@ loc none?"+str(self.getLocation() == None)+" output buffer? "+str(not self.isInputType()))
        
+        event_type = "Machine Setup" if self.isInputType() else "Trailer Loading"
+        generated_event = ExecEvent((None if self.isInputType() else self),None,self.getWorkMgr().getEventTypes()[event_type])        
+        self.getSimulator().getEventQueue()["Pending"].append(generated_event)       
+
+        if display: 
+            self.getSimulator().saveLog("REPORT: In generating event "+self.getName()+"@"+self.getLocation().getName()+" output buffer? "+str(not self.isInputType())+", event: "+generated_event.getName()+"("+str(generated_event.getID())+"), unreserved items: "+str(len(unreserved_items)))
+
+        # reserve items till selection
+        for item in unreserved_items:
+            item.setReservedEvent(generated_event) 
+            generated_event.getReservedItems().append(item)
         
-        #self.getSimulator().saveLog("In generating event "+self.getName()+"@"+self.getLocation().getName()+" output buffer? "+str(not self.isInputType()))
-        
-        if not self.isInputType(): #output buffer
-            tl_event = ExecEvent(self,None,self.getWorkMgr().getEventTypes()["Trailer Loading"])        
-            self.getSimulator().getEventQueue()["Pending"].append(tl_event)       
-            tl_event.setPlace(self)
-            self.setPendingEvent(tl_event)  
-            #self.getSimulator().saveLog("REPORT: Trailer loading from loc: "+str(self.getName()))
-        else: # input buffer
-            if self.getMachine() != None:
-                event_name = "Machine Setup"; decision_type = 'Select Items'
-                ms_event = ExecEvent(self,None,self.getWorkMgr().getEventTypes()[event_name])
-
-                algname = self.getWorkMgr().getAlgorithmSetting()["Machine Setup"][decision_type]
-                #self.getSimulator().saveLog("REPORT: in generating.. finding items of event "+event_name+", algname: "+algname)
-                algfunction = self.getWorkMgr().getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname]
-                alg_return = algfunction(ms_event)
-
-                if alg_return!= None:
-                    self.getSimulator().getEventQueue()["Pending"].append(ms_event) # for resource and equipment
-                    ms_event.setEquipment(self.getMachine()) 
-                    ms_event.setPlace(self)
-
-                    for item in alg_return:
-                        ms_event.getItems().append(item)
-                        item.setReservedEvent(ms_event) 
-                        #self.getSimulator().saveLog("REPORT: event item reservation set: "+str(ms_event.getName())+", it: "+str(item.getID()))   
-      
-                    if self.getMachine().getName() != "OUT - Outsourced activity_(OUT - Outsourced)":
-                        self.setPendingEvent(ms_event)
-                    #else:
-                        #self.getSimulator().saveLog("REPORT: "+ms_event.getName()+"("+str(ms_event.getID())+")"+" generated at "+self.getName()+", pendings "+str(len(self.getSimulator().getEventQueue()["Pending"])))
-                
-            
-        #if self.getPendingEvent()!= None: 
-        #    self.getSimulator().saveLog("REPORT: "+self.getPendingEvent().getName()+" generated, pendings "+str(len(self.getSimulator().getEventQueue()["Pending"])))
-
+        generated_event.setEquipment(self.getMachine() if event_type == "Machine Setup" else None) 
+              
         return
 ############################################################################################################        
     
@@ -188,7 +161,7 @@ class Machine(Resource):
         print(" > "+str(self.getSimulator().getTime())+": "+self.getName()," item removed, input buffer is triggered for loading ",len(self.getInputBuffer().getItems()))
         self.getItems().remove(myit)
         if len(self.getItems()) == 0 and len(self.getInputBuffer().getItems()) > 0:
-            self.getInputBuffer().generateEvent()
+            self.getInputBuffer().generateEvent(False)
         return
 
     def getAvailableShifts(self):
@@ -274,6 +247,6 @@ class ProductionOrder(Demand):
     def printOrder(self):
 
    
-        return "Order "+self.getFinalProduct().getPN()+", Q: "+str(self.getQuantity())+", d: "+str(self.getDeadline())+", oprs: "+str([o.getName() for o in self.getFinalProduct().getOperationSequences()[self.getID()]])
+        return "Order "+self.getFinalProduct().getPN()+", Q: "+str(self.getQuantity())+", d: "+str(self.getDeadline())+", oprs: "+str([o.getName()+"("+str(o.getRandVar().sampleValue())+")" for o in self.getFinalProduct().getOperationSequences()[self.getID()]])
 
    
