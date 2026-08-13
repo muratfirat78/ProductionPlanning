@@ -188,8 +188,9 @@ class ProductionDataManager(DataManager):
                         if pd.isna(opr):
                             oprid+=1
                             continue
-                        
-                        myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),r['Work Orders/Expected Duration'][oprid],None) 
+
+                        oprduration = max(r['Work Orders/Expected Duration'][oprid],1)
+                        myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),oprduration,None) 
                         oprmachs = [m for m in machines if m.getMachineCode() in opr]
     
                         if len(oprmachs) > 0:

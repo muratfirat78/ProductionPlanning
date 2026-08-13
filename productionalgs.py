@@ -37,7 +37,7 @@ class ProductionAlgManager(AlgorithmManager):
         selected_equip = None 
              
         av_equip = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and (r.getType() == event.getEventType().getEquipmentType())]
-        comp_equip = [r for r in av_equip if (r.isIdle())]
+        comp_equip = [r for r in av_equip if (r.isIdle() and len(r.getItems()) == 0)]
  
                 
         if len(comp_equip) > 0:  

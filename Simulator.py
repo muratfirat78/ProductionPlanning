@@ -181,6 +181,7 @@ class Simulator(object):
 
                             if case == "Suspend" or case == "Handle":
                                 if e.getSuspendedSuccessor() == None:
+                                    #self.saveLog(" REPORT: handle/suspend event "+e.getName()+"("+str(e.getID())+") moved from scheduled to pending")
                                     if e in self.getEventQueue()[self.getTime()]:
                                         self.getEventQueue()[self.getTime()].remove(e)
                                     if not e in self.getEventQueue()["Pending"]:
@@ -216,7 +217,6 @@ class Simulator(object):
                     
                         
                     for event in self.getEventQueue()["Pending"]:
-                        #self.saveLog("REPORT: > pending "+str(event.getName()))
                         OperationsMgr.ProgressEvent(event)  
 
                     if self.getTime() in self.getEventQueue():
@@ -229,7 +229,8 @@ class Simulator(object):
                             execround += 1
                             time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started events
                             if execround > 10:
-                                self.saveLog("REPORT: time "+str(self.getTime())+", time events"+str(len(time_events)))
+                                self.saveLog("REPORT: time "+str(self.getTime())+", time events "+str([e.getName()+"("+str(e.getID())+"), case: "+str(OperationsMgr.determineProgressCase(e)) for e in time_events]))
+                             
                                 for event in time_events:
                                     self.saveLog("REPORT: event "+str(event.getName())+"-"+str(event.getID())+", loc "+str(event.getLocation().getName()))
                                     for progress_id in range(len(event.getProgressList())):

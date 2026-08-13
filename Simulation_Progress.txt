@@ -540,5 +540,165 @@ TEST Orders 36 OK (0 error, all orders either come back to central inventory or 
 TEST Orders 37 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
 
 TEST Orders 38
-The following order does not come back to central buffer. 
+The following order has issue in continuation of events..
+
+13/08/2026:
+
 1204	Machine Processing	1570	20779-21120~21121-21122	6909~6910~6911~6912~6913~6914~6915~6916~6917~6...	PACK_(VERP_P)	PACK_(VERP_P)	PACK_(VERP_P)_Location	21122	2026-08-27 16:02:00
+
+++++++++++++Solution+++++++++++++
+The strict inequality check is changed to (<=):
+if (remaining_time + last_prog_len > proctime) and (remaining_time <= proctime):
+
+_____________________________________________________________________
+TEST Orders 20 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 25 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 30 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 35 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 38 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 39 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 40 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 41 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 42 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 43 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 44 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 45 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 46 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 47 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 48 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 49 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+TEST Orders 50
+Problem:
+------------ SIMULATION START --------------
+44643: ERROR in execute events: 'NoneType' object has no attribute 'getRandVar'
+44644: ERROR in execute events: 'NoneType' object has no attribute 'getRandVar'
+44645: ERROR in execute events: 'NoneType' object has no attribute 'getRandVar'
+
+Following change is made.
+else:
+     if successor_end == successor_start:
+
+>>>> added line
+     successor_event.setSuspendedPredecessor(event)
+      event.setSuspendedSuccessor(successor_event)
+>>>>> added line
+      
+     if not successor_start in self.getSimulator().getEventQueue():
+          self.getSimulator().getEventQueue()[successor_start] = []
+    if not successor_event in self.getSimulator().getEventQueue()[successor_start]:
+         self.getSimulator().getEventQueue()[successor_start].append(successor_event)
+
+TEST Orders 40 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 45 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 49 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 50
+
+The following order has issue in continuation of events..
+Machine Setup	255	11155-11156	10535~10536~10537~10538~10539~10540~10541~1054...	Operator 3	MP3_(UITG_M)	MP3_(UITG_M)_Location	11156	2026-08-21 17:56:00
+Machine Loading	1031	15103-15104	10535~10536~10537~10538~10539~10540~10541~1054...	Manual worker 1	MP3_(UITG_M)	MP3_(UITG_M)_Location	15104	2026-08-24 11:44:00
+
+Problem is that machine processing time came as zero as follows: 
+==================================================================================================
+15103: REPORT: event : Machine Loading(1031), loc :MP3_(UITG_M)_Location, res none? False, processor none? False, p: 1, in pendings? False, pred? True,198 items [10535-10732]
+15103: REPORT: tot.prog: 1['(15103-15104)']
+15103: REPORT: case Start
+15103: REPORT: eventMachine Loading(1031) success in decisions: [], decisions: 
+15103: REPORT: eventMachine Loading(1031) checking logistical events
+15103: REPORT: event : Machine Loading(1031), res on loc? True, equip on loc? True
+15103: REPORT: eventMachine Loading(1031) checking logistical events feas.: True
+15103: REPORT: Handling of pending event: Machine Loading(1031) successful with logistical events []
+15103:  REPORT: event: Machine Loading(1031)-[10535-10732], equip none? False, active opr none? MP3 - Mat. prep - pre-cutted, only picking (UITG_M), loc No loc, tot.prog: 1, p: 1, succ event? none True, case: Start
+15103:  REPORT: event: Machine Loading(1031) , successor dict dict_items([(<simulationobjects.SimEvent object at 0x000001823CA3B770>, 'Simultaneous Start')])
+15103: REPORT: event: Machine Loadingprogress step: (15103, 15104)
+15103: REPORT: event: Machine Loading, TotalProgress: 1
+15103:  REPORT: event last progress: (<productionobjects.Operator object at 0x000001823CBDAFD0>, (15103, 15104))
+15103: REPORT: **** successor_event Machine Processing(1110)
+15103: REPORT: precendence info applied successor_event Machine Processing(1110)
+15103: REPORT: event : Machine Loading(1031) case Start, loc :MP3_(UITG_M)_Location, res none? False, processor none? False, p: 1, in pendings? False, pred? True
+15103:  REPORT: succ event : Machine Processing(1110) items [10535-10732]
+15103:  REPORT: event machine items : MP3_(UITG_M), 0 items 
+15103: REPORT: succcessor event process sampling
+15103: REPORT: succcessor event process time: 0
+15103: REPORT: precedence_type: Simultaneous Start
+15103: REPORT: successor_start: 15103, successor_end: 15103
+
++++++++++ Solution ++++++++++
+In data reading all zero-processing time operations are made 1.
+
+TEST Orders 30 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 35 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 40 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 45 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 50 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 51 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 52 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 53 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 54 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+TEST Orders 55 OK (0 error, all orders either come back to central inventory or stay in-progress when time horizon reached)
+
+TEST Orders 56
+Simulation errors: 1
+30752: ERROR in execute events: list.remove(x): x not in list
+Diagnosis: The event orders are nor convenient, for example a machine unloading started before previous machine loading was completed. 
+I added necessary conditions checking for events: 
+ if case == "Handle":
+      if not event.checkNecessaryConditions():
+           if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
+                 if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                      self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event)
+      if not event in self.getSimulator().getEventQueue()["Pending"]:
+          self.getSimulator().getEventQueue()["Pending"].append(event)
+                
+    return
+
+
+
+TEST Orders 3 OK (0 error, all orders either come back to central inventory)
+TEST Orders 5 OK (0 error, all orders either come back to central inventory)
+TEST Orders 10 OK (0 error, all orders either come back to central inventory)
+TEST Orders 15 OK (0 error, all orders either come back to central inventory)
+TEST Orders 20 OK (0 error, all orders either come back to central inventory)
+TEST Orders 25 OK (0 error, all orders either come back to central inventory)
+TEST Orders 30 OK (0 error, all orders either come back to central inventory)
+TEST Orders 35 OK (0 error, all orders either come back to central inventory)
+TEST Orders 40 OK (0 error, all orders either come back to central inventory)
+TEST Orders 45 OK (0 error, all orders either come back to central inventory)
+TEST Orders 50 OK (0 error, all orders either come back to central inventory)
+TEST Orders 55 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 56 OK (0 error, all orders either come back to central inventory)
+TEST Orders 57 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 58 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 59 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 60 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 65 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 70 OK (0 error, all orders either come back to central inventory)
+TEST Orders 75 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 80 OK (0 error, all orders except one in-progress left, come back to central inventory)
+
+TEST Orders 85
+44645: ERROR in execute events: 'NoneType' object has no attribute 'getRandVar'
+
+In successor checking of ProgressEvent function, one relation is added as follows: 
++++++++++++++++ Solution ++++++++++++++++++++
+if (successor_end - successor_start > 0): 
+....
+else: 
+
+   if successor_end == successor_start:
+
+           if precedence_type == "CompletionRatio Start":
+              successor_event.setSuspendedPredecessor(event)
+              event.setSuspendedSuccessor(successor_event)
+                                
+ .......
+
+TEST Orders 70 OK (0 error, all orders either come back to central inventory)
+TEST Orders 75 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 80 OK (0 error, all orders except one in-progress left, come back to central inventory)
+TEST Orders 85 OK (0 error, all orders except 2 in-progress left, come back to central inventory)
+TEST Orders 90 OK (0 error, either orders come back to central buffer or they are left in some intermediate events)
+TEST Orders 95 OK (0 error, all orders except 3 in-progress left, come back to central inventory)
+TEST Orders 100 OK (0 error, all orders except 4 in-progress left, come back to central inventory)
+
+

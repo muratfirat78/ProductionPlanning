@@ -104,6 +104,9 @@ class ExecEvent(object):
         self.Place = None
         self.suspendedpredecessor = None
         self.suspendedsuccessor = None
+        self.simstartsuccessor = None
+        self.simstartpredecessor = None
+        
         self.decisionwaitingtime = 0
         
 
@@ -140,6 +143,27 @@ class ExecEvent(object):
 
     def getSuspendedSuccessor(self):
         return self.suspendedsuccessor
+
+
+        
+
+    def setSimStartSuccessor(self,succssr):
+        self.simstartsuccessor = succssr
+        return
+
+    def getSimStartSuccessor(self):
+        return self.simstartsuccessor
+
+
+    def setSimStartPredecessor(self,pred):
+        self.simstartpredecessor = pred
+        return
+
+    def getSimStartPredecessor(self):
+        return self.simstartpredecessor
+
+        
+       
 
     def getReservedItems(self):
         return self.ReservedItems
@@ -195,6 +219,26 @@ class ExecEvent(object):
         
     def getStatus(self):
         return self.status
+
+    def checkNecessaryConditions(self):
+        
+        if self.getType() == "Setup":
+            if self.getEquipment().getNoProcessors() == 1:
+                if len(self.getEquipment().getItems()) > 0: 
+                    return False
+        if self.getType() == "Unloading" and self.getEquipment()!=None and len(self.getItems()) > 0:
+            if self.getEquipment().getNoProcessors() == 1:
+                if not self.getItems()[0] in self.getEquipment().getItems(): 
+                    return False
+
+
+        if self.getType() == "Loading" and self.getEquipment()!=None:
+            if self.getEquipment().getNoProcessors() == 1:
+                if len(self.getEquipment().getItems()) > 0: 
+                    return False
+
+        return True
+
 
     ######################################################################################
     def sampleProcessTime(self,workmgr):
