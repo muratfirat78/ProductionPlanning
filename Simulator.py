@@ -260,7 +260,8 @@ class Simulator(object):
             if len(remaining_events) > 0:
                 self.saveLog("REPORT: In-progress events: "+str(len(remaining_events)))
                 for event in remaining_events:
-                    self.saveLog(" REPORT: event: "+str(event.getName())+"("+str(event.getID())+")"+", prog: "+str(event.getTotalProgress())+"-> "+str(["["+str(pr[1][0])+"-"+str(pr[1][1])+"]" for pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+" ["+(str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"]")
+                    self.saveLog(" REPORT: event: "+str(event.getName())+"("+str(event.getID())+")"+", prog: "+str(event.getTotalProgress())+"-> "+str(["["+str(pr[1][0])+"-"+str(pr[1][1])+"]" for pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+" items ["+(str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"], reserved: ["+(str(event.getReservedItems()[0].getID())+"-"+str(event.getReservedItems()[-1].getID()) if len(event.getReservedItems())>0 else '')+"]")
+                    
                     if len(event.getItems()) > 0:
                         oprseq = event.getItems()[0].getDemand().getFinalProduct().getOperationSequences()[event.getItems()[0].getDemand().getID()]
                         for opr in oprseq:  
@@ -269,6 +270,7 @@ class Simulator(object):
                                 if event.getName() == "Machine Processing":
                                     if event.getItems()[0].getActiveOperation()== opr:
                                         self.saveLog("REPORT: In-progress operation: "+str(opr.getName()))
+                    self.saveLog("REPORT:_____________________________________")
             
             end = timer()
             

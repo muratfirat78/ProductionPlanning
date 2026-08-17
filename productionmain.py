@@ -317,7 +317,9 @@ class ShopFloorManager(OperationsManager):
         debugtimes = []
         debugeventids = []
         debugmachines = []
-    
+        specialcheck = False # event.getLocation().getName() == "PACK_(VERP_P)_Location" and event.getType() == "Setup"
+        
+  
 
         if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
             self.getSimulator().saveLog("REPORT: ==================================================================================================")
@@ -327,13 +329,19 @@ class ShopFloorManager(OperationsManager):
                       
         case = self.determineProgressCase(event)
 
-        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-            self.getSimulator().saveLog("REPORT: case "+case)
-        
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids :
+            self.getSimulator().saveLog("REPORT:m  event : "+str(event.getName())+"("+str(event.getID())+") case "+case)
+
+        if (specialcheck and case == "Start"):
+            self.getSimulator().saveLog("REPORT: ************************** event : "+str(event.getName())+"("+str(event.getID())+") case "+case+", p: "+str(event.getProcessTime()))
+
+       
+
+      
         if case == "Handle":
             if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-                self.getSimulator().saveLog("REPORT: before nec. conds. ")
-            if not event.checkNecessaryConditions():
+                self.getSimulator().saveLog("REPORT: before nec. conds. , event type: "+str(event.getType())+", equip none? "+str(event.getEquipment() == None))
+            if not self.checkNecessaryConditions(event):
                 if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                     self.getSimulator().saveLog("REPORT: after nec. conds. ")
                 if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
@@ -345,6 +353,8 @@ class ShopFloorManager(OperationsManager):
                     self.getSimulator().getEventQueue()["Pending"].append(event)
                 
                 return
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: after nec. conds. OK")
  
             if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                 self.getSimulator().saveLog("REPORT:  event : "+str(event.getName())+"-"+str(event.getID()))
@@ -355,18 +365,36 @@ class ShopFloorManager(OperationsManager):
                 #self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+"), items "+str(len(event.getItems()))+", active opr none? "+("No item " if len(event.getItems())==0 else str(event.getItems()[0].getActiveOperation()== None))+" event loc "+event.getLocation().getName()+", item oprs "+str([str(o.isCancelled())+"--"+str(o.isFinished())+"--"+str(o.getName()) for o in oprseq])+", equip none? "+str(event.getEquipment() == None)+", tot.prog: "+str(event.getTotalProgress())+str(["("+str(pr[0])+"-"+str(pr[1])+")" for r,pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+", case: "+case)
 
             if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-                if event.getEquipment()!= None:
-                    self.getSimulator().saveLog("REPORT: process time sampled.. equip automated ?"+str(event.getEquipment().IsAutomated()))
+                if isinstance(event.getEquipment(),Machine):
+                    if event.getEquipment()!= None:
+                        self.getSimulator().saveLog("REPORT: process time sampled.. equip automated ?"+str(event.getEquipment().IsAutomated()))
                 if len(event.getItems()) > 0:
                     self.getSimulator().saveLog("REPORT: process time sampled.. items active opr none ?"+str(event.getItems()[0].getActiveOperation() == None))
             event.sampleProcessTime(self)
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: process time sampling done...  .case ")
     
             if not event.getEventType().isPreemptable():  # check if no time left in current shift for a non-preemtable event
-                if self.getCurrentShiftEnd() - self.getSimulator().getTime() < event.getProcessTime():
+                if  event.getProcessTime() + self.getSimulator().getTime() > self.getCurrentShiftEnd() - 1:
                     return
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: after check....")
 
         ######### MAKE NECESSARY DECISIONS  ########################################
         casesuccess = self.makeCaseDecisions(event,case,debugtimes,debugeventids)
+
+        if (specialcheck and case == "Handle"):
+            self.getSimulator().saveLog("REPORT: ???????????????????? event : "+str(event.getName())+"("+str(event.getID())+") case "+case+" equip available? "+str(event.getEquipment().isAvailable()))
+       
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: casesuccess: "+str(casesuccess))
+
+
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+")"+", casesuccess :"+str(casesuccess))
+       
         
         if not casesuccess:
             if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
@@ -392,7 +420,12 @@ class ShopFloorManager(OperationsManager):
                 #    if event.getSuspendedSuccessor() in self.getSimulator().getEventQueue()["Pending"]:
                 #        self.getSimulator().getEventQueue()["Pending"].remove(event.getSuspendedSuccessor())
                
-            return 
+            return
+
+        
+
+
+             
         if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                 self.getSimulator().saveLog("REPORT: Handling of pending event: "+str(event.getName())+"("+str(event.getID())+") successful with logistical events "+str([e.getName()+"("+str(e.getID())+"), "  for e in event.getLogisticalEvents()]))
 
@@ -450,6 +483,7 @@ class ShopFloorManager(OperationsManager):
             #    if event.getSimStartSuccessor() in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
             #        self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event.getSimStartSuccessor())
 
+                    
             
 
         if case == "Complete": 
@@ -467,7 +501,9 @@ class ShopFloorManager(OperationsManager):
                 if not event.getItems()[0] in event.getToLocation().getItems():
                     self.getSimulator().saveLog(" ERROR: completion "+str(event.getName())+"("+str(event.getID())+") done but first item not in to-location!!! "+str(event.getLocation().getName())) 
                 
-                
+        if (specialcheck and case == "Complete"):
+            self.getSimulator().saveLog("REPORT: ************************** event : "+str(event.getName())+"("+str(event.getID())+") case "+case)
+     
 
 
         
@@ -521,7 +557,7 @@ class ShopFloorManager(OperationsManager):
                         if not progress_step[1] in self.getSimulator().getEventQueue():
                             self.getSimulator().getEventQueue()[progress_step[1]] = []    
 
-                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or event.getEquipment().getName() in debugmachines:
                             self.getSimulator().saveLog(" REPORT: suspended predecessor "+event.getSuspendedPredecessor().getName()+"("+str(event.getSuspendedPredecessor().getID())+") scheduled  at "+str(progress_step[1])) 
                         self.getSimulator().getEventQueue()[progress_step[1]].append(event.getSuspendedPredecessor())
     
@@ -934,10 +970,6 @@ class ShopFloorManager(OperationsManager):
         if 'FromLocationOutput->ToLocation' in precedenceinfo: # Proc->MU
             successor_event.setToLocation(event.getFromLocation().getOutputBuffer())
 
-        #if self.getSimulator().getTime() > 475:
-            #self.getSimulator().saveLog("REPORT: event "+str(event.getName())+", eq none? "+str(event.getEquipment() == None)+", res none? "+str(event.getResource() == None)+", fl none? "+str(event.getFromLocation() == None))
-            #self.getSimulator().saveLog("REPORT: succcessor created "+str(successor_event.getName())+"("+str(successor_event.getID())+")"+", eq none? "+str(successor_event.getEquipment() == None)+", res none? "+str(successor_event.getResource() == None)+", fl none? "+str(successor_event.getFromLocation() == None))
-
 
         return
                       
@@ -964,22 +996,32 @@ class ShopFloorManager(OperationsManager):
             
         if case in event.getEventType().getDecisionsDict():
             
+            
             for decision_type in event.getEventType().getDecisionsDict()[case]:
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+" decision "+str(decision_type)+", decision_type"+str(decision_type)+" items "+str(len(event.getItems())))
+                
 
                 if decision_type == "Assign Processor": 
                     if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                         self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+" decision "+str(decision_type)+", processor none? "+str(event.getProcessor()== None)+" continued..")
                     if event.getProcessor()!= None:
                         continue
+                if decision_type == "Select Items": 
+                    if len(event.getItems()) > 0:
+                        continue
 
                 algname = self.getAlgorithmSetting()[event.getName()][decision_type] 
                 algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname] 
                 alg_return = algfunction(event)
 
-            
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+" alg_return none?"+str(alg_return== None))
+       
                 if alg_return!= None:
                     if decision_type == "Select Items":   # TL/TU/MS (handle)
- 
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+" selected items ?"+str(len(alg_return)))
                         # apply selection
                         for item in alg_return:
                             event.getItems().append(item) 
@@ -1021,6 +1063,7 @@ class ShopFloorManager(OperationsManager):
                     if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                         self.getSimulator().saveLog("REPORT: event"+str(event.getName())+"("+str(event.getID())+") checking logistical events")
                     feasible,operator_move,bring_equipment = self.checkLogisticalEvents(event,success_decisions,debugtimes,debugeventids)
+
                     
                     if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                         self.getSimulator().saveLog("REPORT: event"+str(event.getName())+"("+str(event.getID())+") checking logistical events feas.: "+str(feasible))
@@ -1029,28 +1072,105 @@ class ShopFloorManager(OperationsManager):
                         self.resetDecisions(event,success_decisions,debugtimes,debugeventids)
                         casesuccess = False
                     else:
-                        first_logistical = operator_move if (operator_move!= None) else (bring_equipment if bring_equipment != None else None)
-                        if first_logistical!=None:
-                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-                                self.getSimulator().saveLog("REPORT: logistical event : "+str(first_logistical.getName())+"("+str(first_logistical.getID())+")")
-                            event.getLogisticalEvents().append(first_logistical)
-                            progress_step = first_logistical.getProgressList()[-1][1]
-                            if not progress_step[1] in self.getSimulator().getEventQueue():
-                                self.getSimulator().getEventQueue()[progress_step[1]] = []
-                            self.getSimulator().getEventQueue()[progress_step[1]].append(first_logistical) 
-                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-                             self.getSimulator().saveLog("REPORT: logistical scheduled completion at "+str(progress_step[1]))
 
-                            if event in self.getSimulator().getEventQueue()["Pending"]:
-                                self.getSimulator().getEventQueue()["Pending"].remove(event)
-                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-                                    self.getSimulator().saveLog("REPORT: event removed from pendings ? "+str(event in self.getSimulator().getEventQueue()["Pending"]))
-                                
+                        # now check if the event chain can stay in the same shift..
+                        if case == "Handle" and event.getType() == "Loading" and isinstance(event.getEquipment(),Trailer):
+                        # now check the complete time needed for the chain of events and if they will stay in the same shift. 
+
                             if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
-                                self.getSimulator().saveLog("REPORT: lprogress_step : "+str(progress_step))
-        
-                            if (bring_equipment != None) and (not bring_equipment in event.getLogisticalEvents()):
-                                event.getLogisticalEvents().append(bring_equipment)
+                                 self.getSimulator().saveLog("REPORT: >>>>>>>>> calculating total time : "+str(event.getName())+"("+str(event.getID())+")")
+                            
+                            totaltime =(operator_move.getProcessTime() if operator_move!= None else 0)
+                            totaltime+=(bring_equipment.getProcessTime() if bring_equipment!= None else 0) 
+                            totaltime+= event.getProcessTime()
+                
+                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                 self.getSimulator().saveLog("REPORT: >>>>>>>>> calculating total time : "+str(event.getName())+"("+str(event.getID())+") t: "+str(totaltime))
+                
+                            # now check the successors of the event in the event chain.
+                            current_event = event
+                            successor_event = None
+                
+                            while current_event!= None:
+
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: current event >>>>: "+str(current_event.getName())+"("+str(current_event.getID())+")  t: "+str(totaltime))
+                                
+                                for successor_type,precedence_type in current_event.getEventType().getSuccessorDict().items():
+                                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                        self.getSimulator().saveLog("REPORT: $$$$$$$ calculating total time : "+str(current_event.getName())+"("+str(current_event.getID())+")  successor_type "+str(successor_type.getName())+", precedence_type ("+str(precedence_type)+".")
+                                    if precedence_type == "Finish to Start": # this is only for transport events for now
+                                        successor_event = ExecEvent(None,None,successor_type)
+                                        self.applyPrecedence(current_event,successor_event,successor_type)
+
+                                        if successor_event.getFromLocation()!= None: 
+                                            
+                                            if successor_event.getToLocation() == None: 
+                                                if successor_event.getName() in self.getAlgorithmSetting():
+                                                   
+                                                    mydecision_type = "Select Destination"
+                                                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                                        self.getSimulator().saveLog("REPORT: successor event >>>>: "+str(successor_event.getName())+"("+str(successor_event.getID())+")  finding algortihm., is mydecision in alg setting? "+str( mydecision_type in self.getAlgorithmSetting()[successor_event.getName()]))
+                                                    if mydecision_type in self.getAlgorithmSetting()[successor_event.getName()]:
+                                                        
+                                                        algname = self.getAlgorithmSetting()[successor_event.getName()][mydecision_type]
+                                                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                                            self.getSimulator().saveLog("REPORT: successor event >>>>: "+str(successor_event.getName())+"("+str(successor_event.getID())+")  finding algortihm,  alg name "+str(algname)+" equip none? "+str(successor_event))
+                                                        algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[mydecision_type][algname]
+                                                        alg_return = algfunction(successor_event)
+                                                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                                            self.getSimulator().saveLog("REPORT: successor event >>>>: "+str(successor_event.getName())+"("+str(successor_event.getID())+")  finding algortihm,  alg return none? "+str(alg_return == None))
+                                                        if alg_return!= None:
+                                                            successor_event.setToLocation(alg_return.getInputBuffer())
+
+                                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                                self.getSimulator().saveLog("REPORT: successor event >>>>: "+str(successor_event.getName())+"("+str(successor_event.getID())+")  tolocation none?: "+str(successor_event.getToLocation() == None))
+
+                                            if successor_event.getToLocation() != None: 
+                                                successor_event.sampleProcessTime(self)
+                                                totaltime+=successor_event.getProcessTime()
+                                                break
+                                        else: 
+                                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                                self.getSimulator().saveLog("REPORT: calculating total time : "+str(current_event.getName())+"("+str(current_event.getID())+")  from location of successor "+str(successor_event.getName())+"("+str(successor_event.getID())+") is none!")
+                                
+
+                                if successor_event!= None:
+                                     if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                        self.getSimulator().saveLog("REPORT: calculating total time successor : "+str(successor_event.getName())+"("+str(successor_event.getID())+").")
+                                current_event = successor_event
+                                successor_event = None
+                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                if current_event!= None: 
+                                    self.getSimulator().saveLog("REPORT: ~~~~~~~~~~~~ calculating total time : "+str(current_event.getName())+"("+str(current_event.getID())+") *t: "+str(totaltime)+", overflowing to next shift? "+str(self.getSimulator().getTime()+totaltime > self.getCurrentShiftEnd()-1))
+                                
+                            if self.getSimulator().getTime()+totaltime > self.getCurrentShiftEnd()-1:
+                                casesuccess = False
+
+                        if casesuccess:
+                    
+                            first_logistical = operator_move if (operator_move!= None) else (bring_equipment if bring_equipment != None else None)
+                            if first_logistical!=None:
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: logistical event : "+str(first_logistical.getName())+"("+str(first_logistical.getID())+")")
+                                event.getLogisticalEvents().append(first_logistical)
+                                progress_step = first_logistical.getProgressList()[-1][1]
+                                if not progress_step[1] in self.getSimulator().getEventQueue():
+                                    self.getSimulator().getEventQueue()[progress_step[1]] = []
+                                self.getSimulator().getEventQueue()[progress_step[1]].append(first_logistical) 
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                 self.getSimulator().saveLog("REPORT: logistical scheduled completion at "+str(progress_step[1]))
+    
+                                if event in self.getSimulator().getEventQueue()["Pending"]:
+                                    self.getSimulator().getEventQueue()["Pending"].remove(event)
+                                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                        self.getSimulator().saveLog("REPORT: event removed from pendings ? "+str(event in self.getSimulator().getEventQueue()["Pending"]))
+                                    
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: lprogress_step : "+str(progress_step))
+            
+                                if (bring_equipment != None) and (not bring_equipment in event.getLogisticalEvents()):
+                                    event.getLogisticalEvents().append(bring_equipment)
                         
                               
         return casesuccess
@@ -1343,6 +1463,26 @@ class ShopFloorManager(OperationsManager):
         return
         
 #########################################################################################################################
+    def checkNecessaryConditions(self,event):
+
+        if event.getType() == "Setup":
+            if event.getEquipment().getNoProcessors() == 1:
+                if len(event.getEquipment().getItems()) > 0: 
+                    return False
+        if event.getType() == "Unloading" and event.getEquipment()!=None and len(event.getItems()) > 0:
+            if event.getEquipment().getNoProcessors() == 1:
+                if not event.getItems()[0] in event.getEquipment().getItems(): 
+                    return False
+
+
+        if event.getType() == "Loading" and event.getEquipment()!=None:
+            if isinstance(event.getEquipment(),Machine):
+                if event.getEquipment().getNoProcessors() == 1:
+                    if len(event.getEquipment().getItems()) > 0: 
+                        return False
+
+        return True
+#############################################################################################################
     def writeDataTBRMOutPut(self,myround):
 
 

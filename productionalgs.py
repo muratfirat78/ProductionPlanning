@@ -111,8 +111,14 @@ class ProductionAlgManager(AlgorithmManager):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
         self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
         select_dict = dict()
-        
-        for item in event.getEquipment().getItems():
+
+        checkitems= event.getEquipment().getItems()
+
+        if len(checkitems) == 0 and len(event.getItems()) >0:
+            checkitems = event.getItems()
+
+
+        for item in checkitems:
             myopr = item.getActiveOperation()
             if myopr!= None: 
                 for mach in myopr.getAlternativeResources():

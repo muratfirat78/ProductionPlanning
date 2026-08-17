@@ -14,8 +14,13 @@ import pandas as pd
 class ShopFloorManager(OperationsManager): 
     def __init__(self,sim):
         super().__init__(sim)
+
+        self.Layout = Layout("TBRM Machining BV")
+
+        centralloc = Location("CentralBuffer_Location",len(self.Layout.getLocations()))
+        self.Layout.getLocations().append(centralloc)
         
-        self.CentralInventory = Inventory(10000,sim,self) 
+        self.CentralInventory = Inventory(10000,centralloc,sim,self) 
         self.all_pns = [str(x) for x in range(1000)]
         self.ProductionAlgManager = ProductionAlgManager(sim,self)
         self.DataManager = ProductionDataManager(sim,self)
@@ -27,92 +32,81 @@ class ShopFloorManager(OperationsManager):
         self.SelectedOrders = []
         self.PerformanceRun = True
         self.inputdate = None
+        self.AlgorithmSetting = dict() # key: event name, val: (Decision name, Algorithm name)
+        self.ProcessTimes = dict()  #key: event type name, val: 
+        self.EventStatuses = dict() # key: status change, val: (prev_status,next_status)
+       
+        # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
+
+        
         # Trailer Loading -> Trailer Transport -> Trailer Unloading
+        TrailerLoading = SimEvent(self.getSimulator(),"Trailer Loading","Loading","Operator","Trailer",False)
+        TrailerLoading.getDecisionsDict()['Handle'] = ['Assign Resource','Assign Equipment','Select Items']
 
-        # Inputbuffer: Items change, it creates pending machine loading event. 
+        self.getAlgorithmSetting()[TrailerLoading.getName()] = {"Select Items":'EDDOrder','Assign Resource':"Straight Available","Assign Equipment":"Straight Available"}
+       
+        self.getEventTypes()[TrailerLoading.getName()]= TrailerLoading
+        #-------------------------------------------
+        TrailerTransport= SimEvent(self.getSimulator(),"Trailer Transport","Transport","Operator","Trailer",False)
+        TrailerLoading.getSuccessorDict()[TrailerTransport] = "Finish to Start"  # Precedence settings: TL -> TT
+        TrailerLoading.getPrecendenceDict()[TrailerTransport.getName()] = ['FromLocation','Equipment','Resource','Items']
+   
+        self.getAlgorithmSetting()[TrailerTransport.getName()] = {"Select Destination":'MostDemanded' }
+        self.getEventTypes()[TrailerTransport.getName()]= TrailerTransport
+        #-------------------------------------------
+        TrailerUnloading= SimEvent(self.getSimulator(),"Trailer Unloading","Unloading","Operator","Trailer",False)
 
-        #EventType: (myname,restype,equiptype,static,loading,process)
-        trailerLoading = EventType("Trailer Loading","Operator","Trailer",True,True,False,False)
-        trailerLoading.setItemDirection(True)  # Place -> Equipment, False means Equipment -> Place
-        trailerLoading.getDecisions().append(('Handle','Assign Equipment'))
-        trailerLoading.getDecisions().append(('Handle','Assign Resource'))
-        trailerLoading.getDecisions().append(('Start','Select Items'))
-        self.getEventTypes()["Trailer Loading"]= trailerLoading
-        
-        
-        trailerTransport = EventType("Trailer Transport","Operator","Trailer",False,False,False,False)
-        trailerTransport.getDecisions().append(('Start','Select Destination'))
-        self.getEventTypes()["Trailer Transport"]= trailerTransport
-        
-        trailerUnloading = EventType("Trailer Unloading","Operator","Trailer",True,False,False,False);
-        trailerUnloading.getDecisions().append(('Start','Select Items'))
-        trailerUnloading.setItemDirection(False)  # Place -> Equipment, False means Equipment -> Place
-        self.getEventTypes()["Trailer Unloading"]= trailerUnloading 
-
-        
-        bringEquipment = EventType("Bring Equipment","Operator","Trailer",False,False,False,False)
-        self.getEventTypes()["Bring Equipment"]= bringEquipment 
-        operatorMove = EventType("Operator Move","Operator","Operator",False,False,False,False)
-        self.getEventTypes()["Operator Move"]= operatorMove 
+        TrailerTransport.getSuccessorDict()[TrailerUnloading] = "Finish to Start"  # Precedence settings: TT -> TU
+        TrailerTransport.getPrecendenceDict()[TrailerUnloading.getName()] = ['Equipment->FromLocation','ToLocation','Equipment','Resource']
+  
+        TrailerUnloading.getDecisionsDict()['Start'] = ['Select Items']
+        TrailerUnloading.getDecisionsDict()['Handle'] = ['Assign Resource']
+        self.getAlgorithmSetting()[TrailerUnloading.getName()] = {"Select Items":'UnloadFeasible','Assign Resource':"Straight Available","Select Destination":'MostDemanded' }  
+        self.getEventTypes()[TrailerUnloading.getName()]= TrailerUnloading
 
 
-        
-        #EventType(myname,restype,equiptype,static,loading,process)
+         
+        #-------------------------------------------
+        #  Machine Setup -> Machine Loading -> Machine Processing -> Machine Unloading
+        MachineSetup = SimEvent(self.getSimulator(),"Machine Setup","Setup","Operator","Machine",False)
+        MachineSetup.getDecisionsDict()['Handle'] = ['Assign Processor','Assign Resource','Select Items']
+        self.getAlgorithmSetting()[MachineSetup.getName()] = {'Assign Resource':"Straight Available","Assign Processor":"Straight Available",'Select Items':"EDDOrder"}
+        self.getEventTypes()[MachineSetup.getName()]= MachineSetup
 
-        machineSetup = EventType("Machine Setup","Operator","Machine",True,False,False,True)
-        machineSetup.getDecisions().append(('Handle','Assign Equipment'))
-        machineSetup.getDecisions().append(('Handle','Select Items'))
-        machineSetup.getDecisions().append(('Handle','Assign Resource'))
-     
-        
-        self.getEventTypes()["Machine Setup"]= machineSetup
+        #-------------------------------------------
+        MachineLoading = SimEvent(self.getSimulator(),"Machine Loading","Loading","Operator","Machine",True)   
+        MachineSetup.getSuccessorDict()[MachineLoading] = "Finish to Start" # Precedence settings: MS -> ML
+        MachineSetup.getPrecendenceDict()[MachineLoading.getName()] = ['EquipmentInput->FromLocation','Equipment->ToLocation','Equipment','Items','Processor']
+        MachineLoading.getDecisionsDict()['Handle'] = ['Assign Resource']
+        self.getAlgorithmSetting()[MachineLoading.getName()] = {'Assign Resource':"Straight Available"}
+        self.getEventTypes()[MachineLoading.getName()]= MachineLoading
 
-        machineLoading = EventType("Machine Loading","Operator","Machine",True,True,False,False)
-        machineLoading.getDecisions().append(('Handle','Assign Resource'))
-        machineLoading.getDecisions().append(('Resume','Assign Resource'))
-        machineLoading.setPreemptable(True)  
-        self.getEventTypes()["Machine Loading"]= machineLoading
-        machineLoading.setItemDirection(True) # True: Place -> Equipment, False: Equipment -> Place
-        
-        machineProcessing = EventType("Processing","Machine","Machine",True,False,True,False)
-        machineProcessing.getDecisions().append(('Handle','Assign Equipment'))
-        machineProcessing.getDecisions().append(('Resume','Assign Equipment'))
-        machineProcessing.setPreemptable(True)  
-        self.getEventTypes()["Processing"]= machineProcessing
-        
-        machineUnloading = EventType("Machine Unloading","Operator","Machine",True,False,False,False) 
-        machineUnloading.getDecisions().append(('Handle','Assign Resource'))
-        machineUnloading.getDecisions().append(('Resume','Assign Resource'))
-        machineUnloading.setItemDirection(False) # True: Place -> Equipment, False: Equipment -> Place
-        machineUnloading.setPreemptable(True)  
-        self.getEventTypes()["Machine Unloading"]= machineUnloading
+        #-------------------------------------------
+        MachineProcessing = SimEvent(self.getSimulator(),"Machine Processing","Processing",None,"Machine",True)        
+        MachineLoading.getSuccessorDict()[MachineProcessing] = "Simultaneous Start"  # Precedence settings: ML -> Proc
+        MachineLoading.getPrecendenceDict()[MachineProcessing.getName()] = ['ToLocation->FromLocation','ToLocation->Resource','Equipment','Items','Processor']
+        MachineProcessing.getDecisionsDict()['Handle'] = ["Assign Processor"]
+        self.getAlgorithmSetting()[MachineProcessing.getName()] = {"Assign Processor":"Straight Available"} 
+        self.getEventTypes()[MachineProcessing.getName()]= MachineProcessing
 
-        operatorMove.getPrecendenceDict()[trailerLoading.getName()] = ['Resource','Location','Finish to Start'] 
-        bringEquipment.getPrecendenceDict()[trailerLoading.getName()] = ['Equipment','Resource','Location','Finish to Start'] 
-        trailerLoading.getPrecendenceDict()[trailerTransport.getName()] = ['Equipment','Resource','Items','Location','Finish to Start']
-        trailerTransport.getPrecendenceDict()[trailerUnloading.getName()] = ['Equipment','Resource','Location','Finish to Start']
-
-        bringEquipment.setSuccessorType(trailerLoading)
-        trailerLoading.setSuccessorType(trailerTransport)
-        trailerTransport.setSuccessorType(trailerUnloading)
+        #-------------------------------------------
+        MachineUnloading = SimEvent(self.getSimulator(),"Machine Unloading","Unloading","Operator","Machine",True)
+        MachineProcessing.getSuccessorDict()[MachineUnloading] = "CompletionRatio Start"   # Precedence settings: Proc -> MU
+        MachineProcessing.getPrecendenceDict()[MachineUnloading.getName()] = ['FromLocation','FromLocationOutput->ToLocation','Equipment','Items']    
+        MachineUnloading.getDecisionsDict()['Handle'] = ['Assign Resource']
+        self.getAlgorithmSetting()[MachineUnloading.getName()] = {'Assign Resource':"Straight Available"}
+        self.getEventTypes()[MachineUnloading.getName()]= MachineUnloading
+        #-------------------------------------------
 
         
+        SimOperatorMove = SimEvent(self.getSimulator(),"Operator Move","Logistical","Operator",None,False) 
+        self.getEventTypes()[SimOperatorMove.getName()]= SimOperatorMove
 
-        # Machine Setup -> Machine Loading -> Processing -> Machine Unloading (manual and automated)
+        SimBringEquipment = SimEvent(self.getSimulator(),"Bring Equipment","Logistical","Operator","Trailer",False) 
+        self.getEventTypes()[SimBringEquipment.getName()]= SimBringEquipment
 
-        # Outputbuffer: Items change, it creates pending trailer loading event. 
-        machineSetup.setSuccessorType([machineLoading,machineProcessing])
-        machineLoading.setPredecessorType(machineSetup)
-        machineSetup.getPrecendenceDict()[machineLoading.getName()] = ['Equipment','Items','Location','Finish to Start']
-
-        machineProcessing.setPredecessorType(machineLoading)
-        machineLoading.getPrecendenceDict()[machineProcessing.getName()] = ['Equipment','Items','Location','Simultaneous Start']
-
-        machineUnloading.setPredecessorType(machineProcessing)
-        machineProcessing.getPrecendenceDict()[machineUnloading.getName()] = ['Equipment','Items','Location','Simultaneous Finish']
-
- 
+    
 
         self.DataManager.getObjectFeatures()["ProductionOrder"] = [("FinalProduct","Product")]
         self.DataManager.getObjectFeatures()["ProductionOrder"].append(("FinalProductID","Product/ID"))
@@ -134,11 +128,44 @@ class ShopFloorManager(OperationsManager):
         self.DataManager.getObjectFeatures()["RawMaterial"] = [("ProductName","Components/Product")]
         self.DataManager.getObjectFeatures()["RawMaterial"].append(("ID","Components/Product/ID"))
 
+    ###############################################################################
+
+    def isPerformanceRun(self):
+        return self.PerformanceRun
+
+
+    def getCurrentShiftEnd(self):
+        
+        curr_shiftstart = (self.getSimulator().getTime()//self.getSimulator().getShiftMinutes())*self.getSimulator().getShiftMinutes()
+ 
+        return curr_shiftstart+self.getSimulator().getShiftMinutes()
+
+        
+    def getProducts(self):
+        return self.Products
+        
+    def getOrders(self):
+        return self.Orders
+        
+    def getResources(self):
+        return self.Resources 
+        
+    def setCentralInventory(self,mybuff):
+        self.CentralInventory = mybuff
+        return
+
+    def getCentralInventory(self):
+        return self.CentralInventory
+        #################################################################################################################################
+    def getProductionAlgManager(self):
+        return  self.ProductionAlgManager 
+
     def getSelectedOrders(self):
         return self.SelectedOrders
-    
-    
-        
+
+    def getLayout(self):
+        return self.Layout
+      
 
     def getChecker(self):
         return self.Checker
@@ -158,6 +185,9 @@ class ShopFloorManager(OperationsManager):
      
     def getProductionOrders(self):
         return self.ProductionOrders
+
+    def getAlgorithmSetting(self):
+        return self.AlgorithmSetting 
     
  
     
@@ -175,10 +205,9 @@ class ShopFloorManager(OperationsManager):
         for trailer in range(5):
             trlr = Trailer(5000,self.getSimulator(),self); 
             trlr.setAvailable(True)
-            trlr.setLocation(self.getCentralInventory())
+            trlr.setLocation(self.getCentralInventory().getLocation())
             self.getResources().append(trlr)
-
-        
+   
         for res in self.getResources():
             if isinstance(res,Inventory):
                 self.getSimulator().saveLog("Resource "+res.getType()+', id: '+str(res.getID())+", code"+res.getMachineCode()+"automated"+str(res.IsAutomated())+","+("" if res.getInputBuffer() == None else res.getInputBuffer().getName())+","+("" if res.getOutputBuffer() == None else res.getOutputBuffer().getName())+" created.")
@@ -187,7 +216,6 @@ class ShopFloorManager(OperationsManager):
                  
             else:
                 self.getSimulator().saveLog("Resource "+res.getType()+', id: '+str(res.getID())+" created.")
-
 
         try: 
             self.inputdate = self.DataManager.ReadDemandFile() # production orders created...
@@ -210,12 +238,20 @@ class ShopFloorManager(OperationsManager):
         for prodorder in prodorders[:min(self.getNoOrders(),len(prodorders))]:     
             self.getSimulator().saveLog("__________________________________________________________")
             self.getSimulator().saveLog("REPORT: Selected production order deadline: "+str(prodorder[1].getDeadline()))
-            self.createDemandItems(prodorder[1],prodorder[1].getFinalProduct())
+
+            
+            try: 
+                self.getSimulator().saveLog("Item creation starts")
+                self.createDemandItems(prodorder[1],prodorder[1].getFinalProduct())
+                self.getSimulator().saveLog("REPORT: >>>> items ["+(str(prodorder[1].getItems()[0].getID()) if len(prodorder[1].getItems())>0 else '')+"-"+(str(prodorder[1].getItems()[-1].getID()) if len(prodorder[1].getItems())>0 else 'no item')+"]")
+            except Exception as e:
+                self.getSimulator().saveLog("ERROR in item creation: "+str(e))
+
             self.getSimulator().saveLog("REPORT:  Selected "+prodorder[1].printOrder()+" items created.")
             self.getSelectedOrders().append(prodorder[1])
 
         
-        self.getSimulator().saveLog(">> Creating instance finished.. ")      
+        self.getSimulator().saveLog("REPORT:>> Creating instance finished.. ")      
    
         return self.getSelectedOrders()
 
@@ -226,78 +262,40 @@ class ShopFloorManager(OperationsManager):
             for itm in range(demand.getQuantity()):
                 
                 myitem = Item(demand,self.giveItemID())
-                #self.getSimulator().saveLog("ERROR check: "+str(myitem.getID()))
-              
-                self.getCentralInventory().getOutputBuffer().addItem(myitem) # generate trailer loading event.
+                self.getCentralInventory().getOutputBuffer().getItems().append(myitem) # generate trailer loading event.
                 demand.getItems().append(myitem)
+            self.getCentralInventory().getOutputBuffer().generateEvent(False)
         else:
             for preddemnd in demand.getDemandType().getPredecessors():
                 self.createDemandItems(demand,preddemnd)
-               
+
+        buffer_data = {"BufferName": self.getCentralInventory().getOutputBuffer().getName(),"Machine":  self.getCentralInventory().getOutputBuffer().getMachine().getName() if  self.getCentralInventory().getOutputBuffer().getMachine()!= None else "Central Inventory","Time":self.getSimulator().getTime(),"No.Items":len(self.getCentralInventory().getOutputBuffer().getItems())}  
+        self.getSimulator().getBufferData().append(buffer_data)
 
         return
 #______________________________________________________________________
 ############################################################################
-    def applyShiftChange(self,weekendjump):
+    def applyShiftChange(self):
 
-        self.getSimulator().saveLog(" Apply Shift Change starts..") 
+        printchange = False
 
-        preevs = [ev for ev in self.getSimulator().getEventQueue()["Preemptables"]]
-
-         ##############################################################################################################
-        for event in preevs:
-            self.getSimulator().saveLog("  Suspending preemptable event "+event.getName()+"["+str(event.getID())+"]")
-            event.setInActive()
-     
-            try: 
-                lastgrstrt = 0 ; lastres = None
-                totalprogress = 0
-                for resource,proglist in event.getProgressDict().items():
-                    totalprogress+= sum([(p[1]-p[0]) for p in proglist if p[1] != 0])
-                    if lastgrstrt < proglist[-1][0]:
-                        lastgrstrt = proglist[-1][0]
-                        lastres = resource
-                    self.getSimulator().saveLog(" Res "+resource.getName()+"Progresses of "+event.getName()+"["+str(event.getID())+"]"+": "+str([(p[0],p[1]) for p in proglist])+" total progrss: "+str(totalprogress)+", proctime: "+str(event.getProcessTime()))
-                    if sum([1 for p in proglist if p[1] == 0]) > 1:
-                        self.getSimulator().saveLog("ERROR: Res "+resource.getName()+" has more than one progress of "+event.getName()+"["+str(event.getID())+"]"+" ending with zero")
-              
-                if totalprogress < event.getProcessTime():
-
-                    if event.getProgressDict()[lastres][-1][1] > 0:
-                        continue # this event suspended before and no need to suspend it again.
-                    
-                    event.getProgressDict()[lastres] = event.getProgressDict()[lastres][:-1]
-                    # close the last open progress.
-                    event.getProgressDict()[lastres].append( (lastgrstrt,self.getSimulator().getTime()-weekendjump))
-
-                if event in event.getEquipment().getProcessMatch():
-                    del event.getEquipment().getProcessMatch()[event]
-                    self.getSimulator().saveLog("  processor match of "+event.getName()+"["+str(event.getID())+"]"+" is removed.")
-                else:
-                    self.getSimulator().saveLog("WARNING: event "+event.getName()+"["+str(event.getID())+"]"+" is not in process match of equip "+event.getEquipment().getName()) 
-
-                if event.getEventType().isProcess():
-                    event.setEquipment(None) # process events only suspend if the machine gets unavailable, resource is defaulty the equipment.  
-                    
-
-                
-                if event in event.getResource().getMyEvents():
-                    event.getResource().getMyEvents().remove(event)
-                else:
-                    self.getSimulator().saveLog("WARNING: event "+event.getName()+"["+str(event.getID())+"]"+" is not in myevents of its resource "+event.getResource().getName()) 
-                
-                event.setResource(None) # cases of machine loading anf unloading: equipment is machine, but operators should be reassigned.
-               
-                
-            except Exception as e:
-                self.getSimulator().saveLog("ERROR: in suspending preemptable event progress update "+event.getName()+": "+str(e)) 
-
-         
-          
-
+        if printchange:
+            self.getSimulator().saveLog("REPORT: Apply Shift Change starts..") 
         ##############################################################################################################
         avalable_res = [] 
+        if printchange:
+            self.getSimulator().saveLog("REPORT: current shift: "+str(self.getSimulator().getCurrentShift())+", simtime: "+str(self.getSimulator().getTime())) 
         for res in self.getResources():
+            if isinstance(res,Operator):
+                if printchange:
+                    self.getSimulator().saveLog("REPORT: Res "+str(res.getName())+", avl shifts: "+str(res.getAvailableShifts())+", loc:  "+res.getLocation().getName()) 
+            if isinstance(res,Trailer) or isinstance(res,Operator):
+                if res.getLocation() != self.getCentralInventory().getLocation():
+                    res.setLocation(self.getCentralInventory().getLocation())
+                    if isinstance(res,Operator):
+                        location_data = {"EntityName":res.getName(),"EntityID":res.getID(),"Time":self.getSimulator().getTime(),"LocationName":res.getLocation().getName(),"LocationID": (res.getLocation().getID() if res.getLocation()!= None else "-")}  
+                        self.getSimulator().getLocationData().append(location_data)
+                    
             if isinstance(res,Machine) or isinstance(res,Operator):
                 res.setAvailable(self.getSimulator().getCurrentShift() in res.getAvailableShifts())
                 res.setIdle(True)
@@ -306,760 +304,1052 @@ class ShopFloorManager(OperationsManager):
             else:
                 res.setAvailable(True)
                 res.setIdle(True)
+       
+        #self.getSimulator().saveLog("REPORT: available res: "+str(avalable_res)) 
 
-            
-        self.getSimulator().saveLog(" available res: "+str(avalable_res)) 
-
-
-        for event in self.getSimulator().getEventQueue()["Preemptables"]:
-            # make process events get assigned to their equipments if they become available. 
-            if event.getEventType().isProcess():
-                # now find its last equipment to immediately start..
-                lastgrstrt = 0 ; lastres = None
-                for resource,proglist in event.getProgressDict().items():
-                    totalprogress+= sum([(p[1]-p[0]) for p in proglist if p[1] != 0])
-                    if lastgrstrt < proglist[-1][0]:
-                        lastgrstrt = proglist[-1][0]
-                        lastres = resource
-
-                if lastres!=None:
-                    self.getSimulator().saveLog(" process event: "+str(event.print())+", lastres: "+str(lastres.getName())+("" if lastres == None else " av? "+str(lastres.isAvailable()))) 
-                if lastres!= None:
-                    if lastres.isAvailable(): 
-                        processr = lastres.getProcessor()
-                        self.getSimulator().saveLog(" processor found ? "+str(processr != None)) 
-                        if processr!= None:
-                            event.getProgressDict()[lastres].append((self.getSimulator().getTime(),0)) # make an open progress
-                            lastres.getProcessMatch()[event] = processr
-                            event.setEquipment(lastres)  # make assignments..
-                            event.setResource(lastres) # make assignments..
-                            if not event in lastres.getMyEvents():
-                                lastres.getMyEvents().append(event)
-                         
-                            event.setActive()
-
-        self.getSimulator().saveLog(" Apply Shift Change completed..") 
+        #self.getSimulator().saveLog(" REPORT: Shift Change completed..") 
         return
 #################################################################################################################################################
-    def HandleSimEvent(self,event):
+    
+    def ProgressEvent(self,event):
+        # case can be one of the following: "handle","start","suspend","restart","complete"
 
-        keyword = ""
+        debugtimes = [25416]
+        debugeventids = []
+        debugmachines = []
+    
 
-     
-        self.getSimulator().saveLog(keyword+" Handling event.. "+str(event.getName())+"("+str(event.getID())+")"+",eqp none? "+str(event.getEquipment() == None)+", res none? "+str(event.getResource() == None))
-
-        
-        if event.getEquipment() == None or event.getResource() == None:
-            for dectuple in event.getEventType().getDecisions():
-                
-                self.getSimulator().saveLog("dectuple.. "+str(dectuple[0])+"---- "+str(dectuple[1]))
-                if dectuple[0] == 'Handle':
-                    dec_type = dectuple[1]
-                  
-                    for seltuple in self.getProductionAlgManager().getAlgorithmSetting()[event.getName()]:
-                        if seltuple[0] == dec_type:
-                            if dec_type  == "Select Items" and len(event.getItems())>0:
-                                continue
-                            if dec_type  == "Assign Equipment" and event.getEquipment()!= None:
-                                continue
-                            if dec_type  == "Assign Resource" and event.getResource()!= None:
-                                continue
-                            decision_alg = seltuple[1]; decision_type = dec_type;
-                            if event.getName() == 'Machine Setup':
-                                self.getSimulator().saveLog(keyword+" -> "+decision_type+" and "+decision_alg+" exists??")
-                            if (decision_type,decision_alg) in self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()]:
-                                #self.getSimulator().saveLog("REPORT: -> "+decision_type+" and "+decision_alg+" exists..")
-                                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_type,decision_alg)]
-                                alg_return = algorithm_function(event)
-
-                                
-                                self.getSimulator().saveLog(" -> alg_return none? "+str(alg_return == None)+" type "+str(type(alg_return)) )
-
-                                #if event.getName() == 'Machine Loading':
-                                #    self.getSimulator().saveLog("ERROR "+decision_type+" return none? "+str(alg_return == None))
-
-                                if alg_return!= None:
-                                    if decision_type == "Select Items":
-                                        for item in alg_return:
-                                            if len(event.getItems()) == event.getEquipment().getCapacity(): 
-                                                break
-                                            event.getItems().append(item)
-
-                                       
-                                        self.getSimulator().saveLog(" -> items "+str(len(event.getItems())) )
-                                        event.setProcessTime(self.getProcessTime(event))
-                                           
-                                    if decision_type == "Assign Equipment":
-                                        event.setEquipment(alg_return) # process: inserts this start into progress dict of equip     
-                                        self.getSimulator().saveLog(keyword+" Equipment assigned: "+str(alg_return.getName())+event.print())
-                                    if decision_type == "Assign Resource":
-                                        event.setResource(alg_return) # preemptable: inserts resource into progress dict, adds event to events of the resource 
-                                        self.getSimulator().saveLog("Resource assigned: "+str(alg_return.getName())+event.print())
-                                        alg_return.getAssignedEvents().append(event)  
-                                        if not event in event.getResource().getMyEvents():
-                                            event.getResource().getMyEvents().append(event)
-                                else:
-                                    
-                                    self.getSimulator().saveLog(" Handling not successful in "+decision_type)
-                                    return False
-
-        if event.getEquipment() == None or event.getResource() == None:
-            event.increaseStartDelay()
-            return False
-
-        opr_move,brg_event = self.ProceedToScheduling(event) 
-        #if event.getID() == 158:
-        #    self.getSimulator().saveLog("REPORT: OPR_MOVE "+str(opr_move==None)+", brgev "+str(brg_event==None))
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog("REPORT: ==================================================================================================")
+            self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+")"+", loc :"+event.getLocation().getName()+", res none? "+str(event.getResource() == None)+", processor none? "+str(event.getProcessor()== None)+", p: "+str(event.getProcessTime())+", in pendings? "+str(event in self.getSimulator().getEventQueue()["Pending"])+", pred? "+str(event.getPredecessor() != None)+","+str(len(event.getItems()))+" items ["+(str(event.getItems()[0].getID()) if len(event.getItems())>0 else '')+"-"+(str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"]")
+            self.getSimulator().saveLog("REPORT: tot.prog: "+str(event.getTotalProgress())+str(["("+str(pr[0])+"-"+str(pr[1])+")" for r,pr in event.getProgressList()]))
             
+                      
+        case = self.determineProgressCase(event)
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog("REPORT: case "+case)
         
-        self.getSimulator().ScheduleEvent((opr_move if opr_move != None else (brg_event if brg_event!= None else event)))
-            
-        if event.getID() == 158:
-            self.getSimulator().saveLog(" "+event.print()+" handled.")
-      
-        return True
-###########################################################################################################################################
-    def startSimEvent(self,event):
-
-        keyword = ""
-
-        evloc = "No Location!!"
-        #if event.getLocation()!= None:
-        #    evloc = event.getLocation().getName() if not isinstance(event.getLocation(),tuple) else event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName() 
-       
-   
-        self.getSimulator().saveLog(" Start event.. "+str(event.getName())+"["+str(event.getID())+"], @ "+evloc+", q: "+str(len(event.getItems()))+", pt: "+str(event.getProcessTime())+"  res: "+event.getResource().getName()+", eq: "+event.getEquipment().getName())
-
-        try: 
-
-            if len(event.getLogisticEvents()) > 0:
-                return True
-       
-            # check necessary conditions..
-            if (not event.getResource().isAvailable()) or (not event.getEquipment().isAvailable()):
-                return False
-    
-           
-            for dectuple in event.getEventType().getDecisions():
-                if dectuple[0] == 'Start':
-                    dec_type = dectuple[1]
-                    for seltuple in self.getProductionAlgManager().getAlgorithmSetting()[event.getName()]:
-                        if seltuple[0] == dec_type:
-                            decision_alg = seltuple[1]; decision_type = dec_type;
-                            if (decision_type,decision_alg) in self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()]:
-                                
-                                algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_type,decision_alg)]
-                                alg_return = algorithm_function(event)
-    
-                    
-                                if decision_type == "Select Items":
-                                    for item in alg_return:
-                                        if len(event.getItems()) == event.getEquipment().getCapacity(): 
-                                            break
-                                        event.getItems().append(item) 
-                                if decision_type == 'Select Destination':
-                                    from_location = event.getLocation()
-                                    event.setLocation((from_location,alg_return))
-    
-            if event.getEventType().isProcess():
-                event.getItems()[0].getActiveOperation().setStart(self.getSimulator().getTime())
+        if case == "Handle":
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: before nec. conds. ")
+            if not event.checkNecessaryConditions():
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog("REPORT: after nec. conds. ")
+                if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
+                    if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                        self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event)
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog("REPORT: before pending")
+                if not event in self.getSimulator().getEventQueue()["Pending"]:
+                    self.getSimulator().getEventQueue()["Pending"].append(event)
                 
-            event.getResource().setIdle(False)
-            event.getEquipment().setIdle(False)
-            event.setActive()
-    
-            ##############################################################################################################
-            # event progress updates..
-            if event.getEventType().isPreemptable():
-                
-                if event.getEventType().isProcess():
-                    lastgrstrt = 0 ; lastres = None; totalprogress = 0; openprogresses = 0
-                    for resource,proglist in event.getProgressDict().items():
-                        totalprogress+= sum([(p[1]-p[0]) for p in proglist if p[1] != 0])
-                        openprogresses+=sum([1 for p in proglist if p[1] == 0])
-                        if lastgrstrt < proglist[-1][0]:
-                            lastgrstrt = proglist[-1][0]; lastres = resource
-             
-                    if totalprogress == event.getProcessTime():
-                        self.getSimulator().saveLog("ERROR: Premeptable Event "+event.getName()+"["+str(event.getID())+"]"+" has completed its proceess time, still starting..")
-                    if openprogresses > 0:
-                        self.getSimulator().saveLog("ERROR: Premeptable Event "+event.getName()+"["+str(event.getID())+"]"+" starting but still has open progress..")
-        
-                    if not event.getEquipment() in event.getProgressDict():
-                        event.getProgressDict()[event.getEquipment()] = [] 
-                    event.getProgressDict()[event.getEquipment()].append((self.getSimulator().getTime(),0))
-                    
-                else: # only types of machine laoding and machine unloading..
-                    if not event.getResource() in event.getProgressDict():
-                        event.getProgressDict()[event.getResource()] = []
-                    event.getProgressDict()[event.getResource()].append((self.getSimulator().getTime(),0))
-                    
-                    
-            else:
-                event.setStartTime(self.getSimulator().getTime())
-            #################################################################################################################
-    
-            # event precedence triggers..
-            if event.getEventType().getSuccessorType()!= None:
-                if 'Simultaneous Start' in event.getEventType().getPrecendenceDict()[event.getEventType().getSuccessorType().getName()]:
-                    if not event.getEventType().getSuccessorType() in event.getDefinedSuccessors():
-                        nextevent = self.defineNextEvent(event,'Simultaneous Start')
-                        self.getSimulator().saveLog(" successor with precedence SS: "+nextevent.getName())
-                        self.getSimulator().ScheduleEvent(nextevent)     
-                  
-                if 'Simultaneous Finish' in event.getEventType().getPrecendenceDict()[event.getEventType().getSuccessorType().getName()]:
-                    if not event.getEventType().getSuccessorType() in event.getDefinedSuccessors():
-                        nextevent = self.defineNextEvent(event,'Simultaneous Finish')
-                        # this event will be checked each time for start.     
-             #################################################################################################################
-        except Exception as e: 
-            self.getSimulator().saveLog("ERROR: In starting event "+str(e))
-              
-        self.getSimulator().saveLog("  "+event.print()+" started.")   
-        
-        return True
-
-###############################################################################################################################################
-    def isPerformanceRun(self):
-        return self.PerformanceRun
-
-#############################################################################################################################################
-    def resumeSimEvent(self,event):
-
-        keyword = ""
-        evloc = "No Location!!"
-        if event.getLocation()!= None:
-            evloc = event.getLocation().getName() if not isinstance(event.getLocation(),tuple) else event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName() 
-       
-            
-         
-        self.getSimulator().saveLog(" Resuming event.. "+str(event.getName())+"["+str(event.getID())+"], @ "+evloc+", q: "+str(len(event.getItems()))+", pt: "+str(event.getProcessTime())+"  res: "+(" None " if event.getResource() == None else event.getResource().getName())+", eq: "+("None " if event.getEquipment() == None else event.getEquipment().getName()))
-        
-        
-        
-        for dectuple in event.getEventType().getDecisions():
-                #self.getSimulator().saveLog("dectuple: "+str(dectuple))
-            if dectuple[0] == 'Resume':
-                    
-                self.getSimulator().saveLog(keyword+": "+str(dectuple))
-                dec_type = dectuple[1]
-                for seltuple in self.getProductionAlgManager().getAlgorithmSetting()[event.getName()]:
-                    if seltuple[0] == dec_type:
-                        if dec_type  == "Select Items" and len(event.getItems())>0:
-                            continue
-                        if dec_type  == "Assign Equipment" and event.getEquipment()!= None:
-                            continue
-                        if dec_type  == "Assign Resource" and event.getResource()!= None:
-                            continue
-                        decision_alg = seltuple[1]; decision_type = dec_type;
-                        if (decision_type,decision_alg) in self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()]:
-                            
-                            algorithm_function = self.getProductionAlgManager().getPriorityScoringFunctions()[event.getName()][(decision_type,decision_alg)]
-                            alg_return = algorithm_function(event)
-   
-                            self.getSimulator().saveLog(keyword+": alg RETURN NONE? "+str(alg_return == None))
-                                
-                            if alg_return!= None:
-                                if decision_type == "Assign Resource":
-                                    event.setResource(alg_return)
-                                    self.getSimulator().saveLog("Resource assigned: "+str(alg_return.getName())+event.print())
-                                    alg_return.getAssignedEvents().append(event)  
-                                    if not event in event.getResource().getMyEvents():
-                                        event.getResource().getMyEvents().append(event)
-                                if decision_type == "Assign Equipment":
-                                    event.setEquipment(alg_return) # process: inserts this start into progress dict of equip     
-                                    self.getSimulator().saveLog("Equipment assigned: "+str(alg_return.getName())+event.print())
-                            else:
-                                return
-
-        # check necessary conditions..
-
-        if event.getEquipment() == None or event.getResource() == None:
-            return False
-
-        #self.getSimulator().saveLog("Proceeding...")
-        opr_move,brg_event = self.ProceedToScheduling(event)
-
-        if brg_event!= None:
-            self.getSimulator().ScheduleEvent(brg_event)
-        else:
-            if opr_move!= None:
-                self.getSimulator().ScheduleEvent(opr_move)
                 return
-            else:
-                # no previous event necessary
-                event.getResource().setIdle(False)
-                event.setActive()
-     
-                if not event.getResource() in event.getProgressDict():
-                    event.getProgressDict()[event.getResource()] = []
-                event.getProgressDict()[event.getResource()] = [(self.getSimulator().getTime(),0)]
-
-        self.getSimulator().saveLog("REPORT: "+event.print()+" resumed.")
-       
-        return 
-################################################################################################################################################
-    def commpleteSimEvent(self,event):
-
-
-        #evloc = "No Location!!"
-        #if event.getLocation()!= None:
-            #evloc = event.getLocation().getName() if not isinstance(event.getLocation(),tuple) else event.getLocation()[0].getName()+"->"+event.getLocation()[1].getName() 
-
-    
-        #self.getSimulator().saveLog(" Complete event.. "+str(event.getName())+"["+str(event.getID())+"], @ "+evloc+", q: "+str(len(event.getItems())))
-
-        try: 
-
-            self.getSimulator().saveLog("Finalizing event: "+event.getName()+"start time "+str(event.getStartTime())+" sim time "+str(self.getSimulator().getTime()))
-    
-            if event in event.getResource().getMyEvents():
-                if len([ev for ev in event.getResource().getMyEvents() if ev == event]) > 1:
-                    self.getSimulator().saveLog("ERROR: in event completion, event "+event.getName()+" is more than once in events list of res "+event.getResource().getName())
-                event.getResource().getMyEvents().remove(event)
-       
-            else:
-                self.getSimulator().saveLog("ERROR: event "+event.print()+" is not in myevents of its resource "+event.getResource().getName())
-    
-            self.getSimulator().saveLog("Resource has in myevents? :"+str(event in event.getResource().getMyEvents()))
-
-            try: 
-                if event.getEventType().isPreemptable():
-                    if event in self.getSimulator().getEventQueue()["Preemptables"]:
-                        
-                        if len([ev for ev in self.getSimulator().getEventQueue()["Preemptables"] if ev == event]) > 1:
-                            self.getSimulator().saveLog("ERROR: in event completion, preemptable event "+event.getName()+" is more than once in Preemptables list of simulator ")
-                        self.getSimulator().getEventQueue()["Preemptables"].remove(event)
-                    else:
-                        self.getSimulator().saveLog("ERROR: Process event "+event.print()+" is not in Preemptables list of simulator in its completion..")
-        
-            except Exception as e:
-                self.getSimulator().saveLog(" ERROR: in handling preemptable "+str(e))
-
-            try: 
-                if event.getEventType().isProcess():
-                    if not event.getEquipment() in event.getProgressDict():
-                        self.getSimulator().saveLog("ERROR: Preemptable event "+event.getName()+"["+str(event.getID())+"]"+" does not have eqp "+event.getEquipment().getName()+" in progressdict!")
-                    for res,proglist in event.getProgressDict().items():
-                        if res == event.getEquipment():
-                            if proglist[-1][1] != 0:
-                                self.getSimulator().saveLog("ERROR: Preemptable event "+event.getName()+"["+str(event.getID())+"]"+" has progress not ending with zero with eqp: "+event.getEquipment().getName())
-                            else:
-                                lastprogress =  (proglist[-1][0],self.getSimulator().getTime())
-                                proglist = proglist[:-1]
-                                proglist.append(proglist)
-            except Exception as e:
-                self.getSimulator().saveLog(" ERROR: in process "+str(e))
-
-            
-                #for item in event.getItems():
-                #    item.setProcessData(event,event_start,item.getActiveOperation(),self.getSimulator())
-
-            # make item moves..commpleteSimEvent
-
-            try: 
-                try: 
-                    if not event.getEventType().isStatic(): # transport 
-                        event.getResource().setLocation(event.getLocation()[1]) 
-                        #event.getResource().setLocationData(event,self.getSimulator())
-                        
-                        event.getEquipment().setLocation(event.getLocation()[1])
-                        #event.getEquipment().setLocationData(event,self.getSimulator())
-                        
-                        for item in event.getItems():
-                            item.setLocation(event.getLocation()[1]) 
-                            #item.setLocationData(event,self.getSimulator())
-                except Exception as e:
-                    self.getSimulator().saveLog(" ERROR: in location updates transport "+str(e))
-                    
-                else: # no transport
-                    try: 
-                        if (not event.getEventType().isSetup()) and (not event.getEventType().isProcess()):
-                            self.getSimulator().saveLog("getItemDirection "+str(event.getEventType().getItemDirection()))
-
-                            if event.getPlace() != None: 
-                                if event.getEventType().getItemDirection(): # True: Place -> Equipment, False: Equipment -> Place
-                                    for item in event.getItems():
-                                        event.getPlace().getItems().remove(item)
-                                        event.getEquipment().getItems().append(item)
-                                else:
-                                    for item in event.getItems():
-                                        event.getEquipment().getItems().remove(item)  
-                                        event.getPlace().addItem(item)
-                                            
-                                    # reset the pending event...
-                                if event.getEventType().getName() in ["Machine Loading","Trailer Loading"]:
-                                    if event.getPlace().getPendingEvent() != None:
-                                        event.getPlace().setPendingEvent(None)
-                                        event.getPlace().generateEvent()
-                    except Exception as e:
-                        self.getSimulator().saveLog(" ERROR: in location updates static"+str(e))
-            except Exception as e:
-                self.getSimulator().saveLog(" ERROR: in location updates "+str(e))
-                        
-            if event.getEventType().isProcess(): 
-                self.getSimulator().saveLog(" event: "+event.getName()+"["+str(event.getID())+"], opr getting compltd "+(event.getItems()[0].getActiveOperation().getName() if event.getItems()[0].getActiveOperation()!= None else "Opr None.."))
-                event.getItems()[0].getActiveOperation().setSimPlanned()
-                event.getItems()[0].getActiveOperation().setExecutionData(event,self.getSimulator())
-    
-              
-            # manage next event: if there is a direct successor just use it, otherwise use successor of eventtype
-
-        ################################################################################################################
-        ####### M A N A G I N G   N E X T   E V E N T 
-            self.getSimulator().saveLog("Managing next event.. successor ? "+str(event.getSuccessor()!= None))
-    
-            nextevent = None
-            # if next event is not preemptable and can be done in the current shift, then let the equipment stay busy.  
-            if event.getSuccessor()!= None:
-                
-                nextevent = event.getSuccessor()
-
-                if nextevent.getSuccessor()!= None:
-                    if event in nextevent.getSuccessor().getLogisticEvents():
-                        nextevent.getSuccessor().getLogisticEvents().remove(event)
-                        self.getSimulator().saveLog(" Logistic event "+event.getName()+"["+str(event.getID())+"] is removed from loglist of succ-succ"+nextevent.getSuccessor().getName()+"["+str(nextevent.getSuccessor().getID())+"]")
-                
-                if event in nextevent.getLogisticEvents():
-                    nextevent.getLogisticEvents().remove(event)
-                    self.getSimulator().saveLog(" Logistic event "+event.getName()+"["+str(event.getID())+"] is removed from loglist of succ"+nextevent.getName()+"["+str(nextevent.getID())+"]")
-                    if len(nextevent.getLogisticEvents()) == 0:
-                        if len(nextevent.getProgressDict()) > 0:
-                                    
-                            nextevent.getResource().setIdle(False)
-                            nextevent.setActive()
-     
-                            if not nextevent.getResource() in nextevent.getProgressDict():
-                                nextevent.getProgressDict()[nextevent.getResource()] = []
-                            nextevent.getProgressDict()[nextevent.getResource()] = [(self.getSimulator().getTime(),0)]
-                                    
-                        else:
-                            self.getSimulator().ScheduleEvent(nextevent)
-                else:
-                    if nextevent.getEventType().isPreemptable():
-                        if len(nextevent.getProgressDict()) > 0: 
-                            if not nextevent in self.getSimulator().getEventQueue()["Preemptables"]:
-                                self.getSimulator().getEventQueue()["Preemptables"].append(nextevent)
-                                self.getSimulator().saveLog(" Direct successor.."+nextevent.getName()+" is added to preemptables")
-                            nextevent.setActive()
-                            if not nextevent.getResource() in nextevent.getProgressDict():
-                                nextevent.getProgressDict()[nextevent.getResource()] = []
-                            nextevent.getProgressDict()[nextevent.getResource()] = [(self.getSimulator().getTime(),0)]
-                        else:
-                            self.getSimulator().ScheduleEvent(nextevent)
-                    else:
-                        if nextevent in event.getPrecedenceTypes():
-                            if not event.getPrecedenceTypes()[nextevent] in ['Simultaneous Start','Simultaneous Finish']:
-                                self.getSimulator().ScheduleEvent(nextevent)
-                        else:
-                            self.getSimulator().ScheduleEvent(nextevent)
-                                
-                
-                self.getSimulator().saveLog(" Direct successor.."+nextevent.getName()+"["+str(nextevent.getID())+"] is active? "+str(nextevent.IsActive())+" is prectypes? "+str(nextevent in event.getPrecedenceTypes()))
-               
-                
-                 
-
-                if isinstance(event.getEquipment(),Machine):
-                    if event in event.getEquipment().getProcessMatch():
-                        processor = event.getEquipment().getProcessMatch()[event]
-                        del event.getEquipment().getProcessMatch()[event]
-                        event.getEquipment().getProcessMatch()[nextevent] = processor
-                        self.getSimulator().saveLog("Processor match of event "+event.getName()+"["+str(event.getID())+"]"+" updated with successor "+nextevent.getName()+"["+str(nextevent.getID())+"] res none? "+str(event.getResource() == None)+", eqp none? "+str(event.getEquipment() == None))
-                        
-             
-                     
-            else: # NO predfined successor event
-                if event.getEventType().getSuccessorType()!= None:
-                    if 'Finish to Start' in event.getEventType().getPrecendenceDict()[event.getEventType().getSuccessorType().getName()]:
-                        nextevent = self.defineNextEvent(event,'Finish to Start')
-                        # now replace the processor match
-    
-                        if isinstance(event.getEquipment(),Machine):
-                            if event in event.getEquipment().getProcessMatch():
-                                processor = event.getEquipment().getProcessMatch()[event]
-                                del event.getEquipment().getProcessMatch()[event]
-                                event.getEquipment().getProcessMatch()[nextevent] = processor
-                                self.getSimulator().saveLog("Processor match of event "+event.getName()+"["+str(event.getID())+"]"+" updated with successor "+nextevent.getName()+"["+str(nextevent.getID())+"]")
-                            
-                        
-                        self.getSimulator().saveLog(" scheduling next event...@"+str(self.getSimulator().getTime()))
-                        self.getSimulator().getEventQueue()["Pending"].append(nextevent)
-                else:
-                    if isinstance(event.getEquipment(),Machine):
-                        if event in event.getEquipment().getProcessMatch():
-                            del event.getEquipment().getProcessMatch()[event]
-                            self.getSimulator().saveLog("Processor match of event "+event.getName()+"["+str(event.getID())+"]"+" removed ")
-             
-                  
-    
-            if nextevent != None:
-                if (nextevent.getEquipment() != event.getEquipment()):
-                    event.getEquipment().setIdle(True)
-                if (nextevent.getResource() != event.getResource()):
-                    event.getResource().setIdle(True)
-            else:
-                event.getEquipment().setIdle(True)
-                event.getResource().setIdle(True)
-                
-            self.getSimulator().saveLog(" "+event.print()+" finalized.")
-            event.setInActive() 
-            #self.getSimulator().saveLog(" ERROR check:  event completion "+event.getName()+"["+str(event.getID())+"]")
-        except Exception as e:
-            self.getSimulator().saveLog(" ERROR: in event completion "+str(e)+" event: "+event.getName()+"["+str(event.getID())+"] res none? "+str(event.getResource() == None)+", eqp none? "+str(event.getEquipment() == None))
-            #self.getSimulator().saveLog("  ERROR: "+event.print())
-      
-        return
-###########################################################################################################################################
-    def getProcessTime(self,event):
-
-        proctime = 1
-
-        if event.getName() == "Machine Setup":
-            proctime = event.getEquipment().getSetupTime()
-        if (event.getName() == "Machine Loading") or (event.getName() == "Machine Unloading" and not event.getEquipment().IsAutomated()):
-            proctime = max(1,int(0.5*event.getEquipment().getOperatingEffort()*event.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
-        if event.getName() == "Processing":   
-            proctime = event.getItems()[0].getActiveOperation().getRandVar().sampleValue()
-
-
-        return proctime
-
-###########################################################################################################################################
-    def ProceedToScheduling(self,event):
-
-        #self.getSimulator().saveLog("Proceeding...")
-        timedelay = 0
-        opr_move = None; brg_event = None
-        
-        #self.getSimulator().saveLog("->"+event.getEquipment().getLocation().getName()+"---"+event.getLocation().getName())
-        if (event.getEquipment().getLocation() != event.getLocation()): #  eqwuipment must be brought. 
-            
-            #self.getSimulator().saveLog("->Eqp loc "+event.getEquipment().getLocation().getName()+", res loc: "+event.getResource().getLocation().getName())
-            if event.getResource().getLocation() != event.getEquipment().getLocation():
-                self.getSimulator().saveLog("->Opr Move before Brg Eqp")
-                opr_move_event_type = self.getEventTypes()["Operator Move"] 
-                loc_tuple = (event.getResource().getLocation(),event.getEquipment().getLocation())
-                opr_move = Event(loc_tuple,self.getSimulator().getTime(),1,self.getSimulator(),opr_move_event_type)
-                opr_move.setResource(event.getResource()); opr_move.setEquipment(event.getResource());  
-                if not opr_move in opr_move.getResource().getMyEvents():
-                    opr_move.getResource().getMyEvents().append(opr_move)
-                timedelay+=1
-                event.getLogisticEvents().append(opr_move)
-          
-            # (OM ->) BE 
-            self.getSimulator().saveLog("-> Eqp")
-            loc_tuple = (event.getEquipment().getLocation(),event.getLocation())   
-            bring_event_type = self.getEventTypes()["Bring Equipment"]  
-            brg_event = Event(loc_tuple,self.getSimulator().getTime()+timedelay,1,self.getSimulator(),bring_event_type)
-            brg_event.setEquipment(event.getEquipment()); brg_event.setResource(event.getResource())
-            if not brg_event in brg_event.getResource().getMyEvents():
-                    brg_event.getResource().getMyEvents().append(brg_event)
-            if opr_move != None:
-                opr_move.setSuccessor(brg_event)
-                opr_move.getPrecedenceTypes()[brg_event] = 'Finish to Start'
-                
-            brg_event.setSuccessor(event)
-            brg_event.getPrecedenceTypes()[event] = 'Finish to Start'
-            event.getLogisticEvents().append(brg_event)
-
-        else: # Equipment is in place, but operator must come 
-            #self.getSimulator().saveLog("->"+event.getResource().getLocation().getName()+"---"+event.getLocation().getName())
-            if event.getLocation() != event.getResource().getLocation():
-                opr_move_event_type = self.getEventTypes()["Operator Move"]    
-                loc_tuple = (event.getResource().getLocation(),event.getLocation())
-                #self.getSimulator().saveLog("Oonly opr move: "+event.getResource().getLocation().getName()+"-> "+event.getLocation().getName())
-                opr_move = Event(loc_tuple,self.getSimulator().getTime(),1,self.getSimulator(),opr_move_event_type)
-                opr_move.setResource(event.getResource()); opr_move.setEquipment(event.getResource()); 
-                if not opr_move in opr_move.getResource().getMyEvents():
-                    opr_move.getResource().getMyEvents().append(opr_move)
-                opr_move.setSuccessor(event)
-                opr_move.getPrecedenceTypes()[event] = 'Finish to Start'
-                event.getLogisticEvents().append(opr_move)
-
-        self.getSimulator().saveLog("->Opr Move none? "+str(opr_move == None)+"--Brg Eqp  none? "+str(brg_event == None))
-
-        return opr_move,brg_event
-###########################################################################################################################################
-    def defineNextEvent(self,event,prectype):
-
-        nexteventtype = event.getEventType().getSuccessorType() 
-        nextevent = event.getSuccessor() if event.getSuccessor()!= None else Event(None,"Pending",1,self.getSimulator(),nexteventtype) 
-
-        #self.getSimulator().saveLog("next event .."+nextevent.getName())
-        event.setSuccessor(nextevent)
-        event.getPrecedenceTypes()[nextevent] = prectype # here we can read what type of precedence relation is there. 
-
-        
-      
-        if 'Equipment' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-            #self.getSimulator().saveLog("Equipment goes to next event..")
-            nextevent.setEquipment(event.getEquipment())
-            
-        if 'Resource' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-            #self.getSimulator().saveLog("Resource goes to next event..")
-            nextevent.setResource(event.getResource())
-            if prectype != "Simultaneous Finish":
-                if not nextevent in nextevent.getResource().getMyEvents():
-                     nextevent.getResource().getMyEvents().append(nextevent)
-            
-        else:
-            if nextevent.getEventType().isProcess():
-                nextevent.setResource(nextevent.getEquipment())
-                if prectype != "Simultaneous Finish":
-                    if not nextevent in nextevent.getResource().getMyEvents():
-                        nextevent.getResource().getMyEvents().append(nextevent)
-                    
-        if 'Location' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-            if isinstance(event.getLocation(),tuple):
-                nextevent.setLocation(event.getLocation()[1])
-            else:
-                nextevent.setLocation(event.getLocation()) 
-            #self.getSimulator().saveLog("location of next event..")
-            # transport event destination is selected at start.
-                
-        if 'Items' in event.getEventType().getPrecendenceDict()[nextevent.getEventType().getName()]:
-            #self.getSimulator().saveLog("Items go to next event..")
-            for item in event.getItems():
-                nextevent.getItems().append(item)
-    
-        nextevent.setProcessTime(self.getProcessTime(nextevent))
-        #self.getSimulator().saveLog("process time found.., static? "+str(nextevent.getEventType().isStatic())+" loc none?"+str(nextevent.getLocation() == None))
-         # set nextevent location and place
-        if nextevent.getEventType().isStatic():
-            if nextevent.getLocation() == nextevent.getEquipment():
-                if nextevent.getEventType().getItemDirection():
-                    nextevent.setPlace(nextevent.getLocation().getInputBuffer())
-                else:
-                    nextevent.setPlace(nextevent.getLocation().getOutputBuffer())
-            else:
-                if nextevent.getEventType().getItemDirection():
-                    nextevent.setPlace(nextevent.getLocation().getOutputBuffer())
-                else:
-                    nextevent.setPlace(nextevent.getLocation().getInputBuffer())
-                
-        self.getSimulator().saveLog("Next event: "+nextevent.print()+" defined.")
-
-        event.getDefinedSuccessors()[event.getEventType().getSuccessorType()] = nextevent
-
-        return nextevent
-#######################################################################################################################################################              
-    def getProducts(self):
-        return self.Products
-        
-    def getOrders(self):
-        return self.Orders
-        
-    def getResources(self):
-        return self.Resources 
-        
-    def setCentralInventory(self,mybuff):
-        self.CentralInventory = mybuff
-        return
-
-    def getCentralInventory(self):
-        return self.CentralInventory
-        #################################################################################################################################
-    def getProductionAlgManager(self):
-        return  self.ProductionAlgManager 
-
-      ###################################################################################################################################
-    def getCompletionTime(self,event,starttime):
-
-        if event.getEquipment().getType()!= "Machine":
-            return starttime+event.getProcessTime()
-        
-        currtime = starttime
-        proctime = event.getProcessTime() 
-        procss_shft_strt = currtime
-
-        self.getSimulator().saveLog(" Calculating completion of event"+event.print()+" at start "+str(starttime))
-
-     
-        while proctime > 0:
-
-            # first get end of this shift
-            curr_shiftstart = (currtime//self.getSimulator().getShiftMinutes())*self.getSimulator().getShiftMinutes()
-            curr_shiftsend = curr_shiftstart+self.getSimulator().getShiftMinutes()*int((self.getSimulator().getTime()%self.getSimulator().getShiftMinutes())>0)
-            
-            shiftno = self.getSimulator().getShift((self.getSimulator().getStartDay()+timedelta(minutes = curr_shiftstart)).hour)
-
-            self.getSimulator().saveLog(" START: curr_shiftstart"+str(curr_shiftstart)+" curr_shiftsend "+str(curr_shiftsend)+"shiftno"+str(shiftno)+"currtime"+str(currtime)+"proctime"+str(proctime))
  
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT:  event : "+str(event.getName())+"-"+str(event.getID()))
+                oprseq = []
+                if len(event.getItems()) < 0:
+                    oprseq = event.getItems()[0].getDemand().getFinalProduct().getOperationSequences()[event.getItems()[0].getDemand().getID()]
+                
+                #self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+"), items "+str(len(event.getItems()))+", active opr none? "+("No item " if len(event.getItems())==0 else str(event.getItems()[0].getActiveOperation()== None))+" event loc "+event.getLocation().getName()+", item oprs "+str([str(o.isCancelled())+"--"+str(o.isFinished())+"--"+str(o.getName()) for o in oprseq])+", equip none? "+str(event.getEquipment() == None)+", tot.prog: "+str(event.getTotalProgress())+str(["("+str(pr[0])+"-"+str(pr[1])+")" for r,pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+", case: "+case)
 
-            if not shiftno in event.getEquipment().getAvailableShifts():
-                currtime = curr_shiftsend
-                procss_shft_strt = curr_shiftsend
-                shiftjump = True
-            else:
-                if proctime < curr_shiftsend - procss_shft_strt:
-                    currtime = min(procss_shft_strt+proctime,curr_shiftsend)
-                    proctime = 0
-                    
-                else:
-                    currtime = curr_shiftsend
-                    proctime -= (curr_shiftsend - procss_shft_strt)
-                    procss_shft_strt = curr_shiftsend
-                    
-                    
-            self.getSimulator().saveLog("END: currtime"+str(currtime)+" procss_shft_strt "+str(procss_shft_strt)+"proctime"+str(proctime))
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                if event.getEquipment()!= None:
+                    self.getSimulator().saveLog("REPORT: process time sampled.. equip automated ?"+str(event.getEquipment().IsAutomated()))
+                if len(event.getItems()) > 0:
+                    self.getSimulator().saveLog("REPORT: process time sampled.. items active opr none ?"+str(event.getItems()[0].getActiveOperation() == None))
+            event.sampleProcessTime(self)
+    
+            if not event.getEventType().isPreemptable():  # check if no time left in current shift for a non-preemtable event
+                if self.getCurrentShiftEnd() - self.getSimulator().getTime() < event.getProcessTime():
+                    return
+
+        ######### MAKE NECESSARY DECISIONS  ########################################
+        casesuccess = self.makeCaseDecisions(event,case,debugtimes,debugeventids)
+        
+        if not casesuccess:
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: Handling of pending event : "+str(event.getName())+" at "+str(event.getID())+" not successful")
+            if case == "Handle":
+                # add event to pending list and remove from time events.
+                if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
+                    if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                        self.getSimulator().getEventQueue()[self.getSimulator().getTime()] = [x for x in self.getSimulator().getEventQueue()[self.getSimulator().getTime()] if x != event]
+                if not event in self.getSimulator().getEventQueue()["Pending"]:
+                    self.getSimulator().getEventQueue()["Pending"].append(event)
+
+                if event.getSuspendedPredecessor() != None:
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+") has suspended predecessor "+str(event.getSuspendedPredecessor().getName())+"("+str(event.getSuspendedPredecessor().getID())+")")
+                    if event.getSuspendedPredecessor() in self.getSimulator().getEventQueue()["Pending"]:
+                        self.getSimulator().getEventQueue()["Pending"].remove(event.getSuspendedPredecessor())
+
+                #if event.getSuspendedSuccessor() != None:
+                #    if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
+                #        if event.getSuspendedSuccessor() in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                #            self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event.getSuspendedSuccessor())
+                #    if event.getSuspendedSuccessor() in self.getSimulator().getEventQueue()["Pending"]:
+                #        self.getSimulator().getEventQueue()["Pending"].remove(event.getSuspendedSuccessor())
+               
+            return 
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: Handling of pending event: "+str(event.getName())+"("+str(event.getID())+") successful with logistical events "+str([e.getName()+"("+str(e.getID())+"), "  for e in event.getLogisticalEvents()]))
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog(" REPORT: event: "+str(event.getName())+"("+str(event.getID())+")-["+(str(event.getItems()[0].getID()) if len(event.getItems())>0 else '')+"-"+(str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"]"+", equip none? "+str(event.getEquipment() == None)+", active opr none? "+("No item " if len(event.getItems())==0 else (event.getItems()[0].getActiveOperation().getName() if event.getItems()[0].getActiveOperation()!= None else "No act opr"))+", loc "+(event.getLocation().getName() if event.getLocation() == None else "No loc")+", tot.prog: "+str(event.getTotalProgress())+", p: "+str(event.getProcessTime())+", succ event? none "+str(event.getSuspendedSuccessor() == None)+", case: "+case) 
+
+            self.getSimulator().saveLog(" REPORT: event: "+str(event.getName())+"("+str(event.getID())+") , successor dict "+str(event.getEventType().getSuccessorDict().items()))
+
+            if isinstance(event.getEquipment(),Trailer):
+                if event.getEquipment() != None:
+                    self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+") items "+str(len(event.getItems()))+", equipment "+event.getEquipment().getName()+", equip-items "+str(len(event.getEquipment().getItems())))
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            for progress_id in range(len(event.getProgressList())):
+                self.getSimulator().saveLog("REPORT: event: "+str(event.getName())+ "progress step: "+str(event.getProgressList()[progress_id][1]))
+            self.getSimulator().saveLog("REPORT: event: "+str(event.getName())+", TotalProgress: "+str(event.getTotalProgress()))
+       
+        # PROGRESS UPDATES
+        if case == "Suspend":
+            if event.getType() == "Processing":
+                if event in event.getEquipment().getProcessMatch():
+                    del event.getEquipment().getProcessMatch()[event]    
+            else:   
+                if not event.getName() in ["Machine Unloading","Machine Loading"]:
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog(" REPORT: event : "+str(event.getName())+"("+str(event.getID())+") equip is made None!!~~")
+                        self.getSimulator().saveLog(" REPORT: statement : "+str(event.getName() != "Machine Unloading" or event.getName() != "Machine Loading"))
+                    event.setEquipment(None)               
+                event.setResource(None)
+            #self.getSimulator().saveLog(" REPORT: event in time list? "+str(event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()])) 
 
             
-        return currtime
-########################################################################################################################
+            if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event)
+            #self.getSimulator().saveLog(" REPORT: event in time list? "+str(event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()])) 
+            #self.getSimulator().saveLog(" REPORT: event SuspendedSuccessor none? "+str(event.getSuspendedSuccessor() == None)) 
+
+
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: event has suspended predecessor?  "+str(event.getSuspendedPredecessor() != None)) 
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: event has suspended successor?  "+str(event.getSuspendedSuccessor() != None)) 
+            
+            if event.getSuspendedSuccessor() == None:
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: event to be added to pending list ? "+str(event in self.getSimulator().getEventQueue()["Pending"])+", equip none? "+str(event.getEquipment() == None)) 
+                
+                self.getSimulator().getEventQueue()["Pending"].append(event)
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: event added to pending list ? "+str(event in self.getSimulator().getEventQueue()["Pending"])+", equip none? "+str(event.getEquipment() == None)) 
+
+            #if event.getSimStartSuccessor()!= None:
+            #    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            #        self.getSimulator().saveLog(" REPORT: simstart successor removed from schedule "+event.getSimStartSuccessor().getName()+"("+str(event.getSimStartSuccessor().getID())+") ") 
+            #    if event.getSimStartSuccessor() in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+            #        self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event.getSimStartSuccessor())
+
+            
+
+        if case == "Complete": 
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog(" REPORT: event: "+str(event.getName())+" completion updates start..") 
+            self.makeCompletionUpdates(event,debugtimes,debugeventids,debugmachines)
+            
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog(" REPORT: completion updates done.. res location: "+str(event.getResource().getLocation().getName())) 
+                if isinstance(event.getEquipment(),Trailer):
+                    if event.getEquipment() != None:
+                        self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+"), equipment "+event.getEquipment().getName()+", equip-items "+str(len(event.getEquipment().getItems())))
+
+            if event.getType() == "Unloading" and (isinstance(event.getEquipment(),Machine)):
+                if not event.getItems()[0] in event.getToLocation().getItems():
+                    self.getSimulator().saveLog(" ERROR: completion "+str(event.getName())+"("+str(event.getID())+") done but first item not in to-location!!! "+str(event.getLocation().getName())) 
+                
+                
+
+
         
-    def getLocationDF(self):
+        if case == "Handle":  # register the progress
 
-        location_df= pd.DataFrame(columns=["Entity","EntityID","EventName","EventID","LocationID","LocationName","Time"])
-
-
-        for orderid,order  in self.getProductionOrders().items():
-            for item in order.getItems():
-                for dt in item.getLocationData():
-                     location_df.loc[len(location_df)] = dt
-        for resource in self.getResources():
-            for dt in resource.getLocationData():
-                location_df.loc[len(location_df)] = dt
-
-  
-        return location_df
-    
-    def getProcessDF(self):
-
-        process_df = pd.DataFrame(columns=["ItemID","Demand","Product","OperationName","ProcessID","ResourceID","Resource","Start","Completion"])
-
-
-        for orderid,order in self.getProductionOrders().items():
-            for item in order.getItems():
-                for dt in item.getProcessData():
-                    process_df.loc[len(process_df)] = dt
+            # check necessary condition: 
+            if event.getType() == "Loading" and isinstance(event.getEquipment(),Machine):
+                if event.getEquipment().getNoProcessors() == 1:
+                    if len(event.getEquipment().getItems()) > 0: 
+                        self.getSimulator().saveLog("ERROR: processing event : "+str(event.getName())+"("+str(event.getID())+"), has equipment "+event.getEquipment().getName()+", equip-items "+str(len(event.getEquipment().getItems())))
+            
+            # remove from pending list, if event is in it.
+            if event in self.getSimulator().getEventQueue()["Pending"]:
+                self.getSimulator().getEventQueue()["Pending"].remove(event)
               
+            # remove from the time events list, if event is in it.
+            if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
+                if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                    self.getSimulator().getEventQueue()[self.getSimulator().getTime()].remove(event)   
+
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog(" REPORT: logs events: "+str(len(event.getLogisticalEvents()))) 
+                
+            if len(event.getLogisticalEvents()) == 0: 
+                
+                progress_start = self.getSimulator().getTime()
+                progress_end = progress_start+(event.getProcessTime()-event.getTotalProgress())
+
+                
+                if event.getEventType().isPreemptable():
+                    progress_end = min(progress_end,self.getCurrentShiftEnd()) 
+                else:
+                    if progress_end > self.getCurrentShiftEnd():
+                        progress_end = progress_start # trick to make zer progress step
+      
+                if progress_end > progress_start:
+                    progress_step = (progress_start,progress_end)
+                    event.getProgressList().append((event.getResource(),progress_step))
+                    if event.getType() == "Processing":
+                        if event.getResource() != None:
+                            event.getResource().getProgressList().append((event,progress_step))
+                        
+
+                    if event.getSuspendedPredecessor() != None:
+                        if event.getSuspendedPredecessor().getResource()!= None: 
+                            event.getSuspendedPredecessor().getProgressList().append((event.getSuspendedPredecessor().getResource(),progress_step))
+
+                            if event.getSuspendedPredecessor().getType() == "Processing":
+                                event.getSuspendedPredecessor().getResource().getProgressList().append((event.getSuspendedPredecessor(),progress_step))
+                                
+                        if not progress_step[1] in self.getSimulator().getEventQueue():
+                            self.getSimulator().getEventQueue()[progress_step[1]] = []    
+
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog(" REPORT: suspended predecessor "+event.getSuspendedPredecessor().getName()+"("+str(event.getSuspendedPredecessor().getID())+") scheduled  at "+str(progress_step[1])) 
+                        self.getSimulator().getEventQueue()[progress_step[1]].append(event.getSuspendedPredecessor())
+    
+                    if not progress_step[0] in self.getSimulator().getEventQueue():
+                        self.getSimulator().getEventQueue()[progress_step[0]] = []
+                    if not event in self.getSimulator().getEventQueue()[progress_step[0]]:   
+                        self.getSimulator().getEventQueue()[progress_step[0]].append(event) 
+    
+
+        ########################################   
+        # SCHEDULE UPDATES   
+
+         # remove progress step start and schedule the end of progress step
+        if case == "Start":
+            if event.getType() == "Unloading" and (isinstance(event.getEquipment(),Machine)):
+                if not event.getItems()[0] in event.getFromLocation().getItems():
+                    self.getSimulator().saveLog(" ERROR: start "+str(event.getName())+"("+str(event.getID())+") but first item not in from-location!!! "+str(event.getLocation().getName())) 
+                
+            if event.getType() == "Transport":               
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: checking transport event items "+event.getName()+"("+str(event.getID())+"), event items "+str(len(event.getItems()))+", equip items: "+str(len(event.getEquipment().getItems()))) 
+                if not event.getItems()[0] in event.getEquipment().getItems():
+                    self.getSimulator().saveLog(" ERROR: transport event "+event.getName()+"("+str(event.getID())+") first item is not in equipment!!") 
+
+         
+        if case == "Restart":
+            
+            if event.getSimStartSuccessor()!= None:
+                #if not event.getSimStartSuccessor() in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                #    self.getSimulator().getEventQueue()[self.getSimulator().getTime()].append(event.getSimStartSuccessor())
+
+                progress_start = self.getSimulator().getTime()
+                #progress_end = progress_start+(event.getSimStartSuccessor().getProcessTime()-event.getSimStartSuccessor().getTotalProgress())
+
+                #if event.getSimStartSuccessor().getEventType().isPreemptable():
+                #    progress_end = min(progress_end,self.getCurrentShiftEnd()) 
+
+
+                #progress_step = (progress_start,progress_end)
+
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: simstart successor also restarted "+event.getSimStartSuccessor().getName()+"("+str(event.getSimStartSuccessor().getID())+")  prog strt "+str(progress_start)) 
+
+                #event.getSimStartSuccessor().getProgressList().append((event.getSimStartSuccessor().getResource(),progress_step))
+        
+
+                
+
+        
+        if case in ["Start","Restart"]:
+
+            event.getReservedItems().clear() 
   
-        return process_df
+            progress_start = event.getProgressList()[-1][1][0]
+            progress_end = event.getProgressList()[-1][1][1]
+            
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog(" REPORT: event last progress: "+str(event.getProgressList()[-1][1])) 
+                
+            if event in self.getSimulator().getEventQueue()[progress_start]:
+                self.getSimulator().getEventQueue()[progress_start] = [x for x in self.getSimulator().getEventQueue()[progress_start] if x != event]
+            #self.getSimulator().saveLog(" REPORT: event in?: "+str(event in self.getSimulator().getEventQueue()[progress_start])) 
+                
+            if not progress_end in self.getSimulator().getEventQueue():
+                self.getSimulator().getEventQueue()[progress_end] = []
+            self.getSimulator().getEventQueue()[progress_end].append(event) # end of the progress step: suspend/complete
+
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog(" REPORT: event has suspended predecessor? : "+str(event.getSuspendedPredecessor() != None)) 
+      
+            if event.getSuspendedPredecessor() != None:
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: suspended predecessor last progress : "+str(event.getSuspendedPredecessor().getProgressList()[-1][1])) 
+                
+                if event.getSuspendedPredecessor().getProgressList()[-1][1][1] < progress_end: 
+                    
+                    progress_step = (progress_start,progress_end)
+                    event.getSuspendedPredecessor().getProgressList().append((event.getSuspendedPredecessor().getResource(),progress_step))
+
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog(" REPORT: suspended predecessor last progress defined: "+str(progress_step)) 
+                        self.getSimulator().saveLog(" REPORT: suspended predecessor allassigned? : "+str(event.getSuspendedPredecessor().checkAllAssigned("Handle"))) 
+
+                        
+                    
+                    if event.getSuspendedPredecessor().getType()== "Processing":
+                        if event.getSuspendedPredecessor().getResource()!= None:
+                            event.getSuspendedPredecessor().getResource().getProgressList().append((event.getSuspendedPredecessor(),progress_step))
+                        
+                    if not progress_step[1] in self.getSimulator().getEventQueue():
+                        self.getSimulator().getEventQueue()[progress_step[1]] = []
+
+
+                    
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog(" REPORT: suspended predecessor " +event.getSuspendedPredecessor().getName()+"("+str(event.getSuspendedPredecessor().getID())+") scheduled at"+str(progress_step[1])) 
+          
+                    self.getSimulator().getEventQueue()[progress_step[1]].append(event.getSuspendedPredecessor())
+        
+       ########################################   
+        
+       # Check precedences
+        if event.getType() != "Logistical":    
+            for successor_type,precedence_type in event.getEventType().getSuccessorDict().items():
+                create_successor = False; 
+                if self.getSimulator().getTime() in debugtimes and event.getID() in debugeventids:
+                    self.getSimulator().saveLog("REPORT: case "+case+", successor_type "+str(successor_type.getName())+", pred_type: "+precedence_type)
+                    
+                if (case == "Start" and precedence_type == "Simultaneous Start") or (case == "Complete" and precedence_type == "Finish to Start"):
+                    create_successor = True
+                if (case == "Start" or case == "Restart") and (precedence_type == "CompletionRatio Start"): 
+                    create_successor = True
+
+                if create_successor:
+                    successor_event = ExecEvent(None,None,successor_type)
+
+                    
+                    if self.getSimulator().getTime() in debugtimes or successor_event.getID() in debugeventids: 
+                        self.getSimulator().saveLog("REPORT: **** successor_event "+successor_event.getName()+"("+str(successor_event.getID())+")")
+                        self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+")"+", loc :"+event.getLocation().getName()+", res none? "+str(event.getResource() == None)+", processor none? "+str(event.getProcessor()== None)+", p: "+str(event.getProcessTime())+", in pendings? "+str(event in self.getSimulator().getEventQueue()["Pending"])+", pred? "+str(event.getPredecessor() != None))
+                        self.getSimulator().saveLog("REPORT: tot.prog: "+str(event.getTotalProgress())+str(["("+str(pr[0])+"-"+str(pr[1])+")" for r,pr in event.getProgressList()]))
+                         
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: **** successor_event "+successor_event.getName()+"("+str(successor_event.getID())+")")
+                    self.applyPrecedence(event,successor_event,successor_type)
+
+                
+                    
+                    if self.getSimulator().getTime() in debugtimes or (event.getID() in debugeventids or successor_event.getID() in debugeventids) :
+                        self.getSimulator().saveLog("REPORT: precendence info applied successor_event "+successor_event.getName()+"("+str(successor_event.getID())+")")
+
+                        if successor_event.getType() == "Processing":
+                            self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+") case "+case+", loc :"+event.getLocation().getName()+", res none? "+str(event.getResource() == None)+", processor none? "+str(event.getProcessor()== None)+", p: "+str(event.getProcessTime())+", in pendings? "+str(event in self.getSimulator().getEventQueue()["Pending"])+", pred? "+str(event.getPredecessor() != None))
+                            self.getSimulator().saveLog(" REPORT: succ event : "+str(successor_event.getName())+"("+str(successor_event.getID())+") items ["+(str(successor_event.getItems()[0].getID()) if len(successor_event.getItems())>0 else '')+"-"+(str(successor_event.getItems()[-1].getID()) if len(successor_event.getItems())>0 else '')+"]")
+                            self.getSimulator().saveLog(" REPORT: event machine items : "+str(event.getEquipment().getName())+", "+str(len(event.getEquipment().getItems()))+" items ["+(str(event.getEquipment().getItems()[0].getID())+"-"+str(event.getEquipment().getItems()[-1].getID()) if len(event.getEquipment().getItems())>0 else '')+"]")
+
+       
+                    if ((successor_event.getEquipment() == None) or (successor_event.getResource() == None)) and (successor_event.getName() != "Machine Processing" and successor_event.getName() != "Machine Unloading") : 
+                        self.getSimulator().getEventQueue()["Pending"].append(successor_event)
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog("REPORT: succcessor pending ")
+                                
+                    else: # now progress step can be determined
+                        if successor_event.getType() == "Transport": 
+                            if successor_event.getToLocation()== None:
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: succcessor destination to be selected.. ")
+                                decision_type = "Select Destination"
+                                algname = self.getAlgorithmSetting()[successor_event.getName()][decision_type]
+                                algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname]
+                                alg_return = algfunction(event)
+                                if alg_return!= None:
+                                    successor_event.setToLocation(alg_return.getInputBuffer())
+
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog("REPORT: succcessor event process sampling")
+                             
+                        successor_event.sampleProcessTime(self); proctime = successor_event.getProcessTime() 
+
+                        if self.getSimulator().getTime() in debugtimes or successor_event.getID() in debugeventids:
+                                self.getSimulator().saveLog("REPORT: event process time sampling  "+successor_event.getName()+"("+str(successor_event.getID())+") and pred event "+event.getName()+"("+str(event.getID()))
+                        
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog("REPORT: succcessor event process time: "+str(proctime))
+
+                        successor_start = self.getSimulator().getTime()  
+                        successor_end = successor_start+proctime
+
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog("REPORT: precedence_type: "+str(precedence_type))
+                            
+                        if precedence_type == "CompletionRatio Start":
+                            if len(event.getProgressList()) > 0:
+                                
+                                last_progress = event.getProgressList()[-1][1]
+                                last_prog_len = last_progress[1]-last_progress[0]
+                                remaining_time = event.getProcessTime() - event.getTotalProgress()
+                                last_resource = event.getProgressList()[-1][0]
+                                
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: remaining_time: "+str(remaining_time))
+                                    self.getSimulator().saveLog("REPORT: last_prog_len: "+str(last_prog_len))
+
+                              
+                                if (remaining_time + last_prog_len > proctime) and (remaining_time <= proctime):
+                                    successor_start = last_progress[0] + (remaining_time + last_prog_len - proctime)
+                                    successor_end = successor_start+proctime
+                                else:
+                                    if event.getProcessTime() == 1:
+                                        successor_end = successor_start+1
+                                    else:
+                                        successor_end = successor_start-1 # do not activate successor, negative progress step.
+
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: successor_start: "+str(successor_start))
+                                   
+                        if successor_event.getEventType().isPreemptable():
+                            successor_end = min(successor_end,self.getCurrentShiftEnd()) 
+                        else:
+                            if successor_end > self.getCurrentShiftEnd():
+                                successor_start = self.getCurrentShiftEnd() # check handling in the next shift
+                                successor_end = successor_start # zero progress step
+
+                        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                            self.getSimulator().saveLog("REPORT: successor_start: "+str(successor_start)+", successor_end: "+str(successor_end))
+
+                        
+                        if (successor_end - successor_start > 0): 
+                            progress_step = (successor_start,successor_end)
+
+                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                self.getSimulator().saveLog("REPORT: successor_ all assigned: "+str(successor_event.checkAllAssigned("Handle")))
+
+                          
+                            
+                            if successor_event.checkAllAssigned("Handle"):
+                                successor_event.getProgressList().append((successor_event.getResource(),progress_step))
+                                if isinstance(successor_event.getResource(),Machine):
+                                    successor_event.getResource().getProgressList().append((successor_event,progress_step))
+
+                                    
+                            if precedence_type == "CompletionRatio Start":
+                                if len(event.getProgressList()) > 0:
+                                    last_resource = event.getProgressList()[-1][0]
+                                    last_progress = event.getProgressList()[-1][1]
+
+                                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                        self.getSimulator().saveLog("REPORT: event last progress end: "+str(last_progress[1])+", scheduled? "+str(last_progress[1] in self.getSimulator().getEventQueue()))
+                                        self.getSimulator().saveLog("REPORT: event last progress start: "+str(last_progress[0])+", scheduled? "+str(last_progress[0] in self.getSimulator().getEventQueue()))
+                                    
+                                    if last_progress[1] in self.getSimulator().getEventQueue():
+                                        if event in self.getSimulator().getEventQueue()[last_progress[1]]:
+                                            self.getSimulator().getEventQueue()[last_progress[1]].remove(event)
+                                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                                self.getSimulator().saveLog("REPORT: event scheduled at time? (should be removed): "+str(event in self.getSimulator().getEventQueue()[last_progress[1]]))
+
+                                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                         self.getSimulator().saveLog("REPORT: event re-progressed: "+str((last_progress[0],successor_start)))
+                                        
+                                    event.getProgressList()[-1] = (last_resource,(last_progress[0],successor_start))
+                                    
+                                    if isinstance(last_resource,Machine):
+                                        for resprogress_id in range(len(last_resource.getProgressList())):
+                                            myevent,resprogress = last_resource.getProgressList()[resprogress_id]
+                                            if resprogress[0] == last_progress[0] and resprogress[1] == last_progress[1]:
+                                                if myevent == event:
+                                                    last_resource.getProgressList()[resprogress_id]=(event,(last_progress[0],successor_start))
+                                                    break
+                                    successor_event.setSuspendedPredecessor(event)
+                                    event.setSuspendedSuccessor(successor_event)
+
+                            if self.getSimulator().getTime() in debugtimes or successor_event.getID() in debugeventids:
+                                self.getSimulator().saveLog("REPORT: pred event  "+event.getName()+"("+str(event.getID())+") of event "+successor_event.getName()+"("+str(successor_event.getID()))
+
+                            
+                            if precedence_type == "Simultaneous Start":
+                                event.setSimStartSuccessor(successor_event)
+                                successor_event.setSimStartPredecessor(event)
+                                
+                           
+                            if not successor_start in self.getSimulator().getEventQueue():
+                                self.getSimulator().getEventQueue()[successor_start] = []
+                            if not successor_event in self.getSimulator().getEventQueue()[successor_start]:
+                                self.getSimulator().getEventQueue()[successor_start].append(successor_event)
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: successor_event scheduled at time: "+str(successor_start)+", progs: "+str(len(successor_event.getProgressList())))
+
+                           
+                            
+                          
+                        else:
+                            if successor_end == successor_start:
+
+                                if precedence_type == "CompletionRatio Start":
+                                    successor_event.setSuspendedPredecessor(event)
+                                    event.setSuspendedSuccessor(successor_event)
+                                
+                                if not successor_start in self.getSimulator().getEventQueue():
+                                    self.getSimulator().getEventQueue()[successor_start] = []
+                                if not successor_event in self.getSimulator().getEventQueue()[successor_start]:
+                                    self.getSimulator().getEventQueue()[successor_start].append(successor_event)
+                                    
+                                
+  
+        else:
+            successor_event = event.getSuccessor()
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: logistical ev,  succcessor event "+str(successor_event.getName())+"("+str(successor_event.getID())+")")
+     
+            if case == "Complete":
+                if successor_event.getType() != "Logistical":
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: logistical ev,  succcessor event progress steps "+str(len(successor_event.getProgressList())))
+     
+                    progress_start = self.getSimulator().getTime(); 
+                    progress_end = progress_start+(successor_event.getProcessTime()-successor_event.getTotalProgress())
+
+                    if successor_event.getEventType().isPreemptable():
+                        progress_end = min(progress_end,self.getCurrentShiftEnd())
+
+                    
+                    if progress_end - progress_start > 0: #$ schedule start of successor event
+                        successor_event.getProgressList().append((successor_event.getResource(),(progress_start,progress_end)))
+
+                        if not progress_start in self.getSimulator().getEventQueue():
+                            self.getSimulator().getEventQueue()[progress_start] = []
+                                
+                        if not successor_event in self.getSimulator().getEventQueue()[progress_start]:   
+                            self.getSimulator().getEventQueue()[progress_start].append(successor_event) # start of the progress step: start/restart
+                        
+
+                    for event in successor_event.getLogisticalEvents():
+                        successor_event.getLogisticalEvents().remove(event)
+                        #self.getSimulator().saveLog("REPORT: >>> logistical event "+log_event.getName()+" is removed from event "+successor_event.getName())
+                        
+                else:
+
+                    if self.getSimulator().getTime() in debugtimes or successor_event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: logistical ev, logistical succcessor event "+str(successor_event.getName())+"("+str(successor_event.getID())+"), progress "+str(successor_event.getProgressList()[-1][1]))
+                        
+                    progress_end = successor_event.getProgressList()[-1][1][1]
+                    if not progress_end in self.getSimulator().getEventQueue():
+                        self.getSimulator().getEventQueue()[progress_end] = []
+                        
+                    if not successor_event in self.getSimulator().getEventQueue()[progress_end]:   
+                        self.getSimulator().getEventQueue()[progress_end].append(successor_event) 
+    
+                    #self.getSimulator().saveLog("REPORT: end of next logistical event "+successor_event.getName()+" is scheduled")
+                    
+       
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog("REPORT: ______________________________________________________________________")
+
+            if self.getSimulator().getTime() in self.getSimulator().getEventQueue():
+                if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                    self.getSimulator().saveLog("REPORT: event in schedule of current time")
+
+            if self.getSimulator().getTime()+1 in self.getSimulator().getEventQueue():
+                if event in self.getSimulator().getEventQueue()[self.getSimulator().getTime()+1]:
+                    self.getSimulator().saveLog("REPORT: event in schedule of current time+1")
+                
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            oprseq = []
+            if len(event.getItems()) > 0:
+                oprseq = event.getItems()[0].getDemand().getFinalProduct().getOperationSequences()[event.getItems()[0].getDemand().getID()]
+                self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+"), items "+str(len(event.getItems()))+", active opr none? "+("No item " if len(event.getItems())==0 else str(event.getItems()[0].getActiveOperation()== None))+", in pendings? "+str(event in self.getSimulator().getEventQueue()["Pending"]))
+                self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+"("+str(event.getID())+"), items "+str(len(event.getItems()))+", active opr none? "+("No item " if len(event.getItems())==0 else str(event.getItems()[0].getActiveOperation()== None))+" event loc "+event.getLocation().getName()+", item oprs "+str([str(o.isCancelled())+"--"+str(o.isFinished())+"--"+str(o.getName()) for o in oprseq])+", equip none? "+str(event.getEquipment() == None)+", tot.prog: "+str(event.getTotalProgress())+", p: "+str(event.getProcessTime())+", case: "+case)
+     
+        return
+###############################################################################################################################################
+    def applyPrecedence(self,event,successor_event,successor_type):
+
+        precedenceinfo = event.getEventType().getPrecendenceDict()[successor_type.getName()]
+
+        # setEquipment
+        if 'Equipment' in precedenceinfo: #  TL->TT, TT->TU, MS->Ml, ML->Proc
+            successor_event.setEquipment(event.getEquipment())
+        if 'FromLocation->Equipment' in precedenceinfo: # Proc->MU
+            successor_event.setEquipment(event.getFromLocation())
+
+        if event.getName() == "Machine Unloading":
+            if event.getEquipment() == None:
+                self.getSimulator().saveLog(" REPORT: event: "+str(event.getName())+str(event.getID())+", equip none $$$$$$$$$$$$ ") 
+                
+
+        if 'Processor' in precedenceinfo: # ML->MProc
+            event_machine = event.getEquipment() 
+
+            if event in event_machine.getProcessMatch():
+                processor = event_machine.getProcessMatch()[event]
+                del event_machine.getProcessMatch()[event]
+                event_machine.getProcessMatch()[successor_event] = processor
+                successor_event.setProcessor(processor)
+                
+
+        # setResource 
+        if 'Resource' in precedenceinfo: # TL->TT,  TT->TU 
+            successor_event.setResource(event.getResource())
+            if event.getResource() == None:
+                self.getSimulator().saveLog(" REPORT: successor: "+str(event.getName())+str(event.getID())+", resource none ") 
+            event.getResource().setIdle(False)
+        if 'ToLocation->Resource' in precedenceinfo: # ML->Proc
+            successor_event.setResource(event.getToLocation())
+
+        # setItems: TL->TT, MS->Ml, ML->Proc, Proc->MU
+        if 'Items' in precedenceinfo:
+            for item in event.getItems():
+                if item.getReservedEvent() == event:
+                    item.setReservedEvent(successor_event)
+                successor_event.getItems().append(item)
+
+        # set FromLocation: 
+        if "FromLocation" in precedenceinfo: # TL->TT, Proc->MU
+            successor_event.setFromLocation(event.getFromLocation())
+        if "EquipmentInput->FromLocation" in precedenceinfo: #  MS->ML
+            successor_event.setFromLocation(event.getEquipment().getInputBuffer())
+        if 'ToLocation->FromLocation' in precedenceinfo: # ML -> Proc
+            successor_event.setFromLocation(event.getToLocation())
+        if 'Equipment->FromLocation' in precedenceinfo: # TT->TU
+            successor_event.setFromLocation(event.getEquipment())
+            
+                        
+        # set ToLocation:    
+        if 'ToLocation' in precedenceinfo: # TT->TU
+            successor_event.setToLocation(event.getToLocation())
+        if 'Equipment->ToLocation' in precedenceinfo:  # MS->ML
+            successor_event.setToLocation(event.getEquipment())
+        if 'FromLocationOutput->ToLocation' in precedenceinfo: # Proc->MU
+            successor_event.setToLocation(event.getFromLocation().getOutputBuffer())
+
+        #if self.getSimulator().getTime() > 475:
+            #self.getSimulator().saveLog("REPORT: event "+str(event.getName())+", eq none? "+str(event.getEquipment() == None)+", res none? "+str(event.getResource() == None)+", fl none? "+str(event.getFromLocation() == None))
+            #self.getSimulator().saveLog("REPORT: succcessor created "+str(successor_event.getName())+"("+str(successor_event.getID())+")"+", eq none? "+str(successor_event.getEquipment() == None)+", res none? "+str(successor_event.getResource() == None)+", fl none? "+str(successor_event.getFromLocation() == None))
+
+
+        return
+                      
+###############################################################################################################################################
+    def determineProgressCase(self,event):
+        
+        case = "Handle" # default   
+        
+        if event.getTotalProgress() > 0:
+            if (self.getSimulator().getTime() == event.getProgressList()[-1][1][0]):
+                case = "Start" if len(event.getProgressList()) == 1 else "Restart"     
+            if (self.getSimulator().getTime() == event.getProgressList()[-1][1][1]):
+                if event.getTotalProgress() < event.getProcessTime():
+                    case = "Suspend"
+                else:
+                    case = "Complete"
+        
+        return case
+#######################################################################################################################################
+    def makeCaseDecisions(self,event,case,debugtimes,debugeventids):
+
+         # MAKE NECESSARY DECISIONS...
+        casesuccess = True; success_decisions = [] 
+            
+        if case in event.getEventType().getDecisionsDict():
+            
+            for decision_type in event.getEventType().getDecisionsDict()[case]:
+
+                if decision_type == "Assign Processor": 
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: event : "+str(event.getName())+" decision "+str(decision_type)+", processor none? "+str(event.getProcessor()== None)+" continued..")
+                    if event.getProcessor()!= None:
+                        continue
+
+                algname = self.getAlgorithmSetting()[event.getName()][decision_type] 
+                algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname] 
+                alg_return = algfunction(event)
+
+            
+                if alg_return!= None:
+                    if decision_type == "Select Items":   # TL/TU/MS (handle)
+ 
+                        # apply selection
+                        for item in alg_return:
+                            event.getItems().append(item) 
+                            item.setReservedEvent(event)
+ 
+                    if decision_type == "Assign Processor":  # MS, MProc
+                        event.getEquipment().getProcessMatch()[event] = alg_return # return is a processor of the equipment
+                        event.setProcessor(alg_return)
+
+                    if decision_type == 'Select Destination':  # MS, MProc
+                        event.setToLocation(alg_return.getInputBuffer())
+           
+                    if decision_type == "Assign Equipment":  # TL/MS (handle), Proc(restart)        
+                        event.setEquipment(alg_return) # process: inserts this start into progress dict of equip
+                        if event.getName() == "Trailer Loading":
+                            event.setToLocation(alg_return) 
+                        alg_return.setIdle(False)
+
+                        # Important: For Outsourced, how to handle operator requirement for Machine Loading and Unloading (Relax this requirement!)?
+                       
+                    if decision_type == "Assign Resource": # TL/MS/ML/MU (handle), ML/MU (resart)
+                        event.setResource(alg_return) 
+                        alg_return.setIdle(False)
+                        
+                    success_decisions.append(decision_type)
+                else:
+                    casesuccess = False # only can happen for assign equipment/resource
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: no success in handling decision type: "+decision_type)
+                    break 
+        if not casesuccess: # backtrack the decisions
+            self.resetDecisions(event,success_decisions,debugtimes,debugeventids)
+        else:
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                self.getSimulator().saveLog("REPORT: event"+str(event.getName())+"("+str(event.getID())+")"+" success in decisions: "+str(success_decisions)+", decisions: "+(str(event.getEventType().getDecisionsDict()[case]) if case in event.getEventType().getDecisionsDict() else ""))
+
+            if "Handle" in event.getEventType().getDecisionsDict() and (not case in ["Suspend","Complete"]):
+                if "Assign Resource" in event.getEventType().getDecisionsDict()["Handle"]:
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: event"+str(event.getName())+"("+str(event.getID())+") checking logistical events")
+                    feasible,operator_move,bring_equipment = self.checkLogisticalEvents(event,success_decisions,debugtimes,debugeventids)
+                    
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        self.getSimulator().saveLog("REPORT: event"+str(event.getName())+"("+str(event.getID())+") checking logistical events feas.: "+str(feasible))
+    
+                    if not feasible: 
+                        self.resetDecisions(event,success_decisions,debugtimes,debugeventids)
+                        casesuccess = False
+                    else:
+                        first_logistical = operator_move if (operator_move!= None) else (bring_equipment if bring_equipment != None else None)
+                        if first_logistical!=None:
+                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                self.getSimulator().saveLog("REPORT: logistical event : "+str(first_logistical.getName())+"("+str(first_logistical.getID())+")")
+                            event.getLogisticalEvents().append(first_logistical)
+                            progress_step = first_logistical.getProgressList()[-1][1]
+                            if not progress_step[1] in self.getSimulator().getEventQueue():
+                                self.getSimulator().getEventQueue()[progress_step[1]] = []
+                            self.getSimulator().getEventQueue()[progress_step[1]].append(first_logistical) 
+                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                             self.getSimulator().saveLog("REPORT: logistical scheduled completion at "+str(progress_step[1]))
+
+                            if event in self.getSimulator().getEventQueue()["Pending"]:
+                                self.getSimulator().getEventQueue()["Pending"].remove(event)
+                                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                    self.getSimulator().saveLog("REPORT: event removed from pendings ? "+str(event in self.getSimulator().getEventQueue()["Pending"]))
+                                
+                            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                                self.getSimulator().saveLog("REPORT: lprogress_step : "+str(progress_step))
+        
+                            if (bring_equipment != None) and (not bring_equipment in event.getLogisticalEvents()):
+                                event.getLogisticalEvents().append(bring_equipment)
+                        
+                              
+        return casesuccess
+        
+############################################################################################################################
+    def checkLogisticalEvents(self,event,success_decisions,debugtimes,debugeventids):
+        feasible = True; operator_move = None; bring_equipment = None; OprMovPT = 0          
+        equipment_onlocation = True; resource_onlocation = True
+                    
+        for decision_type in success_decisions:
+            if decision_type == "Assign Equipment":
+                if event.getName() != "Machine Setup":
+                    equipment_onlocation = (event.getEquipment().getLocation() == event.getLocation())
+                 
+            if decision_type == "Assign Resource":
+                resource_onlocation =  (event.getResource().getLocation() == event.getLocation())
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog("REPORT: event : "+event.getName()+"("+str(event.getID())+")"+", res on loc? "+str(resource_onlocation)+", equip on loc? "+str(equipment_onlocation)) 
+
+        if not equipment_onlocation:
+            
+            bring_equipment = ExecEvent(event.getEquipment().getLocation(),event.getLocation(),self.getEventTypes()["Bring Equipment"])
+            bring_equipment.sampleProcessTime(self)
+       
+            if event.getResource().getLocation() != event.getEquipment().getLocation():
+                operator_move = ExecEvent(event.getResource().getLocation(),event.getEquipment().getLocation(),self.getEventTypes()["Operator Move"])
+                operator_move.setEquipment(None);operator_move.setResource(event.getResource())
+                operator_move.sampleProcessTime(self); OprMovPT = operator_move.getProcessTime()
+            
+            ###############################################################################################
+            if self.getSimulator().getTime()+OprMovPT+bring_equipment.getProcessTime() > self.getCurrentShiftEnd()-1:
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    if operator_move != None:
+                        self.getSimulator().saveLog("REPORT: ******** Operator move + bring equipment) cannot be finished in same shift" )
+                    else:
+                        self.getSimulator().saveLog("REPORT: ******** bring equipment) cannot be finished in same shift" )
+                feasible = False         
+            else:  
+                bring_equipment.setEquipment(event.getEquipment()); bring_equipment.setResource(event.getResource())
+                bring_equipment.setSuccessor(event)
+                
+                if operator_move != None:
+                    opr_progress_step = (self.getSimulator().getTime(),self.getSimulator().getTime()+OprMovPT)
+                    operator_move.getProgressList().append((operator_move.getResource(),opr_progress_step))
+                    operator_move.setSuccessor(bring_equipment)
+                    
+                progress_step = (self.getSimulator().getTime()+OprMovPT,self.getSimulator().getTime()+OprMovPT+bring_equipment.getProcessTime())
+                                
+                if self.getSimulator().getTime() in debugtimes:
+                    self.getSimulator().saveLog("REPORT: bring_equipment process time: "+str(bring_equipment.getProcessTime())+", prog step "+str(progress_step)+" Opr Move none? "+str(operator_move == None))
+
+                bring_equipment.getProgressList().append((bring_equipment.getResource(),progress_step))
+
+                            
+        # Only operator move needs to be scheduled
+        if not resource_onlocation and equipment_onlocation:      
+            operator_move = ExecEvent(event.getResource().getLocation(),event.getLocation(),self.getEventTypes()["Operator Move"])
+            operator_move.setEquipment(None); operator_move.setResource(event.getResource())
+            operator_move.setSuccessor(event); operator_move.sampleProcessTime(self)
+            
+            if self.getSimulator().getTime()+operator_move.getProcessTime() > self.getCurrentShiftEnd()-1:
+                feasible = False
+            else: 
+                progress_step = (self.getSimulator().getTime(),min(self.getSimulator().getTime()+operator_move.getProcessTime(),self.getCurrentShiftEnd()))
+                operator_move.getProgressList().append((operator_move.getResource(),progress_step))
+      
+        return feasible,operator_move,bring_equipment
+############################################################################################################################
+    def resetDecisions(self,event,success_decisions,debugtimes,debugeventids):
+
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+            self.getSimulator().saveLog("REPORT: **** resetting decisions for event "+event.getName()+"("+str(event.getID())+"), decisions: "+str(success_decisions))
+    
+        for decision_type in success_decisions:
+       
+            if decision_type == "Assign Equipment":
+                event.getEquipment().setIdle(True)
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog("REPORT: **** event "+event.getName()+"("+str(event.getID())+"), equipment is made NONE NONE..")
+                event.setEquipment(None)  
+                
+            if decision_type == "Assign Resource":
+                event.getResource().setIdle(True)
+                event.setResource(None)
+            if decision_type == "Select Items":
+                event.getItems().clear()
+
+         
+
+        return
+#################################################################################################################################       
+    def makeCompletionUpdates(self,event,debugtimes,debugeventids,debugmachines):
+
+      # update execution data of event...
+        progrss_steps = ""; step_id = 0
+        for res,prstep in event.getProgressList():
+            progrss_steps+=("" if step_id == 0 else "~")+str(prstep[0])+"-"+str(prstep[1])
+            step_id+=1
+                
+        ev_items = ""; item_id = 0
+        for item in event.getItems():
+            ev_items+=("" if item_id == 0 else "~")+str(item.getID())
+            item_id+=1
+                
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":self.getSimulator().getRealTime()}  
+        self.getSimulator().getExecutionData().append(execution_data)
+
+        if event.getResource()!= None: 
+            if isinstance(event.getResource(),Operator):
+                # "EntityName","EntityID","Time","LocationName","LocationID"
+                location_data = {"EntityName":event.getResource().getName(),"EntityID":event.getResource().getID(),"Time":self.getSimulator().getTime(),"LocationName":event.getResource().getLocation().getName(),"LocationID": (event.getResource().getLocation().getID() if event.getResource().getLocation()!= None else "-")}  
+                self.getSimulator().getLocationData().append(location_data)
+               
+
+     # update execution data of event...
+
+    # update operation status in case machine processing
+        if event.getType() == "Processing":
+            if len(event.getItems()) > 0:
+                oprseq = event.getItems()[0].getDemand().getFinalProduct().getOperationSequences()[event.getItems()[0].getDemand().getID()]
+                #for opr in oprseq:
+                    #self.getSimulator().saveLog("REPORT: opr: "+opr.getName()+", can?"+str(opr.isCancelled())+", fin?"+str(opr.isFinished()))
+                    
+                if event.getItems()[0].getActiveOperation() != None:
+                    #self.getSimulator().saveLog("REPORT: >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Finished!!!!!")
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        for e in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                             self.getSimulator().saveLog(" REPORT: event: "+str(e.getName())+"("+str(e.getID())+")-["+(str(e.getItems()[0].getID()) if len(e.getItems())>0 else '')+"-"+(str(e.getItems()[-1].getID()) if len(e.getItems())>0 else '')+"]"+", active opr none? "+("No item " if len(e.getItems())==0 else (e.getItems()[0].getActiveOperation().getName() if e.getItems()[0].getActiveOperation()!= None else "No act opr"))+", loc "+(e.getLocation().getName() if event.getLocation() == None else "No loc")+", tot.prog: "+str(e.getTotalProgress())+", p: "+str(e.getProcessTime())+", succ event? none "+str(e.getSuspendedSuccessor() == None)) 
+
+                   
+                    #self.getSimulator().saveLog("REPORT: demand of removed one: "+str(event.getItems()[0].getDemand().getID()))   
+                    event.getItems()[0].getActiveOperation().setFinished()
+                    if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                        for e in self.getSimulator().getEventQueue()[self.getSimulator().getTime()]:
+                            if len(e.getItems())>0:
+                                self.getSimulator().saveLog("REPORT: demand: "+str(e.getItems()[0].getDemand().getID()))   
+                            self.getSimulator().saveLog(" REPORT: event: "+str(e.getName())+"("+str(e.getID())+")-["+(str(e.getItems()[0].getID()) if len(e.getItems())>0 else '')+"-"+(str(e.getItems()[-1].getID()) if len(e.getItems())>0 else '')+"]"+", active opr none? "+("No item " if len(e.getItems())==0 else (e.getItems()[0].getActiveOperation().getName() if e.getItems()[0].getActiveOperation()!= None else "No act opr"))+", loc "+(e.getLocation().getName() if event.getLocation() == None else "No loc")+", tot.prog: "+str(e.getTotalProgress())+", p: "+str(e.getProcessTime())+", succ event? none "+str(e.getSuspendedSuccessor() == None)) 
+
+      
+                if event in event.getEquipment().getProcessMatch():
+                    del event.getEquipment().getProcessMatch()[event]
+                    #self.getSimulator().saveLog("REPORT: processor match removed..")   
+
+    # update operation status in case machine processing
+
+        if event.getType() == "Transport":
+            event.getEquipment().setLocation(event.getToLocation().getLocation())
+            event.getResource().setLocation(event.getToLocation().getLocation())
+            
+        if event.getName() == "Operator Move":
+            #self.getSimulator().saveLog("REPORT: event resource set location: "+str(event.getToLocation().getName()))   
+            event.getResource().setLocation(event.getToLocation())
+            #self.getSimulator().saveLog("REPORT: event resource  location: "+str(event.getResource().getLocation().getName()))   
+
+        if event.getName() == "Bring Equipment":
+            event.getResource().setLocation(event.getToLocation())
+            event.getEquipment().setLocation(event.getToLocation())
+
+    
+            
+        if event.getType() in ["Loading","Unloading"]:
+
+            
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or event.getFromLocation().getName() in debugmachines:
+                self.getSimulator().saveLog(" REPORT: ~~~ event : "+str(event.getName())+"("+str(event.getID())+") items ["+(str(event.getItems()[0].getID()) if len(event.getItems())>0 else '')+"-"+(str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"]")
+                self.getSimulator().saveLog(" REPORT: ~~~ event.getFromLocation() : "+str(event.getFromLocation().getName())+", "+str(len(event.getFromLocation().getItems()))+" items ")
+
+
+            itemno = 0
+
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or event.getFromLocation().getName() in debugmachines:
+                self.getSimulator().saveLog(" REPORT: item no: "+str(itemno)+" items in move place: "+str(len(event.getFromLocation().getItems()))+", tolocation: "+str(event.getToLocation().getName()))
+
+    
+            
+            for myitem in event.getItems():   
+                event.getFromLocation().getItems().remove(myitem)
+                event.getToLocation().getItems().append(myitem)
+                myitem.setReservedEvent(None)
+                itemno+=1
+                
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or event.getFromLocation().getName() in debugmachines:
+                self.getSimulator().saveLog(" REPORT: item move done...]")
+                
+
+            if isinstance(event.getFromLocation(),Buffer):
+                fromloc = event.getFromLocation()
+                buffer_data = {"BufferName":fromloc.getName(),"Machine": fromloc.getMachine().getName() if fromloc.getMachine()!= None else "Central Inventory","Time":self.getSimulator().getTime(),"No.Items":len(fromloc.getItems())}  
+                self.getSimulator().getBufferData().append(buffer_data)
+            if isinstance(event.getToLocation(),Buffer): 
+                toloc = event.getToLocation()
+                buffer_data = {"BufferName":toloc.getName(),"Machine": toloc.getMachine().getName() if toloc.getMachine()!= None else "Central Inventory","Time":self.getSimulator().getTime(),"No.Items":len(toloc.getItems())}  
+                self.getSimulator().getBufferData().append(buffer_data)
+
+                
+            if event.getName() == "Machine Unloading":
+                # TU:Inputbuffer triggers Machine Setup
+                if event.getFromLocation().getName() != "OUT - Outsourced activity_(OUT - Outsourced)":
+                    event.getFromLocation().getInputBuffer().generateEvent(self.getSimulator().getTime() in debugtimes) # MU: Inputbuffer triggers Machine Setup
+              
+                #self.getSimulator().saveLog("REPORT: event generation triggered at: "+event.getFromLocation().getInputBuffer().getName())
+                
+            if event.getName() == "Trailer Loading":
+                event.getFromLocation().generateEvent(self.getSimulator().getTime() in debugtimes) # TL: Outputbuffer triggers Trailer loading
+                
+         
+            if event.getType() == "Unloading":         # TU:Inputbuffer triggers Machine Setup
+                if self.getSimulator().getTime() in debugtimes:
+                    self.getSimulator().saveLog("REPORT: >>> event to generate at: "+event.getToLocation().getName()+", input mach none? "+(str(event.getToLocation().getMachine() == None) if event.getToLocation().isInputType() else "no input") )
+                event.getToLocation().generateEvent(self.getSimulator().getTime() in debugtimes)  # MU: Outputbuffer triggers Trailer loading
+            
+                if event.getEquipment() == None:
+                    self.getSimulator().saveLog(" REPORT: event: "+str(event.getName())+str(event.getID())+", prog: "+str(event.getTotalProgress())+"-> "+str(["["+str(pr[1][0])+"-"+str(pr[1][1])+"]" for pr in event.getProgressList()])+", equip none 22 ") 
+                event.getEquipment().setIdle(True)
+
+        if event.getType() != "Logistical":
+            if event.getResource() == None:
+                self.getSimulator().saveLog(" REPORT: event: "+str(event.getName())+"("+str(event.getID())+"), resource none ") 
+            event.getResource().setIdle(True)
+        
+        # remove the event from queue
+        if event.getProgressList()[-1][1][1] in self.getSimulator().getEventQueue():
+            if event in self.getSimulator().getEventQueue()[event.getProgressList()[-1][1][1]]:
+                self.getSimulator().getEventQueue()[event.getProgressList()[-1][1][1]].remove(event)
+ 
+  
+        return 
+#######################################################################################################################################################
+
 #########################################################################################################################
     def writeData(self):
 
-        process_df = pd.DataFrame(columns=["OperationName","ProcessID","ResourceID","Resource","Start","Completion","DemandID","Product","NrItems"])
+        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
 
-        for prodordid,prodorder in self.getProductionOrders().items():
-            
-            oprsequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
-
-            oprid = 0
-            for myopr in oprsequence:
-                for excdata in myopr.getExecutionData():
-                    process_df.loc[len(process_df)] = excdata
+        ######################################################################
+        ## TO DO: Bryan ( Implementing the utilization ratio of machines
+        """
+        for eventname in event_df["EventName"].unique():
+            if eventname == "Machine Processing":
+                eventsub_df = event_df[event_df["EventName"] == eventname]
+                for resource in eventsub_df["Resource"].unique():
+                    eventmach_df = eventsub_df[eventsub_df["Resource"] == resource]
+                    machine = None
                     
+                    for res in self.getResources():
+                        if res.getName() == resource:
+                            machine = res
+                            break
+
+                    processtime = 0
+                    if machine != None: 
+                        for event,progress in machine.getProgressList():
+                            processtime+= progress[1]-progress[0]
+
+                    
+        """
+        ## TO DO: Bryan ( Implementing the utilization ratio of machines
+        ######################################################################
+        
+                        
+            
+            
+
+      
+        for eventdata in self.getSimulator().getExecutionData():
+            event_df.loc[len(event_df)] = eventdata
 
         
-        process_df.to_csv("ProcessData.csv",index = False)
+        event_df.to_csv("EventExecutionData.csv",index = False)
+
+
+        location_df = pd.DataFrame(columns=["EntityName","EntityID","Time","LocationName","LocationID"])
+
+        for locdata in self.getSimulator().getLocationData():
+            location_df.loc[len(location_df)] = locdata
+
+        location_df.to_csv("LocationData.csv",index = False)
+
+
+        buffer_df = pd.DataFrame(columns=["BufferName","BufferID","Machine","Time","No.Items"])
+
+      
+        for bufferdata in self.getSimulator().getBufferData():
+            buffer_df.loc[len(buffer_df)] = bufferdata
+
         
+        buffer_df.to_csv("BufferData.csv",index = False)
 
-    def writeDataTBRMOutPut(self):
+        return
+        
+#########################################################################################################################
+    def writeDataTBRMOutPut(self,myround):
 
-        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Work Orders/Work Center","Work Orders/Work Center/ID","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Simulation_Planned"])
+
+        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Work Orders/Work Center","Processing Machine","Work Orders/Work Center/ID","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Scheduled"])
 
         currentdate =  datetime.now()
+        currentdate = currentdate-timedelta(days = 2)
         startday = datetime(currentdate.year, currentdate.month, currentdate.day)
 
         try: 
@@ -1079,6 +1369,8 @@ class ShopFloorManager(OperationsManager):
                     if myopr.isCancelled():
                         status = "Cancelled"
 
+                    status = ("Scheduled" if myopr.getProcessMachine()!= None else status)
+
                     #self.getSimulator().saveLog("REPORT: mystrt "+str(mystrt)+", mycomp "+str(mycomp))
                     
                     if  isinstance(mystrt,int) and mystrt!= None :
@@ -1089,10 +1381,9 @@ class ShopFloorManager(OperationsManager):
                         
                     
                     if oprid == 0:
-                         
-                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Simulation_Planned":prodorder in self.getSelectedOrders()}
+                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
                     else:
-                        myorddata = {"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start":mystrt,"Work Orders/End":mycomp,"Work Orders/Status":status,"Simulation_Planned":prodorder in self.getSelectedOrders()}
+                        myorddata = {"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders()}
 
                     TBRM_df.loc[len(TBRM_df)] = myorddata
                     oprid+=1
@@ -1100,14 +1391,14 @@ class ShopFloorManager(OperationsManager):
             inputdate = ""
             if self.inputdate !=None:
                 inputdate = str(self.inputdate.date())
+
+            TBRM_df["Work Orders/Start"] = pd.to_datetime(df["Work Orders/Start"]).dt.floor('s')
+            TBRM_df["Work Orders/End"] = pd.to_datetime(df["Work Orders/End"]).dt.floor('s')
             
-            TBRM_df.to_csv("TBRM_Plan_"+inputdate+".csv",index = False)
+            TBRM_df.to_csv("TBRM_Plan_"+inputdate+"_R"+str(myround)+".csv",index = False)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
             
-
-        
-
 
 
         return
@@ -1128,3 +1419,4 @@ class ShopFloorManager(OperationsManager):
         return 
 
         
+

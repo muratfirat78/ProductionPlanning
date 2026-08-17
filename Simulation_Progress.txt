@@ -654,25 +654,25 @@ I added necessary conditions checking for events:
 
 
 
-TEST Orders 3 OK (0 error, all orders either come back to central inventory)
-TEST Orders 5 OK (0 error, all orders either come back to central inventory)
-TEST Orders 10 OK (0 error, all orders either come back to central inventory)
-TEST Orders 15 OK (0 error, all orders either come back to central inventory)
-TEST Orders 20 OK (0 error, all orders either come back to central inventory)
-TEST Orders 25 OK (0 error, all orders either come back to central inventory)
-TEST Orders 30 OK (0 error, all orders either come back to central inventory)
-TEST Orders 35 OK (0 error, all orders either come back to central inventory)
-TEST Orders 40 OK (0 error, all orders either come back to central inventory)
-TEST Orders 45 OK (0 error, all orders either come back to central inventory)
-TEST Orders 50 OK (0 error, all orders either come back to central inventory)
+TEST Orders 3 OK (0 error, all orders  come back to central inventory)
+TEST Orders 5 OK (0 error, all orders  come back to central inventory)
+TEST Orders 10 OK (0 error, all orders  come back to central inventory)
+TEST Orders 15 OK (0 error, all orders  come back to central inventory)
+TEST Orders 20 OK (0 error, all orders  come back to central inventory)
+TEST Orders 25 OK (0 error, all orders  come back to central inventory)
+TEST Orders 30 OK (0 error, all orders  come back to central inventory)
+TEST Orders 35 OK (0 error, all orders  come back to central inventory)
+TEST Orders 40 OK (0 error, all orders  come back to central inventory)
+TEST Orders 45 OK (0 error, all orders  come back to central inventory)
+TEST Orders 50 OK (0 error, all orders  come back to central inventory)
 TEST Orders 55 OK (0 error, all orders except one in-progress left, come back to central inventory)
-TEST Orders 56 OK (0 error, all orders either come back to central inventory)
+TEST Orders 56 OK (0 error, all orders  come back to central inventory)
 TEST Orders 57 OK (0 error, all orders except one in-progress left, come back to central inventory)
 TEST Orders 58 OK (0 error, all orders except one in-progress left, come back to central inventory)
 TEST Orders 59 OK (0 error, all orders except one in-progress left, come back to central inventory)
 TEST Orders 60 OK (0 error, all orders except one in-progress left, come back to central inventory)
 TEST Orders 65 OK (0 error, all orders except one in-progress left, come back to central inventory)
-TEST Orders 70 OK (0 error, all orders either come back to central inventory)
+TEST Orders 70 OK (0 error, all orders  come back to central inventory)
 TEST Orders 75 OK (0 error, all orders except one in-progress left, come back to central inventory)
 TEST Orders 80 OK (0 error, all orders except one in-progress left, come back to central inventory)
 
@@ -701,4 +701,23 @@ TEST Orders 90 OK (0 error, either orders come back to central buffer or they ar
 TEST Orders 95 OK (0 error, all orders except 3 in-progress left, come back to central inventory)
 TEST Orders 100 OK (0 error, all orders except 4 in-progress left, come back to central inventory)
 
+
+17/08/2026:
+
+Fixed points: 
+   If P(Logistical Events) + P(Event_chain) overflows to the next shift and if the events are non-preemtable, we do not allow them to start in the current one. 
+
+TEST Orders 40 OK (0 error, all orders come back to central inventory)
+TEST Orders 45 OK (0 error, all orders come back to central inventory)
+TEST Orders 50 OK (0 error, all orders come back to central inventory)
+TEST Orders 55 OK (0 error, all orders come back to central inventory)
+TEST Orders 60 OK (0 error, all orders come back to central inventory)
+TEST Orders 65 OK (0 error, all orders come back to central inventory)
+TEST Orders 70 OK (0 error, all orders come back to central inventory)
+TEST Orders 75 OK (0 error, all orders come back to central inventory)
+TEST Orders 80 OK (0 error, 1 order in progress, and all others come back to central inventory)
+TEST Orders 85 OK (0 error, 2 orders in progress, and all others come back to central inventory)
+TEST Orders 90 OK (0 error, 5 orders in progress, and all others come back to central inventory)
+TEST Orders 95 OK (0 error, 3 orders in progress, and all others come back to central inventory)
+TEST Orders 100 OK (0 error, 6 orders in progress, and all others come back to central inventory)
 
