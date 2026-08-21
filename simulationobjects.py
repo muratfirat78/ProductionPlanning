@@ -53,9 +53,6 @@ class SimEvent(object):
     def getType(self):
         return self.type # this can be "transport", "loading","unloading","process","logistical"
 
-    def generateEvent(self):
-        return
-
     def isPreemptable(self):
         return self.preemptable  
 
@@ -102,10 +99,12 @@ class ExecEvent(object):
         self.ProgressList = [] #[(resource,(start,end))]
         self.status = "Pending"
         self.Place = None
-        self.suspendedpredecessor = None
-        self.suspendedsuccessor = None
+        self.simcompletionpredecessor = None
+        self.simcompletionsuccessor = None
         self.simstartsuccessor = None
         self.simstartpredecessor = None
+        self.finishtostartsuccessor = None
+        self.finishtostarpredecessor = None
         
         self.decisionwaitingtime = 0
         
@@ -129,6 +128,17 @@ class ExecEvent(object):
         return
     def getProcessor(self):
         return self.Processor
+    def setFinishToStartSuccessor(self,succ):
+        self.finishtostartsuccessor = succ
+        return
+    def getFinishToStartSuccessor(self):
+        return self.finishtostartsuccessor 
+
+    def setFinishToStartPredecessor(self,succ):
+        self.finishtostarpredecessor = succ
+        return
+    def getFinishToStartPredecessor(self):
+        return self.finishtostarpredecessor 
 
     def getDecisionWaitingTime(self):
         return self.decisionwaitingtime
@@ -137,12 +147,12 @@ class ExecEvent(object):
         self.decisionwaitingtime+=1
         return
 
-    def setSuspendedSuccessor(self,succssr):
-        self.suspendedsuccessor = succssr
+    def setSimCompletionSuccessor(self,succssr):
+        self.simcompletionsuccessor = succssr
         return
 
-    def getSuspendedSuccessor(self):
-        return self.suspendedsuccessor
+    def getSimCompletionSuccessor(self):
+        return self.simcompletionsuccessor
 
 
         
@@ -203,12 +213,12 @@ class ExecEvent(object):
         
         return self.getFromLocation().getLocation()
 
-    def setSuspendedPredecessor(self,pr):
-        self.suspendedpredecessor = pr
+    def setSimCompletionPredecessor(self,pr):
+        self.simcompletionpredecessor = pr
         return
 
-    def getSuspendedPredecessor(self):
-        return self.suspendedpredecessor 
+    def getSimCompletionPredecessor(self):
+        return self.simcompletionpredecessor 
         
 
     def setPlace(self,pl):
@@ -231,23 +241,17 @@ class ExecEvent(object):
         
         if self.getName() == "Machine Setup":
             self.ProcessTime = self.getEquipment().getSetupTime()
-        if self.getName() == "Machine Loading":
-            if self.getEquipment() == None:
-                workmgr.getSimulator().saveLog("REPORT: sample process time. "+str(self.getName())+"("+str(self.getID())+")"+", fl?: "+str(self.getFromLocation() == None)+", tl?: "+str(self.getToLocation()== None))
-                
+        if self.getName() == "Machine Loading":  
             self.ProcessTime = max(1,int(0.5*self.getEquipment().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
-
+            
         if self.getName() == "Machine Unloading":
-            if not self.getEquipment().IsAutomated():
-                if self.getEquipment() == None:
-                    workmgr.getSimulator().saveLog("REPORT: sample process time, eqp none... "+str(self.getName())+"("+str(self.getID())+")"+", fl: "+(str(self.getFromLocation().getName()) if  self.getFromLocation() != None else "None")+", tl: "+(str(self.getToLocation().getName()) if  self.getToLocation() != None else "None"))
-                self.ProcessTime = max(1,int(0.5*self.getEquipment().getOperatingEffort()*self.getItems()[0].getActiveOperation().getRandVar().sampleValue()))
-            else:
-                self.ProcessTime = 1
-
-
+            processing_event = self.getFinishToStartPredecessor()
+            loading_event = processing_event.getFinishToStartPredecessor()   
+            self.ProcessTime = loading_event.getProcessTime()
+           
         if self.getName() == "Machine Processing":   
-            self.ProcessTime = self.getItems()[0].getActiveOperation().getRandVar().sampleValue()
+            loading_event = self.getFinishToStartPredecessor()  
+            self.ProcessTime = max(1,self.getItems()[0].getActiveOperation().getRandVar().sampleValue()-2*loading_event.getProcessTime())
 
         if self.getName() in ["Trailer Loading","Trailer Unloading"]:
             self.ProcessTime = 1
@@ -434,15 +438,6 @@ class Resource(object):
         return self.Itemcriteria
 
 
-    def generateEvent(self):
-        # overwritten by subclassess
-        return
-
-
-    def checkShiftChange(self,shift):
-        # overwritten by subclassess
-        return
-    
     def getCapacity(self):
         return self.capacity
 
@@ -487,10 +482,6 @@ class Resource(object):
         print("Res: ",self.Type,", cap: ",self.capacity)
     def getItems(self):
         return self.Items
-
-    def removeItem(self):
-        # overwritten by subclassess
-        return
         
     def getSimulator(self):
         return self.Simulator
@@ -530,7 +521,15 @@ class Process(object):
         self.orgCompletion = None
         self.orgMachine = None
         self.orgStatus = None
+        self.ReferenceName = None
 
+    def setReferenceName(self,nm):
+        self.ReferenceName = nm
+        return 
+    def getReferenceName(self):
+        return self.ReferenceName
+        
+        
     def setOriginalStart(self,myst):
         self.orgStart = myst
         return
@@ -680,7 +679,34 @@ class Demand(object):
         self.DemandType = demtype
         self.Quantity = quantity
         self.MyID = myid
+        self.MILPCompletion = None
+        self.reference = None
+        self.releaseDate = None
 
+    def setReleaseDate(self,dt):
+        self.releaseDate = dt
+        return
+
+    def getReleaseDate(self):
+        return self.releaseDate 
+      
+        
+
+    def setReference(self,rf):
+        self.reference = rf
+        return
+
+    def getReference(self):
+        return self.reference
+
+    def setMILPCompletion(self,dt):
+        self.MILPCompletion = dt
+        return
+
+    def getMILPCompletion(self):
+        return self.MILPCompletion
+    
+        
     def getID(self):
         return self.MyID
 
@@ -712,22 +738,12 @@ class Demand(object):
 class Item(object):
     def __init__(self,demand,myid):
        
-        self.ProcessData= [] # {"ItemID","OperationName","ProcessID","ResourceID","Start","Completion"}      
-        self.LocationData= [] # {"Entity":"Item","EntityID","EventName","EventID","LocationID","LocationName","Time"}   
+      
         self.location = None
         self.ID = myid
         self.Demand = demand
-        self.InfoDictionary = dict()
-        self.PriorityScore = 0
         self.reservedEvent = None
        
-
-    def setPriorityScore(self,myscore):
-        self.PriorityScore = myscore
-        return
-    def getPriorityScore(self):
-        return self.PriorityScore
-
 
     def setReservedEvent(self,ev):
         self.reservedEvent = ev
@@ -748,16 +764,6 @@ class Item(object):
         return None
 
    
-
-    def getInfoDictionary(self):
-        return self.InfoDictionary
-
-    def getProcessData(self):
-        return self.ProcessData 
-
-    def getLocationData(self):
-        return self.LocationData 
-
 
     def setLocation(self,myloc):
         self.location = myloc

@@ -158,7 +158,9 @@ class ProductionDataManager(DataManager):
 
             machines = [r for r in self.getOperationsManager().getResources() if isinstance(r,Machine)] 
             
-            MyOrders_df = TBRM_df.groupby(['ID'], dropna=True)[['Work Orders/Work Center','Work Orders/Work Center/ID','Work Orders/Operation','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status','Product/ID','Product','Deadline','Components/Product','Components/Product/ID','Components/Quantity To Consume','Quantity To Produce']].agg(lambda x:list(x)).reset_index()
+            MyOrders_df = TBRM_df.groupby(['ID'], dropna=True)[['Work Orders/Work Center','Work Orders/Work Center/ID','Work Orders/Operation','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status','Product/ID','Product','Deadline','Components/Product','Components/Product/ID','Components/Quantity To Consume','Quantity To Produce','Reference','Component Status']].agg(lambda x:list(x)).reset_index()
+
+            
 
              
             for i,r in MyOrders_df.iterrows():
@@ -174,6 +176,28 @@ class ProductionDataManager(DataManager):
                         
                     prodorder = ProductionOrder(r['Deadline'][0],r['ID'],myproduct,int(r['Quantity To Produce'][0])) #ddline,myid,demtype,quantity
                     self.getOperationsManager().getProductionOrders()[r['ID']] = prodorder
+                    prodorder.setReference(r['Reference'][0])
+
+                    if str(r['Component Status'][0]) == "Available":
+                        prodorder.setReleaseDate(self.getOperationsManager().getSimulator().getStartDay().date())
+                    else:
+                        if str(r['Component Status'][0]).find("Exp")> -1:
+                            explanation = str(r['Component Status'][0])
+                            explanation = explanation[explanation.find("Exp")+len("Exp")+1:]
+                            try: 
+                                release_date = datetime.strptime(explanation,"%d/%m/%Y")
+                                prodorder.setReleaseDate(release_date.date())
+                               
+                            except Exception as e:
+                                self.getOperationsManager().getSimulator().saveLog("ERROR: In reading release date"+str(e))
+
+                    if prodorder.getReleaseDate() == None:
+                        prodorder.setReleaseDate(self.getOperationsManager().getSimulator().getStartDay().date())
+
+                          
+                            
+                           
+                        
                     
                 except Exception as e:
                     self.getOperationsManager().getSimulator().saveLog("ERROR: In reading creating product, raw, and order"+str(e))
@@ -192,6 +216,7 @@ class ProductionDataManager(DataManager):
                         oprduration = max(r['Work Orders/Expected Duration'][oprid],1)
                         myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),oprduration,None) 
                         oprmachs = [m for m in machines if m.getMachineCode() in opr]
+                        myopr.setReferenceName(r['Work Orders/Operation'][oprid])
     
                         if len(oprmachs) > 0:
                             if oprmachs[0].getID() != r['Work Orders/Work Center/ID'][oprid]:

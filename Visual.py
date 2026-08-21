@@ -338,14 +338,11 @@ class VisualManager():
         
         return 
 
-    
+#############################################################################################################################################    
     def RunSim(self,event):
-
-
+        
         self.runbutton.disabled = True
-        self.getController().getSimulator().saveLog("Run clicked..")
         self.getController().getSimulator().RunSimulation(self.getController().getWorkManager())
-
 
         self.demandorderlist.clear()
    
@@ -356,10 +353,9 @@ class VisualManager():
             self.demandorderlist[len(self.demandorderlist)] = r["DemandID"]
 
         self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
-
-
         return 
-
+#############################################################################################################################################    
+    
     def ReadInput(self,event):
 
         selectedOrders = self.getController().getWorkManager().createInstance()
@@ -515,7 +511,6 @@ class VisualManager():
         process_df=process_df.reset_index()
 
         if result_type == 'Order Progress': 
-
             prodord = self.demandorderlist[selectid]
             sub_df = process_df[process_df["DemandID"] == prodord]
             sub_df = sub_df[["OperationName","Resource","Start","Completion"]]
@@ -526,8 +521,7 @@ class VisualManager():
                 clear_output()
                 display(sub_df.head(50))
            
-        if result_type == 'Resource Operations': 
-
+        if result_type == 'Resource Operations':  
             sub_df = process_df[process_df["Resource"] == result_detail]
             sub_df = sub_df[["Resource","Start","Completion","Product"]]
             sub_df['Start'] = pd.to_datetime(sub_df['Start'])
@@ -544,16 +538,97 @@ class VisualManager():
         result_type = self.getmilpresults().value
         result_detail = self.getmilpdetails().value
 
+        try: 
 
-        if result_type == 'Machines':
-            for res in self.getController().getWorkManager().getResources():
-                if res.getName() == result_detail:
-                    if res in self.getController().getMILPManager().getMachineDict():
-                        milpmachine =  self.getController().getMILPManager().getMachineDict()[res]
+            if result_type == 'Machines':
+                for res in self.getController().getWorkManager().getResources():
+                    if res.getName() == result_detail:
+                        if res in self.getController().getMILPManager().getMachineDict():
+                            milpmachine =  self.getController().getMILPManager().getMachineDict()[res]
+    
+                            max_date = milpmachine.getScheduleDF()["Work Orders/End"].max()+timedelta(days = 1)
+                            min_date = milpmachine.getScheduleDF()["Work Orders/Start"].min()-timedelta(days = 1)
+
+                            self.getController().getSimulator().saveLog("REPORT min_date: "+str(min_date)) 
+                            self.getController().getSimulator().saveLog("REPORT min_date: "+str(max_date)) 
+    
+                            figure_days = (max_date - min_date).days
+    
+                            x_day_freq = 3
+                            x_days = [x for x in range(figure_days)]
+                            self.getController().getSimulator().saveLog("REPORT x_days: "+str(x_days)) 
+                            x_labels = [str(min_date+timedelta(days = mday)) for mday in x_days]
+    
+                            barcolors = ['tab:orange','tab:blue','tab:red']
+
+                            
+                            self.getController().getSimulator().saveLog("REPORT x_labels: "+str(x_labels)) 
+                            
                         
-                        with self.getMILPResultInfo():
-                            clear_output()
-                            display(milpmachine.getScheduleDF().head(50))
+                            with self.getMILPResultInfo():
+                                clear_output()
+                                display(milpmachine.getScheduleDF().head(50))
+    
+                                # Declaring a figure "gnt"
+                                fig, gnt = plt.subplots()
+    
+                                # Setting Y-axis limits
+                                gnt.set_ylim(0, 50)
+    
+                                # Setting X-axis limits
+                                gnt.set_xlim(0, figure_days+1)
+    
+                                 # Setting ticks on y-axis
+                                gnt.set_yticks([25])
+                                gnt.set_xticks(x_days)
+                                # Labelling tickes of y-axis
+                                gnt.set_yticklabels(['Job'])
+                                gnt.set_xticklabels(x_labels)
+    
+                                
+                                # Setting labels for x-axis and y-axis
+                                gnt.set_xlabel('Date')
+                                gnt.set_ylabel('Jobs of machine '+str(res.getName()))
+                                # Setting graph attribute
+                                gnt.grid(True)
+    
+    
+                                rowno = 0
+                                for i,r in milpmachine.getScheduleDF().iterrows():
+                                    # Declaring a bar in schedule
+                                    jobstartday = (r["Work Orders/Start"] - min_date).days ; jobendday = (r["Work Orders/End"]- min_date).days
+                                    color = barcolors[rowno%3]
+                                    
+                                    gnt.broken_barh([(jobstartday,(jobendday-jobstartday))], (20, 9), facecolors = color)
+                                    rowno+=1
+
+                                plt.xticks(rotation=45)
+                                plt.show(fig)
+
+                    
+            if result_type == 'Orders':
+                selectid = 0
+                for x in self.getmilpdetails().options:
+                    if self.getmilpdetails().options[selectid] == result_detail:
+                        break
+                    selectid+=1
+
+                prodorder = self.getController().getWorkManager().getSelectedOrders()[selectid]
+                with self.getMILPResultInfo():
+                    clear_output()
+                    display("Deadline: "+str(prodorder.getDeadline())+", completion: "+str(prodorder.getMILPCompletion()))
+
+            
+        
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR in plotting: "+str(e)) 
+            
+                                    
+
+        
+                            
+
+    #  self.Schedule_df = pd.DataFrame(columns=["PN","Quantity","Work Orders/Start","Work Orders/End","Work Orders/Work Center","Work Orders/Expected Duration"])
                     
          
 
@@ -578,7 +653,7 @@ class VisualManager():
 
         self.setInputText(widgets.Text(description ='Use Case: ',value=''))
 
-        self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,10)],value = 8,description = 'Weeks:'))
+        self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,12)],value = 10,description = 'Weeks:'))
         self.getWeeksDrop().observe(self.setDropSimWeeks,'value')
         
         self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
@@ -778,7 +853,7 @@ class VisualManager():
         self.getmilpdetails().observe(self.ViewMILPDetails,'value')
 
         self.setMILPResultInfo(widgets.Output())
-        self.getMILPResultInfo().layout.width = '750px'
+        self.getMILPResultInfo().layout.width = '950px'
         self.getMILPResultInfo().layout.height = '250px'
         
         self.setmilpresultbox(VBox(children=[self.getmilpprogress()]))

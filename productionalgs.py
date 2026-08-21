@@ -50,15 +50,16 @@ class ProductionAlgManager(AlgorithmManager):
 
         #self.getSimulator().saveLog("REPORT: >>> Algorithm: assignStraightProcessor function <<<")
         selected_equip = None
+
         
         if event.getEquipment().isAvailable():
-            if event.getProcessor() != None: 
+            if event.getProcessor()!= None:
                 selected_equip = event.getProcessor()
-            else:
+            else: 
                 processr = event.getEquipment().getProcessor()
                 if processr != None:
                     selected_equip = processr                 
-        
+            
         return selected_equip
 ###################################################################################################################################################
     def assignStraightResource(self,event):
@@ -66,8 +67,19 @@ class ProductionAlgManager(AlgorithmManager):
         selected_res = None
     
         avail_comp_res = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and r.getType() == event.getEventType().getResourceType()] 
+
+        #if self.getSimulator().getTime() >= 3360 and event.getType() == "Loading" :
+        #    self.getSimulator().saveLog(" REPORT: available resources: "+str(len(avail_comp_res))+"> "+event.getName()+"-"+str(event.getID()))
+           
+              
         idle_res = [r for r in avail_comp_res if r.isIdle()] 
-      
+
+
+        #if self.getSimulator().getTime() >= 3360 and event.getType() == "Loading" :
+        #    self.getSimulator().saveLog(" REPORT: idle resources: "+str(len(avail_comp_res)))
+     
+        
+
         if len(idle_res) > 0:
             onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
             selected_res = onloc_res[0] if len(onloc_res) > 0 else idle_res[0]
@@ -97,6 +109,14 @@ class ProductionAlgManager(AlgorithmManager):
                 orders.append(myorder)
             select_dict[myorder].append(item)
 
+        if len(orders) == 0:
+            self.getSimulator().saveLog(" REPORT: event order list is empty! >>> Algorithm: selectItemsEDDOrder <<<")
+            self.getSimulator().saveLog(" REPORT: items: "+str(len(event_place.getItems())))
+            self.getSimulator().saveLog(" REPORT: this event "+str(event.getName())+"-"+str(event.getID()))
+            
+            return None
+
+        
         orders.sort(key=lambda x: x.getDeadline(), reverse= False)      
 
         select_id = 0
@@ -168,9 +188,3 @@ class ProductionAlgManager(AlgorithmManager):
         return items_to_unload
 
 ####################################################################################################################################################     
-'''
-        if self.getSimulator().getTime() > 475:
-            for r in self.getOperationsManager().getResources():
-                if r.getType() == event.getEventType().getResourceType() and r.isAvailable():
-                    self.getSimulator().saveLog(" REPORT: >>> res "+str(r.getName())+", av: "+str(r.isAvailable())+", idle: "+str(r.isIdle()))
-'''  

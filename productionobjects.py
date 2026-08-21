@@ -56,6 +56,8 @@ class Buffer(Resource):
     def generateEvent(self,display):
 
         unreserved_items = [i for i in self.getItems() if i.getReservedEvent() == None]
+        if display: 
+            self.getSimulator().saveLog("REPORT: event generation at "+self.getName()+", items: "+(("["+str(self.getItems()[0].getID()) if len(self.getItems()) >0 else '')+"-"+(str(self.getItems()[-1].getID())+"]" if len(self.getItems())>0 else ''))+", unreserved items: "+(("["+str(self.getUnreservedItems()[0].getID()) if len(self.getUnreservedItems()) >0 else '')+"-"+(str(self.getUnreservedItems()[-1].getID())+"]" if len(self.getUnreservedItems())>0 else 'No unreserved items!')))
         
         if len(unreserved_items) == 0:
             if display: 
@@ -78,7 +80,6 @@ class Buffer(Resource):
         # reserve items till selection
         for item in unreserved_items:
             item.setReservedEvent(generated_event) 
-            generated_event.getReservedItems().append(item)
         
         generated_event.setEquipment(self.getMachine() if event_type == "Machine Setup" else None) 
               
@@ -108,11 +109,14 @@ class Machine(Resource):
         self.NoProcessors = nrprocessors
         self.suspendedEvent = None
         self.ProgressList = [] # [(event,(st,cp))]
+        self.suspendedevents = dict() # key: event, val: processor
    
 
-       
+    
+    def getSuspendedEvents(self):
+        return self.suspendedevents
 
-
+        
     def getProgressList(self):
         return self.ProgressList
     
@@ -156,13 +160,6 @@ class Machine(Resource):
         return self.OutputBuffer 
     def IsAutomated(self):
         return self.automated
-
-    def removeItem(self,myit):
-        print(" > "+str(self.getSimulator().getTime())+": "+self.getName()," item removed, input buffer is triggered for loading ",len(self.getInputBuffer().getItems()))
-        self.getItems().remove(myit)
-        if len(self.getItems()) == 0 and len(self.getInputBuffer().getItems()) > 0:
-            self.getInputBuffer().generateEvent(False)
-        return
 
     def getAvailableShifts(self):
         return self.AvailableShifts

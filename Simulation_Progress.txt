@@ -707,17 +707,20 @@ TEST Orders 100 OK (0 error, all orders except 4 in-progress left, come back to 
 Fixed points: 
    If P(Logistical Events) + P(Event_chain) overflows to the next shift and if the events are non-preemtable, we do not allow them to start in the current one. 
 
-TEST Orders 40 OK (0 error, all orders come back to central inventory)
-TEST Orders 45 OK (0 error, all orders come back to central inventory)
-TEST Orders 50 OK (0 error, all orders come back to central inventory)
-TEST Orders 55 OK (0 error, all orders come back to central inventory)
-TEST Orders 60 OK (0 error, all orders come back to central inventory)
-TEST Orders 65 OK (0 error, all orders come back to central inventory)
-TEST Orders 70 OK (0 error, all orders come back to central inventory)
-TEST Orders 75 OK (0 error, all orders come back to central inventory)
-TEST Orders 80 OK (0 error, 1 order in progress, and all others come back to central inventory)
-TEST Orders 85 OK (0 error, 2 orders in progress, and all others come back to central inventory)
-TEST Orders 90 OK (0 error, 5 orders in progress, and all others come back to central inventory)
-TEST Orders 95 OK (0 error, 3 orders in progress, and all others come back to central inventory)
-TEST Orders 100 OK (0 error, 6 orders in progress, and all others come back to central inventory)
+___________________________________________________________________________________________
+TEST Orders 30
 
+------------ SIMULATION START --------------
+579: REPORT: ************************** event : Machine Setup(101) case Start, p: 30, Opr pt: 660.0
+609: REPORT: ************************** event : Machine Setup(101) case Complete
+2042: REPORT: ************************** event : Machine Setup(199) case Start, p: 30, Opr pt: 23796.0
+2072: REPORT: ************************** event : Machine Setup(199) case Complete
+4801: REPORT: ************************** event : Machine Setup(623) case Start, p: 30, Opr pt: 10964.0
+4831: REPORT: ************************** event : Machine Setup(623) case Complete
+
+Machine setup 623 should not start at 4801 before machine loading 792 is completed. 
+
+
+18/08/2026:
+
+Code improved is done. ProgressEvent function of OperationsManager now has a clear flow of actions.

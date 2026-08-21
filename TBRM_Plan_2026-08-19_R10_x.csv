@@ -1,0 +1,612 @@
+ID,Product,Product/ID,Quantity To Produce,Deadline,Work Orders/Work Center,Processing Machine,Work Orders/Work Center/ID,Work Orders/Expected Duration,Work Orders/Start(ORG),Work Orders/Start,Work Orders/End(ORG),Work Orders/End,Work Orders/Status
+__export__.mrp_production_1104_d3ae4426,[4022-651-55002A] Gpas preamp CB Box + cover assy,14975,27,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,42,2/28/2025 11:30,2/28/2025 11:30,3/23/2026 8:51,3/23/2026 8:51,Finished
+__export__.mrp_production_5033_ffa23c2e,[4022.684.28993] RS C+H SLAB STAT PLT IL SIDE / CLS,18261,1,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,16,2/6/2026 13:37,2/6/2026 13:37,2/6/2026 13:37,2/6/2026 13:37,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,405,2/6/2026 13:38,2/6/2026 13:38,2/6/2026 13:38,2/6/2026 13:38,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,113,2/6/2026 13:39,2/6/2026 13:39,2/6/2026 13:39,2/6/2026 13:39,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,7/16/2026 9:47,8/20/2026 8:00,7/30/2026 8:47,9/2/2026 11:00,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/3/2026 8:00,,9/16/2026 11:00,Scheduled
+__export__.mrp_production_5034_4d53b4c4,[4022.684.29043] RS C+H DYN ATTACH PLT IL SIDE / CLS,18342,1,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,1,2/6/2026 13:43,2/6/2026 13:43,2/6/2026 13:43,2/6/2026 13:43,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,335,2/6/2026 13:43,2/6/2026 13:43,2/6/2026 13:43,2/6/2026 13:43,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,7/16/2026 9:49,8/20/2026 8:00,7/30/2026 8:49,9/2/2026 11:00,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/3/2026 8:00,,9/16/2026 11:00,Scheduled
+__export__.mrp_production_5035_e3dce293,[4022.684.28962] RS C+H DYN ATTACH PLT RH SIDE / CLS,18348,1,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,1,2/6/2026 13:36,2/6/2026 13:36,2/6/2026 13:36,2/6/2026 13:36,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,335,2/6/2026 13:36,2/6/2026 13:36,2/6/2026 13:36,2/6/2026 13:36,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,7/16/2026 9:49,8/20/2026 8:00,7/30/2026 8:49,9/2/2026 11:00,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/3/2026 8:00,,9/16/2026 11:00,Scheduled
+__export__.mrp_production_5036_bec2ca68,[4022.684.28842] RS C+H SLAB STAT PLT RH SIDE / CLS,18349,1,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,16,2/6/2026 13:44,2/6/2026 13:44,2/6/2026 13:44,2/6/2026 13:44,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,405,2/6/2026 13:44,2/6/2026 13:44,2/6/2026 13:44,2/6/2026 13:44,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,113,2/6/2026 13:43,2/6/2026 13:43,2/6/2026 13:43,2/6/2026 13:43,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,7/16/2026 9:50,8/20/2026 8:00,7/30/2026 8:50,9/2/2026 11:00,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/3/2026 8:00,,9/16/2026 11:00,Scheduled
+__export__.mrp_production_5495_6bea93ed,[1207568A] Cable clamp,14912,30,12/31/2026 9:00,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,660,,8/24/2026 21:41,,8/25/2026 16:41,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30,,8/25/2026 18:09,,8/25/2026 18:39,Scheduled
+__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,7359,24,3/30/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,24,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,9000,,8/20/2026 8:00,,9/15/2026 14:00,Scheduled
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022,80,3/19/2026 10:00,M3-02 - AW - 3axis - Manual (FR3_02),-,__export__.mrp_workcenter_55_15609e22,410,3/23/2026 10:50,3/23/2026 10:50,3/23/2026 10:50,3/23/2026 10:50,Finished
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,240,8/19/2026 10:28,8/21/2026 13:00,8/19/2026 14:58,8/21/2026 17:00,Scheduled
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,95,,8/21/2026 18:00,,8/21/2026 19:35,Scheduled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,2090,,9/8/2026 8:00,,9/9/2026 18:50,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,9000,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,80,,,,,To Do
+__export__.mrp_production_6126_02e4cab5,[4022-333-11506] lagerblok,14916,86,12/31/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,101,4/17/2026 13:00,4/17/2026 13:00,4/17/2026 13:00,4/17/2026 13:00,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,176,,8/26/2026 12:30,,8/26/2026 15:26,Scheduled
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),M5-01_(FR5_01),__export__.mrp_workcenter_59_d6deab7b,1896,,8/27/2026 8:00,,8/28/2026 15:36,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,520,,9/8/2026 10:45,,9/8/2026 19:25,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,172,,9/15/2026 20:43,,9/15/2026 23:35,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,86,,9/21/2026 12:00,,9/21/2026 13:26,Scheduled
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,15042,46,2/23/2026 11:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,65,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),-,__export__.mrp_workcenter_55_15609e22,228,4/17/2026 13:07,4/17/2026 13:07,4/17/2026 13:07,4/17/2026 13:07,Finished
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),-,__export__.mrp_workcenter_55_15609e22,1378,8/19/2026 10:59,8/19/2026 10:59,8/19/2026 10:59,8/19/2026 10:59,Finished
+,,,,,BW - Benchwork (BKW_01),-,__export__.mrp_workcenter_66_9f807a30,92,8/19/2026 10:59,8/19/2026 10:59,8/19/2026 10:59,8/19/2026 10:59,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/18/2026 9:34,8/20/2026 8:00,8/25/2026 9:04,8/26/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,46,8/25/2026 9:04,8/26/2026 16:00,8/25/2026 9:50,8/26/2026 16:46,Scheduled
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,15022,92,4/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,107,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,2390,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,458,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,276,,8/20/2026 13:15,,8/20/2026 17:51,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,21046.27,6/16/2026 9:43,6/16/2026 9:43,8/19/2026 10:30,8/19/2026 10:30,Finished
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,92,,8/20/2026 11:02,,8/20/2026 12:34,Scheduled
+__export__.mrp_production_6205_8e927596,[00385-00-274-D] Filling block,14888,616,5/14/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,631,6/10/2026 15:51,6/10/2026 15:51,6/10/2026 15:51,6/10/2026 15:51,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),-,__export__.mrp_workcenter_56_d6637dea,5018,8/19/2026 10:32,8/19/2026 10:32,8/19/2026 10:32,8/19/2026 10:32,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,1938,,8/20/2026 8:15,,8/24/2026 8:33,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,616,,8/24/2026 12:00,,8/24/2026 22:16,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,616,,8/27/2026 8:00,,8/27/2026 18:16,Scheduled
+__export__.mrp_production_6209_9f61b525,[00429-00-662-B] Arret lever,14895,420,5/14/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,6/10/2026 15:53,6/10/2026 15:53,6/10/2026 15:53,6/10/2026 15:53,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,370,8/19/2026 10:32,8/19/2026 10:32,8/19/2026 10:33,8/19/2026 10:33,Finished
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,40,,8/20/2026 8:00,,8/20/2026 8:40,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,8/20/2026 9:30,,8/20/2026 9:50,Scheduled
+__export__.mrp_production_6210_afc3a4ad,[1508130 B] [Q] excenter housing z,16893,134,5/14/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,175,6/10/2026 15:53,6/10/2026 15:53,6/10/2026 15:53,6/10/2026 15:53,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),-,__export__.mrp_workcenter_59_d6deab7b,7290,6/10/2026 15:53,6/10/2026 15:53,8/19/2026 10:34,8/19/2026 10:34,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,760,8/19/2026 10:35,8/19/2026 10:35,8/19/2026 10:35,8/19/2026 10:35,Finished
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,670,7/29/2026 11:02,8/25/2026 16:00,7/30/2026 14:42,8/26/2026 11:10,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,134,7/30/2026 14:42,8/26/2026 16:00,7/31/2026 8:26,8/26/2026 18:14,Scheduled
+__export__.mrp_production_6246_819c34e3,[00385-00-102-C] Height bearing clamp plate,14886,581,6/18/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,615,6/10/2026 15:59,6/10/2026 15:59,6/10/2026 15:59,6/10/2026 15:59,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,4890,8/19/2026 10:35,8/19/2026 10:35,8/19/2026 10:35,8/19/2026 10:35,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,1833,8/19/2026 10:35,8/19/2026 10:35,8/19/2026 10:35,8/19/2026 10:35,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,9000,7/23/2026 10:40,8/20/2026 8:00,8/20/2026 8:40,9/15/2026 14:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,581,8/20/2026 8:40,9/15/2026 16:00,8/21/2026 10:21,9/16/2026 9:41,Scheduled
+__export__.mrp_production_6258_551385d8,[4512-127-05186B] Anschlag,15017,1000,8/21/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,1015,6/10/2026 16:00,6/10/2026 16:00,6/10/2026 16:00,6/10/2026 16:00,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,2090,8/19/2026 10:55,8/25/2026 15:48,8/21/2026 18:45,8/27/2026 2:38,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,1000,,8/31/2026 13:25,,9/1/2026 14:05,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,1000,,9/1/2026 14:30,,9/2/2026 15:10,Scheduled
+__export__.mrp_production_6276_848a2216,[7005-2580-0007] Support block  / 07201506 v02-00 - Drawing in RED,16269,8,9/4/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,23,6/10/2026 16:02,6/10/2026 16:02,6/10/2026 16:02,6/10/2026 16:02,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),-,__export__.mrp_workcenter_59_d6deab7b,1290,6/10/2026 16:03,6/10/2026 16:03,6/10/2026 16:03,6/10/2026 16:03,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,324,,8/24/2026 15:47,,8/24/2026 21:11,Scheduled
+__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,14964,17,1/16/2026 10:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,32,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,430,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,175,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,175,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,51,,8/20/2026 9:30,,8/20/2026 10:21,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,17,,8/20/2026 10:30,,8/20/2026 10:47,Scheduled
+__export__.mrp_production_6301_619807e1,[00385-00-113A] Tensioner plate,14887,700,6/8/2026 12:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,700,,8/20/2026 8:15,,8/20/2026 19:55,Scheduled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,10590,,8/20/2026 20:00,,9/1/2026 4:30,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,2100,,9/4/2026 8:00,,9/8/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,700,,9/16/2026 12:26,,9/17/2026 8:06,Scheduled
+__export__.mrp_production_6313_15382e13,[4022.645.53391] NXE RBI ILLUM TRANSPORT COVER,19386,24,7/29/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,24,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,1170,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,2970,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,7/16/2026 9:18,8/20/2026 8:00,7/23/2026 8:48,8/26/2026 13:30,Scheduled
+__export__.mrp_production_6314_c014b174,[4022.645.57761] RH NXE RBI COVER HOUSING,19387,25,7/29/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,15,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,90,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,450,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,450,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,6750,7/16/2026 10:05,8/20/2026 8:00,8/6/2026 8:35,9/9/2026 8:30,Scheduled
+__export__.mrp_production_6391_80325cfc,[4022-666-3837-1] LSPH Bellow Clamp,14985,200,8/13/2026 2:00,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,1090,8/19/2026 10:47,8/19/2026 10:47,8/19/2026 10:47,8/19/2026 10:47,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,690,8/19/2026 10:47,8/19/2026 10:47,8/19/2026 10:47,8/19/2026 10:47,Finished
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,400,8/19/2026 10:47,8/26/2026 16:00,8/20/2026 9:27,8/26/2026 22:40,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,200,,8/27/2026 18:31,,8/27/2026 21:51,Scheduled
+__export__.mrp_production_6417_7e2b35a5,[4022.474.05661] HALFFAB_M_BLOCK_RH_RIGHT / HQP / 104009581,16641,24,7/14/2026 2:00,M5-05 - UMC2 - 5axis  - Manual (UMC750),-,__export__.mrp_workcenter_83_95c50e96,15010,6/29/2026 14:23,6/29/2026 14:23,8/19/2026 10:37,8/19/2026 10:37,Finished
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,2250,8/12/2026 14:43,8/12/2026 14:43,8/19/2026 10:37,8/19/2026 10:37,Finished
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,39,6/10/2026 16:23,6/10/2026 16:23,8/19/2026 10:37,8/19/2026 10:37,Finished
+__export__.mrp_production_6418_b806ecac,[4022.474.05631] HALFFAB_M_MOUNTING_BLCK_FRNT_R / HQP / 104009583,16642,20,7/14/2026 2:00,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,23796,6/24/2026 13:45,6/24/2026 13:45,8/19/2026 10:37,8/19/2026 10:37,Finished
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,2250,8/12/2026 14:43,8/12/2026 14:43,8/19/2026 10:37,8/19/2026 10:37,Finished
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,6/10/2026 16:23,6/10/2026 16:23,8/19/2026 10:37,8/19/2026 10:37,Finished
+__export__.mrp_production_6419_8f36f5dd,[4022.474.05521] HALFFAB_M_MOUNTING_BLCK_FRNT_L / HQP / 104009584,16643,20,7/14/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,38,6/10/2026 16:23,6/10/2026 16:23,8/19/2026 10:37,8/19/2026 10:37,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),-,__export__.mrp_workcenter_62_468a38e5,20700,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/12/2026 14:43,8/20/2026 8:00,8/19/2026 14:13,8/26/2026 13:30,Scheduled
+__export__.mrp_production_6420_ebb363be,[4022.474.05551] HALFFAB_M_BLOCK_RH_LEFT / HQP / 104009586,16644,24,7/14/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,40,6/10/2026 16:23,6/10/2026 16:23,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,M5-05 - UMC2 - 5axis  - Manual (UMC750),-,__export__.mrp_workcenter_83_95c50e96,15660,8/13/2026 12:33,8/13/2026 12:33,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/12/2026 14:43,8/20/2026 8:00,8/19/2026 14:13,8/26/2026 13:30,Scheduled
+__export__.mrp_production_6426_14647c79,[GF3116T006L] Carriage,15035,240,7/10/2026 2:00,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,330,6/10/2026 16:23,6/10/2026 16:23,7/28/2026 15:08,7/28/2026 15:08,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,6570,7/28/2026 15:08,7/28/2026 15:08,7/28/2026 15:08,7/28/2026 15:08,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,3450,8/19/2026 10:32,9/3/2026 16:00,8/25/2026 15:32,9/8/2026 1:30,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,7/28/2026 15:08,9/8/2026 8:00,8/11/2026 14:08,9/21/2026 11:00,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,240,,9/21/2026 16:00,,9/21/2026 20:00,Scheduled
+__export__.mrp_production_6438_7d858fb4,[4022.704.19332] RH RED STATIC STRAIN RELIEF B ,7365,80,7/20/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,95,8/19/2026 10:36,8/19/2026 10:36,8/19/2026 10:36,8/19/2026 10:36,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),-,__export__.mrp_workcenter_62_468a38e5,1980,8/19/2026 10:36,8/19/2026 10:36,8/19/2026 10:36,8/19/2026 10:36,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,8/20/2026 8:00,,9/2/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,80,,9/2/2026 16:00,,9/2/2026 17:20,Scheduled
+__export__.mrp_production_6443_1af444bd,[4022.622.61092] RH RED GRIPPER CABLE COVER ,7366,68,11/2/2026 1:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,83,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),UMC750SS_(M5-05),__export__.mrp_workcenter_62_468a38e5,1420,,8/25/2026 23:25,,8/27/2026 15:05,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,2236,,9/2/2026 13:31,,9/4/2026 18:47,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/7/2026 8:00,,9/11/2026 13:30,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/14/2026 8:00,,9/18/2026 13:30,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,6750,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,68,,,,,To Do
+__export__.mrp_production_6453_22d700ce,[7005-2480-0070] GRIPP / 105-46612,13982,32,8/20/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,23,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,100,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,212,,8/24/2026 12:00,,8/24/2026 15:32,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,8,,8/24/2026 22:31,,8/24/2026 22:39,Scheduled
+__export__.mrp_production_6474_935ee624,"[7005-2540-0007] C beam / 07201507 v01-03 - Drawing in RED (40 x 40 x 5mm, welded tube)",17796,14,7/28/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,16,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),-,__export__.mrp_workcenter_60_6593b576,86,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,8/19/2026 10:42,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,7/21/2026 9:28,8/20/2026 8:00,7/28/2026 8:58,8/26/2026 13:30,Scheduled
+__export__.mrp_production_7003_03b81406,[7007-2500-0010] 263 - EL5 Bottom Side Panel Right (Dark) No Coating / IAH / 2026.SPX.0263.20.20,19199,1,7/10/2026 12:57,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,150,,8/20/2026 8:00,,8/20/2026 10:30,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,150,,8/24/2026 12:00,,8/24/2026 14:30,Scheduled
+__export__.mrp_production_7009_954f0f2c,[4022-631-99701] LCW ABS PRES SENS CONN BLOCK,14954,134,8/14/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,149,8/13/2026 14:11,8/13/2026 14:11,8/13/2026 14:11,8/13/2026 14:11,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),-,__export__.mrp_workcenter_59_d6deab7b,5182,8/13/2026 14:11,8/13/2026 14:11,8/13/2026 14:11,8/13/2026 14:11,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),-,__export__.mrp_workcenter_59_d6deab7b,760,8/13/2026 14:11,8/13/2026 14:11,8/19/2026 10:59,8/19/2026 10:59,Finished
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,670,8/17/2026 12:51,8/28/2026 18:00,8/18/2026 16:01,8/31/2026 13:10,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,134,8/18/2026 16:01,8/31/2026 14:00,8/19/2026 9:45,8/31/2026 16:14,Scheduled
+__export__.mrp_production_7013_6a3eaa93,[4022-455-09992] POST 2,14928,60,8/17/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,75,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),-,__export__.mrp_workcenter_56_d6637dea,330,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,210,8/19/2026 10:52,8/20/2026 11:30,8/19/2026 14:52,8/20/2026 15:00,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,60,,8/20/2026 18:06,,8/20/2026 19:06,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,60,,8/20/2026 19:19,,8/20/2026 20:19,Scheduled
+__export__.mrp_production_7014_5c77ebb4,[4022-455-09997-3] post 7,14931,40,8/18/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,55,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),UMC750SS_(M5-05),__export__.mrp_workcenter_59_d6deab7b,330,8/19/2026 10:52,8/20/2026 9:23,8/20/2026 8:22,8/20/2026 14:53,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,130,8/20/2026 8:22,8/21/2026 9:00,8/20/2026 10:32,8/21/2026 11:10,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,40,8/21/2026 10:21,8/21/2026 11:30,8/21/2026 11:01,8/21/2026 12:10,Scheduled
+__export__.mrp_production_7016_fa99c96e,[4022-666-18121] Distance Bush 1,14984,342,7/21/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,357,8/19/2026 10:41,8/19/2026 10:41,8/19/2026 10:41,8/19/2026 10:41,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,3168,,8/31/2026 16:00,,9/3/2026 20:48,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,684,,9/8/2026 11:15,,9/8/2026 22:39,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,342,,9/9/2026 8:00,,9/9/2026 13:42,Scheduled
+__export__.mrp_production_7046_24edd763,[00236-05-103-C] geleideblok spanrol,14885,109,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,149,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),-,__export__.mrp_workcenter_56_d6637dea,1834,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),-,__export__.mrp_workcenter_55_15609e22,308,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/11/2026 10:09,8/20/2026 8:00,8/18/2026 9:39,8/26/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,109,8/19/2026 9:45,8/26/2026 14:00,8/19/2026 11:34,8/26/2026 15:49,Scheduled
+__export__.mrp_production_7047_47cb762c,[00429-00-249-A] Plint adjust strip,14894,420,7/23/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,16,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,96,,8/20/2026 8:00,,8/20/2026 9:36,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,1,,8/20/2026 10:36,,8/20/2026 10:37,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/20/2026 10:45,,8/27/2026 8:15,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,1,,8/27/2026 23:31,,8/27/2026 23:32,Scheduled
+__export__.mrp_production_7048_35d221ef,[00385-00-329-A] End plate finger safety hinge,14891,473,7/23/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,488,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,1509,,8/26/2026 16:00,,8/28/2026 9:09,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,473,,8/28/2026 10:00,,8/28/2026 17:53,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/31/2026 8:00,,9/4/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,473,,9/7/2026 8:00,,9/7/2026 15:53,Scheduled
+__export__.mrp_production_7049_04716836,[4022-337-33842] arret holder,14925,120,7/16/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,19,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,98,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,19,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),UMC400_(M5-06),__export__.mrp_workcenter_59_d6deab7b,190,,8/20/2026 8:00,,8/20/2026 11:10,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,122,,8/20/2026 14:15,,8/20/2026 16:17,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,12,,8/20/2026 18:06,,8/20/2026 18:18,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,4,,8/20/2026 18:30,,8/20/2026 18:34,Scheduled
+__export__.mrp_production_7083_bb8ea33f,[4022-671-49061] Bpam front 1,14988,108,9/11/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,123,8/19/2026 11:00,8/19/2026 11:00,8/19/2026 11:00,8/19/2026 11:00,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,1170,,8/25/2026 11:20,,8/26/2026 14:50,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,630,,8/28/2026 20:05,,8/31/2026 14:35,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,108,,8/31/2026 16:29,,8/31/2026 18:17,Scheduled
+__export__.mrp_production_7085_77271653,[BD50-5085-007-C] bracket,15031,62,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,62,,8/21/2026 12:00,,8/21/2026 13:02,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,462,,9/9/2026 8:00,,9/9/2026 15:42,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,124,,9/14/2026 13:00,,9/14/2026 15:04,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,62,,9/17/2026 8:21,,9/17/2026 9:23,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,62,,,,,To Do
+__export__.mrp_production_7086_3f3f3a3d,[BD50-5085-007-C] bracket,15031,30,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,30,,8/20/2026 13:04,,8/20/2026 13:34,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,270,,8/28/2026 9:24,,8/28/2026 13:54,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,60,,9/11/2026 20:30,,9/11/2026 21:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30,,9/15/2026 13:35,,9/15/2026 14:05,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,30,,,,,To Do
+__export__.mrp_production_7087_3703c654,[BD50-5085-009-C] bracket,15032,57,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,57,,8/20/2026 21:00,,8/20/2026 21:57,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,432,,9/1/2026 12:30,,9/1/2026 19:42,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,114,,9/2/2026 12:25,,9/2/2026 14:19,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,57,,9/2/2026 19:16,,9/2/2026 20:13,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/3/2026 8:00,,9/16/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,57,,9/18/2026 14:09,,9/18/2026 15:06,Scheduled
+__export__.mrp_production_7088_c4ef1e05,[BD50-5085-009-C] bracket,15032,30,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,30,,8/20/2026 10:34,,8/20/2026 11:04,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,270,,8/31/2026 11:05,,8/31/2026 15:35,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,60,,9/11/2026 18:00,,9/11/2026 19:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,30,,9/15/2026 15:20,,9/15/2026 15:50,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,30,,,,,To Do
+__export__.mrp_production_7089_d51ed5a1,[BD50-5085-011-C] bracket,15033,20,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,20,,8/20/2026 17:00,,8/20/2026 17:20,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,210,,8/26/2026 19:40,,8/26/2026 23:10,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,40,,8/27/2026 18:04,,8/27/2026 18:44,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,8/27/2026 22:06,,8/27/2026 22:26,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,8/28/2026 8:00,,9/10/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,9/11/2026 14:40,,9/11/2026 15:00,Scheduled
+__export__.mrp_production_7090_cf4cbf38,[BD50-5085-011-C] bracket,15033,50,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,50,,8/21/2026 8:00,,8/21/2026 8:50,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,390,,9/7/2026 20:00,,9/8/2026 10:30,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,100,,9/10/2026 9:30,,9/10/2026 11:10,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,50,,9/11/2026 19:00,,9/11/2026 19:50,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/14/2026 8:00,,9/25/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,50,,9/25/2026 16:00,,9/25/2026 16:50,Scheduled
+__export__.mrp_production_7091_ee7ba730,[BD50-5085-013-C] bracket,15034,55,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,55,,8/21/2026 10:00,,8/21/2026 10:55,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,420,,9/9/2026 8:00,,9/9/2026 15:00,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,110,,9/9/2026 23:16,,9/10/2026 9:06,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,55,,9/11/2026 13:30,,9/11/2026 14:25,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/14/2026 8:00,,9/25/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,55,,9/25/2026 16:00,,9/25/2026 16:55,Scheduled
+__export__.mrp_production_7092_08ed6ea8,[BD50-5085-013-C] bracket,15034,45,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,45,,8/21/2026 11:00,,8/21/2026 11:45,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,360,,9/7/2026 23:00,,9/8/2026 13:00,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,90,,9/11/2026 14:55,,9/11/2026 16:25,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,45,,9/15/2026 11:35,,9/15/2026 12:20,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,45,,,,,To Do
+__export__.mrp_production_7093_4e69d2cc,[BD50-5075-011-E] bracket,15028,52,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,52,,8/20/2026 18:00,,8/20/2026 18:52,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,298,,8/28/2026 9:24,,8/28/2026 14:22,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,104,,9/2/2026 23:45,,9/3/2026 9:29,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,52,,9/3/2026 9:30,,9/3/2026 10:22,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/4/2026 8:00,,9/17/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,52,,9/18/2026 15:09,,9/18/2026 16:01,Scheduled
+__export__.mrp_production_7094_5fd6a028,[BD50-5075-013F] bracket,15029,50,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,50,,8/21/2026 9:00,,8/21/2026 9:50,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,390,,9/3/2026 19:45,,9/4/2026 10:15,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,100,,9/14/2026 10:00,,9/14/2026 11:40,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,50,,9/14/2026 18:19,,9/14/2026 19:09,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/15/2026 8:00,,9/28/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,50,,9/28/2026 16:00,,9/28/2026 16:50,Scheduled
+__export__.mrp_production_7095_932ac3aa,[BD50-5075-013F] bracket,15029,20,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,20,,8/20/2026 22:30,,8/20/2026 22:50,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,210,,9/1/2026 20:00,,9/1/2026 23:30,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,40,,9/3/2026 9:30,,9/3/2026 10:10,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,9/4/2026 14:54,,9/4/2026 15:14,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/7/2026 8:00,,9/18/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,9/18/2026 23:00,,9/18/2026 23:20,Scheduled
+__export__.mrp_production_7096_98ba3320,[BD50-5075-015F] bracket,15030,43,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,43,,8/20/2026 14:19,,8/20/2026 15:02,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,348,,9/3/2026 18:00,,9/3/2026 23:48,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,86,,9/11/2026 23:00,,9/14/2026 8:26,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,43,,9/16/2026 11:31,,9/16/2026 12:14,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,43,,,,,To Do
+__export__.mrp_production_7097_07647ff1,[BD50-5075-015F] bracket,15030,20,11/12/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,20,,8/20/2026 11:49,,8/20/2026 12:09,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,210,,9/2/2026 22:53,,9/3/2026 10:23,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,40,,9/3/2026 12:00,,9/3/2026 12:40,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,9/3/2026 15:00,,9/3/2026 15:20,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/4/2026 8:00,,9/17/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,9/18/2026 12:39,,9/18/2026 12:59,Scheduled
+__export__.mrp_production_7098_92dba811,[4022-666-65702(R1)] LSPH coverplate stud block,14986,524,5/28/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,120,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),-,__export__.mrp_workcenter_56_d6637dea,405,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,195,,8/20/2026 8:00,,8/20/2026 11:15,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,105,,8/28/2026 8:00,,8/28/2026 9:45,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/31/2026 8:00,,9/4/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,105,,9/4/2026 16:00,,9/4/2026 17:45,Scheduled
+__export__.mrp_production_7105_95a83878,[4598-008-08901B POS 1] CEILING INLET*,15022,89,6/26/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,104,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,2315,8/19/2026 10:31,8/19/2026 10:31,8/19/2026 10:31,8/19/2026 10:31,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,446,8/19/2026 10:31,8/19/2026 10:31,8/19/2026 10:31,8/19/2026 10:31,Finished
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,267,8/19/2026 10:31,8/20/2026 20:00,8/19/2026 15:28,8/21/2026 8:27,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,9000,,8/21/2026 8:30,,9/16/2026 14:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,89,,9/17/2026 10:00,,9/17/2026 11:29,Scheduled
+__export__.mrp_production_7112_a033bcf9,[7001-2580-0005] MT Center Body / FM / FM2010-M00019 Rev. C,17693,20,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,20,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-04),__export__.mrp_workcenter_61_bcb50df3,1100,,9/15/2026 8:00,,9/16/2026 2:20,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,450,,9/16/2026 8:00,,9/16/2026 15:30,Scheduled
+__export__.mrp_production_7116_b83898ac,[7001-2580-0041] MT Interface Plate / FM/ FM2010-M00003 Rev. E,18718,20,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,4,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),VF2SS_(M3-03),__export__.mrp_workcenter_60_6593b576,200.8,,8/24/2026 12:00,,8/24/2026 15:20,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,450,,8/25/2026 8:00,,8/25/2026 15:30,Scheduled
+__export__.mrp_production_7117_1db6dda4,[7001-2580-0042] MT Clamp Axle / FM / FM2010-M00005 Rev. E,18719,20,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),VF2SS_(M3-03),__export__.mrp_workcenter_61_bcb50df3,233.33,,9/4/2026 16:00,,9/4/2026 19:53,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),VF2SS_(M3-03),__export__.mrp_workcenter_61_bcb50df3,203.67,,9/4/2026 20:08,,9/4/2026 23:32,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/7/2026 8:00,,9/11/2026 13:30,Scheduled
+__export__.mrp_production_7127_c699ceb1,[7001-2580-0043] MT Carrier Disc / FM / FM2010-M00020  Rev. C,18720,20,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,10,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-04),__export__.mrp_workcenter_61_bcb50df3,250,,9/7/2026 8:00,,9/7/2026 12:10,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750SS_(M5-04),__export__.mrp_workcenter_60_6593b576,290,,9/7/2026 12:25,,9/7/2026 17:15,Scheduled
+__export__.mrp_production_7128_cbee17bd,[7001-2580-0044] ST Clamping Axle / FM / FM2010-M00009 Rev. D,18721,20,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-04),__export__.mrp_workcenter_61_bcb50df3,379.67,,8/28/2026 8:00,,8/28/2026 14:19,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,326.67,,8/28/2026 14:24,,8/28/2026 19:50,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/31/2026 8:00,,9/4/2026 13:30,Scheduled
+__export__.mrp_production_7132_e96ed3ac,[7001-2580-0045] ST Spring Housing / FM / FM2010-M00011 Rev. D,18722,20,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,4,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,316,,9/2/2026 8:00,,9/2/2026 13:16,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750SS_(M5-05),__export__.mrp_workcenter_60_6593b576,248,,9/2/2026 13:27,,9/2/2026 17:35,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,60,,9/3/2026 8:00,,9/3/2026 9:00,Scheduled
+__export__.mrp_production_7136_4b75d257,[7001-2580-0007] ST Interface plate / FM / FM210-M00008 Rev. D,17701,20,8/10/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,4,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),UMC750_(M5-03),__export__.mrp_workcenter_62_468a38e5,136,,8/20/2026 8:00,,8/20/2026 10:16,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,450,,8/20/2026 10:30,,8/21/2026 10:00,Scheduled
+__export__.mrp_production_7140_067a4ec9,[7001-2580-0047] ST Lever / FM / FM2010-M00014 Rev. D,18724,20,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,19,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,68.8,,8/20/2026 8:00,,8/20/2026 9:08,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750SS_(M5-05),__export__.mrp_workcenter_60_6593b576,120,,8/20/2026 17:00,,8/20/2026 19:00,Scheduled
+__export__.mrp_production_7199_816e31d2,[7001-2580-0002] MT Lever / FM / FM2010-M00004 Rev. D,17687,20,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,15,,8/20/2026 8:00,,8/20/2026 8:15,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,90,,8/20/2026 16:30,,8/20/2026 18:00,Scheduled
+__export__.mrp_production_7200_dd78e2c4,[4022.620.02663] RH NXE RED FIDUCIAL MOUNT BRKT,18665,1,6/24/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,16,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,108,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,131,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,131,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/20/2026 8:00,,8/26/2026 13:30,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,8/27/2026 8:00,,9/9/2026 11:00,Scheduled
+__export__.mrp_production_7202_d5d075b5,[4022-637-32081] IH SERVE MECH HINGE BRACKET,14967,33,8/28/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,1,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,354,,8/21/2026 17:15,,8/21/2026 23:09,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,33,,8/24/2026 14:00,,8/24/2026 14:33,Scheduled
+__export__.mrp_production_7203_0e606185,[4023-001-43251B] Block detection RI,15010,15,9/18/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,30,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),UMC400_(M5-06),__export__.mrp_workcenter_59_d6deab7b,180,,8/20/2026 11:25,,8/20/2026 14:25,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,210,,8/24/2026 23:10,,8/25/2026 10:40,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/25/2026 12:00,,9/1/2026 9:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,15,,9/1/2026 9:30,,9/1/2026 9:45,Scheduled
+__export__.mrp_production_7204_644ef9b4,[4022-335-19371] Filterhouder Ni 0.02mm,16241,60,10/6/2026 2:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,60,,8/20/2026 9:34,,8/20/2026 10:34,Scheduled
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,270,,8/31/2026 12:57,,8/31/2026 17:27,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,300,,9/3/2026 18:43,,9/3/2026 23:43,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,61,,9/4/2026 13:38,,9/4/2026 14:39,Scheduled
+__export__.mrp_production_7205_3768da3c,[4022-635-87291] HANDLE,14958,315,8/20/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,330,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),-,__export__.mrp_workcenter_56_d6637dea,2610,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,405,,8/20/2026 17:00,,8/20/2026 23:45,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,315,,8/21/2026 17:15,,8/21/2026 22:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,315,,8/21/2026 23:00,,8/24/2026 12:15,Scheduled
+__export__.mrp_production_7209_f5d9253c,[4022.704.19282] RH RED GRIPPER BODY,14210,60,10/23/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,60,8/17/2026 11:30,8/17/2026 11:30,8/17/2026 11:30,8/17/2026 11:30,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/17/2026 11:30,8/20/2026 8:00,8/24/2026 11:00,8/26/2026 13:30,Scheduled
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400),UMC400_(M5-06),__export__.mrp_workcenter_84_05c538b3,3660,,8/26/2026 16:00,,9/1/2026 13:00,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,28860,,,,,To Do
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400),-,__export__.mrp_workcenter_84_05c538b3,3660,,,,,To Do
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,2250,,,,,To Do
+__export__.mrp_production_7228_7fa52c80,[7001-2580-0023] TOP PLATE / FM / FM-02-003-C,17773,10,9/2/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,10,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,740,,8/24/2026 14:45,,8/25/2026 11:05,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,1460,,8/25/2026 11:05,,8/26/2026 19:25,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/27/2026 8:00,,9/2/2026 13:30,Scheduled
+__export__.mrp_production_7229_67d38ddc,[7001-2580-0024] LIGHT L BRACKET / FM / FM-02-030-B,17774,10,9/2/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,10,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,1530,,8/27/2026 16:00,,8/31/2026 9:30,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/1/2026 8:00,,9/7/2026 13:30,Scheduled
+__export__.mrp_production_7242_b4af134d,[7001-2580-0029] Mirror Holder / FM / FM-02-033-B,17779,20,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),VF2SS_(M3-03),__export__.mrp_workcenter_61_bcb50df3,980,,8/27/2026 8:00,,8/28/2026 8:20,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/31/2026 8:00,,9/4/2026 13:30,Scheduled
+__export__.mrp_production_7243_e2cb2571,[7001-2580-0030] Lens Fix / FM / FM-02-009-B,17780,20,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),VF2SS_(M3-03),__export__.mrp_workcenter_61_bcb50df3,600,,8/24/2026 15:35,,8/25/2026 9:35,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/25/2026 10:00,,8/31/2026 15:30,Scheduled
+__export__.mrp_production_7244_212122d6,[7001-2580-0031] Lens Mechanism 2 / FM / FM-02-004-B,17781,10,9/2/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,10,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,910,,8/25/2026 8:00,,8/25/2026 23:10,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/26/2026 8:00,,9/1/2026 13:30,Scheduled
+__export__.mrp_production_7255_0b10a354,[7001-2580-0034] Base / FM / FM-02-018-B,17784,10,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,25,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,340,,8/20/2026 10:31,,8/20/2026 16:11,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/21/2026 8:00,,8/27/2026 13:30,Scheduled
+__export__.mrp_production_7256_ef4919a9,[7001-2580-0035] SA Housing / FM / FM-02-017-B,17785,10,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,25,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,590,,8/26/2026 8:00,,8/26/2026 17:50,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/27/2026 8:00,,9/2/2026 13:30,Scheduled
+__export__.mrp_production_7257_de9f34e4,[7001-2580-0036] LS Actuator Arm / FM / FM-02-029-B,17786,10,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,25,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,8/19/2026 10:57,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,320,,8/20/2026 19:00,,8/21/2026 8:20,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/21/2026 8:30,,8/27/2026 14:00,Scheduled
+__export__.mrp_production_7261_d0b8d6cf,[7001-2580-0038] Swing / FM / FM-02-019-B,17788,10,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,25,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,340,,8/20/2026 16:26,,8/20/2026 22:06,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/21/2026 8:00,,8/27/2026 13:30,Scheduled
+__export__.mrp_production_7282_5b54ffc7,[7001-2580-0018] Mountblock / FM / FM-02-013-B,17768,60,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,3615,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,960,,8/20/2026 22:11,,8/21/2026 22:11,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/24/2026 8:00,,8/28/2026 13:30,Scheduled
+__export__.mrp_production_7293_d55f3b9e,[7001-2540-0009] Mirror Holder V2 / FM-02-034 ,17904,10,9/2/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,25,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,480,,8/21/2026 8:35,,8/21/2026 16:35,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/24/2026 8:00,,8/28/2026 13:30,Scheduled
+__export__.mrp_production_7500_2889847a,[7005-2580-0007] Support block  / 07201506 v02-00 - Drawing in RED,16269,8,9/28/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,23,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),M5-02_(FR5_02),__export__.mrp_workcenter_59_d6deab7b,1290,,8/20/2026 15:59,,8/21/2026 13:29,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,324,,8/21/2026 18:20,,8/21/2026 23:44,Scheduled
+__export__.mrp_production_7501_149d84b1,[4022.684.32042] RH RED DYNAMIC STRAIN RELIEF B ,7363,80,10/20/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,96.33,8/19/2026 11:09,8/19/2026 11:09,8/19/2026 11:09,8/19/2026 11:09,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),UMC750SS_(M5-04),__export__.mrp_workcenter_62_468a38e5,3900,,8/28/2026 14:34,,9/2/2026 7:34,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/2/2026 8:00,,9/15/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,80,,9/16/2026 9:56,,9/16/2026 11:16,Scheduled
+__export__.mrp_production_7502_1e11fbd9,[4022.704.19302] RH RED STATIC STRAIN RELIEF A,6974,124,10/6/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,139,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),UMC750_(M5-03),__export__.mrp_workcenter_62_468a38e5,2664,,8/26/2026 18:05,,8/31/2026 14:29,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750SS_(M5-05),__export__.mrp_workcenter_60_6593b576,308,,8/31/2026 14:30,,8/31/2026 19:38,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,9/1/2026 8:00,,9/14/2026 11:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,124,,9/14/2026 16:00,,9/14/2026 18:04,Scheduled
+__export__.mrp_production_7503_32aed582,[7001-2580-0022] HOLDER CREDIT CARD / FM / FM-02-007-C,17772,9,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,18,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,324,,9/1/2026 16:00,,9/1/2026 21:24,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,621,,9/4/2026 19:02,,9/7/2026 13:23,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/8/2026 8:00,,9/14/2026 13:30,Scheduled
+__export__.mrp_production_7504_01871cc0,[7001-2580-0020] Monitor Support 2 / FM / FM-02-045-B,17770,18,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,18,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,104,,8/25/2026 18:00,,8/25/2026 19:44,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/26/2026 8:00,,9/1/2026 13:30,Scheduled
+__export__.mrp_production_7505_7d13bf71,[7001-2580-0019] Monitor Support / FM / FM-02-046-B,17769,18,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,18,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750SS_(M5-05),__export__.mrp_workcenter_60_6593b576,111,,8/31/2026 19:53,,8/31/2026 21:44,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/1/2026 8:00,,9/7/2026 13:30,Scheduled
+__export__.mrp_production_7506_7d1ab712,[7001-2580-0017] Pusher / FM / FM-02-011-B,17767,12,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,17,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,94,,8/25/2026 19:59,,8/25/2026 21:33,Scheduled
+__export__.mrp_production_7507_f05ba0ba,[7001-2580-0016] Pusher Protect / FM / FM-02-012-B,17766,12,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,17,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,8/19/2026 10:43,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,86,,8/25/2026 21:44,,8/25/2026 23:10,Scheduled
+__export__.mrp_production_7508_1f261ca4,[7001-2580-0040] Window Holder / FM / FM-02-041-B,17790,72,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,27,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,96,,8/24/2026 22:20,,8/24/2026 23:56,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/25/2026 8:00,,8/31/2026 13:30,Scheduled
+__export__.mrp_production_7509_b9b854dc,[7001-2580-0037] SA Lens Mount / FM / FM-02-020-B,17787,9,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,18,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,366,,8/31/2026 14:44,,8/31/2026 20:50,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/1/2026 8:00,,9/7/2026 13:30,Scheduled
+__export__.mrp_production_7510_421ed810,[7001-2580-0039] Lens Shim / FM / FM-02-061-B,17789,32,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,19,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),VF2SS_(M3-03),__export__.mrp_workcenter_60_6593b576,72,,8/24/2026 10:44,,8/24/2026 11:56,Scheduled
+__export__.mrp_production_7511_3a4b129b,[7001-2580-0033] Detector Mount / FM / FM-02-044-B,17783,10,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,20,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,160,,8/31/2026 9:45,,8/31/2026 12:25,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,200,,8/31/2026 21:05,,9/1/2026 8:25,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/2/2026 8:00,,9/8/2026 13:30,Scheduled
+__export__.mrp_production_7512_f750e4df,[7001-2580-0032] Lens Support / FM / FM-02-042-B,17782,10,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,20,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,MP2 - Mat. prep - manual sawing (ZGN_02),-,__export__.mrp_workcenter_64_95992ef5,5,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,250,,9/1/2026 8:30,,9/1/2026 12:40,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/2/2026 8:00,,9/8/2026 13:30,Scheduled
+__export__.mrp_production_7513_3de5056a,[7001-2580-0026] Holder Fresnell / FM / FM-02-035-B,17776,10,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,20,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:44,Finished
+,,,,,MP2 - Mat. prep - manual sawing (ZGN_02),-,__export__.mrp_workcenter_64_95992ef5,5,8/19/2026 10:44,8/19/2026 10:44,8/19/2026 10:45,8/19/2026 10:45,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,395,,8/31/2026 21:59,,9/1/2026 12:34,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/2/2026 8:00,,9/8/2026 13:30,Scheduled
+__export__.mrp_production_7514_02a38d11,[7001-2580-0025] Holder Lamp / FM / FM-02-037-B,17775,12,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,21,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,MP2 - Mat. prep - manual sawing (ZGN_02),-,__export__.mrp_workcenter_64_95992ef5,6,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,396,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/13/2026 13:13,8/20/2026 8:00,8/20/2026 12:43,8/26/2026 13:30,Scheduled
+__export__.mrp_production_7517_eab0fb08,[4022-671-49061] Bpam front 1,14988,54,9/17/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,69,8/19/2026 11:02,8/19/2026 11:02,8/19/2026 11:02,8/19/2026 11:02,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,630,,8/21/2026 11:25,,8/21/2026 21:55,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,360,,8/25/2026 11:00,,8/25/2026 17:00,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,54,,8/25/2026 17:00,,8/25/2026 17:54,Scheduled
+__export__.mrp_production_7518_26f78d7f,[4512-127-05186B] Anschlag,15017,967,10/12/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,982,8/19/2026 11:09,8/19/2026 11:09,8/19/2026 11:09,8/19/2026 11:09,Finished
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-01_(FR5_01),__export__.mrp_workcenter_58_a525d5b9,4925,,8/21/2026 19:44,,8/27/2026 5:49,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,967,,9/8/2026 22:54,,9/9/2026 23:01,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,967,,9/9/2026 23:30,,9/10/2026 23:37,Scheduled
+__export__.mrp_production_7523_cbe9844b,[00002033- 04] ADAPTER PLATE,19696,3,11/20/2026 13:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,15,,8/21/2026 15:00,,8/21/2026 15:15,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,90,,9/10/2026 8:00,,9/10/2026 9:30,Scheduled
+__export__.mrp_production_7533_26d59ffc,[4022.695.89671] MBI WS MK2 AORTA DC BRACE IF,19365,10,2/8/2027 12:00,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,660,,,7/10/2026 9:34,7/10/2026 9:34,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,660,,,7/10/2026 9:34,7/10/2026 9:34,Finished
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,25,7/10/2026 9:34,7/10/2026 9:34,7/10/2026 9:34,7/10/2026 9:34,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),UMC750SS_(M5-04),__export__.mrp_workcenter_62_468a38e5,1320,8/19/2026 10:47,9/3/2026 19:45,8/24/2026 10:47,9/4/2026 17:45,Scheduled
+__export__.mrp_production_7580_2d6ba786,N26241005V02-00 - Spacer,17535,16,8/12/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,31,8/19/2026 10:50,8/19/2026 10:50,8/19/2026 10:50,8/19/2026 10:50,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,268,,9/15/2026 8:00,,9/15/2026 12:28,Scheduled
+__export__.mrp_production_7581_e767f63f,N26241006V01-00 - Spacer B,17536,16,8/12/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,31,8/19/2026 10:50,8/19/2026 10:50,8/19/2026 10:50,8/19/2026 10:50,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,252,,9/2/2026 8:00,,9/2/2026 12:12,Scheduled
+__export__.mrp_production_7582_a5c034e9,N26241508V01-04 - JH Top Cover,17537,4,8/12/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,240,,8/20/2026 20:00,,8/21/2026 8:00,Scheduled
+__export__.mrp_production_7583_751bfa1f,N26241507V01-04 - JH Bottom Cover,17538,4,8/12/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,4,,8/20/2026 8:00,,8/20/2026 8:04,Scheduled
+__export__.mrp_production_7588_55eaba4e,[4022.704.19282] RH RED GRIPPER BODY,14210,56,8/25/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,56,,1/1/2000 0:00,,1/1/2000 0:00,Cancelled
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400),-,__export__.mrp_workcenter_84_05c538b3,3420,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M5-04 - UMCSS - 5axis  - Manual (UMC750SS),-,__export__.mrp_workcenter_62_468a38e5,26940,8/19/2026 10:55,,11/10/2026 11:55,,To Do
+,,,,,M5-06 - UMC400 - 5axis  - Manual (UMC400),-,__export__.mrp_workcenter_84_05c538b3,3420,,,,,To Do
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,2250,8/17/2026 16:36,,8/24/2026 16:00,,To Do
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,2250,,,,,To Do
+__export__.mrp_production_7589_1463ab54,[4022-666-3837-1] LSPH Bellow Clamp,14985,200,10/8/2026 2:00,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,1090,,9/3/2026 21:03,,9/4/2026 23:13,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,690,,9/4/2026 23:45,,9/7/2026 19:15,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,400,,9/14/2026 16:00,,9/14/2026 22:40,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,200,,9/15/2026 8:00,,9/15/2026 11:20,Scheduled
+__export__.mrp_production_7590_9c5b2965,[4022-674-35671] MBI WS LTT SSXY MAN PLUG,14992,46,9/23/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,61,8/19/2026 11:02,8/19/2026 11:02,8/19/2026 11:02,8/19/2026 11:02,Finished
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),UMC400_(M5-06),__export__.mrp_workcenter_58_a525d5b9,780,,8/20/2026 14:25,,8/21/2026 11:25,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,780,,8/31/2026 15:00,,9/1/2026 12:00,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,46,,9/1/2026 14:20,,9/1/2026 15:06,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/2/2026 8:00,,9/8/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,46,,9/8/2026 15:45,,9/8/2026 16:31,Scheduled
+__export__.mrp_production_7591_7e8691ac,[00385-00-320-A] Plint adjust strip,14889,654,8/13/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,669,8/19/2026 10:47,8/19/2026 10:47,8/19/2026 10:47,8/19/2026 10:47,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,4668,,8/20/2026 9:45,,8/25/2026 15:33,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,654,,8/26/2026 22:55,,8/27/2026 17:49,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/28/2026 8:00,,9/3/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,654,,9/3/2026 16:00,,9/4/2026 10:54,Scheduled
+__export__.mrp_production_7592_8727887b,[00429-00-662-B] Arret lever,14895,400,8/6/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,35,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),-,__export__.mrp_workcenter_57_6faf5319,490,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:48,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,190,,8/24/2026 12:00,,8/24/2026 15:10,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,8/24/2026 16:00,,8/24/2026 16:20,Scheduled
+__export__.mrp_production_7593_91e4f0ef,[1011113A] Cord Bracket,14905,134,9/11/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,149,8/19/2026 11:01,8/19/2026 11:01,8/19/2026 11:01,8/19/2026 11:01,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,760,,9/2/2026 16:00,,9/3/2026 4:40,Scheduled
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,358,,9/3/2026 8:00,,9/3/2026 13:58,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,268,,9/3/2026 14:00,,9/3/2026 18:28,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,134,,9/4/2026 11:09,,9/4/2026 13:23,Scheduled
+__export__.mrp_production_7595_a7a474ef,[4022-451-22801B] RS Lock MF-X Preload Housing,15540,6,9/15/2026 13:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,15,,8/20/2026 9:30,,8/20/2026 9:45,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,90,,8/21/2026 22:10,,8/21/2026 23:40,Scheduled
+__export__.mrp_production_7596_c18ab2f0,[4022.695.89661] MBI WS MK2 AORTA BRACE IF,19106,26,8/19/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,41,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,Finished
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-01_(FR5_01),__export__.mrp_workcenter_58_a525d5b9,1650,,8/20/2026 15:59,,8/21/2026 19:29,Scheduled
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-02_(FR5_02),__export__.mrp_workcenter_58_a525d5b9,1650,,8/21/2026 20:00,,8/24/2026 23:30,Scheduled
+__export__.mrp_production_7598_d74ec653,[4023-002-16111] filter plate wide Zr0.02,19792,10,8/28/2026 15:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,15,,8/20/2026 9:00,,8/20/2026 9:15,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,90,,8/20/2026 12:30,,8/20/2026 14:00,Scheduled
+__export__.mrp_production_7609_1ce8004f,[4022-680-50231] MBI WS MK2 F&T BMA CONNECT 1,14996,25,9/3/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,40,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,8/19/2026 10:58,Finished
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),M3-01_(FR3_01),__export__.mrp_workcenter_55_15609e22,615,,8/25/2026 18:00,,8/26/2026 12:15,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/27/2026 8:00,,9/2/2026 13:30,Scheduled
+__export__.mrp_production_7610_4dd9b2ac,[4598-008-08901B POS 1] CEILING INLET*,15022,300,10/26/2026 1:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,315,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,7590,,9/9/2026 19:05,,9/17/2026 1:35,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,1290,,9/17/2026 8:00,,9/18/2026 13:30,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,900,,9/18/2026 16:00,,9/21/2026 15:00,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,9000,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,300,,,,,To Do
+__export__.mrp_production_7611_d448c526,[4022-671-49061] Bpam front 1,14988,152,10/5/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,167,8/19/2026 11:08,8/19/2026 11:08,8/19/2026 11:08,8/19/2026 11:08,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,1610,,8/27/2026 16:00,,8/31/2026 10:50,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,850,,9/4/2026 23:47,,9/7/2026 21:57,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,152,,9/8/2026 18:00,,9/8/2026 20:32,Scheduled
+__export__.mrp_production_7614_32f48c3b,[00385-00-346-A] Plint fixing strip right,14892,279,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,294,7/21/2026 14:33,7/21/2026 14:33,7/21/2026 14:33,7/21/2026 14:33,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),-,__export__.mrp_workcenter_56_d6637dea,2322,7/21/2026 14:33,7/21/2026 14:33,7/21/2026 14:33,7/21/2026 14:33,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,1206,,9/7/2026 22:12,,9/9/2026 10:18,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,558,,9/14/2026 22:55,,9/15/2026 16:13,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/16/2026 8:00,,9/22/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,279,,9/22/2026 16:00,,9/22/2026 20:39,Scheduled
+__export__.mrp_production_7615_4046e64b,[00385-00-321-A] Plint fixing strip left,14890,714,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,729,8/19/2026 10:50,8/19/2026 10:50,8/19/2026 10:50,8/19/2026 10:50,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,5802,,9/7/2026 12:25,,9/11/2026 13:07,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,2946,,9/11/2026 14:00,,9/16/2026 15:06,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,1428,,9/16/2026 15:30,,9/17/2026 23:18,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/18/2026 8:00,,9/24/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,714,,9/24/2026 16:00,,9/25/2026 11:54,Scheduled
+__export__.mrp_production_7672_51eb241f,[m05534]  Spacer pos 1,17395,200,9/15/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,215,8/19/2026 11:02,8/19/2026 11:02,8/19/2026 11:02,8/19/2026 11:02,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,590,,8/28/2026 14:00,,8/28/2026 23:50,Scheduled
+__export__.mrp_production_7673_b2a52a5f,[E06581] 4598-013-97781 WA2 VIBRATION PAD LEFT SPACER blauw,17519,400,9/1/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,400,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,1690,,8/27/2026 8:00,,8/28/2026 12:10,Scheduled
+__export__.mrp_production_7674_a3baef13,[E06580] 4598-013-97791 WA2 VIBRATION PAD RIGHT SPACER rood,17867,400,9/1/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,400,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,1690,,9/4/2026 8:00,,9/7/2026 12:10,Scheduled
+__export__.mrp_production_7686_afbd1cd4,[E.520002-001] mounting relay,17609,392,8/25/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,56,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,538,,8/20/2026 8:00,,8/20/2026 16:58,Scheduled
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),M3-02_(FR3_02),__export__.mrp_workcenter_55_15609e22,146,,8/21/2026 8:00,,8/21/2026 10:26,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,56,,8/24/2026 16:35,,8/24/2026 17:31,Scheduled
+__export__.mrp_production_7687_3f86f074,[7001-2580-0021] PARKING BLOCK / FM / FM-02-048-B,17771,11,2/8/2027 12:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,11,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,500,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,Finished
+__export__.mrp_production_7688_61d078c7,[7001-2580-0028] Optics Mount / FM / FM-02-038-B,17778,22,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,37,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,1534,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/13/2026 13:13,8/20/2026 8:00,8/20/2026 12:43,8/26/2026 13:30,Scheduled
+__export__.mrp_production_7689_3741e178,[7001-2580-0027] Holder Iris / FM / FM-02-036-B,17777,11,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,26,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),-,__export__.mrp_workcenter_61_bcb50df3,599,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,8/13/2026 13:13,Finished
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/13/2026 13:13,8/20/2026 8:00,8/20/2026 12:43,8/26/2026 13:30,Scheduled
+__export__.mrp_production_7690_64e14744,[4022-637-32081] IH SERVE MECH HINGE BRACKET,14967,20,8/28/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,1,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,8/19/2026 10:56,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,250,,8/20/2026 18:15,,8/20/2026 22:25,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,20,,8/20/2026 22:34,,8/20/2026 22:54,Scheduled
+__export__.mrp_production_7691_42b2dd71,[E05537] Spacer pos 1,18608,100,9/22/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,100,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,8/19/2026 11:03,Finished
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,390,,9/1/2026 8:00,,9/1/2026 14:30,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,100,,9/2/2026 10:30,,9/2/2026 12:10,Scheduled
+__export__.mrp_production_7694_778da661,[1508130 B] [Q] excenter housing z,16893,174,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,189,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,8/19/2026 10:52,Finished
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-01_(FR5_01),__export__.mrp_workcenter_58_a525d5b9,7920,,8/28/2026 16:00,,9/7/2026 4:00,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,960,,9/9/2026 10:33,,9/10/2026 10:33,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,870,,9/21/2026 20:15,,9/22/2026 18:45,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,174,,9/23/2026 8:00,,9/23/2026 10:54,Scheduled
+__export__.mrp_production_7695_fc7ed079,[4022-656-73531] Pipe clamp exhaust FW 1980,14976,86,9/11/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,101,8/19/2026 11:01,8/19/2026 11:01,8/19/2026 11:01,8/19/2026 11:01,Finished
+,,,,,M4-02 - AW - 4axis - Conveyor Automation (FR4_02),M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,434,,9/1/2026 8:00,,9/1/2026 15:14,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,172,,9/1/2026 23:15,,9/2/2026 10:07,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,86,,9/2/2026 17:35,,9/2/2026 19:01,Scheduled
+__export__.mrp_production_7700_a1736965,[4022.683.44771] RH NXE RED RZ ENC PLATE SPPRT,16114,1,9/9/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,16,,8/20/2026 9:00,,8/20/2026 9:16,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,78,,8/21/2026 16:50,,8/21/2026 18:08,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/24/2026 8:00,,8/28/2026 13:30,Scheduled
+__export__.mrp_production_7724_4095beb0,[4022.632.63021] WTP LOCKING NUT,7034,1600,10/5/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,39,8/19/2026 11:08,8/19/2026 11:08,8/19/2026 11:08,8/19/2026 11:08,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,450,,8/24/2026 15:25,,8/24/2026 22:55,Scheduled
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,39,,8/24/2026 23:00,,8/24/2026 23:39,Scheduled
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-02_(FR5_02),__export__.mrp_workcenter_58_a525d5b9,498,,8/24/2026 23:45,,8/25/2026 8:03,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/25/2026 10:00,,8/31/2026 15:30,Scheduled
+__export__.mrp_production_7725_9d83dd88,[4022.666.20971-TBRM MCH] WTP IM MK6 BRACKET RING,13691,500,11/10/2026 1:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,500,,8/21/2026 17:21,,8/24/2026 9:41,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-04),__export__.mrp_workcenter_61_bcb50df3,11660,,9/16/2026 8:00,,9/28/2026 10:20,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+__export__.mrp_production_7726_4df82d87,[4022.632.63021] WTP LOCKING NUT,7034,1600,11/10/2026 1:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,39,8/19/2026 11:10,8/19/2026 11:10,8/19/2026 11:10,8/19/2026 11:10,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,450,,9/4/2026 16:00,,9/4/2026 23:30,Scheduled
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,39,,9/7/2026 8:00,,9/7/2026 8:39,Scheduled
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-01_(FR5_01),__export__.mrp_workcenter_58_a525d5b9,498,,9/7/2026 16:00,,9/8/2026 0:18,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/8/2026 8:00,,9/14/2026 13:30,Scheduled
+__export__.mrp_production_7727_00822393,[4022.632.63021] WTP LOCKING NUT,7034,1430,8/10/2026 14:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,37,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,420,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,Finished
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,37,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,8/19/2026 10:53,Finished
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-02_(FR5_02),__export__.mrp_workcenter_58_a525d5b9,464,8/19/2026 10:53,8/20/2026 8:00,8/19/2026 18:37,8/20/2026 15:44,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/20/2026 15:45,,8/27/2026 13:15,Scheduled
+__export__.mrp_production_7728_33c6fb58,[4022-333-13805] dr pnt cilinder,14917,250,2/8/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,265,8/19/2026 10:54,8/19/2026 10:54,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M5-02 - AW - 5axis - Pallet Automation (FR5_02),UMC400_(M5-06),__export__.mrp_workcenter_59_d6deab7b,3090,,8/21/2026 11:40,,8/26/2026 15:10,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,590,,9/7/2026 12:09,,9/7/2026 21:59,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/8/2026 8:00,,9/14/2026 13:30,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,250,,9/15/2026 23:43,,9/16/2026 11:53,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,250,,9/21/2026 18:00,,9/21/2026 22:10,Scheduled
+__export__.mrp_production_7730_52c25686,[4022-680-50251] MBI WS MK2 F&T BMA CONNECT,14997,26,7/23/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,45,8/19/2026 10:41,8/19/2026 10:41,8/19/2026 10:41,8/19/2026 10:41,Finished
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),M3-02_(FR3_02),__export__.mrp_workcenter_55_15609e22,948,8/24/2026 8:24,8/26/2026 16:00,8/26/2026 8:12,8/27/2026 15:48,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,8/18/2026 9:44,8/28/2026 8:00,8/25/2026 9:14,9/3/2026 13:30,Scheduled
+__export__.mrp_production_7733_4e1717c8,[4022.666.20971-TBRM MCH] WTP IM MK6 BRACKET RING,13691,500,9/14/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,500,,8/21/2026 8:15,,8/21/2026 16:35,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-05),__export__.mrp_workcenter_61_bcb50df3,11660,,9/2/2026 17:50,,9/18/2026 20:10,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+__export__.mrp_production_7735_1f4c7274,[4022.622.19821] RH NXE RBI BAFFLE INSERT,19415,5,2/1/2027 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,15,,8/21/2026 14:31,,8/21/2026 14:46,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),VF2SS_(M3-03),__export__.mrp_workcenter_54_3f0243e1,90,,9/3/2026 10:38,,9/3/2026 12:08,Scheduled
+__export__.mrp_production_7739_ac3d7db5,[4022-656-92231] Exhaust fw bridge 1980,14980,126,10/6/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,141,8/19/2026 11:04,8/20/2026 10:00,8/19/2026 13:55,8/20/2026 12:21,Scheduled
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),VF2SS_(M3-03),__export__.mrp_workcenter_55_15609e22,1098,,9/1/2026 20:20,,9/2/2026 22:38,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/3/2026 8:00,,9/9/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,126,,9/9/2026 13:57,,9/9/2026 16:03,Scheduled
+__export__.mrp_production_7740_e129fbb8,[4022-333-58791] Filterhouder Cu 0.1,14921,64,9/18/2026 2:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,64,,8/20/2026 8:00,,8/20/2026 9:04,Scheduled
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,282,,8/31/2026 8:00,,8/31/2026 12:42,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,320,,9/2/2026 15:00,,9/2/2026 20:20,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,64,,9/2/2026 20:31,,9/2/2026 21:35,Scheduled
+__export__.mrp_production_7741_29c5a051,[M0216-01-363-B] nul-graden arretsegment,15042,90,9/2/2026 12:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,105,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,8/19/2026 10:55,Finished
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),M3-02_(FR3_02),__export__.mrp_workcenter_55_15609e22,360,,8/21/2026 11:00,,8/21/2026 17:00,Scheduled
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),VF2SS_(M3-03),__export__.mrp_workcenter_55_15609e22,2610,,8/28/2026 8:35,,9/1/2026 20:05,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,180,,9/1/2026 20:00,,9/1/2026 23:00,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/2/2026 8:00,,9/8/2026 13:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,90,,9/8/2026 14:00,,9/8/2026 15:30,Scheduled
+__export__.mrp_production_7746_16c74a56,[7005-2580-0017] GP Z-Adjustment Lever V02-01 / 26241001,18142,18,10/15/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,33,,8/20/2026 12:36,,8/20/2026 13:09,Scheduled
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-04),__export__.mrp_workcenter_61_bcb50df3,2130,,9/2/2026 8:00,,9/3/2026 19:30,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/4/2026 8:00,,9/10/2026 13:30,Scheduled
+__export__.mrp_production_7747_63c937d1,[7005-2580-0014] Backplate V01-00 / NFI / 27244701,17992,5,10/5/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,5,,8/21/2026 16:50,,8/21/2026 16:55,Scheduled
+,,,,,M3-02 - AW - 3axis - Manual (FR3_02),M3-01_(FR3_01),__export__.mrp_workcenter_55_15609e22,1650,,9/2/2026 8:00,,9/3/2026 19:30,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,9/4/2026 8:00,,9/10/2026 13:30,Scheduled
+__export__.mrp_production_7748_9688d8c1,[7005-2580-0015] Baseplate V01-00 / NFI / 27244702,17993,5,10/5/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,5,,8/21/2026 16:50,,8/21/2026 16:55,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750SS_(M5-05),__export__.mrp_workcenter_60_6593b576,785,,8/24/2026 9:00,,8/24/2026 22:05,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/25/2026 8:00,,8/31/2026 13:30,Scheduled
+__export__.mrp_production_7749_e2513146,[7005-2580-0005] Single Rail V01-00-A (IGUS / WSQ-06S) / NFI / 26224401,16257,30,10/15/2026 2:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,2,8/19/2026 11:09,8/20/2026 9:19,8/19/2026 11:11,8/20/2026 9:21,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),UMC750_(M5-03),__export__.mrp_workcenter_60_6593b576,72,,8/21/2026 22:26,,8/21/2026 23:38,Scheduled
+__export__.mrp_production_7750_7174a83f,[7005-2580-0010] Cylinder bracket V01-00 / NFI / 27244703,16360,4,10/5/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,1,,8/21/2026 17:05,,8/21/2026 17:06,Scheduled
+,,,,,M3-03 - VF - 3axis - Manual (VF2SS),VF2SS_(M3-03),__export__.mrp_workcenter_60_6593b576,101,,8/24/2026 8:48,,8/24/2026 10:29,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/24/2026 11:00,,8/31/2026 8:30,Scheduled
+__export__.mrp_production_7751_1026cd26,[4022.666.20971-TBRM MCH] WTP IM MK6 BRACKET RING,13691,360,7/15/2026 2:00,"MP3 - Mat. prep - pre-cutted, only picking (UITG_M)",-,__export__.mrp_workcenter_65_c1e1b939,360,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,8/19/2026 10:38,Finished
+,,,,,M5-03 - UMC1 - 5axis - Manual (UMC750),UMC750SS_(M5-04),__export__.mrp_workcenter_61_bcb50df3,8412,8/19/2026 10:38,8/20/2026 8:00,9/14/2026 15:20,8/28/2026 4:12,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,4500,,8/28/2026 8:00,,9/10/2026 11:00,Scheduled
+__export__.mrp_production_7762_fc32a349,[4512-127-05186B] Anschlag,15017,1000,10/26/2026 1:00,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,1015,,8/20/2026 13:21,,8/21/2026 14:16,Scheduled
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-02_(FR5_02),__export__.mrp_workcenter_58_a525d5b9,5090,,8/25/2026 8:18,,8/28/2026 21:08,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,1000,,9/10/2026 14:00,,9/11/2026 14:40,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,1000,,9/17/2026 11:44,,9/18/2026 12:24,Scheduled
+__export__.mrp_production_7763_0bcf2bf4,[4022.737.00811/AA] EXE VS YNOZ DUCT GR1 COVER,18794,3,8/13/2026 12:38,MP1 - Mat. prep - automatic sawing (ZGN_01),MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,15,,8/20/2026 8:30,,8/20/2026 8:45,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,90,,8/20/2026 10:45,,8/20/2026 12:15,Scheduled
+__export__.mrp_production_7764_ebe57deb,[4022-335-17991] Filterh. Cu0.2 Ni0.02,14922,35,10/28/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,35,,8/20/2026 15:49,,8/20/2026 16:24,Scheduled
+,,,,,M4-01 - AW - 4axis - Conveyor Automation (FR4_01),M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,195,,8/31/2026 18:00,,8/31/2026 21:15,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,175,,9/2/2026 20:35,,9/2/2026 23:30,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,35,,9/2/2026 23:35,,9/3/2026 8:10,Scheduled
+__export__.mrp_production_7766_f4aae851,[4022.632.63021] WTP LOCKING NUT,7034,1430,8/10/2026 2:00,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,37,8/19/2026 10:48,8/19/2026 10:48,8/19/2026 10:49,8/19/2026 10:49,Finished
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),-,__export__.mrp_workcenter_54_3f0243e1,420,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,Finished
+,,,,,MP1 - Mat. prep - automatic sawing (ZGN_01),-,__export__.mrp_workcenter_63_98a7a00b,37,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,8/19/2026 10:49,Finished
+,,,,,M5-01 - AW - 5axis - Conveyor Automation (FR5_01),M5-01_(FR5_01),__export__.mrp_workcenter_58_a525d5b9,464,8/19/2026 10:49,8/20/2026 8:00,8/19/2026 18:33,8/20/2026 15:44,Scheduled
+,,,,,OUT - Outsourced activity,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,2250,,8/20/2026 15:45,,8/27/2026 13:15,Scheduled
+__export__.mrp_production_7767_dab52ed7,[BD50-5075-011-E] bracket,15028,44,11/24/2026 1:00,MP2 - Mat. prep - manual sawing (ZGN_02),MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,44,,8/20/2026 19:30,,8/20/2026 20:14,Scheduled
+,,,,,M3-01 - AW - 3axis - Manual (FR3_01),M3-02_(FR3_02),__export__.mrp_workcenter_54_3f0243e1,266,,9/4/2026 23:28,,9/7/2026 11:54,Scheduled
+,,,,,BW - Benchwork (BKW_01),BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,88,,9/15/2026 19:00,,9/15/2026 20:28,Scheduled
+,,,,,PACK - Packaging (VERP_P),PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,44,,9/18/2026 17:00,,9/18/2026 17:44,Scheduled
+,,,,,OUT - Outsourced activity,-,__export__.mrp_workcenter_68_8bff6631,4500,,,,,To Do
+,,,,,PACK - Packaging (VERP_P),-,__export__.mrp_workcenter_67_d1ac8ce6,44,,,,,To Do
