@@ -297,7 +297,6 @@ class ShopFloorManager(OperationsManager):
     
     def ProgressEvent(self,event):
         # case can be one of the following: "handle","start","suspend","restart","complete"
-
         debugtimes = []; debugeventids =[]; debugmachines = []; eventdicases =[]
      
         case = self.determineProgressCase(event)
