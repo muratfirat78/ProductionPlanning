@@ -346,12 +346,12 @@ class VisualManager():
 
         self.demandorderlist.clear()
    
-        process_df = pd.read_csv("ProcessData.csv")
-        demagrr = process_df.groupby(["DemandID","Product","NrItems"], dropna=True)[['OperationName']].agg(lambda x:list(x)).reset_index()
-
-        for i,r in demagrr.iterrows():
-            self.demandorderlist[len(self.demandorderlist)] = r["DemandID"]
-
+        self.demandorderlist = dict(
+           enumerate(
+              self.getController().getWorkManager().getProductionOrders().keys()
+           )
+        )
+      
         self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
         return 
 #############################################################################################################################################    
