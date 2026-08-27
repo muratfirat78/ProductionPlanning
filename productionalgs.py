@@ -130,7 +130,8 @@ class ProductionAlgManager(AlgorithmManager):
                 
         return  select_dict[orders[select_id]]
 ################################################################################################################################################### 
- def selectByConsideringAlternativeMachines(self,event):
+
+    def selectByConsideringAlternativeMachines(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
         self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
         select_dict = dict()

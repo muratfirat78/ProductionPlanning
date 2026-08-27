@@ -1199,12 +1199,7 @@ class ProductionMILPManager(MILPManager):
                     funcreturn = self.checkFeasibility(mymach,slotlength,currentslotshifts,slotshift,currentstart,job)
                     # (True/False,completion,shiftfteuse)  
                     if funcreturn[0]:
-
-                        #progress.value+=">> match is feasible...... "+"\n"
-
-                        if job.getProduct().getPN() == "[7005-2580-0010]":
-                            progress.value+=">> feasible match job: "+job.getOperation().getName()+", currentstart: "+str(currentstart)+", slotshift.getEndTime(): "+str(slotshift.getEndTime())+", jobschstart: "+str(jobschstart)+" slotlength: "+str(slotlength)+", proctime: "+str(job.getProcessTime())+"\n"
-                            
+   
                         nrmatches+=1
                         mymatch = MatchVar(mymach,job,currentstart,slotshift,funcreturn[1])
                         matchvar = self.MILPModel.IntVar(0.0,1,'x_'+str(mach.getMachineCode())+'_'+str(job.getID())+" "+str(job.getOperation().getDemand().getID())+" "+str(matchid))  # x_{m,j}

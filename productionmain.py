@@ -293,8 +293,7 @@ class ShopFloorManager(OperationsManager):
                 res.setIdle(True)
         return
 #################################################################################################################################################
-#################################################################################################################################################
-    
+#################################################################################################################################################  
     def ProgressEvent(self,event):
         # case can be one of the following: "handle","start","suspend","restart","complete"
         debugtimes = []; debugeventids =[]; debugmachines = []; eventdicases =[]
@@ -308,14 +307,14 @@ class ShopFloorManager(OperationsManager):
             self.removeFromSchedule(event,self.getSimulator().getTime())
             if not self.checkNecessaryConditions(event,debugtimes,debugeventids):
                 self.scheduleEvent(event,"Pending")
-                return ## >>>> R  E  T  U  R   N
+                return ## >>>> R  E  T  U  R   N: necessary conditions failed!
 
             event.sampleProcessTime(self)
   
             if not event.getEventType().isPreemptable(): 
                 if  self.getSimulator().getTime()+event.getProcessTime() > self.getCurrentShiftEnd() - 1:
                     self.scheduleEvent(event,"Pending")
-                    return ## >>>> R  E  T  U  R   N
+                    return ## >>>> R  E  T  U  R   N: non-preemtable event does not fit into current schedule!
      
         ######### MAKE NECESSARY DECISIONS  ########################################   
         casesuccess,success_decisions = self.makeCaseDecisions(event,case,debugtimes,debugeventids)
@@ -325,7 +324,7 @@ class ShopFloorManager(OperationsManager):
                 self.scheduleEvent(event,"Pending")
                
             self.resetDecisions(event,success_decisions,debugtimes,debugeventids)            
-            return  ## >>>> R  E  T  U  R   N
+            return  ## >>>> R  E  T  U  R   N: all required assignments could not be done!
     
         ##########################  H  A  N  D  L  E #########################
         if case == "Handle": 
@@ -335,7 +334,7 @@ class ShopFloorManager(OperationsManager):
                 first_logistical = operator_move if (operator_move!= None) else (bring_equipment if bring_equipment != None else None)
                 if first_logistical!= None: # logistical event necessary 
                     if event.getType() == "Loading" and isinstance(event.getEquipment(),Trailer):
-                        feasible = self.checkEventChainTime(event) # schedule completion of first logistical event 
+                        feasible = self.checkEventChainTime(event) 
                        
                     if feasible:
                         self.scheduleEvent(first_logistical,first_logistical.getProgressList()[-1][1][1]) 
@@ -347,7 +346,6 @@ class ShopFloorManager(OperationsManager):
                     else:
                         if progress_step[1] == progress_step[0]: 
                             feasible = False
-          
             if feasible:
                 self.removeFromSchedule(event,"Pending")    
             else:
@@ -355,8 +353,7 @@ class ShopFloorManager(OperationsManager):
                 self.scheduleEvent(event,"Pending");  return  ## >>>> R  E  T  U  R   N
         ##########################  H  A  N  D  L  E #########################
 
-        
-    
+     
         ##########################  S  T  A  R  T  #########################
         if case == "Start":
             if event.getType() == "Unloading" and (isinstance(event.getEquipment(),Machine)):
@@ -394,7 +391,6 @@ class ShopFloorManager(OperationsManager):
        #################################### P  R  E  C  E  D  E  N  C  E ###############################
         if event.getType() != "Logistical":
             self.checkPrecedence(event,case,debugtimes,debugeventids)    
-            
         else: # event is logistical
             successor_event = event.getSuccessor() 
             if case == "Complete":    
@@ -765,13 +761,26 @@ class ShopFloorManager(OperationsManager):
             progrss_steps+=("" if step_id == 0 else "~")+str(prstep[0])+"-"+str(prstep[1])
             step_id+=1
                 
-        ev_items = ""; item_id = 0
-        for item in event.getItems():
-            ev_items+=("" if item_id == 0 else "~")+str(item.getID())
-            item_id+=1
+    
+        ev_items = (str(event.getItems()[0].getID())+"~"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '-')
 
+        opname = "-"; demandid = '';eventpn = ''
+        if event.getType() == "Processing":
+            if len(event.getItems()) > 0:
+                if event.getItems()[0].getActiveOperation()!= None: 
+                    opname = event.getItems()[0].getActiveOperation().getName()
+                    demandid = event.getItems()[0].getActiveOperation().getDemand().getID()
+                    eventpn = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getPN()
+
+        eventdate =  self.getSimulator().getRealTime().strftime("%Y-%m-%d %H:%M:%S")
+
+        if event.getType() == "Unloading":
+            if event.getLocation().getName() == "CentralBuffer_Location":
+                if len(event.getItems()) > 0:
+                    demandid = event.getItems()[0].getDemand().getID()
+                    eventpn = event.getItems()[0].getDemand().getFinalProduct().getPN()
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":self.getSimulator().getRealTime()}  
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"PN":eventpn,"Operation":opname,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
         self.getSimulator().getExecutionData().append(execution_data)
 
     
@@ -856,7 +865,7 @@ class ShopFloorManager(OperationsManager):
 #########################################################################################################################
     def writeData(self):
 
-        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
+        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","ID","PN","Operation","Items","Resource","Equipment","Location","SimTime","Date"])
 
         
       
@@ -1024,5 +1033,18 @@ class ShopFloorManager(OperationsManager):
         
 
         return
-        
+
+
+##########################################################################################################################################
+    def writeSimulationMILPCommonfile(self,myround):
+
+
+
+
+
+
+
+
+        return
+
 

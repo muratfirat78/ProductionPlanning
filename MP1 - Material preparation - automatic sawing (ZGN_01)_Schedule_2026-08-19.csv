@@ -1,0 +1,14 @@
+PN,Quantity,Work Orders/Start,Work Orders/End,Work Orders/Work Center,Work Orders/Expected Duration
+[4022.737.00811/AA],3,2026-08-27 08:00:00,2026-08-27 08:20:00,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+[4023-002-16111],10,2026-08-27 08:40:00,2026-08-27 09:00:00,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+[4022-451-22801B],6,2026-08-27 09:00:00,2026-08-27 09:20:00,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+[00002033- 04],3,2026-08-27 09:30:00,2026-08-27 09:50:00,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+[4022.622.19821],5,2026-08-27 10:00:00,2026-08-27 10:20:00,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+[4022.683.44771],1,2026-08-27 16:20:00,2026-08-27 16:40:00,MP1 - Material preparation - automatic sawing (ZGN_01),16.0
+[4512-127-05186B],1000,2026-08-27 16:50:00,2026-08-28 17:50:00,MP1 - Material preparation - automatic sawing (ZGN_01),1015.0
+[7001-2580-0002],20,2026-08-31 10:40:00,2026-08-31 11:00:00,MP1 - Material preparation - automatic sawing (ZGN_01),15.0
+[4022.632.63021],1600,2026-09-07 16:00:00,2026-09-07 16:40:00,MP1 - Material preparation - automatic sawing (ZGN_01),39.0
+[4022.632.63021],1600,2026-10-05 08:00:00,2026-10-05 08:40:00,MP1 - Material preparation - automatic sawing (ZGN_01),39.0
+[4598-008-08901B POS 1],80,2026-10-13 08:00:00,2026-10-13 09:40:00,MP1 - Material preparation - automatic sawing (ZGN_01),95.0
+[4022-656-92231],126,2026-10-15 21:20:00,2026-10-15 23:50:00,MP1 - Material preparation - automatic sawing (ZGN_01),141.0
+[7005-2580-0017],18,2026-10-15 21:20:00,2026-10-15 22:00:00,MP1 - Material preparation - automatic sawing (ZGN_01),33.0
