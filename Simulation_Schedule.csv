@@ -1,0 +1,11 @@
+ID,Product,Operation,Resource,Start,End
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,BW - Benchwork (BKW_01),BW_(BKW_01),2026-08-28 08:07:00,2026-08-28 12:05:00
+__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,BW - Benchwork (BKW_01),BW_(BKW_01),2026-08-28 12:11:00,2026-08-28 13:00:00
+__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,Packaging (VERP_P),PACK_(VERP_P),2026-08-28 13:12:00,2026-08-28 13:27:00
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,BW - Benchwork (BKW_01),BW_(BKW_01),2026-08-28 13:06:00,2026-08-28 17:43:00
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,Packaging (VERP_P),PACK_(VERP_P),2026-08-28 17:56:00,2026-08-28 19:26:00
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,Passivating,OUT - Outsourced activity_(OUT - Outsourced),2026-08-28 08:08:00,2026-08-31 21:40:00
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,Packaging (VERP_P),PACK_(VERP_P),2026-08-31 21:53:00,2026-08-31 22:37:00
+__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,External Milling Tungsten,OUT - Outsourced activity_(OUT - Outsourced),2026-08-28 08:12:00,2026-09-07 14:30:00
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,Painting,OUT - Outsourced activity_(OUT - Outsourced),2026-08-28 12:15:00,2026-09-07 18:48:00
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,Packaging (VERP_P),PACK_(VERP_P),2026-09-07 19:01:00,2026-09-07 20:19:00

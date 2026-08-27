@@ -7,6 +7,7 @@ from productiondata import *
 from datetime import timedelta,date,datetime
 import numpy as np
 import pandas as pd
+from transformScheduleOutput import write_simulation_schedule, write_milp_schedule
 
 
 
@@ -783,7 +784,7 @@ class ShopFloorManager(OperationsManager):
                     demandid = event.getItems()[0].getDemand().getID()
                     eventprod = event.getItems()[0].getDemand().getFinalProduct().getName()
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Work Orders/Operation":opname,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
+        execution_data = {"EventName":event.getName(),"EventType":event.getType(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Work Orders/Operation":opname,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
         self.getSimulator().getExecutionData().append(execution_data)
 
     
@@ -877,6 +878,10 @@ class ShopFloorManager(OperationsManager):
 
         
         event_df.to_csv("EventExecutionData.csv",index = False)
+
+        ## write simulation schedule to the common format to compare with MILP results
+        Filtered_df = event_df[event_df["EventName"] == "Machine Processing"]
+        write_simulation_schedule(Filtered_df)
 
 
         location_df = pd.DataFrame(columns=["EntityName","EntityID","Time","LocationName","LocationID"])
@@ -1031,23 +1036,12 @@ class ShopFloorManager(OperationsManager):
             TBRM_df["Work Orders/End"] = pd.to_datetime(TBRM_df["Work Orders/End"]).dt.floor('s')
             
             TBRM_df.to_csv("TBRM_Plan_"+inputdate+"_R"+str(myround)+"_"+str((datetime.now()).date())+".csv",index = False)
+
+            ##Write MILP schedule to the common format to compare with simulation results
+            Filtered_df = TBRM_df[TBRM_df["Work Orders/Status"] == "Scheduled"]
+            write_milp_schedule(Filtered_df)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
         
 
         return
-
-
-##########################################################################################################################################
-    def writeSimulationMILPCommonfile(self,myround):
-
-
-
-
-
-
-
-
-        return
-
-
