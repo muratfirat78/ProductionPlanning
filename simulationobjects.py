@@ -492,6 +492,9 @@ class Resource(object):
     def getAssignedEvents(self):
         return self.AssignedEvents
 
+    def getNextAvailableTime(self):
+        return self.getSimulator().getTime()
+
     
 #_______________________________________________________________________       
 class Process(object):
