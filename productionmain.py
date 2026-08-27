@@ -764,13 +764,16 @@ class ShopFloorManager(OperationsManager):
     
         ev_items = (str(event.getItems()[0].getID())+"~"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '-')
 
-        opname = "-"; demandid = '';eventpn = ''
+        opname = "-"; demandid = '';eventprod = ''
         if event.getType() == "Processing":
             if len(event.getItems()) > 0:
                 if event.getItems()[0].getActiveOperation()!= None: 
-                    opname = event.getItems()[0].getActiveOperation().getName()
+                    opname = event.getItems()[0].getActiveOperation().getReferenceName()
                     demandid = event.getItems()[0].getActiveOperation().getDemand().getID()
-                    eventpn = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getPN()
+                    eventprod = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getName()
+
+
+                    
 
         eventdate =  self.getSimulator().getRealTime().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -778,9 +781,9 @@ class ShopFloorManager(OperationsManager):
             if event.getLocation().getName() == "CentralBuffer_Location":
                 if len(event.getItems()) > 0:
                     demandid = event.getItems()[0].getDemand().getID()
-                    eventpn = event.getItems()[0].getDemand().getFinalProduct().getPN()
+                    eventprod = event.getItems()[0].getDemand().getFinalProduct().getName()
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"PN":eventpn,"Operation":opname,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Work Orders/Operation":opname,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
         self.getSimulator().getExecutionData().append(execution_data)
 
     
@@ -865,7 +868,7 @@ class ShopFloorManager(OperationsManager):
 #########################################################################################################################
     def writeData(self):
 
-        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","ID","PN","Operation","Items","Resource","Equipment","Location","SimTime","Date"])
+        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","ID","Product","Work Orders/Operation","Items","Resource","Equipment","Location","SimTime","Date"])
 
         
       
