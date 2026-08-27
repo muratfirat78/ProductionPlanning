@@ -37,6 +37,7 @@ class VisualManager():
         self.Orders = None
         self.SimOrders = None
         self.WeeksDrop = None
+        self.ResourceDrop = None
         self.title = None
         self.prodorders = None
         self.AllBoxes = []
@@ -71,6 +72,14 @@ class VisualManager():
 
 
         self.ResourceBox = None
+
+    def setResourceDrop(self,dr):
+        self.ResourceDrop = dr
+        return
+
+    def getResourceDrop(self):
+        return self.ResourceDrop
+        
 
     def getMILPJobs(self):
         return self.MILPJobs
@@ -652,9 +661,14 @@ class VisualManager():
         print("Visual Manager: Generating dashboard")
 
         self.setInputText(widgets.Text(description ='Use Case: ',value=''))
+     
 
         self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,12)],value = 10,description = 'Weeks:'))
+        self.setResourceDrop(widgets.Dropdown(options = [],description = 'Resources:'))
         self.getWeeksDrop().observe(self.setDropSimWeeks,'value')
+        self.getWeeksDrop().layout.width = '300px'
+        self.getResourceDrop().layout.width = '300px'
+        self.getWeeksDrop().layout.height = '25px'
         
         self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
   
@@ -675,7 +689,7 @@ class VisualManager():
         
         
 
-        mainbox = VBox(children=[self.getInputText(),self.getWeeksDrop()])
+        mainbox = VBox(children=[self.getWeeksDrop(),HBox(children=[self.getResourceDrop()])])
         self.setMainBox(mainbox)
 
         self.getMainBox().layout.width = '50%'
