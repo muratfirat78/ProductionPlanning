@@ -1,100 +1,100 @@
-EventName,EventID,ProgressSteps,ID,Product,Work Orders/Operation,Items,Resource,Equipment,Location,SimTime,Date
-Trailer Loading,1,3360-3361,,,-,1~17,Operator 1,Trailer_60,CentralBuffer_Location,3361,2026-08-31 08:01:00
-Trailer Loading,3,3360-3361,,,-,64~143,Operator 2,Trailer_61,CentralBuffer_Location,3361,2026-08-31 08:01:00
-Trailer Loading,5,3360-3361,,,-,168~259,Manual worker 1,Trailer_62,CentralBuffer_Location,3361,2026-08-31 08:01:00
-Trailer Loading,2,3361-3362,,,-,18~63,Manual worker 2,Trailer_63,CentralBuffer_Location,3362,2026-08-31 08:02:00
-Trailer Transport,6,3361-3362,,,-,1~17,Operator 1,Trailer_60,Trailer_60,3362,2026-08-31 08:02:00
-Trailer Transport,7,3361-3362,,,-,64~143,Operator 2,Trailer_61,Trailer_61,3362,2026-08-31 08:02:00
-Trailer Transport,8,3361-3362,,,-,168~259,Manual worker 1,Trailer_62,Trailer_62,3362,2026-08-31 08:02:00
-Trailer Transport,9,3362-3363,,,-,18~63,Manual worker 2,Trailer_63,Trailer_63,3363,2026-08-31 08:03:00
-Trailer Unloading,10,3362-3363,,,-,1~17,Operator 1,Trailer_60,BW_(BKW_01)_Location,3363,2026-08-31 08:03:00
-Trailer Unloading,11,3362-3363,,,-,64~143,Operator 2,Trailer_61,BW_(BKW_01)_Location,3363,2026-08-31 08:03:00
-Trailer Unloading,12,3362-3363,,,-,168~259,Manual worker 1,Trailer_62,BW_(BKW_01)_Location,3363,2026-08-31 08:03:00
-Trailer Unloading,13,3363-3364,,,-,18~63,Manual worker 2,Trailer_63,OUT - Outsourced activity_(OUT - Outsourced)_Location,3364,2026-08-31 08:04:00
-Operator Move,17,3364-3365,,,-,-,Operator 1,-,CentralBuffer_Location,3365,2026-08-31 08:05:00
-Machine Setup,15,3364-3365,,,-,64~143,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3365,2026-08-31 08:05:00
-Machine Setup,20,3365-3366,,,-,18~63,Manual worker 2,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3366,2026-08-31 08:06:00
-Trailer Loading,4,3365-3366,,,-,144~167,Operator 1,Trailer_64,CentralBuffer_Location,3366,2026-08-31 08:06:00
-Machine Loading,21,3366-3367,,,-,64~143,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3367,2026-08-31 08:07:00
-Trailer Transport,23,3366-3367,,,-,144~167,Operator 1,Trailer_64,Trailer_64,3367,2026-08-31 08:07:00
-Machine Loading,22,3367-3368,,,-,18~63,Manual worker 2,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3368,2026-08-31 08:08:00
-Trailer Unloading,25,3367-3368,,,-,144~167,Operator 1,Trailer_64,OUT - Outsourced activity_(OUT - Outsourced)_Location,3368,2026-08-31 08:08:00
-Machine Setup,27,3369-3370,,,-,144~167,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3370,2026-08-31 08:10:00
-Machine Loading,28,3371-3372,,,-,144~167,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3372,2026-08-31 08:12:00
-Machine Processing,24,3367-3605,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,BW - Benchwork (BKW_01),64~143,BW_(BKW_01),BW_(BKW_01),BW_(BKW_01)_Location,3605,2026-08-31 12:05:00
-Machine Unloading,30,3606-3607,,,-,64~143,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3607,2026-08-31 12:07:00
-Machine Setup,14,3608-3609,,,-,1~17,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3609,2026-08-31 12:09:00
-Trailer Loading,31,3608-3609,,,-,64~143,Manual worker 1,Trailer_60,BW_(BKW_01)_Location,3609,2026-08-31 12:09:00
-Trailer Transport,33,3609-3610,,,-,64~143,Manual worker 1,Trailer_60,Trailer_60,3610,2026-08-31 12:10:00
-Machine Loading,32,3610-3611,,,-,1~17,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3611,2026-08-31 12:11:00
-Trailer Unloading,34,3610-3611,,,-,64~143,Manual worker 1,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,3611,2026-08-31 12:11:00
-Machine Setup,36,3612-3613,,,-,64~143,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3613,2026-08-31 12:13:00
-Machine Loading,37,3614-3615,,,-,64~143,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3615,2026-08-31 12:15:00
-Machine Processing,35,3611-3660,__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,BW - Benchwork (BKW_01),1~17,BW_(BKW_01),BW_(BKW_01),BW_(BKW_01)_Location,3660,2026-08-31 13:00:00
-Machine Unloading,39,3661-3662,,,-,1~17,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3662,2026-08-31 13:02:00
-Machine Setup,16,3663-3664,,,-,168~259,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3664,2026-08-31 13:04:00
-Operator Move,41,3664-3665,,,-,-,Operator 1,-,BW_(BKW_01)_Location,3665,2026-08-31 13:05:00
-Machine Loading,44,3665-3666,,,-,168~259,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3666,2026-08-31 13:06:00
-Trailer Loading,40,3665-3666,,,-,1~17,Operator 1,Trailer_61,BW_(BKW_01)_Location,3666,2026-08-31 13:06:00
-Trailer Transport,46,3666-3667,,,-,1~17,Operator 1,Trailer_61,Trailer_61,3667,2026-08-31 13:07:00
-Trailer Unloading,47,3667-3668,,,-,1~17,Operator 1,Trailer_61,PACK_(VERP_P)_Location,3668,2026-08-31 13:08:00
-Machine Setup,48,3669-3670,,,-,1~17,Operator 1,PACK_(VERP_P),PACK_(VERP_P)_Location,3670,2026-08-31 13:10:00
-Machine Loading,49,3671-3672,,,-,1~17,Operator 1,PACK_(VERP_P),PACK_(VERP_P)_Location,3672,2026-08-31 13:12:00
-Machine Processing,50,3672-3687,__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,Packaging (VERP_P),1~17,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,3687,2026-08-31 13:27:00
-Machine Unloading,51,3688-3689,,,-,1~17,Operator 1,PACK_(VERP_P),PACK_(VERP_P)_Location,3689,2026-08-31 13:29:00
-Trailer Loading,52,3690-3691,,,-,1~17,Operator 1,Trailer_61,PACK_(VERP_P)_Location,3691,2026-08-31 13:31:00
-Trailer Transport,53,3691-3692,,,-,1~17,Operator 1,Trailer_61,Trailer_61,3692,2026-08-31 13:32:00
-Trailer Unloading,54,3692-3693,__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,-,1~17,Operator 1,Trailer_61,CentralBuffer_Location,3693,2026-08-31 13:33:00
-Machine Processing,45,3666-3839~3842-3943,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,BW - Benchwork (BKW_01),168~259,BW_(BKW_01),BW_(BKW_01),BW_(BKW_01)_Location,3943,2026-08-31 17:43:00
-Operator Move,56,3944-3945,,,-,-,Operator 3,-,BW_(BKW_01)_Location,3945,2026-08-31 17:45:00
-Machine Unloading,55,3945-3946,,,-,168~259,Operator 3,BW_(BKW_01),BW_(BKW_01)_Location,3946,2026-08-31 17:46:00
-Operator Move,59,3947-3948,,,-,-,Operator 3,-,CentralBuffer_Location,3948,2026-08-31 17:48:00
-Bring Equipment,58,3948-3949,,,-,-,Operator 3,Trailer_60,BW_(BKW_01)_Location,3949,2026-08-31 17:49:00
-Trailer Loading,57,3949-3950,,,-,168~259,Operator 3,Trailer_60,BW_(BKW_01)_Location,3950,2026-08-31 17:50:00
-Trailer Transport,62,3950-3951,,,-,168~259,Operator 3,Trailer_60,Trailer_60,3951,2026-08-31 17:51:00
-Trailer Unloading,63,3951-3952,,,-,168~259,Operator 3,Trailer_60,PACK_(VERP_P)_Location,3952,2026-08-31 17:52:00
-Machine Setup,64,3953-3954,,,-,168~259,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,3954,2026-08-31 17:54:00
-Machine Loading,65,3955-3956,,,-,168~259,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,3956,2026-08-31 17:56:00
-Machine Processing,66,3956-4046,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,Packaging (VERP_P),168~259,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,4046,2026-08-31 19:26:00
-Machine Unloading,67,4047-4048,,,-,168~259,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,4048,2026-08-31 19:28:00
-Trailer Loading,68,4049-4050,,,-,168~259,Operator 3,Trailer_60,PACK_(VERP_P)_Location,4050,2026-08-31 19:30:00
-Trailer Transport,69,4050-4051,,,-,168~259,Operator 3,Trailer_60,Trailer_60,4051,2026-08-31 19:31:00
-Trailer Unloading,70,4051-4052,__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,-,168~259,Operator 3,Trailer_60,CentralBuffer_Location,4052,2026-08-31 19:32:00
-Machine Processing,26,3368-3839~3840-4319~4320-4799~4800-5279~5280-5620,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,Passivating,18~63,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,5620,2026-09-01 21:40:00
-Operator Move,72,5621-5622,,,-,-,Operator 3,-,OUT - Outsourced activity_(OUT - Outsourced)_Location,5622,2026-09-01 21:42:00
-Machine Unloading,71,5622-5623,,,-,18~63,Operator 3,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,5623,2026-09-01 21:43:00
-Operator Move,75,5624-5625,,,-,-,Operator 3,-,CentralBuffer_Location,5625,2026-09-01 21:45:00
-Bring Equipment,74,5625-5626,,,-,-,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,5626,2026-09-01 21:46:00
-Trailer Loading,73,5626-5627,,,-,18~63,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,5627,2026-09-01 21:47:00
-Trailer Transport,78,5627-5628,,,-,18~63,Operator 3,Trailer_60,Trailer_60,5628,2026-09-01 21:48:00
-Trailer Unloading,79,5628-5629,,,-,18~63,Operator 3,Trailer_60,PACK_(VERP_P)_Location,5629,2026-09-01 21:49:00
-Machine Setup,80,5630-5631,,,-,18~63,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,5631,2026-09-01 21:51:00
-Machine Loading,81,5632-5633,,,-,18~63,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,5633,2026-09-01 21:53:00
-Machine Processing,82,5633-5677,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,Packaging (VERP_P),18~63,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,5677,2026-09-01 22:37:00
-Machine Unloading,83,5678-5679,,,-,18~63,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,5679,2026-09-01 22:39:00
-Trailer Loading,84,5680-5681,,,-,18~63,Operator 3,Trailer_60,PACK_(VERP_P)_Location,5681,2026-09-01 22:41:00
-Trailer Transport,85,5681-5682,,,-,18~63,Operator 3,Trailer_60,Trailer_60,5682,2026-09-01 22:42:00
-Trailer Unloading,86,5682-5683,__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,-,18~63,Operator 3,Trailer_60,CentralBuffer_Location,5683,2026-09-01 22:43:00
-Machine Processing,29,3372-3839~3841-4319~4320-4799~4801-5279~5280-5759~5760-6239~6240-6719~6720-7199~7200-7679~7680-8159~8160-8639~8640-9119~9120-9599~9600-10079~12960-13439~13440-13919~13920-14399~14400-14879~14880-15270,__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,External Milling Tungsten,144~167,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15270,2026-09-08 14:30:00
-Operator Move,88,15271-15272,,,-,-,Operator 1,-,OUT - Outsourced activity_(OUT - Outsourced)_Location,15272,2026-09-08 14:32:00
-Machine Unloading,87,15272-15273,,,-,144~167,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15273,2026-09-08 14:33:00
-Operator Move,91,15274-15275,,,-,-,Operator 1,-,CentralBuffer_Location,15275,2026-09-08 14:35:00
-Bring Equipment,90,15275-15276,,,-,-,Operator 1,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15276,2026-09-08 14:36:00
-Trailer Loading,89,15276-15277,,,-,144~167,Operator 1,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15277,2026-09-08 14:37:00
-Trailer Transport,94,15277-15278,,,-,144~167,Operator 1,Trailer_60,Trailer_60,15278,2026-09-08 14:38:00
-Trailer Unloading,95,15278-15279,__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,-,144~167,Operator 1,Trailer_60,CentralBuffer_Location,15279,2026-09-08 14:39:00
-Machine Processing,38,3615-3839~3840-4319~4321-4799~4800-5279~5281-5759~5761-6239~6241-6719~6721-7199~7201-7679~7681-8159~8161-8639~8641-9119~9121-9599~9601-10079~12961-13439~13441-13919~13921-14399~14401-14879~14881-15359~15360-15528,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,Painting,64~143,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15528,2026-09-08 18:48:00
-Operator Move,97,15529-15530,,,-,-,Operator 3,-,OUT - Outsourced activity_(OUT - Outsourced)_Location,15530,2026-09-08 18:50:00
-Machine Unloading,96,15530-15531,,,-,64~143,Operator 3,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15531,2026-09-08 18:51:00
-Operator Move,100,15532-15533,,,-,-,Operator 3,-,CentralBuffer_Location,15533,2026-09-08 18:53:00
-Bring Equipment,99,15533-15534,,,-,-,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15534,2026-09-08 18:54:00
-Trailer Loading,98,15534-15535,,,-,64~143,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15535,2026-09-08 18:55:00
-Trailer Transport,103,15535-15536,,,-,64~143,Operator 3,Trailer_60,Trailer_60,15536,2026-09-08 18:56:00
-Trailer Unloading,104,15536-15537,,,-,64~143,Operator 3,Trailer_60,PACK_(VERP_P)_Location,15537,2026-09-08 18:57:00
-Machine Setup,105,15538-15539,,,-,64~143,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,15539,2026-09-08 18:59:00
-Machine Loading,106,15540-15541,,,-,64~143,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,15541,2026-09-08 19:01:00
-Machine Processing,107,15541-15619,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,Packaging (VERP_P),64~143,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,15619,2026-09-08 20:19:00
-Machine Unloading,108,15620-15621,,,-,64~143,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,15621,2026-09-08 20:21:00
-Trailer Loading,109,15622-15623,,,-,64~143,Operator 3,Trailer_60,PACK_(VERP_P)_Location,15623,2026-09-08 20:23:00
-Trailer Transport,110,15623-15624,,,-,64~143,Operator 3,Trailer_60,Trailer_60,15624,2026-09-08 20:24:00
-Trailer Unloading,111,15624-15625,__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,-,64~143,Operator 3,Trailer_60,CentralBuffer_Location,15625,2026-09-08 20:25:00
+ID,Product,Product/ID,Quantity To Produce,Deadline,Reference,Work Orders/Work Center,Work Orders/Work Center/ID,Work Orders/Operation,Work Orders/Expected Duration,Work Orders/Start(SIM),Work Orders/End(SIM),Work Orders/Status(SIM),Tardy(SIM),Lateness (days)(SIM),EventName,EventID,ProgressSteps,Items,Resource,Equipment,Location,SimTime,Date
+,,,,,,,,-,,,2026-08-31 08:01:00,Sim-Scheduled,,,Trailer Loading,1,3360-3361,1~17,Operator 1,Trailer_60,CentralBuffer_Location,3361,2026-08-31 08:01:00
+,,,,,,,,-,,,2026-08-31 08:01:00,Sim-Scheduled,,,Trailer Loading,3,3360-3361,64~143,Operator 2,Trailer_61,CentralBuffer_Location,3361,2026-08-31 08:01:00
+,,,,,,,,-,,,2026-08-31 08:01:00,Sim-Scheduled,,,Trailer Loading,5,3360-3361,168~259,Manual worker 1,Trailer_62,CentralBuffer_Location,3361,2026-08-31 08:01:00
+,,,,,,,,-,,,2026-08-31 08:02:00,Sim-Scheduled,,,Trailer Loading,2,3361-3362,18~63,Manual worker 2,Trailer_63,CentralBuffer_Location,3362,2026-08-31 08:02:00
+,,,,,,,,-,,,2026-08-31 08:02:00,Sim-Scheduled,,,Trailer Transport,6,3361-3362,1~17,Operator 1,Trailer_60,Trailer_60,3362,2026-08-31 08:02:00
+,,,,,,,,-,,,2026-08-31 08:02:00,Sim-Scheduled,,,Trailer Transport,7,3361-3362,64~143,Operator 2,Trailer_61,Trailer_61,3362,2026-08-31 08:02:00
+,,,,,,,,-,,,2026-08-31 08:02:00,Sim-Scheduled,,,Trailer Transport,8,3361-3362,168~259,Manual worker 1,Trailer_62,Trailer_62,3362,2026-08-31 08:02:00
+,,,,,,,,-,,,2026-08-31 08:03:00,Sim-Scheduled,,,Trailer Transport,9,3362-3363,18~63,Manual worker 2,Trailer_63,Trailer_63,3363,2026-08-31 08:03:00
+,,,,,,,,-,,,2026-08-31 08:03:00,Sim-Scheduled,,,Trailer Unloading,10,3362-3363,1~17,Operator 1,Trailer_60,BW_(BKW_01)_Location,3363,2026-08-31 08:03:00
+,,,,,,,,-,,,2026-08-31 08:03:00,Sim-Scheduled,,,Trailer Unloading,11,3362-3363,64~143,Operator 2,Trailer_61,BW_(BKW_01)_Location,3363,2026-08-31 08:03:00
+,,,,,,,,-,,,2026-08-31 08:03:00,Sim-Scheduled,,,Trailer Unloading,12,3362-3363,168~259,Manual worker 1,Trailer_62,BW_(BKW_01)_Location,3363,2026-08-31 08:03:00
+,,,,,,,,-,,,2026-08-31 08:04:00,Sim-Scheduled,,,Trailer Unloading,13,3363-3364,18~63,Manual worker 2,Trailer_63,OUT - Outsourced activity_(OUT - Outsourced)_Location,3364,2026-08-31 08:04:00
+,,,,,,,,-,,,2026-08-31 08:05:00,Sim-Scheduled,,,Operator Move,17,3364-3365,-,Operator 1,-,CentralBuffer_Location,3365,2026-08-31 08:05:00
+,,,,,,,,-,,,2026-08-31 08:05:00,Sim-Scheduled,,,Machine Setup,15,3364-3365,64~143,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3365,2026-08-31 08:05:00
+,,,,,,,,-,,,2026-08-31 08:06:00,Sim-Scheduled,,,Machine Setup,20,3365-3366,18~63,Manual worker 2,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3366,2026-08-31 08:06:00
+,,,,,,,,-,,,2026-08-31 08:06:00,Sim-Scheduled,,,Trailer Loading,4,3365-3366,144~167,Operator 1,Trailer_64,CentralBuffer_Location,3366,2026-08-31 08:06:00
+,,,,,,,,-,,,2026-08-31 08:07:00,Sim-Scheduled,,,Machine Loading,21,3366-3367,64~143,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3367,2026-08-31 08:07:00
+,,,,,,,,-,,,2026-08-31 08:07:00,Sim-Scheduled,,,Trailer Transport,23,3366-3367,144~167,Operator 1,Trailer_64,Trailer_64,3367,2026-08-31 08:07:00
+,,,,,,,,-,,,2026-08-31 08:08:00,Sim-Scheduled,,,Machine Loading,22,3367-3368,18~63,Manual worker 2,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3368,2026-08-31 08:08:00
+,,,,,,,,-,,,2026-08-31 08:08:00,Sim-Scheduled,,,Trailer Unloading,25,3367-3368,144~167,Operator 1,Trailer_64,OUT - Outsourced activity_(OUT - Outsourced)_Location,3368,2026-08-31 08:08:00
+,,,,,,,,-,,,2026-08-31 08:10:00,Sim-Scheduled,,,Machine Setup,27,3369-3370,144~167,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3370,2026-08-31 08:10:00
+,,,,,,,,-,,,2026-08-31 08:12:00,Sim-Scheduled,,,Machine Loading,28,3371-3372,144~167,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3372,2026-08-31 08:12:00
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022.0,80,2026-03-19 10:00:00,TBRM /MO/01175-002,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,BW - Benchwork (BKW_01),240.0,2026-08-31 08:07:00,2026-08-31 12:05:00,Sim-Scheduled,,,Machine Processing,24,3367-3605,64~143,BW_(BKW_01),BW_(BKW_01),BW_(BKW_01)_Location,3605,2026-08-31 12:05:00
+,,,,,,,,-,,,2026-08-31 12:07:00,Sim-Scheduled,,,Machine Unloading,30,3606-3607,64~143,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3607,2026-08-31 12:07:00
+,,,,,,,,-,,,2026-08-31 12:09:00,Sim-Scheduled,,,Machine Setup,14,3608-3609,1~17,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3609,2026-08-31 12:09:00
+,,,,,,,,-,,,2026-08-31 12:09:00,Sim-Scheduled,,,Trailer Loading,31,3608-3609,64~143,Manual worker 1,Trailer_60,BW_(BKW_01)_Location,3609,2026-08-31 12:09:00
+,,,,,,,,-,,,2026-08-31 12:10:00,Sim-Scheduled,,,Trailer Transport,33,3609-3610,64~143,Manual worker 1,Trailer_60,Trailer_60,3610,2026-08-31 12:10:00
+,,,,,,,,-,,,2026-08-31 12:11:00,Sim-Scheduled,,,Machine Loading,32,3610-3611,1~17,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3611,2026-08-31 12:11:00
+,,,,,,,,-,,,2026-08-31 12:11:00,Sim-Scheduled,,,Trailer Unloading,34,3610-3611,64~143,Manual worker 1,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,3611,2026-08-31 12:11:00
+,,,,,,,,-,,,2026-08-31 12:13:00,Sim-Scheduled,,,Machine Setup,36,3612-3613,64~143,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3613,2026-08-31 12:13:00
+,,,,,,,,-,,,2026-08-31 12:15:00,Sim-Scheduled,,,Machine Loading,37,3614-3615,64~143,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,3615,2026-08-31 12:15:00
+__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,14964.0,17,2026-01-16 10:00:00,TBRM /MO/01266-002,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,BW - Benchwork (BKW_01),51.0,2026-08-31 12:11:00,2026-08-31 13:00:00,Sim-Scheduled,,,Machine Processing,35,3611-3660,1~17,BW_(BKW_01),BW_(BKW_01),BW_(BKW_01)_Location,3660,2026-08-31 13:00:00
+,,,,,,,,-,,,2026-08-31 13:02:00,Sim-Scheduled,,,Machine Unloading,39,3661-3662,1~17,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3662,2026-08-31 13:02:00
+,,,,,,,,-,,,2026-08-31 13:04:00,Sim-Scheduled,,,Machine Setup,16,3663-3664,168~259,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3664,2026-08-31 13:04:00
+,,,,,,,,-,,,2026-08-31 13:05:00,Sim-Scheduled,,,Operator Move,41,3664-3665,-,Operator 1,-,BW_(BKW_01)_Location,3665,2026-08-31 13:05:00
+,,,,,,,,-,,,2026-08-31 13:06:00,Sim-Scheduled,,,Machine Loading,44,3665-3666,168~259,Operator 2,BW_(BKW_01),BW_(BKW_01)_Location,3666,2026-08-31 13:06:00
+,,,,,,,,-,,,2026-08-31 13:06:00,Sim-Scheduled,,,Trailer Loading,40,3665-3666,1~17,Operator 1,Trailer_61,BW_(BKW_01)_Location,3666,2026-08-31 13:06:00
+,,,,,,,,-,,,2026-08-31 13:07:00,Sim-Scheduled,,,Trailer Transport,46,3666-3667,1~17,Operator 1,Trailer_61,Trailer_61,3667,2026-08-31 13:07:00
+,,,,,,,,-,,,2026-08-31 13:08:00,Sim-Scheduled,,,Trailer Unloading,47,3667-3668,1~17,Operator 1,Trailer_61,PACK_(VERP_P)_Location,3668,2026-08-31 13:08:00
+,,,,,,,,-,,,2026-08-31 13:10:00,Sim-Scheduled,,,Machine Setup,48,3669-3670,1~17,Operator 1,PACK_(VERP_P),PACK_(VERP_P)_Location,3670,2026-08-31 13:10:00
+,,,,,,,,-,,,2026-08-31 13:12:00,Sim-Scheduled,,,Machine Loading,49,3671-3672,1~17,Operator 1,PACK_(VERP_P),PACK_(VERP_P)_Location,3672,2026-08-31 13:12:00
+__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,14964.0,17,2026-01-16 10:00:00,TBRM /MO/01266-002,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,Packaging (VERP_P),17.0,2026-08-31 13:12:00,2026-08-31 13:27:00,Sim-Scheduled,,,Machine Processing,50,3672-3687,1~17,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,3687,2026-08-31 13:27:00
+,,,,,,,,-,,,2026-08-31 13:29:00,Sim-Scheduled,,,Machine Unloading,51,3688-3689,1~17,Operator 1,PACK_(VERP_P),PACK_(VERP_P)_Location,3689,2026-08-31 13:29:00
+,,,,,,,,-,,,2026-08-31 13:31:00,Sim-Scheduled,,,Trailer Loading,52,3690-3691,1~17,Operator 1,Trailer_61,PACK_(VERP_P)_Location,3691,2026-08-31 13:31:00
+,,,,,,,,-,,,2026-08-31 13:32:00,Sim-Scheduled,,,Trailer Transport,53,3691-3692,1~17,Operator 1,Trailer_61,Trailer_61,3692,2026-08-31 13:32:00
+__export__.mrp_production_6300_645dbbde,[4022-637-29301] Hinge Block Fixed RM,14964.0,17,2026-01-16 10:00:00,TBRM /MO/01266-002,Central Inventory,Central Inventory Input,-,,,2026-08-31 13:33:00,Sim-Scheduled,True,227,Trailer Unloading,54,3692-3693,1~17,Operator 1,Trailer_61,CentralBuffer_Location,3693,2026-08-31 13:33:00
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,15022.0,92,2026-04-10 02:00:00,TBRM /MO/01414-002,BW - Benchwork (BKW_01),__export__.mrp_workcenter_66_9f807a30,BW - Benchwork (BKW_01),276.0,2026-08-31 13:06:00,2026-08-31 17:43:00,Sim-Scheduled,,,Machine Processing,45,3666-3839~3842-3943,168~259,BW_(BKW_01),BW_(BKW_01),BW_(BKW_01)_Location,3943,2026-08-31 17:43:00
+,,,,,,,,-,,,2026-08-31 17:45:00,Sim-Scheduled,,,Operator Move,56,3944-3945,-,Operator 3,-,BW_(BKW_01)_Location,3945,2026-08-31 17:45:00
+,,,,,,,,-,,,2026-08-31 17:46:00,Sim-Scheduled,,,Machine Unloading,55,3945-3946,168~259,Operator 3,BW_(BKW_01),BW_(BKW_01)_Location,3946,2026-08-31 17:46:00
+,,,,,,,,-,,,2026-08-31 17:48:00,Sim-Scheduled,,,Operator Move,59,3947-3948,-,Operator 3,-,CentralBuffer_Location,3948,2026-08-31 17:48:00
+,,,,,,,,-,,,2026-08-31 17:49:00,Sim-Scheduled,,,Bring Equipment,58,3948-3949,-,Operator 3,Trailer_60,BW_(BKW_01)_Location,3949,2026-08-31 17:49:00
+,,,,,,,,-,,,2026-08-31 17:50:00,Sim-Scheduled,,,Trailer Loading,57,3949-3950,168~259,Operator 3,Trailer_60,BW_(BKW_01)_Location,3950,2026-08-31 17:50:00
+,,,,,,,,-,,,2026-08-31 17:51:00,Sim-Scheduled,,,Trailer Transport,62,3950-3951,168~259,Operator 3,Trailer_60,Trailer_60,3951,2026-08-31 17:51:00
+,,,,,,,,-,,,2026-08-31 17:52:00,Sim-Scheduled,,,Trailer Unloading,63,3951-3952,168~259,Operator 3,Trailer_60,PACK_(VERP_P)_Location,3952,2026-08-31 17:52:00
+,,,,,,,,-,,,2026-08-31 17:54:00,Sim-Scheduled,,,Machine Setup,64,3953-3954,168~259,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,3954,2026-08-31 17:54:00
+,,,,,,,,-,,,2026-08-31 17:56:00,Sim-Scheduled,,,Machine Loading,65,3955-3956,168~259,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,3956,2026-08-31 17:56:00
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,15022.0,92,2026-04-10 02:00:00,TBRM /MO/01414-002,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,Packaging (VERP_P),92.0,2026-08-31 17:56:00,2026-08-31 19:26:00,Sim-Scheduled,,,Machine Processing,66,3956-4046,168~259,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,4046,2026-08-31 19:26:00
+,,,,,,,,-,,,2026-08-31 19:28:00,Sim-Scheduled,,,Machine Unloading,67,4047-4048,168~259,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,4048,2026-08-31 19:28:00
+,,,,,,,,-,,,2026-08-31 19:30:00,Sim-Scheduled,,,Trailer Loading,68,4049-4050,168~259,Operator 3,Trailer_60,PACK_(VERP_P)_Location,4050,2026-08-31 19:30:00
+,,,,,,,,-,,,2026-08-31 19:31:00,Sim-Scheduled,,,Trailer Transport,69,4050-4051,168~259,Operator 3,Trailer_60,Trailer_60,4051,2026-08-31 19:31:00
+__export__.mrp_production_6199_a3feca82,[4598-008-08901B POS 1] CEILING INLET*,15022.0,92,2026-04-10 02:00:00,TBRM /MO/01414-002,Central Inventory,Central Inventory Input,-,,,2026-08-31 19:32:00,Sim-Scheduled,True,143,Trailer Unloading,70,4051-4052,168~259,Operator 3,Trailer_60,CentralBuffer_Location,4052,2026-08-31 19:32:00
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,15042.0,46,2026-02-23 11:00:00,TBRM /MO/01368-002,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,Passivating,2250.0,2026-08-31 08:08:00,2026-09-01 21:40:00,Sim-Scheduled,,,Machine Processing,26,3368-3839~3840-4319~4320-4799~4800-5279~5280-5620,18~63,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,5620,2026-09-01 21:40:00
+,,,,,,,,-,,,2026-09-01 21:42:00,Sim-Scheduled,,,Operator Move,72,5621-5622,-,Operator 3,-,OUT - Outsourced activity_(OUT - Outsourced)_Location,5622,2026-09-01 21:42:00
+,,,,,,,,-,,,2026-09-01 21:43:00,Sim-Scheduled,,,Machine Unloading,71,5622-5623,18~63,Operator 3,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,5623,2026-09-01 21:43:00
+,,,,,,,,-,,,2026-09-01 21:45:00,Sim-Scheduled,,,Operator Move,75,5624-5625,-,Operator 3,-,CentralBuffer_Location,5625,2026-09-01 21:45:00
+,,,,,,,,-,,,2026-09-01 21:46:00,Sim-Scheduled,,,Bring Equipment,74,5625-5626,-,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,5626,2026-09-01 21:46:00
+,,,,,,,,-,,,2026-09-01 21:47:00,Sim-Scheduled,,,Trailer Loading,73,5626-5627,18~63,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,5627,2026-09-01 21:47:00
+,,,,,,,,-,,,2026-09-01 21:48:00,Sim-Scheduled,,,Trailer Transport,78,5627-5628,18~63,Operator 3,Trailer_60,Trailer_60,5628,2026-09-01 21:48:00
+,,,,,,,,-,,,2026-09-01 21:49:00,Sim-Scheduled,,,Trailer Unloading,79,5628-5629,18~63,Operator 3,Trailer_60,PACK_(VERP_P)_Location,5629,2026-09-01 21:49:00
+,,,,,,,,-,,,2026-09-01 21:51:00,Sim-Scheduled,,,Machine Setup,80,5630-5631,18~63,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,5631,2026-09-01 21:51:00
+,,,,,,,,-,,,2026-09-01 21:53:00,Sim-Scheduled,,,Machine Loading,81,5632-5633,18~63,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,5633,2026-09-01 21:53:00
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,15042.0,46,2026-02-23 11:00:00,TBRM /MO/01368-002,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,Packaging (VERP_P),46.0,2026-09-01 21:53:00,2026-09-01 22:37:00,Sim-Scheduled,,,Machine Processing,82,5633-5677,18~63,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,5677,2026-09-01 22:37:00
+,,,,,,,,-,,,2026-09-01 22:39:00,Sim-Scheduled,,,Machine Unloading,83,5678-5679,18~63,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,5679,2026-09-01 22:39:00
+,,,,,,,,-,,,2026-09-01 22:41:00,Sim-Scheduled,,,Trailer Loading,84,5680-5681,18~63,Operator 3,Trailer_60,PACK_(VERP_P)_Location,5681,2026-09-01 22:41:00
+,,,,,,,,-,,,2026-09-01 22:42:00,Sim-Scheduled,,,Trailer Transport,85,5681-5682,18~63,Operator 3,Trailer_60,Trailer_60,5682,2026-09-01 22:42:00
+__export__.mrp_production_6192_3443eb6e,[M0216-01-363-B] nul-graden arretsegment,15042.0,46,2026-02-23 11:00:00,TBRM /MO/01368-002,Central Inventory,Central Inventory Input,-,,,2026-09-01 22:43:00,Sim-Scheduled,True,190,Trailer Unloading,86,5682-5683,18~63,Operator 3,Trailer_60,CentralBuffer_Location,5683,2026-09-01 22:43:00
+__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,7359.0,24,2026-03-30 02:00:00,TBRM /MO/01192-002,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,External Milling Tungsten,9000.0,2026-08-31 08:12:00,2026-09-08 14:30:00,Sim-Scheduled,,,Machine Processing,29,3372-3839~3841-4319~4320-4799~4801-5279~5280-5759~5760-6239~6240-6719~6720-7199~7200-7679~7680-8159~8160-8639~8640-9119~9120-9599~9600-10079~12960-13439~13440-13919~13920-14399~14400-14879~14880-15270,144~167,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15270,2026-09-08 14:30:00
+,,,,,,,,-,,,2026-09-08 14:32:00,Sim-Scheduled,,,Operator Move,88,15271-15272,-,Operator 1,-,OUT - Outsourced activity_(OUT - Outsourced)_Location,15272,2026-09-08 14:32:00
+,,,,,,,,-,,,2026-09-08 14:33:00,Sim-Scheduled,,,Machine Unloading,87,15272-15273,144~167,Operator 1,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15273,2026-09-08 14:33:00
+,,,,,,,,-,,,2026-09-08 14:35:00,Sim-Scheduled,,,Operator Move,91,15274-15275,-,Operator 1,-,CentralBuffer_Location,15275,2026-09-08 14:35:00
+,,,,,,,,-,,,2026-09-08 14:36:00,Sim-Scheduled,,,Bring Equipment,90,15275-15276,-,Operator 1,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15276,2026-09-08 14:36:00
+,,,,,,,,-,,,2026-09-08 14:37:00,Sim-Scheduled,,,Trailer Loading,89,15276-15277,144~167,Operator 1,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15277,2026-09-08 14:37:00
+,,,,,,,,-,,,2026-09-08 14:38:00,Sim-Scheduled,,,Trailer Transport,94,15277-15278,144~167,Operator 1,Trailer_60,Trailer_60,15278,2026-09-08 14:38:00
+__export__.mrp_production_5680_ed5f1e28,[4022.622.61481] RH RED GRIPPER TUNGSTEN MASS ,7359.0,24,2026-03-30 02:00:00,TBRM /MO/01192-002,Central Inventory,Central Inventory Input,-,,,2026-09-08 14:39:00,Sim-Scheduled,True,162,Trailer Unloading,95,15278-15279,144~167,Operator 1,Trailer_60,CentralBuffer_Location,15279,2026-09-08 14:39:00
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022.0,80,2026-03-19 10:00:00,TBRM /MO/01175-002,OUT - Outsourced activity,__export__.mrp_workcenter_68_8bff6631,Painting,9000.0,2026-08-31 12:15:00,2026-09-08 18:48:00,Sim-Scheduled,,,Machine Processing,38,3615-3839~3840-4319~4321-4799~4800-5279~5281-5759~5761-6239~6241-6719~6721-7199~7201-7679~7681-8159~8161-8639~8641-9119~9121-9599~9601-10079~12961-13439~13441-13919~13921-14399~14401-14879~14881-15359~15360-15528,64~143,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15528,2026-09-08 18:48:00
+,,,,,,,,-,,,2026-09-08 18:50:00,Sim-Scheduled,,,Operator Move,97,15529-15530,-,Operator 3,-,OUT - Outsourced activity_(OUT - Outsourced)_Location,15530,2026-09-08 18:50:00
+,,,,,,,,-,,,2026-09-08 18:51:00,Sim-Scheduled,,,Machine Unloading,96,15530-15531,64~143,Operator 3,OUT - Outsourced activity_(OUT - Outsourced),OUT - Outsourced activity_(OUT - Outsourced)_Location,15531,2026-09-08 18:51:00
+,,,,,,,,-,,,2026-09-08 18:53:00,Sim-Scheduled,,,Operator Move,100,15532-15533,-,Operator 3,-,CentralBuffer_Location,15533,2026-09-08 18:53:00
+,,,,,,,,-,,,2026-09-08 18:54:00,Sim-Scheduled,,,Bring Equipment,99,15533-15534,-,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15534,2026-09-08 18:54:00
+,,,,,,,,-,,,2026-09-08 18:55:00,Sim-Scheduled,,,Trailer Loading,98,15534-15535,64~143,Operator 3,Trailer_60,OUT - Outsourced activity_(OUT - Outsourced)_Location,15535,2026-09-08 18:55:00
+,,,,,,,,-,,,2026-09-08 18:56:00,Sim-Scheduled,,,Trailer Transport,103,15535-15536,64~143,Operator 3,Trailer_60,Trailer_60,15536,2026-09-08 18:56:00
+,,,,,,,,-,,,2026-09-08 18:57:00,Sim-Scheduled,,,Trailer Unloading,104,15536-15537,64~143,Operator 3,Trailer_60,PACK_(VERP_P)_Location,15537,2026-09-08 18:57:00
+,,,,,,,,-,,,2026-09-08 18:59:00,Sim-Scheduled,,,Machine Setup,105,15538-15539,64~143,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,15539,2026-09-08 18:59:00
+,,,,,,,,-,,,2026-09-08 19:01:00,Sim-Scheduled,,,Machine Loading,106,15540-15541,64~143,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,15541,2026-09-08 19:01:00
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022.0,80,2026-03-19 10:00:00,TBRM /MO/01175-002,PACK - Packaging (VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,Packaging (VERP_P),80.0,2026-09-08 19:01:00,2026-09-08 20:19:00,Sim-Scheduled,,,Machine Processing,107,15541-15619,64~143,PACK_(VERP_P),PACK_(VERP_P),PACK_(VERP_P)_Location,15619,2026-09-08 20:19:00
+,,,,,,,,-,,,2026-09-08 20:21:00,Sim-Scheduled,,,Machine Unloading,108,15620-15621,64~143,Operator 3,PACK_(VERP_P),PACK_(VERP_P)_Location,15621,2026-09-08 20:21:00
+,,,,,,,,-,,,2026-09-08 20:23:00,Sim-Scheduled,,,Trailer Loading,109,15622-15623,64~143,Operator 3,Trailer_60,PACK_(VERP_P)_Location,15623,2026-09-08 20:23:00
+,,,,,,,,-,,,2026-09-08 20:24:00,Sim-Scheduled,,,Trailer Transport,110,15623-15624,64~143,Operator 3,Trailer_60,Trailer_60,15624,2026-09-08 20:24:00
+__export__.mrp_production_6020_2cead996,[4598-008-08901B POS 1] CEILING INLET*,15022.0,80,2026-03-19 10:00:00,TBRM /MO/01175-002,Central Inventory,Central Inventory Input,-,,,2026-09-08 20:25:00,Sim-Scheduled,True,173,Trailer Unloading,111,15624-15625,64~143,Operator 3,Trailer_60,CentralBuffer_Location,15625,2026-09-08 20:25:00

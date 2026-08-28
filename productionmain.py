@@ -764,13 +764,24 @@ class ShopFloorManager(OperationsManager):
     
         ev_items = (str(event.getItems()[0].getID())+"~"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '-')
 
-        opname = "-"; demandid = '';eventprod = ''
+        opname = "-"; demandid = '';eventprod = '';prodid = '';qunatity = ''
+        deadline= '';reference = '';workcnt = '';workcntid = '';expduration = '';eventstrt = ''; tardy = '';lateness = ''
+       
         if event.getType() == "Processing":
             if len(event.getItems()) > 0:
                 if event.getItems()[0].getActiveOperation()!= None: 
                     opname = event.getItems()[0].getActiveOperation().getReferenceName()
                     demandid = event.getItems()[0].getActiveOperation().getDemand().getID()
                     eventprod = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getName()
+                    prodid = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getID()
+                    qunatity = event.getItems()[0].getActiveOperation().getDemand().getQuantity()
+                    deadline = event.getItems()[0].getActiveOperation().getDemand().getDeadline()
+                    reference = event.getItems()[0].getActiveOperation().getDemand().getReference()
+                    workcnt = event.getItems()[0].getActiveOperation().getName()
+                    workcntid = event.getItems()[0].getActiveOperation().getAlternativeResources()[0].getID()
+                    expduration = event.getItems()[0].getActiveOperation().getProcessTime()
+                    
+                    eventstrt =  self.getSimulator().checkRealTime(event.getProgressList()[0][1][0]).strftime("%Y-%m-%d %H:%M:%S")
 
 
                     
@@ -782,8 +793,17 @@ class ShopFloorManager(OperationsManager):
                 if len(event.getItems()) > 0:
                     demandid = event.getItems()[0].getDemand().getID()
                     eventprod = event.getItems()[0].getDemand().getFinalProduct().getName()
+                    prodid = event.getItems()[0].getDemand().getFinalProduct().getID()
+                    qunatity = event.getItems()[0].getDemand().getQuantity()
+                    deadline = event.getItems()[0].getDemand().getDeadline()
+                    reference = event.getItems()[0].getDemand().getReference()
+                    workcnt = "Central Inventory"
+                    workcntid = "Central Inventory Input"
+                    tardy = (self.getSimulator().getRealTime() > deadline)
+                    lateness = str((self.getSimulator().getRealTime()-event.getItems()[0].getDemand().getDeadline()).days)
+                    
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Work Orders/Operation":opname,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Product/ID":prodid,"Quantity To Produce":qunatity,"Deadline":deadline,"Reference":reference,"Work Orders/Work Center":workcnt,"Work Orders/Work Center/ID":workcntid,"Work Orders/Operation":opname,"Work Orders/Expected Duration":expduration,"Work Orders/Start(SIM)":eventstrt,"Work Orders/End(SIM)":eventdate,"Work Orders/Status(SIM)":"Sim-Scheduled","Tardy(SIM)":tardy,"Lateness (days)(SIM)":lateness,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
         self.getSimulator().getExecutionData().append(execution_data)
 
     
@@ -868,7 +888,7 @@ class ShopFloorManager(OperationsManager):
 #########################################################################################################################
     def writeData(self):
 
-        event_df = pd.DataFrame(columns=["EventName","EventID","ProgressSteps","ID","Product","Work Orders/Operation","Items","Resource","Equipment","Location","SimTime","Date"])
+        event_df = pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Work Orders/Operation","Work Orders/Expected Duration","Work Orders/Start(SIM)","Work Orders/End(SIM)","Work Orders/Status(SIM)","Tardy(SIM)","Lateness (days)(SIM)","EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
 
         
       
