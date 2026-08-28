@@ -54,6 +54,9 @@ class ProductionAlgManager(AlgorithmManager):
         #self.getSimulator().saveLog("REPORT: >>> Algorithm: assignStraightProcessor function <<<")
         selected_equip = None
 
+        #if event.getID() == 1098:
+        #    self.getSimulator().saveLog("REPORT: event "+event.getName()+"("+str(event.getID())+")- equip: "+event.getEquipment().getName()+", available? "+str(event.getEquipment().isAvailable()))
+
         
         if event.getEquipment().isAvailable():
             if event.getProcessor()!= None:

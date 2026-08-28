@@ -100,6 +100,9 @@ class ProductionDataManager(DataManager):
                     mach = Machine(mcode,NoProcessors,machloc,r['Name'],OperatingShifts,r['ProcessType'],r['Automated'],50000,Alternatives,int(r['SetupTime']),float(r['OperatingEffort']),self.getSimulator(),self.getOperationsManager())
                     mach.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(mach)
+
+                    if r['Name'] == "OUT - Outsourced activity_(OUT - Outsourced)":
+                        self.getOperationsManager().getSimulator().saveLog("REPORT: OUTSource available shifts: : "+str(mach.getAvailableShifts())+", type: "+str(type(mach)))      
                     
             
             self.getOperationsManager().getSimulator().saveLog("REPORT: No resources: "+str(len(self.getOperationsManager().getResources())))      

@@ -77,7 +77,7 @@ class Simulator(object):
 
         
         if info.find("ERROR")> -1 or info.find("REPORT")> -1 : 
-            self.getController().getVisualManager().updateSimProgress(str(self.getTime())+": "+info)
+            self.getController().getVisualManager().updateSimProgress(str(self.getTime())+"["+str(self.getRealTime())+"]: "+info)
         return
         
     def saveTitleLog(self,title,info):

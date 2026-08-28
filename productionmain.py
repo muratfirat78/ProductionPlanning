@@ -83,7 +83,7 @@ class ShopFloorManager(OperationsManager):
         MachineLoading.getSuccessorDict()[MachineProcessing] = "Finish to Start" # Precedence settings: ML -> Proc
         MachineLoading.getPrecendenceDict()[MachineProcessing.getName()] = ['Equipment->Resource','Equipment','Items','Processor']
         MachineProcessing.getDecisionsDict()['Handle'] = ['Assign Processor']
-       
+        self.getAlgorithmSetting()[MachineProcessing.getName()] = {'Assign Processor':"Straight Available"}
         self.getEventTypes()[MachineProcessing.getName()]= MachineProcessing
 
         #-------------------------------------------
@@ -275,7 +275,8 @@ class ShopFloorManager(OperationsManager):
 #################################################################################################################################################
     def applyShiftChange(self):
         avalable_res = [] 
-        for res in self.getResources():    
+        for res in self.getResources():  
+            #self.getSimulator().saveLog(" REPORT: resource "+res.getName()+".")
             if isinstance(res,Trailer) or isinstance(res,Operator):
                 if res.getLocation() != self.getCentralInventory().getLocation():
                     res.setLocation(self.getCentralInventory().getLocation())
@@ -285,14 +286,18 @@ class ShopFloorManager(OperationsManager):
                     
             if isinstance(res,Machine) or isinstance(res,Operator):
                 res.setAvailable(self.getSimulator().getCurrentShift() in res.getAvailableShifts())
+               
                 res.setIdle(True)
                 if res.isAvailable():
                     avalable_res.append(res.getName())
+                    #self.getSimulator().saveLog(" REPORT: resource "+res.getName()+" is avaiable in shift change!")
+                #else:
+                    #self.getSimulator().saveLog(" REPORT: resource "+res.getName()+" is unavailable in shift change!")
+                    
             else:
                 res.setAvailable(True)
                 res.setIdle(True)
         return
-#################################################################################################################################################
 #################################################################################################################################################  
     def ProgressEvent(self,event):
         # case can be one of the following: "handle","start","suspend","restart","complete"
@@ -373,7 +378,10 @@ class ShopFloorManager(OperationsManager):
             if isinstance(event.getResource(),Operator): 
                 event.setResource(None)
             self.removeFromSchedule(event,self.getSimulator().getTime())
-            self.scheduleEvent(event,"Pending")
+            if self.getSimulator().getTime() == self.getCurrentShiftEnd():
+                self.scheduleEvent(event,self.getSimulator().getTime()+1)
+            else:
+                self.scheduleEvent(event,"Pending")
          ##########################  S  U  S  P  E  N  D  #########################
 
         ##########################  C  O  M  P  L  E  T  E  #########################
@@ -632,13 +640,19 @@ class ShopFloorManager(OperationsManager):
                         event_place = event.getEquipment().getInputBuffer()
                         if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                             self.getSimulator().saveLog(" REPORT: items "+str(len(event_place.getItems()))+", cap "+str(event_place.getCapacity())) 
-                if decision_type == "Assign Processor": 
-                    if event.getProcessor()!= None:
-                        continue
+                #if decision_type == "Assign Processor": 
+                #    if event.getProcessor()!= None:
+                #        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                #            self.getSimulator().saveLog(" REPORT: assign processor continues..............") 
+                #        continue
                 if decision_type == "Select Items": 
                     if len(event.getItems()) > 0:
                         continue
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: decision_type 2"+decision_type+", event in settings "+str(event.getName() in self.getAlgorithmSetting())+", decision type in settings? "+str(decision_type in self.getAlgorithmSetting()[event.getName()])) 
                 algname = self.getAlgorithmSetting()[event.getName()][decision_type] 
+                if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
+                    self.getSimulator().saveLog(" REPORT: decision_type 3"+decision_type) 
                 alg_return = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname](event) 
                 if alg_return!= None:
                     if decision_type == "Select Items":
@@ -758,7 +772,9 @@ class ShopFloorManager(OperationsManager):
       # update execution data of event...
         progrss_steps = ""; step_id = 0
         for res,prstep in event.getProgressList():
-            progrss_steps+=("" if step_id == 0 else "~")+str(prstep[0])+"-"+str(prstep[1])
+            stp_strt = self.getSimulator().checkRealTime(prstep[0]).strftime("%Y-%m-%d %H:%M:%S")
+            stp_end = self.getSimulator().checkRealTime(prstep[1]).strftime("%Y-%m-%d %H:%M:%S")
+            progrss_steps+=("" if step_id == 0 else "~")+"["+str(stp_strt)+"-"+str(stp_end)+"]"
             step_id+=1
                 
     
