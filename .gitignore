@@ -1,0 +1,12 @@
+# Python cache
+__pycache__/
+*.py[cod]
+# Extension modules
+*.so
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
