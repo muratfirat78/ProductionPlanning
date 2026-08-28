@@ -107,23 +107,25 @@ class Job(object):
         self.getOperation().setStatus("Scheduled")
         self.Scheduled = True
         return
-        
+
+############################################################################################
     def getEarliestStart(self,schjoblist):
 
-        if self.getPredecessor() == None:
-            return 0 
-        else:
-            if self.getPredecessor().isScheduled():
-                return self.getPredecessor().getCompletion()
+        mypredecessor = self.getPredecessor(); lst = 0
+
+        while mypredecessor!= None: 
+            if mypredecessor.isScheduled():
+                lst =  max(lst,mypredecessor.getCompletion())
+                break
             else: 
-                if self.getPredecessor().getOperation().isFinished() or self.getPredecessor().getOperation().isCancelled():
-                    return 0
+                if mypredecessor.getOperation().isFinished() or mypredecessor.getOperation().isCancelled():
+                    mypredecessor = mypredecessor.getPredecessor()
                 else:
-                    if self.getPredecessor() in schjoblist:
-                        return 0
-                    else:
-                        return 100000
-                    
+                    if mypredecessor in schjoblist:
+                        break
+                        
+        return lst
+###########################################################################################                    
 
     def setPredecessor(self,mypr):
         self.Predecessor= mypr
@@ -139,7 +141,35 @@ class Job(object):
     def getSuccessor(self):
         return self.Successor
 
- 
+#########################################################################
+    def getSuccessortoSchedule(self):
+
+        mysuccessor = self.getSuccessor()
+
+        while mysuccessor!= None: 
+            if mysuccessor.getOperation().isCancelled() or mysuccessor.getOperation().isFinished():
+                mysuccessor = mysuccessor.getSuccessor()
+            else:
+                return mysuccessor
+
+
+        return mysuccessor
+#########################################################################
+
+#########################################################################
+    def getPredecessortoSchedule(self):
+
+        mypredecessor = self. getPredecessor()
+
+        while mypredecessor!= None: 
+            if mypredecessor.getOperation().isCancelled() or mypredecessor.getOperation().isFinished():
+                mypredecessor = mypredecessor.getPredecessor()
+            else:
+                return mypredecessor
+
+
+        return mypredecessor
+#########################################################################
 
     def setDeadLine(self,dd):
         self.deadline = dd
@@ -651,8 +681,8 @@ class ProductionMILPManager(MILPManager):
             succstartindex = len(joblisttomatch)
             # now add some successors
             for job in joblisttomatch:
-                if job.getSuccessor()!= None:
-                    succ = job.getSuccessor()
+                if job.getSuccessortoSchedule()!= None:
+                    succ = job.getSuccessortoSchedule()
                     if jobsinlist < self.direct_jobs+self.first_successors:
                         #progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is schedulable"+"\n"
                         #progress.value+=" Sucessor  Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is in model"+"\n"
@@ -668,8 +698,8 @@ class ProductionMILPManager(MILPManager):
                 listsize = len(joblisttomatch)
                 for jobind in range(succstartindex,listsize):
                     job = joblisttomatch[jobind]
-                    if job.getSuccessor()!= None:
-                        succ = job.getSuccessor()
+                    if job.getSuccessortoSchedule()!= None:
+                        succ = job.getSuccessortoSchedule()
                         if jobsinlist < self.direct_jobs+self.first_successors+self.second_successors:
                             #progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is in model"+"\n"
                             #progress.value+=" Sucessor-successor Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is schedulable"+"\n"
@@ -1065,8 +1095,8 @@ class ProductionMILPManager(MILPManager):
                 #progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"  is matchmodel"+"\n"
 
                 ### precedence constraints
-                if job.getSuccessor()!= None:
-                    if job.getSuccessor() in self.getSchedulableJobs():
+                if job.getSuccessortoSchedule()!= None:
+                    if job.getSuccessortoSchedule() in self.getSchedulableJobs():
                         #progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+" has successor "+job.getSuccessor().getOperation().getName()+" in matchmodel"+"\n"
                         # sum(x_j'm) <= sum(x_jm)+eps for j -> j'
                         job.setPrecedenceConstraint(self.MILPModel.Constraint(-1,self.epsilon,job.getProduct().getPN()+"_"+job.getOperation().getName()+"_"+str(jobid)+'_preccons1'))
@@ -1225,14 +1255,14 @@ class ProductionMILPManager(MILPManager):
                         if job.getPrecedenceConstraint() != None:
                             job.getPrecedenceConstraint().SetCoefficient(matchvar,-1) # sum(x_j'm) <= sum(x_jm)+eps for j -> j'
                             job.getPrecedenceConstraint2().SetCoefficient(matchvar,funcreturn[1]) # sum(c_{jm}x_{jm}) <= sum(st_{j'm}x_{j'm})+M*(1-sum(x_j'm))   for j -> j'
-                        if job.getPredecessor() != None:
-                            #progress.value+="+++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessor().getOperation().getName()+"\n"
-                            if job.getPredecessor() in self.getSchedulableJobs():
-                                #progress.value+="+++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessor().getOperation().getName()+" in schedulable list \n"
-                                if job.getPredecessor().getPrecedenceConstraint() != None:
-                                    #progress.value+="++++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessor().getOperation().getName()+" has constraints \n"
-                                    job.getPredecessor().getPrecedenceConstraint().SetCoefficient(matchvar,1)
-                                    job.getPredecessor().getPrecedenceConstraint2().SetCoefficient(matchvar,(self.bigM-currentstart)) 
+                        if job.getPredecessortoSchedule() != None:
+                            #progress.value+="+++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessortoSchedule().getOperation().getName()+"\n"
+                            if job.getPredecessortoSchedule() in self.getSchedulableJobs():
+                                #progress.value+="+++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessortoSchedule().getOperation().getName()+" in schedulable list \n"
+                                if job.getPredecessortoSchedule().getPrecedenceConstraint() != None:
+                                    #progress.value+="++++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessortoSchedule().getOperation().getName()+" has constraints \n"
+                                    job.getPredecessortoSchedule().getPrecedenceConstraint().SetCoefficient(matchvar,1)
+                                    job.getPredecessortoSchedule().getPrecedenceConstraint2().SetCoefficient(matchvar,(self.bigM-currentstart)) 
 
 
                         #progress.value+= "processtype "+str(mach.getProcessType())+", man-hour use : "+str(funcreturn[2])+" \n"
