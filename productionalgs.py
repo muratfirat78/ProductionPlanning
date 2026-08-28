@@ -20,10 +20,7 @@ class ProductionAlgManager(AlgorithmManager):
         self.decisionalgs["Assign Resource"]["Straight Available"] = self.assignStraightResource
 
         self.decisionalgs["Select Destination"] = dict() 
-        self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestionationMostDemanded
-
-
-        self.decisionalgs["Select Destination"]['Checkalternatives'] = self.selectByConsideringAlternativeMachines
+        self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestinationEarliestAvailable
 
         self.decisionalgs["Assign Processor"] = dict() 
         self.decisionalgs["Assign Processor"]["Straight Available"] = self.assignStraightProcessor
@@ -133,83 +130,52 @@ class ProductionAlgManager(AlgorithmManager):
                 
         return  select_dict[orders[select_id]]
 ################################################################################################################################################### 
+    def selectDestinationEarliestAvailable(self, event):
+ 
+        self.getSimulator().saveLog(" >>> Algorithm: selectByConsideringAlternativeMachines function <<<")
+        self.getSimulator().saveLog(" >>> items in equip: " + str(len(event.getEquipment().getItems())))
 
-    def selectByConsideringAlternativeMachines(self,event):
-        self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
-        self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
-        select_dict = dict()
-
-        checkitems= event.getEquipment().getItems()
-
-        if len(checkitems) == 0 and len(event.getItems()) >0:
+        # 1. Collect all items being transported (from equipment or event)
+        checkitems = event.getEquipment().getItems()
+        if len(checkitems) == 0 and len(event.getItems()) > 0:
             checkitems = event.getItems()
 
+        # 2. Map feasible destination candidates to their item demand count
+        select_dict = dict()
+        central_inventory = self.getOperationsManager().getCentralInventory()
 
         for item in checkitems:
             myopr = item.getActiveOperation()
-            if myopr!= None: 
+            if myopr is not None:
+                # Add all eligible alternative machines for this operation
                 for mach in myopr.getAlternativeResources():
-                    if not mach in select_dict:
-                        select_dict[mach] = 0
-                    select_dict[mach] += 1
+                    select_dict[mach] = select_dict.get(mach, 0) + 1
             else:
-                if not self.getOperationsManager().getCentralInventory() in select_dict:
-                    select_dict[self.getOperationsManager().getCentralInventory()] = 0
-                select_dict[self.getOperationsManager().getCentralInventory()] += 1
+                # Items with no remaining operations go to Central Inventory
+                select_dict[central_inventory] = select_dict.get(central_inventory, 0) + 1
 
-        mostdemanded = None; highestdemand = 0
+        if not select_dict:
+            return None
 
-        for mymach,demand in select_dict.items():
-            if mostdemanded == None:
-                mostdemanded = mymach
-                highestdemand = demand
-            else: 
-                if highestdemand < demand:
-                    mostdemanded = mymach
-                    highestdemand = demand
-        self.getSimulator().saveLog(" >>> event "+event.getName()+"["+str(event.getID())+"] returning... None? "+str(mostdemanded == None)+", dict size "+str(len(select_dict))+" items "+str(len(event.getEquipment().getItems())))
+        # 3. Select candidate with minimum available time (tie-breaker: maximum item demand)
+        def ranking_score(machine):
+            avail_time = machine.getNextAvailableTime()
+            demand = select_dict[machine]
+            return (avail_time, -demand)
 
-        
-        return mostdemanded
+        selected_dest = min(select_dict.keys(), key=ranking_score)
 
-###################################################################################################################################################         
-    def selectDestionationMostDemanded(self,event):
-        self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
-        self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
-        select_dict = dict()
+        earliest_avail_time = selected_dest.getNextAvailableTime()
 
-        checkitems= event.getEquipment().getItems()
+        self.getSimulator().saveLog(
+            " >>> event " + event.getName() + "[" + str(event.getID()) + "] returning destination "
+            + (selected_dest.getName() if selected_dest is not None else "None")
+            + ", available time: " + str(earliest_avail_time)
+            + ", dict size " + str(len(select_dict)) + " items " + str(len(checkitems))
+        )
 
-        if len(checkitems) == 0 and len(event.getItems()) >0:
-            checkitems = event.getItems()
+        return selected_dest
 
-
-        for item in checkitems:
-            myopr = item.getActiveOperation()
-            if myopr!= None: 
-                for mach in myopr.getAlternativeResources():
-                    if not mach in select_dict:
-                        select_dict[mach] = 0
-                    select_dict[mach] += 1
-            else:
-                if not self.getOperationsManager().getCentralInventory() in select_dict:
-                    select_dict[self.getOperationsManager().getCentralInventory()] = 0
-                select_dict[self.getOperationsManager().getCentralInventory()] += 1
-
-        mostdemanded = None; highestdemand = 0
-
-        for mymach,demand in select_dict.items():
-            if mostdemanded == None:
-                mostdemanded = mymach
-                highestdemand = demand
-            else: 
-                if highestdemand < demand:
-                    mostdemanded = mymach
-                    highestdemand = demand
-        self.getSimulator().saveLog(" >>> event "+event.getName()+"["+str(event.getID())+"] returning... None? "+str(mostdemanded == None)+", dict size "+str(len(select_dict))+" items "+str(len(event.getEquipment().getItems())))
-
-        
-        return mostdemanded
 #########################################################################################################################################################
     def selectItemsFeasibletoUnload(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerUnloadFeasible function <<<")

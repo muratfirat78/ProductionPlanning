@@ -171,6 +171,25 @@ class Machine(Resource):
     def getAlternatives(self):
         return self.Alternatives
 
+    def getNextAvailableTime(self):
+
+        if not self.isAvailable(): 
+            return None
+
+        sim_time = self.getSimulator().getTime()
+        
+        if self.getProcessor() is not None:
+            return sim_time
+
+        # All processors busy: check when the earliest active step finishes
+        active_ends = []
+        for _, pr in self.ProgressList:
+            end_time = pr[1] if isinstance(pr, (tuple, list)) else pr #check if pr is a tuple/list (start, end) or just an end time
+            if end_time >= sim_time: #filter out any already completed steps
+                active_ends.append(end_time)
+        return min(active_ends) if active_ends else sim_time
+        
+
     def calculationUtilization(self):
 
         # machine processing events
