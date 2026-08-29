@@ -845,7 +845,7 @@ class ProductionMILPManager(MILPManager):
                     machine.getScheduleDF()["Work Orders/End"] = pd.to_datetime(machine.getScheduleDF()["Work Orders/End"]).dt.floor('s')
 
 
-                    machine.getScheduleDF().to_csv(resource.getName()+"_Schedule_"+inputdate+".csv",index = False)
+                    machine.getScheduleDF().to_csv("data/schedules/"+resource.getName()+"_Schedule_"+inputdate+".csv",index = False)
 
             # find and write the lateness, tardiness, and earliness. 
             for order in self.getSimulator().getController().getWorkManager().getSelectedOrders():
@@ -1344,7 +1344,7 @@ class ProductionMILPManager(MILPManager):
 
         if self.writeMILP: 
             mystring = self.MILPModel.ExportModelAsLpFormat(False)
-            filename = 'MILP-model_'+str(self.MILPRound)+'.txt'
+            filename = 'data/milp/MILP-model_'+str(self.MILPRound)+'.txt'
             textfile = open(filename, 'w')
             textfile.write(mystring)
             textfile.close()

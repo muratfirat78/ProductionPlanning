@@ -912,7 +912,7 @@ class ShopFloorManager(OperationsManager):
             event_df.loc[len(event_df)] = eventdata
 
         
-        event_df.to_csv("EventExecutionData.csv",index = False)
+        event_df.to_csv(os.path.join("..", "data", "simulation", "EventExecutionData.csv"), index=False)
 
 
         location_df = pd.DataFrame(columns=["EntityName","EntityID","Time","LocationName","LocationID"])
@@ -920,7 +920,7 @@ class ShopFloorManager(OperationsManager):
         for locdata in self.getSimulator().getLocationData():
             location_df.loc[len(location_df)] = locdata
 
-        location_df.to_csv("LocationData.csv",index = False)
+        location_df.to_csv(os.path.join("..", "data", "simulation", "LocationData.csv"), index=False)
 
 
         buffer_df = pd.DataFrame(columns=["BufferName","BufferID","Machine","Time","No.Items"])
@@ -930,7 +930,7 @@ class ShopFloorManager(OperationsManager):
             buffer_df.loc[len(buffer_df)] = bufferdata
 
         
-        buffer_df.to_csv("BufferData.csv",index = False)
+        buffer_df.to_csv(os.path.join("..", "data", "simulation", "BufferData.csv"), index=False)
 
         return
 #########################################################################################################################
@@ -1066,7 +1066,7 @@ class ShopFloorManager(OperationsManager):
             TBRM_df["Work Orders/Start"] = pd.to_datetime(TBRM_df["Work Orders/Start"]).dt.floor('s')
             TBRM_df["Work Orders/End"] = pd.to_datetime(TBRM_df["Work Orders/End"]).dt.floor('s')
             
-            TBRM_df.to_csv("TBRM_Plan_"+inputdate+"_R"+str(myround)+"_"+str((datetime.now()).date())+".csv",index = False)
+            TBRM_df.to_csv("data/schedules/TBRM_Plan_"+inputdate+"_R"+str(myround)+"_"+str((datetime.now()).date())+".csv",index = False)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
         

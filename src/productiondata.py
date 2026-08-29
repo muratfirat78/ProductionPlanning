@@ -23,8 +23,10 @@ class ProductionDataManager(DataManager):
     
     def ReadResources(self):
      
-        rel_path = '/'+self.getOperationsManager().getUseCase()
-        abs_file_path = os.path.dirname(os.path.realpath(__file__))+rel_path
+        abs_file_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            self.getOperationsManager().getUseCase()
+        )
 
         
         
@@ -111,8 +113,10 @@ class ProductionDataManager(DataManager):
         
 #####################################################################################################################################
     def ReadDemandFile(self):
-        rel_path = '/'+self.getOperationsManager().getUseCase()
-        abs_file_path = os.path.dirname(os.path.realpath(__file__))+rel_path
+        abs_file_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            self.getOperationsManager().getUseCase()
+        )
         
         self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
@@ -293,7 +297,7 @@ class ProductionDataManager(DataManager):
 #########################################################################################################################################
     def setResultDFs(self):
 
-        process_df = pd.read_csv("ProcessData.csv")
+        process_df = pd.read_csv(os.path.join("..", "data", "simulation", "ProcessData.csv"))
 
         self.res_process_df = process_df.groupby(["ResourceID",'Resource','Start','Completion'])[['ItemID','Demand','Product']].agg(lambda x:list(x)).reset_index()
         self.demand_process_df = process_df.groupby(["Demand","Product","OperationName",'Start','Completion'])[['ItemID']].agg(lambda x:list(x)).reset_index()
@@ -309,7 +313,7 @@ class ProductionDataManager(DataManager):
                 infodata = {"Time":time,"Info":info} 
                 log_df.loc[len(log_df)]= infodata
         
-        log_df.to_csv("LogData.csv",index = False)
+        log_df.to_csv("data/logs/LogData.csv",index = False)
 
         return 
 
