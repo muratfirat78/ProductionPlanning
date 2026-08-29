@@ -1,6 +1,6 @@
 
-from Visual import*
-from Simulator import *
+from visual import *
+from simulator import *
 from productionmain import *
 from MILPScheduling import * 
 

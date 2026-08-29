@@ -1,4 +1,4 @@
-from Simulator import *
+from simulator import *
 from productionmain import *
 from productionalgs import *
 
