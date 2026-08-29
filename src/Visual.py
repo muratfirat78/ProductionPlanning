@@ -451,8 +451,8 @@ class VisualManager():
 
         self.demandorderlist.clear()
        
+        process_df = pd.read_csv(os.path.join("..", "data", "simulation", "ProcessData.csv"))
 
-        process_df = pd.read_csv("ProcessData.csv")
 
        
         demagrr = process_df.groupby(["DemandID","Product","NrItems"], dropna=True)[['OperationName']].agg(lambda x:list(x)).reset_index()
@@ -512,10 +512,7 @@ class VisualManager():
                 break
             selectid+=1
 
-
-        
-        
-        process_df = pd.read_csv("ProcessData.csv")
+            process_df = pd.read_csv(os.path.join("..", "data", "simulation", "ProcessData.csv"))
     
         process_df=process_df.reset_index()
 
