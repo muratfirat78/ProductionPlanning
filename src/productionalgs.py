@@ -1,4 +1,4 @@
-from Simulator import *
+from simulator import *
 from datetime import timedelta,date
 
 
@@ -20,7 +20,9 @@ class ProductionAlgManager(AlgorithmManager):
         self.decisionalgs["Assign Resource"]["Straight Available"] = self.assignStraightResource
 
         self.decisionalgs["Select Destination"] = dict() 
-        self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestinationEarliestAvailable
+        self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestionationMostDemanded
+
+        self.decisionalgs["Select Destination"]['Checkalternatives'] = self.selectDestinationEarliestAvailable
 
         self.decisionalgs["Assign Processor"] = dict() 
         self.decisionalgs["Assign Processor"]["Straight Available"] = self.assignStraightProcessor
@@ -175,6 +177,45 @@ class ProductionAlgManager(AlgorithmManager):
         )
 
         return selected_dest
+
+
+    def selectDestionationMostDemanded(self,event):
+        self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
+        self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
+        select_dict = dict()
+
+        checkitems= event.getEquipment().getItems()
+
+        if len(checkitems) == 0 and len(event.getItems()) >0:
+            checkitems = event.getItems()
+
+
+        for item in checkitems:
+            myopr = item.getActiveOperation()
+            if myopr!= None: 
+                for mach in myopr.getAlternativeResources():
+                    if not mach in select_dict:
+                        select_dict[mach] = 0
+                    select_dict[mach] += 1
+            else:
+                if not self.getOperationsManager().getCentralInventory() in select_dict:
+                    select_dict[self.getOperationsManager().getCentralInventory()] = 0
+                select_dict[self.getOperationsManager().getCentralInventory()] += 1
+
+        mostdemanded = None; highestdemand = 0
+
+        for mymach,demand in select_dict.items():
+            if mostdemanded == None:
+                mostdemanded = mymach
+                highestdemand = demand
+            else: 
+                if highestdemand < demand:
+                    mostdemanded = mymach
+                    highestdemand = demand
+        self.getSimulator().saveLog(" >>> event "+event.getName()+"["+str(event.getID())+"] returning... None? "+str(mostdemanded == None)+", dict size "+str(len(select_dict))+" items "+str(len(event.getEquipment().getItems())))
+
+        
+        return mostdemanded
 
 #########################################################################################################################################################
     def selectItemsFeasibletoUnload(self,event):

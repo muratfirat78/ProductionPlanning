@@ -1,4 +1,4 @@
-from Simulator import *
+from simulator import *
 from datetime import timedelta,date
 from productionobjects import *
 from productionalgs import *
