@@ -700,6 +700,7 @@ class VisualManager():
 
         self.getRunProgress().layout.width = '800px'
         self.getRunProgress().layout.height = '300px'
+        self.getController().getSimulator().setLogDisplay(self.updateSimProgress)
 
    
         runbox = VBox(children=[self.runbutton,self.getRunProgress()])

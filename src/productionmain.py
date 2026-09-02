@@ -478,8 +478,14 @@ class ShopFloorManager(OperationsManager):
                         if successor_event.getToLocation()== None:
                             decision_type = "Select Destination"
                             algname = self.getAlgorithmSetting()[successor_event.getName()][decision_type]
-                            algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname]
-                            alg_return = algfunction(event)
+                            if algname == "MostDemanded":
+                                alg_return = ProductionAlgManager.selectDestionationMostDemanded(
+                                    successor_event,
+                                    self.getCentralInventory(),
+                                )
+                            else:
+                                algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname]
+                                alg_return = algfunction(successor_event)
                             if alg_return!= None:
                                 successor_event.setToLocation(alg_return.getInputBuffer())
      
@@ -653,7 +659,13 @@ class ShopFloorManager(OperationsManager):
                 algname = self.getAlgorithmSetting()[event.getName()][decision_type] 
                 if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
                     self.getSimulator().saveLog(" REPORT: decision_type 3"+decision_type) 
-                alg_return = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname](event) 
+                if decision_type == "Select Destination" and algname == "MostDemanded":
+                    alg_return = ProductionAlgManager.selectDestionationMostDemanded(
+                        event,
+                        self.getCentralInventory(),
+                    )
+                else:
+                    alg_return = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname](event)
                 if alg_return!= None:
                     if decision_type == "Select Items":
                         if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:
@@ -956,8 +968,14 @@ class ShopFloorManager(OperationsManager):
                                     mydecision_type = "Select Destination"
                                     if mydecision_type in self.getAlgorithmSetting()[successor_event.getName()]:
                                         algname = self.getAlgorithmSetting()[successor_event.getName()][mydecision_type]
-                                        algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[mydecision_type][algname]
-                                        alg_return = algfunction(successor_event)
+                                        if algname == "MostDemanded":
+                                            alg_return = ProductionAlgManager.selectDestionationMostDemanded(
+                                                successor_event,
+                                                self.getCentralInventory(),
+                                            )
+                                        else:
+                                            algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[mydecision_type][algname]
+                                            alg_return = algfunction(successor_event)
                                         if alg_return!= None:
                                             successor_event.setToLocation(alg_return.getInputBuffer())
     
