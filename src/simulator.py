@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import timedelta,date,datetime
 from simulationobjects import *
 import random
@@ -5,27 +7,30 @@ import pandas as pd
 import os 
 from timeit import default_timer as timer
 from pathlib import Path
+from typing import Any, TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from controller import Controller
 
 class Simulator(object):
-    def __init__(self):
+    def __init__(self) -> None:
         
-        self.EventData = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
-        self.ExecutionData = [] # [{"EventID':...,"EventName":...,'Status':...}]
-        self.LocationData = [] 
-        self.BufferData = [] 
-        self.queue = {} #key: time (start/completion times of events) , val: [event]
-        self.time = 0
-        self.eventno = 0
+        self.EventData: list[dict[str, Any]] = [] # [{"EventID':...,"EventName":...,'Location Name/ID':...,"Equipment Name/ID":...,"Resource Name/ID":...,"Items":...}]
+        self.ExecutionData: list[dict[str, Any]] = [] # [{"EventID':...,"EventName":...,'Status':...}]
+        self.LocationData: list[dict[str, Any]] = [] 
+        self.BufferData: list[dict[str, Any]] = [] 
+        self.queue: dict[Any, list[ExecEvent]] = {} #key: time (start/completion times of events) , val: [event]
+        self.time: int = 0
+        self.eventno: int = 0
      
         self.queue["Pending"] = [] # list of pending events, to be hanlded
     
-        self.DataTypes = dict() # key: dataset name, val: dataframe objects. 
-        self.startday = None 
-        self.shiftmapping = {0:3,8:1,16:2}
-        self.shiftlength = timedelta(hours = 7)+ timedelta(minutes = 59)
-        self.currentDay = None # will be updated dynamically
-        self.currentShift = None #will be updated dynamically 
+        self.DataTypes: dict[str, pd.DataFrame] = dict() # key: dataset name, val: dataframe objects. 
+        self.startday: datetime | None = None 
+        self.shiftmapping: dict[int, int] = {0:3,8:1,16:2}
+        self.shiftlength: timedelta = timedelta(hours = 7)+ timedelta(minutes = 59)
+        self.currentDay: datetime | None = None # will be updated dynamically
+        self.currentShift: int | None = None #will be updated dynamically 
 
         currentdate =  datetime.now()
         startday = datetime(currentdate.year, currentdate.month, currentdate.day)
@@ -33,31 +38,31 @@ class Simulator(object):
         self.shiftsperday = 3 
         self.weekdays = 5
         self.shift_minutes = 60*self.shifthours
-        self.TimeLimit =  None
-        self.MyLog = dict() #key: sim time, val: [events]
-        self.Controller = None
-        self.RunErrors = 0
-        self.Errors = []
+        self.TimeLimit: int | None =  None
+        self.MyLog: dict[Any, list[str]] = dict() #key: sim time, val: [events]
+        self.Controller: Controller | None = None
+        self.RunErrors: int = 0
+        self.Errors: list[str] = []
 
         self.setStartDay(startday+timedelta(hours= 24))
 
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
 
-    def getErrors(self):
+    def getErrors(self) -> list[str]:
         return self.Errors 
         
 
-    def addError(self):
+    def addError(self) -> None:
         self.RunErrors+=1
         return
         
-    def getNoErrors(self):
+    def getNoErrors(self) -> int:
         return self.RunErrors
         
-    def setController(self,contr):
+    def setController(self, contr: Controller) -> None:
         self.Controller = contr
         return
-    def getController(self):
+    def getController(self) -> Controller | None:
         return self.Controller
         
     def getMyLog(self):
@@ -87,72 +92,72 @@ class Simulator(object):
         self.MyLog[title].append(info)
         return
         
-    def setRunWeeks(self,weeks):
+    def setRunWeeks(self,weeks: int):
         self.TimeLimit =  weeks*60*self.shifthours*self.shiftsperday*self.weekdays
 
         return
 
-    def getTimelimit(self):
+    def getTimelimit(self) -> int | None:
         return self.TimeLimit
 
         
 
-    def getShiftMinutes(self):
+    def getShiftMinutes(self) -> int:
         return self.shift_minutes
 
-    def getShift(self,hour):
+    def getShift(self,hour: int) -> int:
         if hour in self.shiftmapping:
             return self.shiftmapping[hour]
         else:
             return 0
         
-    def setStartDay(self,myday):
+    def setStartDay(self,myday) -> None:
         self.startday = myday
         return
-    def getStartDay(self):
+    def getStartDay(self) -> datetime:
         return self.startday
 
-    def setCurrentShift(self,shft):
+    def setCurrentShift(self,shft: int) -> None:
         self.currentShift = shft
         return 
-    def getCurrentShift(self):
+    def getCurrentShift(self) -> int:
         return self.currentShift
 
     def getShiftSimTime(self,simtime):
         return self.getShift(self.checkRealTime(simtime).hour)
 
-    def setCurrentDay(self,day):
+    def setCurrentDay(self,day: datetime) -> None:
         self.currentDay = day
         return
         
-    def getCurrentDay(self):
+    def getCurrentDay(self) -> datetime:
         return self.currentDay 
 
-    def getDataTypes(self):
+    def getDataTypes(self) -> list:
         return self.DataTypes
 
-    def getEventData(self):
+    def getEventData(self) -> list:
         return self.EventData
-    def getExecutionData(self):
+    def getExecutionData(self) -> list:
         return self.ExecutionData
 
-    def getLocationData(self):
+    def getLocationData(self) -> list:
         return self.LocationData
 
-    def getBufferData(self):
+    def getBufferData(self) -> list:
         return self.BufferData
           
-    def getTimeLimit(self):
+    def getTimeLimit(self) -> int | None:
         return self.TimeLimit
 
-    def getRealTime(self):
+    def getRealTime(self) -> datetime:
         return self.getStartDay()+timedelta(minutes = self.getTime())
 
-    def checkRealTime(self,time):
+    def checkRealTime(self,time: int) -> datetime:
         return self.getStartDay()+timedelta(minutes = time)
 
 ############################################################################################
-    def RunSimulation(self,OperationsMgr): 
+    def RunSimulation(self,OperationsMgr: OperationsManager) -> None: 
 
         try: 
             self.getController().getVisualManager().updateSimProgress("------------ SIMULATION START --------------")
@@ -336,7 +341,7 @@ class Simulator(object):
         return self.eventno
     def getEventQueue(self):
         return self.queue
-#__________________________________________________________________________________________________________________________________
+
 class OperationsManager(object):
     def __init__(self,sim):
         self.Resources = []

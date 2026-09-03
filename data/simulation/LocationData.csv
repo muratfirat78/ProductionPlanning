@@ -1,836 +1,93 @@
 EntityName,EntityID,Time,LocationName,LocationID
-Operator 1,4,1921,CentralBuffer_Location,0
-Operator 2,5,1921,CentralBuffer_Location,0
-Manual worker 1,7,1921,CentralBuffer_Location,0
-Manual worker 2,8,1921,CentralBuffer_Location,0
-Operator 1,4,1922,CentralBuffer_Location,0
-Operator 2,5,1922,CentralBuffer_Location,0
-Manual worker 1,7,1922,CentralBuffer_Location,0
-Manual worker 2,8,1922,CentralBuffer_Location,0
-Operator 1,4,1923,BW_(BKW_01)_Location,13
-Operator 2,5,1923,BW_(BKW_01)_Location,13
-Manual worker 1,7,1923,BW_(BKW_01)_Location,13
-Manual worker 2,8,1923,BW_(BKW_01)_Location,13
-Operator 1,4,1925,BW_(BKW_01)_Location,13
-Operator 2,5,1925,BW_(BKW_01)_Location,13
-Manual worker 1,7,1925,BW_(BKW_01)_Location,13
-Manual worker 2,8,1925,BW_(BKW_01)_Location,13
-Operator 1,4,1926,CentralBuffer_Location,0
-Operator 2,5,1926,CentralBuffer_Location,0
-Manual worker 1,7,1926,CentralBuffer_Location,0
-Manual worker 2,8,1926,CentralBuffer_Location,0
-Operator 1,4,1927,CentralBuffer_Location,0
-Operator 2,5,1927,CentralBuffer_Location,0
-Manual worker 1,7,1927,CentralBuffer_Location,0
-Manual worker 2,8,1927,CentralBuffer_Location,0
-Operator 1,4,1928,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1928,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1928,M3-01_(FR3_01)_Location,1
-Manual worker 2,8,1928,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1930,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1930,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1930,M3-01_(FR3_01)_Location,1
-Manual worker 2,8,1930,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1931,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1931,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1931,BW_(BKW_01)_Location,13
-Operator 2,5,1931,CentralBuffer_Location,0
-Operator 1,4,1932,CentralBuffer_Location,0
-Manual worker 1,7,1932,CentralBuffer_Location,0
-Manual worker 2,8,1932,CentralBuffer_Location,0
-Operator 2,5,1932,CentralBuffer_Location,0
-Operator 1,4,1933,CentralBuffer_Location,0
-Manual worker 1,7,1933,CentralBuffer_Location,0
-Manual worker 2,8,1933,CentralBuffer_Location,0
-Operator 2,5,1933,MP3_(UITG_M)_Location,17
-Operator 1,4,1934,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1934,BW_(BKW_01)_Location,13
-Manual worker 2,8,1934,M3-01_(FR3_01)_Location,1
-Operator 2,5,1935,MP3_(UITG_M)_Location,17
-Operator 1,4,1936,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1936,BW_(BKW_01)_Location,13
-Manual worker 2,8,1936,M3-01_(FR3_01)_Location,1
-Operator 2,5,1936,CentralBuffer_Location,0
-Operator 1,4,1937,CentralBuffer_Location,0
-Manual worker 1,7,1937,CentralBuffer_Location,0
-Manual worker 2,8,1937,CentralBuffer_Location,0
-Operator 2,5,1937,CentralBuffer_Location,0
-Operator 1,4,1938,CentralBuffer_Location,0
-Manual worker 1,7,1938,CentralBuffer_Location,0
-Manual worker 2,8,1938,CentralBuffer_Location,0
-Operator 2,5,1938,BW_(BKW_01)_Location,13
-Operator 1,4,1939,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1939,CentralBuffer_Location,0
-Manual worker 2,8,1939,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1940,BW_(BKW_01)_Location,13
-Operator 1,4,1941,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1941,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1941,CentralBuffer_Location,0
-Operator 2,5,1941,CentralBuffer_Location,0
-Operator 1,4,1942,CentralBuffer_Location,0
-Manual worker 2,8,1942,CentralBuffer_Location,0
-Manual worker 1,7,1942,CentralBuffer_Location,0
-Operator 2,5,1942,CentralBuffer_Location,0
-Operator 1,4,1943,CentralBuffer_Location,0
-Manual worker 2,8,1943,CentralBuffer_Location,0
-Manual worker 1,7,1943,CentralBuffer_Location,0
-Operator 2,5,1943,M4-02_(FR4_02)_Location,4
-Operator 1,4,1944,UMC750_(M5-03)_Location,8
-Manual worker 2,8,1944,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1945,M4-02_(FR4_02)_Location,4
-Manual worker 1,7,1945,CentralBuffer_Location,0
-Operator 1,4,1946,UMC750_(M5-03)_Location,8
-Manual worker 2,8,1946,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1946,CentralBuffer_Location,0
-Manual worker 1,7,1946,CentralBuffer_Location,0
-Operator 1,4,1947,CentralBuffer_Location,0
-Manual worker 2,8,1947,CentralBuffer_Location,0
-Operator 2,5,1947,CentralBuffer_Location,0
-Manual worker 1,7,1947,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1948,CentralBuffer_Location,0
-Manual worker 2,8,1948,CentralBuffer_Location,0
-Operator 2,5,1948,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1949,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1949,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,1949,M4-01_(FR4_01)_Location,3
-Operator 2,5,1950,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1950,CentralBuffer_Location,0
-Operator 1,4,1951,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,1951,M4-01_(FR4_01)_Location,3
-Operator 2,5,1951,CentralBuffer_Location,0
-Manual worker 1,7,1951,CentralBuffer_Location,0
-Operator 1,4,1952,CentralBuffer_Location,0
-Manual worker 2,8,1952,CentralBuffer_Location,0
-Operator 2,5,1952,CentralBuffer_Location,0
-Manual worker 1,7,1952,M3-02_(FR3_02)_Location,2
-Operator 1,4,1953,CentralBuffer_Location,0
-Manual worker 2,8,1953,CentralBuffer_Location,0
-Operator 2,5,1953,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1954,M3-02_(FR3_02)_Location,2
-Operator 1,4,1954,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1954,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1955,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1955,CentralBuffer_Location,0
-Operator 1,4,1956,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1956,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1956,CentralBuffer_Location,0
-Manual worker 1,7,1956,CentralBuffer_Location,0
-Operator 1,4,1957,CentralBuffer_Location,0
-Manual worker 2,8,1957,CentralBuffer_Location,0
-Operator 2,5,1957,CentralBuffer_Location,0
-Manual worker 1,7,1957,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1958,CentralBuffer_Location,0
-Manual worker 2,8,1958,CentralBuffer_Location,0
-Operator 2,5,1958,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1959,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1959,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1959,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1960,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,1960,CentralBuffer_Location,0
-Operator 1,4,1961,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1961,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1961,CentralBuffer_Location,0
-Manual worker 1,7,1961,CentralBuffer_Location,0
-Operator 1,4,1962,BW_(BKW_01)_Location,13
-Operator 2,5,1962,CentralBuffer_Location,0
-Manual worker 1,7,1962,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,1963,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1963,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1964,BW_(BKW_01)_Location,13
-Manual worker 1,7,1964,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1965,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1965,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1966,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1966,MP3_(UITG_M)_Location,17
-Operator 1,4,1967,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,1968,MP3_(UITG_M)_Location,17
-Manual worker 1,7,1968,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1969,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1970,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,1972,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,1999,UMC750_(M5-03)_Location,8
-Operator 1,4,2001,UMC750_(M5-03)_Location,8
-Manual worker 2,8,2023,M3-01_(FR3_01)_Location,1
-Manual worker 2,8,2025,M3-01_(FR3_01)_Location,1
-Operator 2,5,2028,M4-02_(FR4_02)_Location,4
-Operator 2,5,2030,M4-02_(FR4_02)_Location,4
-Operator 2,5,2031,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2032,M5-02_(FR5_02)_Location,7
-Operator 2,5,2033,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2034,M5-02_(FR5_02)_Location,7
-Operator 2,5,2035,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2035,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2037,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,2037,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2038,BW_(BKW_01)_Location,13
-Operator 2,5,2039,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2040,BW_(BKW_01)_Location,13
-Operator 2,5,2041,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2041,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,2043,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2043,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,2045,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2045,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,2047,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,2047,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,2048,MP3_(UITG_M)_Location,17
-Manual worker 1,7,2049,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,2050,MP3_(UITG_M)_Location,17
-Manual worker 1,7,2051,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,2061,M4-01_(FR4_01)_Location,3
-Operator 1,4,2063,M4-01_(FR4_01)_Location,3
-Manual worker 2,8,2085,M3-02_(FR3_02)_Location,2
-Manual worker 2,8,2087,M3-02_(FR3_02)_Location,2
-Manual worker 2,8,2088,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2090,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2099,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,2101,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,2102,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2104,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2106,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2108,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2110,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2112,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2114,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,2118,M4-01_(FR4_01)_Location,3
-Manual worker 2,8,2120,M4-01_(FR4_01)_Location,3
-Operator 1,4,2235,M4-02_(FR4_02)_Location,4
-Operator 1,4,2237,M4-02_(FR4_02)_Location,4
-Operator 1,4,2238,BW_(BKW_01)_Location,13
-Operator 1,4,2240,BW_(BKW_01)_Location,13
-Operator 1,4,2242,BW_(BKW_01)_Location,13
-Operator 1,4,2246,M4-01_(FR4_01)_Location,3
-Operator 1,4,2248,M4-01_(FR4_01)_Location,3
-Operator 1,4,2249,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,2250,BW_(BKW_01)_Location,13
-Operator 1,4,2251,BW_(BKW_01)_Location,13
-Operator 1,4,2252,PACK_(VERP_P)_Location,14
-Operator 1,4,2254,PACK_(VERP_P)_Location,14
-Operator 1,4,2255,BW_(BKW_01)_Location,13
-Operator 1,4,2257,BW_(BKW_01)_Location,13
-Operator 1,4,2258,PACK_(VERP_P)_Location,14
-Operator 1,4,2259,M4-01_(FR4_01)_Location,3
-Operator 1,4,2260,M4-01_(FR4_01)_Location,3
-Operator 1,4,2261,BW_(BKW_01)_Location,13
-Manual worker 2,8,2262,M3-02_(FR3_02)_Location,2
-Operator 1,4,2263,BW_(BKW_01)_Location,13
-Operator 1,4,2264,PACK_(VERP_P)_Location,14
-Operator 1,4,2266,PACK_(VERP_P)_Location,14
-Operator 1,4,2273,PACK_(VERP_P)_Location,14
-Operator 1,4,2282,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,2283,M3-02_(FR3_02)_Location,2
-Operator 1,4,2284,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,2284,PACK_(VERP_P)_Location,14
-Operator 1,4,2285,BW_(BKW_01)_Location,13
-Manual worker 2,8,2286,PACK_(VERP_P)_Location,14
-Operator 1,4,2286,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,2287,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,2287,M5-02_(FR5_02)_Location,7
-Manual worker 2,8,2288,PACK_(VERP_P)_Location,14
-Operator 1,4,2288,M3-01_(FR3_01)_Location,1
-Manual worker 2,8,2289,PACK_(VERP_P)_Location,14
-Manual worker 2,8,2290,CentralBuffer_Location,0
-Manual worker 1,7,2341,M3-01_(FR3_01)_Location,1
-Operator 1,4,2400,CentralBuffer_Location,0
-Operator 2,5,2400,CentralBuffer_Location,0
-Manual worker 1,7,2400,CentralBuffer_Location,0
-Operator 3,6,2401,CentralBuffer_Location,0
-Operator 3,6,2880,CentralBuffer_Location,0
-Operator 1,4,3361,CentralBuffer_Location,0
-Operator 2,5,3362,CentralBuffer_Location,0
-Operator 1,4,3362,BW_(BKW_01)_Location,13
-Manual worker 1,7,3364,CentralBuffer_Location,0
-Operator 1,4,3364,BW_(BKW_01)_Location,13
-Manual worker 2,8,3365,CentralBuffer_Location,0
-Manual worker 1,7,3365,BW_(BKW_01)_Location,13
-Operator 1,4,3366,BW_(BKW_01)_Location,13
-Manual worker 2,8,3366,MP3_(UITG_M)_Location,17
-Manual worker 1,7,3366,BW_(BKW_01)_Location,13
-Manual worker 1,7,3367,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,3368,MP3_(UITG_M)_Location,17
-Manual worker 2,8,3369,CentralBuffer_Location,0
-Manual worker 1,7,3369,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,3370,MP3_(UITG_M)_Location,17
-Manual worker 1,7,3371,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,3371,MP3_(UITG_M)_Location,17
-Manual worker 2,8,3372,M4-02_(FR4_02)_Location,4
-Operator 1,4,3410,BW_(BKW_01)_Location,13
-Operator 1,4,3552,M3-02_(FR3_02)_Location,2
-Operator 1,4,3554,M3-02_(FR3_02)_Location,2
-Operator 1,4,3555,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,3556,M3-02_(FR3_02)_Location,2
-Operator 1,4,3557,M3-02_(FR3_02)_Location,2
-Operator 1,4,3558,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,3560,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,3562,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,3642,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,3643,BW_(BKW_01)_Location,13
-Manual worker 1,7,3645,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,3645,BW_(BKW_01)_Location,13
-Manual worker 1,7,3646,BW_(BKW_01)_Location,13
-Operator 1,4,3647,BW_(BKW_01)_Location,13
-Manual worker 1,7,3647,BW_(BKW_01)_Location,13
-Manual worker 1,7,3648,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3650,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3652,PACK_(VERP_P)_Location,14
-Operator 1,4,3687,BW_(BKW_01)_Location,13
-Manual worker 1,7,3689,PACK_(VERP_P)_Location,14
-Operator 1,4,3689,BW_(BKW_01)_Location,13
-Manual worker 1,7,3690,BW_(BKW_01)_Location,13
-Operator 1,4,3691,BW_(BKW_01)_Location,13
-Manual worker 1,7,3691,BW_(BKW_01)_Location,13
-Manual worker 1,7,3692,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3744,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3746,PACK_(VERP_P)_Location,14
-Operator 1,4,3747,BW_(BKW_01)_Location,13
-Manual worker 1,7,3748,PACK_(VERP_P)_Location,14
-Operator 1,4,3748,PACK_(VERP_P)_Location,14
-Operator 1,4,3749,PACK_(VERP_P)_Location,14
-Operator 1,4,3750,CentralBuffer_Location,0
-Manual worker 1,7,3768,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3770,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3771,CentralBuffer_Location,0
-Manual worker 1,7,3772,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3773,PACK_(VERP_P)_Location,14
-Manual worker 1,7,3774,CentralBuffer_Location,0
-Operator 2,5,3796,UMC750_(M5-03)_Location,8
-Operator 2,5,3840,CentralBuffer_Location,0
-Manual worker 2,8,3840,CentralBuffer_Location,0
-Operator 3,6,3959,CentralBuffer_Location,0
-Operator 3,6,3960,BW_(BKW_01)_Location,13
-Operator 3,6,3962,BW_(BKW_01)_Location,13
-Operator 3,6,3964,BW_(BKW_01)_Location,13
-Operator 3,6,3965,CentralBuffer_Location,0
-Operator 3,6,3966,BW_(BKW_01)_Location,13
-Operator 3,6,3967,BW_(BKW_01)_Location,13
-Operator 3,6,3968,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,3970,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,3971,BW_(BKW_01)_Location,13
-Operator 3,6,4186,BW_(BKW_01)_Location,13
-Operator 3,6,4320,CentralBuffer_Location,0
-Operator 1,4,4801,CentralBuffer_Location,0
-Operator 1,4,4802,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,4803,CentralBuffer_Location,0
-Operator 1,4,4804,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,4960,M3-01_(FR3_01)_Location,1
-Operator 1,4,4962,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,4963,CentralBuffer_Location,0
-Operator 1,4,4964,M3-01_(FR3_01)_Location,1
-Operator 1,4,4965,M3-01_(FR3_01)_Location,1
-Operator 1,4,4966,BW_(BKW_01)_Location,13
-Operator 2,5,5021,M3-01_(FR3_01)_Location,1
-Operator 2,5,5051,M3-01_(FR3_01)_Location,1
-Operator 1,4,5122,BW_(BKW_01)_Location,13
-Operator 2,5,5124,M3-01_(FR3_01)_Location,1
-Operator 1,4,5124,BW_(BKW_01)_Location,13
-Operator 2,5,5125,BW_(BKW_01)_Location,13
-Operator 1,4,5126,BW_(BKW_01)_Location,13
-Operator 2,5,5126,BW_(BKW_01)_Location,13
-Operator 2,5,5127,PACK_(VERP_P)_Location,14
-Operator 1,4,5129,BW_(BKW_01)_Location,13
-Operator 2,5,5130,PACK_(VERP_P)_Location,14
-Operator 1,4,5131,BW_(BKW_01)_Location,13
-Operator 2,5,5132,PACK_(VERP_P)_Location,14
-Operator 1,4,5133,BW_(BKW_01)_Location,13
-Operator 2,5,5133,BW_(BKW_01)_Location,13
-Manual worker 1,7,5134,CentralBuffer_Location,0
-Operator 1,4,5134,PACK_(VERP_P)_Location,14
-Operator 2,5,5134,BW_(BKW_01)_Location,13
-Manual worker 1,7,5135,BW_(BKW_01)_Location,13
-Operator 2,5,5135,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,5137,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,5139,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,5190,PACK_(VERP_P)_Location,14
-Operator 1,4,5219,M3-01_(FR3_01)_Location,1
-Operator 1,4,5221,M3-01_(FR3_01)_Location,1
-Operator 1,4,5222,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,5223,M3-01_(FR3_01)_Location,1
-Operator 1,4,5224,M3-01_(FR3_01)_Location,1
-Operator 1,4,5225,BW_(BKW_01)_Location,13
-Operator 1,4,5268,BW_(BKW_01)_Location,13
-Operator 1,4,5269,PACK_(VERP_P)_Location,14
-Operator 1,4,5271,PACK_(VERP_P)_Location,14
-Operator 1,4,5272,BW_(BKW_01)_Location,13
-Operator 1,4,5273,PACK_(VERP_P)_Location,14
-Operator 1,4,5274,PACK_(VERP_P)_Location,14
-Operator 1,4,5275,CentralBuffer_Location,0
-Operator 2,5,5280,CentralBuffer_Location,0
-Manual worker 1,7,5280,CentralBuffer_Location,0
-Operator 3,6,5281,CentralBuffer_Location,0
-Operator 3,6,5341,M3-01_(FR3_01)_Location,1
-Operator 3,6,5364,M3-01_(FR3_01)_Location,1
-Operator 3,6,5366,M3-01_(FR3_01)_Location,1
-Operator 3,6,5538,M4-02_(FR4_02)_Location,4
-Operator 3,6,5599,M4-02_(FR4_02)_Location,4
-Operator 3,6,5601,M4-02_(FR4_02)_Location,4
-Operator 3,6,5623,M3-01_(FR3_01)_Location,1
-Operator 3,6,5684,M3-01_(FR3_01)_Location,1
-Operator 3,6,5686,M3-01_(FR3_01)_Location,1
-Operator 3,6,5687,CentralBuffer_Location,0
-Operator 3,6,5688,M4-02_(FR4_02)_Location,4
-Operator 3,6,5689,M4-02_(FR4_02)_Location,4
-Operator 3,6,5690,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,5692,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,5760,CentralBuffer_Location,0
-Operator 1,4,6241,CentralBuffer_Location,0
-Operator 2,5,6241,CentralBuffer_Location,0
-Manual worker 1,7,6242,CentralBuffer_Location,0
-Operator 1,4,6242,M3-01_(FR3_01)_Location,1
-Operator 2,5,6242,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,6243,CentralBuffer_Location,0
-Manual worker 1,7,6243,BW_(BKW_01)_Location,13
-Operator 1,4,6243,M3-01_(FR3_01)_Location,1
-Operator 2,5,6244,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,6244,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,6245,BW_(BKW_01)_Location,13
-Operator 1,4,6246,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,6247,BW_(BKW_01)_Location,13
-Operator 1,4,6247,BW_(BKW_01)_Location,13
-Manual worker 1,7,6248,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,6248,BW_(BKW_01)_Location,13
-Operator 1,4,6249,PACK_(VERP_P)_Location,14
-Manual worker 1,7,6250,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,6251,PACK_(VERP_P)_Location,14
-Manual worker 1,7,6251,BW_(BKW_01)_Location,13
-Operator 1,4,6253,PACK_(VERP_P)_Location,14
-Manual worker 1,7,6356,BW_(BKW_01)_Location,13
-Manual worker 1,7,6358,BW_(BKW_01)_Location,13
-Manual worker 1,7,6359,PACK_(VERP_P)_Location,14
-Manual worker 1,7,6360,BW_(BKW_01)_Location,13
-Manual worker 1,7,6361,BW_(BKW_01)_Location,13
-Manual worker 1,7,6362,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,6364,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,6366,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,6706,M4-02_(FR4_02)_Location,4
-Manual worker 2,8,6718,M3-01_(FR3_01)_Location,1
-Operator 1,4,6720,CentralBuffer_Location,0
-Operator 2,5,6720,CentralBuffer_Location,0
-Manual worker 1,7,6720,CentralBuffer_Location,0
-Manual worker 2,8,6720,CentralBuffer_Location,0
-Operator 3,6,6870,CentralBuffer_Location,0
-Operator 3,6,6871,PACK_(VERP_P)_Location,14
-Operator 3,6,6873,PACK_(VERP_P)_Location,14
-Operator 3,6,6874,CentralBuffer_Location,0
-Operator 3,6,6875,PACK_(VERP_P)_Location,14
-Operator 3,6,6876,PACK_(VERP_P)_Location,14
-Operator 3,6,6877,CentralBuffer_Location,0
-Operator 1,4,8133,CentralBuffer_Location,0
-Operator 1,4,8134,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8136,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8137,CentralBuffer_Location,0
-Operator 2,5,8138,CentralBuffer_Location,0
-Operator 1,4,8138,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,8139,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8139,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8140,PACK_(VERP_P)_Location,14
-Operator 2,5,8141,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8142,PACK_(VERP_P)_Location,14
-Manual worker 1,7,8142,CentralBuffer_Location,0
-Operator 2,5,8143,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8143,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,8143,PACK_(VERP_P)_Location,14
-Manual worker 2,8,8144,CentralBuffer_Location,0
-Operator 1,4,8144,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,8145,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,8145,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8145,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,8146,CentralBuffer_Location,0
-Manual worker 1,7,8146,PACK_(VERP_P)_Location,14
-Manual worker 2,8,8146,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8147,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,8147,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,8147,CentralBuffer_Location,0
-Operator 2,5,8148,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,8149,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,8149,CentralBuffer_Location,0
-Operator 1,4,8160,CentralBuffer_Location,0
-Manual worker 1,7,8160,CentralBuffer_Location,0
-Operator 3,6,8193,CentralBuffer_Location,0
-Operator 3,6,8194,PACK_(VERP_P)_Location,14
-Operator 3,6,8196,PACK_(VERP_P)_Location,14
-Operator 3,6,8197,CentralBuffer_Location,0
-Operator 3,6,8198,PACK_(VERP_P)_Location,14
-Operator 3,6,8199,PACK_(VERP_P)_Location,14
-Operator 3,6,8200,CentralBuffer_Location,0
-Operator 1,4,12037,CentralBuffer_Location,0
-Operator 1,4,12038,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,12040,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,12041,CentralBuffer_Location,0
-Operator 1,4,12042,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,12043,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,12044,CentralBuffer_Location,0
-Operator 2,5,12045,CentralBuffer_Location,0
-Operator 2,5,12046,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,12048,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,12049,CentralBuffer_Location,0
-Operator 2,5,12050,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,12051,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,12052,CentralBuffer_Location,0
-Operator 3,6,12785,CentralBuffer_Location,0
-Operator 3,6,12960,CentralBuffer_Location,0
-Operator 1,4,13441,CentralBuffer_Location,0
-Operator 2,5,13508,CentralBuffer_Location,0
-Operator 2,5,13509,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,13511,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,13512,CentralBuffer_Location,0
-Operator 2,5,13513,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,13514,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,13515,CentralBuffer_Location,0
-Operator 1,4,13742,M3-01_(FR3_01)_Location,1
-Operator 2,5,13744,CentralBuffer_Location,0
-Operator 2,5,13745,M3-01_(FR3_01)_Location,1
-Operator 2,5,13746,M3-01_(FR3_01)_Location,1
-Operator 2,5,13747,BW_(BKW_01)_Location,13
-Operator 2,5,13749,BW_(BKW_01)_Location,13
-Operator 2,5,13751,BW_(BKW_01)_Location,13
-Operator 1,4,13803,M3-01_(FR3_01)_Location,1
-Operator 1,4,13920,CentralBuffer_Location,0
-Operator 2,5,13920,CentralBuffer_Location,0
-Operator 3,6,13921,CentralBuffer_Location,0
-Operator 3,6,14032,M3-01_(FR3_01)_Location,1
-Operator 3,6,14400,CentralBuffer_Location,0
-Operator 1,4,14922,CentralBuffer_Location,0
-Operator 1,4,14923,BW_(BKW_01)_Location,13
-Operator 1,4,14925,BW_(BKW_01)_Location,13
-Operator 1,4,14926,CentralBuffer_Location,0
-Operator 1,4,14927,BW_(BKW_01)_Location,13
-Operator 1,4,14928,BW_(BKW_01)_Location,13
-Operator 1,4,14929,PACK_(VERP_P)_Location,14
-Operator 1,4,14931,PACK_(VERP_P)_Location,14
-Operator 1,4,14933,PACK_(VERP_P)_Location,14
-Operator 1,4,15078,PACK_(VERP_P)_Location,14
-Operator 1,4,15079,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15081,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15082,PACK_(VERP_P)_Location,14
-Operator 1,4,15083,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15084,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15085,PACK_(VERP_P)_Location,14
-Operator 1,4,15275,PACK_(VERP_P)_Location,14
-Operator 1,4,15277,PACK_(VERP_P)_Location,14
-Operator 2,5,15278,CentralBuffer_Location,0
-Operator 1,4,15279,PACK_(VERP_P)_Location,14
-Operator 2,5,15279,PACK_(VERP_P)_Location,14
-Operator 2,5,15280,PACK_(VERP_P)_Location,14
-Operator 2,5,15281,CentralBuffer_Location,0
-Operator 1,4,15282,PACK_(VERP_P)_Location,14
-Operator 1,4,15284,PACK_(VERP_P)_Location,14
-Operator 1,4,15285,CentralBuffer_Location,0
-Operator 1,4,15286,PACK_(VERP_P)_Location,14
-Operator 1,4,15287,PACK_(VERP_P)_Location,14
-Operator 1,4,15288,CentralBuffer_Location,0
-Operator 1,4,15345,CentralBuffer_Location,0
-Operator 1,4,15346,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15348,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15349,CentralBuffer_Location,0
-Operator 1,4,15350,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15351,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,15352,PACK_(VERP_P)_Location,14
-Operator 1,4,15354,PACK_(VERP_P)_Location,14
-Operator 1,4,15356,PACK_(VERP_P)_Location,14
-Operator 1,4,15360,CentralBuffer_Location,0
-Operator 3,6,15462,CentralBuffer_Location,0
-Operator 3,6,15463,PACK_(VERP_P)_Location,14
-Operator 3,6,15465,PACK_(VERP_P)_Location,14
-Operator 3,6,15466,CentralBuffer_Location,0
-Operator 3,6,15467,PACK_(VERP_P)_Location,14
-Operator 3,6,15468,PACK_(VERP_P)_Location,14
-Operator 3,6,15469,CentralBuffer_Location,0
-Operator 3,6,15471,CentralBuffer_Location,0
-Operator 3,6,15840,CentralBuffer_Location,0
-Operator 1,4,16321,CentralBuffer_Location,0
-Operator 2,5,16322,CentralBuffer_Location,0
-Operator 1,4,16547,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,16549,CentralBuffer_Location,0
-Manual worker 1,7,16550,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,16551,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,16552,BW_(BKW_01)_Location,13
-Manual worker 1,7,16554,BW_(BKW_01)_Location,13
-Manual worker 1,7,16556,BW_(BKW_01)_Location,13
-Operator 1,4,16608,M3-01_(FR3_01)_Location,1
-Operator 1,4,16637,M3-01_(FR3_01)_Location,1
-Operator 1,4,16800,CentralBuffer_Location,0
-Operator 2,5,16800,CentralBuffer_Location,0
-Manual worker 1,7,16800,CentralBuffer_Location,0
-Operator 3,6,16801,CentralBuffer_Location,0
-Operator 3,6,17217,UMC750_(M5-03)_Location,8
-Operator 3,6,17219,UMC750_(M5-03)_Location,8
-Operator 3,6,17220,M3-01_(FR3_01)_Location,1
-Operator 3,6,17222,M3-01_(FR3_01)_Location,1
-Operator 3,6,17223,BW_(BKW_01)_Location,13
-Operator 3,6,17225,BW_(BKW_01)_Location,13
-Operator 3,6,17226,CentralBuffer_Location,0
-Operator 3,6,17227,UMC750_(M5-03)_Location,8
-Operator 3,6,17228,UMC750_(M5-03)_Location,8
-Operator 3,6,17229,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,17231,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,17232,M3-01_(FR3_01)_Location,1
-Operator 3,6,17233,M3-01_(FR3_01)_Location,1
-Operator 3,6,17234,PACK_(VERP_P)_Location,14
-Operator 3,6,17236,PACK_(VERP_P)_Location,14
-Operator 3,6,17237,BW_(BKW_01)_Location,13
-Operator 3,6,17238,BW_(BKW_01)_Location,13
-Operator 3,6,17239,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,17241,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,17242,PACK_(VERP_P)_Location,14
-Operator 3,6,17244,PACK_(VERP_P)_Location,14
-Operator 3,6,17264,PACK_(VERP_P)_Location,14
-Operator 3,6,17266,PACK_(VERP_P)_Location,14
-Operator 3,6,17267,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 3,6,17268,PACK_(VERP_P)_Location,14
-Operator 3,6,17269,PACK_(VERP_P)_Location,14
-Operator 3,6,17270,CentralBuffer_Location,0
-Operator 1,4,17761,CentralBuffer_Location,0
-Operator 2,5,17761,CentralBuffer_Location,0
-Manual worker 1,7,17762,CentralBuffer_Location,0
-Operator 2,5,17762,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,17763,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,17765,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,17766,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,17821,M3-01_(FR3_01)_Location,1
-Operator 1,4,17840,M3-01_(FR3_01)_Location,1
-Operator 1,4,17945,M3-01_(FR3_01)_Location,1
-Operator 2,5,17948,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,17949,CentralBuffer_Location,0
-Operator 2,5,17950,M3-01_(FR3_01)_Location,1
-Operator 2,5,17951,M3-01_(FR3_01)_Location,1
-Operator 2,5,17952,BW_(BKW_01)_Location,13
-Operator 2,5,17954,BW_(BKW_01)_Location,13
-Operator 2,5,17956,BW_(BKW_01)_Location,13
-Operator 2,5,17968,BW_(BKW_01)_Location,13
-Operator 2,5,17970,BW_(BKW_01)_Location,13
-Operator 2,5,17971,BW_(BKW_01)_Location,13
-Operator 2,5,17972,PACK_(VERP_P)_Location,14
-Operator 2,5,17974,PACK_(VERP_P)_Location,14
-Operator 2,5,17976,PACK_(VERP_P)_Location,14
-Operator 2,5,17980,PACK_(VERP_P)_Location,14
-Operator 2,5,17982,PACK_(VERP_P)_Location,14
-Operator 2,5,17983,PACK_(VERP_P)_Location,14
-Operator 2,5,17984,CentralBuffer_Location,0
-Operator 1,4,18006,M3-01_(FR3_01)_Location,1
-Operator 1,4,18029,M3-01_(FR3_01)_Location,1
-Manual worker 1,7,18080,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18082,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18083,CentralBuffer_Location,0
-Manual worker 1,7,18084,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18085,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18086,PACK_(VERP_P)_Location,14
-Manual worker 1,7,18088,PACK_(VERP_P)_Location,14
-Manual worker 1,7,18090,PACK_(VERP_P)_Location,14
-Operator 1,4,18137,M3-01_(FR3_01)_Location,1
-Operator 2,5,18138,CentralBuffer_Location,0
-Operator 1,4,18138,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18140,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18141,PACK_(VERP_P)_Location,14
-Operator 1,4,18142,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18143,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18144,PACK_(VERP_P)_Location,14
-Operator 1,4,18144,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18145,CentralBuffer_Location,0
-Manual worker 1,7,18145,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18146,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18146,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18147,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18148,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18148,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18148,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18149,CentralBuffer_Location,0
-Manual worker 1,7,18149,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18150,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18150,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18151,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18151,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18152,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18152,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 2,8,18152,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18153,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18154,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18155,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18156,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Manual worker 1,7,18157,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18158,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,18160,M3-01_(FR3_01)_Location,1
-Operator 2,5,18162,M3-01_(FR3_01)_Location,1
-Operator 2,5,18163,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,18164,M3-01_(FR3_01)_Location,1
-Operator 2,5,18165,M3-01_(FR3_01)_Location,1
-Operator 2,5,18166,CentralBuffer_Location,0
-Operator 1,4,18170,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,18171,PACK_(VERP_P)_Location,14
-Operator 1,4,18173,PACK_(VERP_P)_Location,14
-Operator 1,4,18174,CentralBuffer_Location,0
-Operator 1,4,18175,PACK_(VERP_P)_Location,14
-Operator 1,4,18176,PACK_(VERP_P)_Location,14
-Operator 1,4,18177,CentralBuffer_Location,0
-Manual worker 1,7,18240,CentralBuffer_Location,0
-Manual worker 2,8,18240,CentralBuffer_Location,0
-Operator 1,4,22082,CentralBuffer_Location,0
-Operator 1,4,22560,CentralBuffer_Location,0
-Operator 3,6,22561,CentralBuffer_Location,0
-Operator 3,6,22613,M4-02_(FR4_02)_Location,4
-Operator 3,6,22615,M4-02_(FR4_02)_Location,4
-Operator 3,6,22616,CentralBuffer_Location,0
-Operator 3,6,22617,M4-02_(FR4_02)_Location,4
-Operator 3,6,22618,M4-02_(FR4_02)_Location,4
-Operator 3,6,22619,BW_(BKW_01)_Location,13
-Operator 3,6,22621,BW_(BKW_01)_Location,13
-Operator 3,6,22623,BW_(BKW_01)_Location,13
-Operator 3,6,23040,CentralBuffer_Location,0
-Operator 1,4,25163,CentralBuffer_Location,0
-Operator 1,4,25164,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,25166,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,25167,CentralBuffer_Location,0
-Operator 1,4,25168,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,25169,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,25170,BW_(BKW_01)_Location,13
-Operator 1,4,25440,CentralBuffer_Location,0
-Operator 3,6,25689,CentralBuffer_Location,0
-Operator 3,6,25690,BW_(BKW_01)_Location,13
-Operator 3,6,25692,BW_(BKW_01)_Location,13
-Operator 3,6,25694,BW_(BKW_01)_Location,13
-Operator 3,6,25695,CentralBuffer_Location,0
-Operator 3,6,25696,BW_(BKW_01)_Location,13
-Operator 3,6,25697,BW_(BKW_01)_Location,13
-Operator 3,6,25698,PACK_(VERP_P)_Location,14
-Operator 3,6,25700,PACK_(VERP_P)_Location,14
-Operator 3,6,25701,BW_(BKW_01)_Location,13
-Operator 3,6,25703,BW_(BKW_01)_Location,13
-Operator 3,6,25704,PACK_(VERP_P)_Location,14
-Operator 3,6,25706,PACK_(VERP_P)_Location,14
-Operator 3,6,25920,CentralBuffer_Location,0
-Operator 1,4,26422,CentralBuffer_Location,0
-Operator 1,4,26423,BW_(BKW_01)_Location,13
-Operator 1,4,26425,BW_(BKW_01)_Location,13
-Operator 1,4,26426,CentralBuffer_Location,0
-Operator 1,4,26427,BW_(BKW_01)_Location,13
-Operator 1,4,26428,BW_(BKW_01)_Location,13
-Operator 1,4,26429,CentralBuffer_Location,0
-Operator 1,4,26741,CentralBuffer_Location,0
-Operator 1,4,26742,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,26744,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,26745,CentralBuffer_Location,0
-Operator 1,4,26746,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,26747,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,26748,PACK_(VERP_P)_Location,14
-Operator 1,4,26880,CentralBuffer_Location,0
-Operator 3,6,26889,CentralBuffer_Location,0
-Operator 3,6,26890,PACK_(VERP_P)_Location,14
-Operator 3,6,26892,PACK_(VERP_P)_Location,14
-Operator 3,6,26894,PACK_(VERP_P)_Location,14
-Operator 3,6,26895,CentralBuffer_Location,0
-Operator 3,6,26896,PACK_(VERP_P)_Location,14
-Operator 3,6,26897,PACK_(VERP_P)_Location,14
-Operator 3,6,26898,CentralBuffer_Location,0
-Operator 3,6,26900,CentralBuffer_Location,0
-Operator 3,6,26901,PACK_(VERP_P)_Location,14
-Operator 3,6,27360,CentralBuffer_Location,0
-Operator 1,4,27857,CentralBuffer_Location,0
-Operator 1,4,27858,PACK_(VERP_P)_Location,14
-Operator 1,4,27860,PACK_(VERP_P)_Location,14
-Operator 1,4,27861,CentralBuffer_Location,0
-Operator 1,4,27862,PACK_(VERP_P)_Location,14
-Operator 1,4,27863,PACK_(VERP_P)_Location,14
-Operator 1,4,27864,CentralBuffer_Location,0
-Operator 1,4,28023,CentralBuffer_Location,0
-Operator 1,4,28024,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28026,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28027,CentralBuffer_Location,0
-Operator 1,4,28028,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28029,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28030,CentralBuffer_Location,0
-Operator 1,4,28082,CentralBuffer_Location,0
-Operator 1,4,28083,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28085,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28086,CentralBuffer_Location,0
-Operator 1,4,28087,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28088,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,28089,CentralBuffer_Location,0
-Operator 1,4,36684,CentralBuffer_Location,0
-Operator 1,4,36685,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,36687,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,36688,CentralBuffer_Location,0
-Operator 1,4,36689,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,36690,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,36691,CentralBuffer_Location,0
-Operator 1,4,37962,CentralBuffer_Location,0
-Operator 1,4,37963,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,37965,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,37966,CentralBuffer_Location,0
-Operator 1,4,37967,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,37967,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,37968,CentralBuffer_Location,0
-Operator 2,5,37968,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,37969,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,37969,PACK_(VERP_P)_Location,14
-Operator 1,4,37970,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,37971,PACK_(VERP_P)_Location,14
-Operator 1,4,37971,CentralBuffer_Location,0
-Operator 2,5,37973,PACK_(VERP_P)_Location,14
-Operator 1,4,38025,CentralBuffer_Location,0
-Operator 1,4,38026,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38027,PACK_(VERP_P)_Location,14
-Operator 1,4,38028,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38028,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38029,PACK_(VERP_P)_Location,14
-Operator 2,5,38030,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38030,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38031,CentralBuffer_Location,0
-Operator 1,4,38031,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38032,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38032,CentralBuffer_Location,0
-Operator 2,5,38033,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38034,CentralBuffer_Location,0
-Operator 1,4,38035,CentralBuffer_Location,0
-Operator 1,4,38036,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38038,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38039,CentralBuffer_Location,0
-Operator 1,4,38040,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38041,CentralBuffer_Location,0
-Operator 1,4,38041,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38042,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38042,CentralBuffer_Location,0
-Operator 2,5,38044,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38045,CentralBuffer_Location,0
-Operator 2,5,38046,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38047,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 2,5,38048,CentralBuffer_Location,0
-Operator 1,4,38325,CentralBuffer_Location,0
-Operator 1,4,38326,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38328,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38329,CentralBuffer_Location,0
-Operator 1,4,38330,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38331,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,38332,PACK_(VERP_P)_Location,14
-Operator 1,4,38400,CentralBuffer_Location,0
-Operator 3,6,38555,CentralBuffer_Location,0
-Operator 3,6,38556,PACK_(VERP_P)_Location,14
-Operator 3,6,38558,PACK_(VERP_P)_Location,14
-Operator 3,6,38560,PACK_(VERP_P)_Location,14
-Operator 3,6,38561,CentralBuffer_Location,0
-Operator 3,6,38562,PACK_(VERP_P)_Location,14
-Operator 3,6,38563,PACK_(VERP_P)_Location,14
-Operator 3,6,38564,CentralBuffer_Location,0
-Operator 3,6,38566,CentralBuffer_Location,0
-Operator 3,6,38567,PACK_(VERP_P)_Location,14
-Operator 3,6,38647,PACK_(VERP_P)_Location,14
-Operator 3,6,38649,PACK_(VERP_P)_Location,14
-Operator 3,6,38650,CentralBuffer_Location,0
-Operator 3,6,38651,PACK_(VERP_P)_Location,14
-Operator 3,6,38652,PACK_(VERP_P)_Location,14
-Operator 3,6,38653,CentralBuffer_Location,0
-Operator 1,4,42633,CentralBuffer_Location,0
-Operator 1,4,42634,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,42636,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,42637,CentralBuffer_Location,0
-Operator 1,4,42638,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,42639,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
-Operator 1,4,42640,PACK_(VERP_P)_Location,14
-Operator 1,4,42642,PACK_(VERP_P)_Location,14
-Operator 1,4,42644,PACK_(VERP_P)_Location,14
-Operator 1,4,42720,CentralBuffer_Location,0
-Operator 3,6,42734,CentralBuffer_Location,0
-Operator 3,6,42735,PACK_(VERP_P)_Location,14
-Operator 3,6,42737,PACK_(VERP_P)_Location,14
-Operator 3,6,42738,CentralBuffer_Location,0
-Operator 3,6,42739,PACK_(VERP_P)_Location,14
-Operator 3,6,42740,PACK_(VERP_P)_Location,14
-Operator 3,6,42741,CentralBuffer_Location,0
+Operator 1,4,481,CentralBuffer_Location,0
+Operator 2,5,481,CentralBuffer_Location,0
+Manual worker 1,7,481,CentralBuffer_Location,0
+Manual worker 2,8,482,CentralBuffer_Location,0
+Operator 1,4,482,CentralBuffer_Location,0
+Operator 2,5,482,CentralBuffer_Location,0
+Manual worker 1,7,482,CentralBuffer_Location,0
+Manual worker 2,8,483,CentralBuffer_Location,0
+Operator 1,4,483,BW_(BKW_01)_Location,13
+Operator 2,5,483,BW_(BKW_01)_Location,13
+Manual worker 1,7,483,BW_(BKW_01)_Location,13
+Manual worker 2,8,484,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,485,BW_(BKW_01)_Location,13
+Operator 2,5,485,BW_(BKW_01)_Location,13
+Manual worker 2,8,486,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,486,CentralBuffer_Location,0
+Operator 2,5,487,BW_(BKW_01)_Location,13
+Operator 1,4,487,CentralBuffer_Location,0
+Manual worker 2,8,488,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,488,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,490,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,492,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 2,5,727,BW_(BKW_01)_Location,13
+Operator 2,5,729,BW_(BKW_01)_Location,13
+Manual worker 1,7,729,BW_(BKW_01)_Location,13
+Manual worker 1,7,730,BW_(BKW_01)_Location,13
+Operator 2,5,731,BW_(BKW_01)_Location,13
+Manual worker 1,7,731,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,733,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,735,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 2,5,782,BW_(BKW_01)_Location,13
+Operator 2,5,784,BW_(BKW_01)_Location,13
+Operator 1,4,785,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 2,5,786,BW_(BKW_01)_Location,13
+Operator 1,4,786,BW_(BKW_01)_Location,13
+Operator 1,4,787,BW_(BKW_01)_Location,13
+Operator 1,4,788,PACK_(VERP_P)_Location,14
+Operator 1,4,790,PACK_(VERP_P)_Location,14
+Operator 1,4,792,PACK_(VERP_P)_Location,14
+Operator 1,4,809,PACK_(VERP_P)_Location,14
+Operator 1,4,811,PACK_(VERP_P)_Location,14
+Operator 1,4,812,PACK_(VERP_P)_Location,14
+Operator 1,4,813,CentralBuffer_Location,0
+Operator 2,5,960,CentralBuffer_Location,0
+Manual worker 1,7,960,CentralBuffer_Location,0
+Manual worker 2,8,960,CentralBuffer_Location,0
+Operator 3,6,1063,CentralBuffer_Location,0
+Operator 3,6,1064,BW_(BKW_01)_Location,13
+Operator 3,6,1066,BW_(BKW_01)_Location,13
+Operator 3,6,1067,CentralBuffer_Location,0
+Operator 3,6,1068,BW_(BKW_01)_Location,13
+Operator 3,6,1069,BW_(BKW_01)_Location,13
+Operator 3,6,1070,PACK_(VERP_P)_Location,14
+Operator 3,6,1072,PACK_(VERP_P)_Location,14
+Operator 3,6,1074,PACK_(VERP_P)_Location,14
+Operator 3,6,1166,PACK_(VERP_P)_Location,14
+Operator 3,6,1168,PACK_(VERP_P)_Location,14
+Operator 3,6,1169,PACK_(VERP_P)_Location,14
+Operator 3,6,1170,CentralBuffer_Location,0
+Operator 1,4,9462,CentralBuffer_Location,0
+Operator 1,4,9463,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,9465,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,9466,CentralBuffer_Location,0
+Operator 1,4,9467,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,9468,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,9469,PACK_(VERP_P)_Location,14
+Operator 1,4,9471,PACK_(VERP_P)_Location,14
+Operator 1,4,9473,PACK_(VERP_P)_Location,14
+Operator 1,4,9519,PACK_(VERP_P)_Location,14
+Operator 1,4,9521,PACK_(VERP_P)_Location,14
+Operator 1,4,9522,PACK_(VERP_P)_Location,14
+Operator 1,4,9523,CentralBuffer_Location,0
+Operator 1,4,38312,CentralBuffer_Location,0
+Operator 1,4,38313,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,38315,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,38316,CentralBuffer_Location,0
+Operator 1,4,38317,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,38318,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,38319,CentralBuffer_Location,0
+Operator 1,4,39530,CentralBuffer_Location,0
+Operator 1,4,39531,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,39533,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,39534,CentralBuffer_Location,0
+Operator 1,4,39535,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,39536,OUT - Outsourced activity_(OUT - Outsourced)_Location,15
+Operator 1,4,39537,PACK_(VERP_P)_Location,14
+Operator 1,4,39539,PACK_(VERP_P)_Location,14
+Operator 1,4,39541,PACK_(VERP_P)_Location,14
+Operator 1,4,39621,PACK_(VERP_P)_Location,14
+Operator 1,4,39623,PACK_(VERP_P)_Location,14
+Operator 1,4,39624,PACK_(VERP_P)_Location,14
+Operator 1,4,39625,CentralBuffer_Location,0

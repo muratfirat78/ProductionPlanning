@@ -89,7 +89,7 @@ class Buffer(Resource):
 #_______________________________________________________________________  
 class Machine(Resource):
     
-    def __init__(self,machcode,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
+    def __init__(self,machcode,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim: Simulator,workmngr):
         super().__init__(myname,"Machine",mycap,sim,workmngr)
         self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
@@ -200,7 +200,7 @@ class Machine(Resource):
 #___________________________________________________________________________________________
 class Operator(Resource):
     
-    def __init__(self,myname,avshifts,mycap,sim,workmngr):
+    def __init__(self,myname,avshifts,mycap,sim: Simulator, workmngr):
         super().__init__(myname,"Operator",mycap,sim,workmngr)
         self.AvailableShifts = avshifts
      
@@ -219,7 +219,7 @@ class Operator(Resource):
 
 #_________________________________________________________________________________________
 class Trailer(Resource):
-    def __init__(self,mycap,sim,workmngr):
+    def __init__(self,mycap,sim: Simulator, workmngr):
         super().__init__(None,"Trailer",mycap,sim,workmngr)  
         self.location = None
         self.outputbuffers = []  

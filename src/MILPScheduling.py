@@ -10,7 +10,7 @@ from ortools.linear_solver import pywraplp
 from timeit import default_timer as timer
 
 class Job(object):
-    def __init__(self,myopr,mytype,preempt,myid):
+    def __init__(self,myopr: Operation,mytype,preempt,myid):
     
         self.Operation = myopr
         self.Scheduled = False
@@ -260,7 +260,7 @@ class MatchVar(object):
         
 ################################################################################
 class SchMachine(object):
-    def __init__(self,mymach):
+    def __init__(self,mymach: Machine):
 
         self.Machine = mymach
         self.Matches = [] # key: slot, value: [match]
@@ -1205,7 +1205,7 @@ class ProductionMILPManager(MILPManager):
 
 #______________________________________________________________________
 ######################################################################################################################
-    def findSlotMatches(self,objective,mymach,mach,job,slotlength,currentslotshifts,slotstart,jobschstart,nrmatches,matchid):
+    def findSlotMatches(self,objective,mymach: Machine,mach: Machine,job: Job,slotlength,currentslotshifts,slotstart,jobschstart,nrmatches,matchid):
 
         progress = self.getProgress()
         currentincrement = self.time_slot_increment 
