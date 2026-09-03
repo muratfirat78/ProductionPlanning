@@ -1,7 +1,10 @@
+from __future__ import annotations
+
 from datetime import timedelta,date
 import random
 import pandas as pd
 import math
+from typing import List
 from stochastic import *
 
 
@@ -675,9 +678,9 @@ class DemandType(object):
     
 #-------------------------------------------------------------------------------------------------------------------------     
 class Demand(object):
-    def __init__(self,ddline,myid,demtype,quantity):
+    def __init__(self,ddline,myid,demtype: DemandType,quantity):
         self.deadline = ddline
-        self.Items = [] 
+        self.Items: List[Item] = []
         self.InfoDictionary = dict()
         self.DemandType = demtype
         self.Quantity = quantity
@@ -739,12 +742,12 @@ class Demand(object):
    
 #_______________________________________________________________________        
 class Item(object):
-    def __init__(self,demand,myid):
+    def __init__(self,demand: Demand,myid):
        
       
         self.location = None
         self.ID = myid
-        self.Demand = demand
+        self.Demand: Demand = demand
         self.reservedEvent = None
        
 

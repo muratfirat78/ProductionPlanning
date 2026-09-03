@@ -1,0 +1,8 @@
+name: uml-env
+channels:
+  - conda-forge
+dependencies:
+  - python
+  - pylint      # provides the `pyreverse` CLI
+  - graphviz    # provides the `dot` binary needed to render PNG output
+  - ipykernel   # allows selecting this env as a Jupyter kernel
