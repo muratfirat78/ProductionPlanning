@@ -1101,10 +1101,16 @@ class ShopFloorManager(OperationsManager):
         for res in self.getResources():
             try: 
                 avail_sfhts = ""
+                alt_machs = ''
                 if res.getAvailableShifts()!= None:
                     for shft in res.getAvailableShifts():
                         avail_sfhts+= ("_" if len(avail_sfhts) > 0 else "")+str(shft)
-                    resdata = {"ResourceType":res.getType(),"Name":res.getName(),"ProcessType":res.getProcessType(),"Automated":res.IsAutomated() if isinstance(res,Machine) else None,"Alternatives":res.getAlternatives() if isinstance(res,Machine) else None,"SetupTime":res.getSetupTime() if isinstance(res,Machine) else None,"OperatingEffort":res.getOperatingEffort() if isinstance(res,Machine) else None,"AvailableShifts":avail_sfhts}
+
+                    if isinstance(res,Machine):
+                        for altmach in res.getAlternatives():
+                            alt_machs+=("~" if len(alt_machs) > 0 else "")+str(altmach)
+                        
+                    resdata = {"ResourceType":res.getType(),"Name":res.getName(),"ProcessType":res.getProcessType(),"Automated":res.IsAutomated() if isinstance(res,Machine) else None,"Alternatives":alt_machs,"SetupTime":res.getSetupTime() if isinstance(res,Machine) else None,"OperatingEffort":res.getOperatingEffort() if isinstance(res,Machine) else None,"AvailableShifts":avail_sfhts}
 
                     res_df.loc[len(res_df)] = resdata
             except Exception as e:
