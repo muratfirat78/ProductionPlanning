@@ -1008,10 +1008,12 @@ class ProductionMILPManager(MILPManager):
         try: 
 
             machinedict = dict()
+            machinejobs = dict()
 
             for res in self.getSimulator().getController().getWorkManager().getResources():
                 if res.getType() == "Machine":
                     machinedict[res] = []
+                    machinejobs[res] = [] 
             
 
             allschedulables = [j for j in self.getJobs() if j.isSchedulable() and len(j.getOperation().getAlternativeResources()) > 0]
@@ -1019,6 +1021,11 @@ class ProductionMILPManager(MILPManager):
             EDDordered = sorted(allschedulables,key=lambda x: x.getDeadLine(), reverse= False)
     
             joblisttomatch = []
+
+            for j in EDDordered:
+                for mach in j.getOperation().getAlternativeResources():
+                    machinejobs[mach].append(j)
+                
             
             #count jobs
             jobsinlist = 0
@@ -1051,6 +1058,7 @@ class ProductionMILPManager(MILPManager):
                     if jobsinlist < self.direct_jobs+self.first_successors:
                         for mach in succ.getOperation().getAlternativeResources():
                             machinedict[mach].append(succ)
+                            machinejobs[mach].append(succ)
                         joblisttomatch.append(succ)
                         jobsinlist+=1
 
@@ -1067,13 +1075,14 @@ class ProductionMILPManager(MILPManager):
                             #progress.value+=" Sucessor-successor Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is schedulable"+"\n"
                             for mach in succ.getOperation().getAlternativeResources():
                                 machinedict[mach].append(succ)
+                                machinejobs[mach].append(succ)
                             joblisttomatch.append(succ)
                             
                             jobsinlist+=1  
 
 
             for mach,joblist in machinedict.items():
-                progress.value+=" machine "+str(mach.getName())+" - jobs "+str(len(joblist))+"\n"
+                progress.value+=" machine "+str(mach.getName())+" - jobs "+str(len(joblist))+"/"+str(len(machinejobs[mach]))+"\n"
             self.SchedulableJobs = [j for j in joblisttomatch]  
             
         except Exception as e:
@@ -1345,8 +1354,8 @@ class ProductionMILPManager(MILPManager):
 
                 if mach.getMachine().getName() == "UMC400_(M5-06)":
                     progress.value+=" mach "+str(mach.getMachine().getName())+" has "+str(len(mach.getMatches()))+" matches "+"\n"
-                    for match in mach.getMatches():
-                        progress.value+=">> Match: "+str(match.printMatch())+", job: "+str(match.getJob().getOperation().getDemand().getID())+", op"+match.getJob().getOperation().getReferenceName()+", start "+str(match.getStart())+" end "+str(match.getCompletion())+"\n"
+                    #for match in mach.getMatches():
+                        #progress.value+=">> Match: "+str(match.printMatch())+", job: "+str(match.getJob().getOperation().getDemand().getID())+", op"+match.getJob().getOperation().getReferenceName()+", start "+str(match.getStart())+" end "+str(match.getCompletion())+"\n"
                          
         
 
