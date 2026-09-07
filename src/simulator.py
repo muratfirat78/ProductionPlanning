@@ -39,7 +39,12 @@ class Simulator(object):
         self.RunErrors = 0
         self.Errors = []
 
-        self.setStartDay(startday+timedelta(hours= 24))
+        startday = startday+timedelta(hours= 24) # next day
+
+        while startday.weekday() > 4:
+            startday = startday+timedelta(days=1)
+        
+        self.setStartDay(startday) 
 
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
 

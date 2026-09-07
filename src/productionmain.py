@@ -51,7 +51,7 @@ class ShopFloorManager(OperationsManager):
         TrailerLoading.getSuccessorDict()[TrailerTransport] = "Finish to Start"  # Precedence settings: TL -> TT
         TrailerLoading.getPrecendenceDict()[TrailerTransport.getName()] = ['FromLocation','Equipment','Resource','Items']
    
-        self.getAlgorithmSetting()[TrailerTransport.getName()] = {"Select Destination":'MostDemanded' }
+        self.getAlgorithmSetting()[TrailerTransport.getName()] = {"Select Destination":'Checkalternatives' }
         self.getEventTypes()[TrailerTransport.getName()]= TrailerTransport
         #-------------------------------------------
         TrailerUnloading= SimEvent(self.getSimulator(),"Trailer Unloading","Unloading","Operator","Trailer",False)
@@ -784,9 +784,14 @@ class ShopFloorManager(OperationsManager):
     
         ev_items = (str(event.getItems()[0].getID())+"~"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '-')
 
+        if (event.getType() == "Unloading") and isinstance(event.getEquipment(),Machine):
+            event.getItems()[0].getDemand().getSimExecData()[-1]["Work Orders/End"] = self.getSimulator().getRealTime().strftime("%Y-%m-%d %H:%M:%S")
+            
+
         opname = "-"; demandid = '';eventprod = '';prodid = '';qunatity = ''
         deadline= '';reference = '';workcnt = '';workcntid = '';expduration = '';eventstrt = ''; tardy = '';lateness = ''
         oprorder = '';processmach = ''
+        
        
         if (event.getType() == "Processing"): #or (event.getType() == "Loading" and isinstance(event.getToLocation(),Machine)):
             if len(event.getItems()) > 0:
@@ -803,8 +808,10 @@ class ShopFloorManager(OperationsManager):
                     workcntid = event.getItems()[0].getActiveOperation().getAlternativeResources()[0].getID()
                     expduration = event.getItems()[0].getActiveOperation().getProcessTime()
                     processmach = event.getEquipment().getName()
+
+                    eventstrt = event.getProgressList()[0][1][0] if event.getFinishToStartPredecessor()== None else event.getFinishToStartPredecessor().getProgressList()[0][1][0]
                     
-                    eventstrt =  self.getSimulator().checkRealTime(event.getProgressList()[0][1][0]).strftime("%Y-%m-%d %H:%M:%S")
+                    eventstrt =  self.getSimulator().checkRealTime(eventstrt).strftime("%Y-%m-%d %H:%M:%S")
 
        
 
@@ -825,8 +832,13 @@ class ShopFloorManager(OperationsManager):
                     lateness = str((self.getSimulator().getRealTime()-event.getItems()[0].getDemand().getDeadline()).days)
                     
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Product/ID":prodid,"Quantity To Produce":qunatity,"Deadline":deadline,"Reference":reference,"Work Orders/Work Center":workcnt,"Work Orders/Work Center/ID":workcntid,"Processing Machine":processmach,"Work Orders/Operation":opname,"Operation Order": oprorder,"Work Orders/Expected Duration":expduration,"Work Orders/Start":eventstrt,"Work Orders/End":eventdate,"Work Orders/Status":"Sim-Scheduled","Tardy":tardy,"Lateness (days)":lateness,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Product/ID":prodid,"Quantity To Produce":qunatity,"Deadline":deadline,"Reference":reference,"Work Orders/Work Center":workcnt,"Work Orders/Work Center/ID":workcntid,"Processing Machine":processmach,"Work Orders/Operation":opname,"Operation Order": oprorder,"Work Orders/Expected Duration":expduration,"Work Orders/Start":eventstrt,"Work Orders/End":eventdate,"Work Orders/Status":"Sim-Scheduled","Tardy":tardy,"Lateness (days)":lateness,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}
+
+
+        if len(event.getItems()) > 0:
+            event.getItems()[0].getDemand().getSimExecData().append(execution_data)
         self.getSimulator().getExecutionData().append(execution_data)
+        
 
     
         if event.getResource()!= None: 
@@ -1025,8 +1037,8 @@ class ShopFloorManager(OperationsManager):
 
         TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
 
-        currentdate =  datetime.now()
-        startday = datetime(currentdate.year, currentdate.month, currentdate.day)
+            
+        startday = self.getSimulator().getStartDay()
 
         try: 
             for prodordid,prodorder in self.getProductionOrders().items():
@@ -1061,10 +1073,11 @@ class ShopFloorManager(OperationsManager):
                     #self.getSimulator().saveLog("REPORT: mystrt "+str(mystrt)+", mycomp "+str(mycomp))
                     
                     if  isinstance(mystrt,int) and mystrt!= None :
-                        mystrt = startday+timedelta(minutes = mystrt)
+                        self.getSimulator().saveLog("REPORT: >>>>>>>>>>>>>>> operation start is in integer!! ")
 
                     if isinstance(mycomp,int) and mycomp!= None :
-                         mycomp = startday+timedelta(minutes = mycomp)
+                        mycomp = startday+timedelta(minutes = mycomp)
+                        self.getSimulator().saveLog("REPORT: >>>>>>>>>>>>>>> operation completion is in integer!! ")
 
                     # repeat columns A-E for each operation!
                     # checlk material availability and set a release date for order. 

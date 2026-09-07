@@ -153,6 +153,7 @@ class Schedule(object):
                     curr_scheduled = False; order_comp = None
                    
                     for oprind in range(len(opr_seq)):
+                        
                         if r['Work Orders/Status'][oprind] == "Scheduled":
                             
                             myopr = opr_seq[oprind]
@@ -186,6 +187,7 @@ class Schedule(object):
         return self.MyWeeks
     def getMyDays(self):
         return self.MyDays
+        
     def findMachineShift(self,day,workmgr):
 
         try: 
@@ -377,16 +379,26 @@ class Machine(Resource):
 
         sim_time = self.getSimulator().getTime()
         
-        if self.getProcessor() is not None:
+        if self.getProcessor() != None:
             return sim_time
 
         # All processors busy: check when the earliest active step finishes
-        active_ends = []
-        for _, pr in self.ProgressList:
-            end_time = pr[1] if isinstance(pr, (tuple, list)) else pr #check if pr is a tuple/list (start, end) or just an end time
-            if end_time >= sim_time: #filter out any already completed steps
-                active_ends.append(end_time)
-        return min(active_ends) if active_ends else sim_time
+        remaining_times = []
+        for event,processor in self.getProcessMatch().items():
+
+            # (mach1,(480,960)),(mach1,(1440,1700)), current time: 1600
+            actual_progress = 0 
+            for progrtuple in event.getProgressList():
+                if progrtuple[1][1] < self.getSimulator().getTime():
+                    actual_progress+= progrtuple[1][1]-progrtuple[1][0]
+                else:
+                    actual_progress+= self.getSimulator().getTime()-progrtuple[1][0]
+                
+            remaining_time = event.getProcessTime() - actual_progress
+            remaining_times.append(remaining_time)
+
+   
+        return min(remaining_times)+sim_time
         
 
     def calculationUtilization(self):
@@ -452,10 +464,15 @@ class Product(DemandType):
 class ProductionOrder(Demand):
     def __init__(self,ddline,myid,demtype,quantity):
         super().__init__(ddline,myid,demtype,quantity)
+
+        self.SimExecutionData = []
        
      
     def getFinalProduct(self):
         return self.getDemandType() #converting terminology
+
+    def getSimExecData(self):
+        return self.SimExecutionData
 
     def printOrder(self):
 

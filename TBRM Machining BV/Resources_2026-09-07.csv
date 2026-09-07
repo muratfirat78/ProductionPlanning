@@ -13,7 +13,7 @@ Machine,M5-01_(FR5_01),Metal forming,True,FR5_02~M5-03~M5-04~M5-05,60,0.1,1_2_3
 Machine,M5-02_(FR5_02),Metal forming,True,FR5_01~M5-03~M5-04~M5-05,60,0.1,1_2_3
 Machine,UMC750_(M5-03),Metal forming,False,M5-04~M5-05~M3-03,30,0.3,1_2
 Machine,UMC750SS_(M5-04),Metal forming,True,M5-03~M5-05~M3-03,30,0.1,1_2_3
-Machine,UMC400_(M5-06),Metal forming,False,M5-04~M3-03,30,0.1,1_2
+Machine,UMC400_(M5-06),Metal forming,False,M5-04,30,0.1,1_2
 Machine,UMC750SS_(M5-05),Metal forming,False,M5-03~M5-04~M3-03,30,0.3,1_2
 Machine,MP2_(ZGN_02),Preparation,False,,1,0.0,1_2
 Machine,BW_(BKW_01),Benchwork,False,,1,0.0,1_2
