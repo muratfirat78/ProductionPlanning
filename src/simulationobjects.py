@@ -79,7 +79,7 @@ class SimEvent(object):
 
 ############################################################################################################################
 class ExecEvent(object):
-    def __init__(self,fromloc,toloc,eventype):
+    def __init__(self,fromloc: Location, toloc: Location, eventype: SimEvent):
         self.EventType = eventype    
         self.ID = eventype.getSimulator().getEventNo()   
         self.FromLocation = fromloc  

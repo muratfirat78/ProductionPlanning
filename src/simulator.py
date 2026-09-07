@@ -5,6 +5,33 @@ import pandas as pd
 import os 
 from timeit import default_timer as timer
 from pathlib import Path
+import logging
+
+
+class SimulatorLogHandler(logging.Handler):
+    """Store simulation records and forward visible records to the dashboard."""
+
+    def __init__(self, simulator):
+        super().__init__()
+        self.simulator = simulator
+        self._productionplanning_simulator_handler = True
+
+    def emit(self, record):
+        message = self.format(record)
+        simulation_time = self.simulator.getTime()
+
+        if simulation_time not in self.simulator.MyLog:
+            self.simulator.MyLog[simulation_time] = []
+        self.simulator.MyLog[simulation_time].append(message)
+
+        if record.levelno >= logging.ERROR:
+            self.simulator.Errors.append(str(simulation_time) + ": " + message)
+            self.simulator.addError()
+
+        if record.levelno >= logging.INFO and self.simulator.LogDisplay is not None:
+            self.simulator.LogDisplay(
+                str(simulation_time) + "[" + str(self.simulator.getRealTime()) + "]: " + message
+            )
 
 
 class Simulator(object):
@@ -38,6 +65,18 @@ class Simulator(object):
         self.Controller = None
         self.RunErrors = 0
         self.Errors = []
+        self.LogDisplay = None
+        self.logger = logging.getLogger("productionplanning")
+        self.logger.setLevel(logging.DEBUG)
+        self.logger.propagate = False
+
+        for handler in self.logger.handlers[:]:
+            if getattr(handler, "_productionplanning_simulator_handler", False):
+                self.logger.removeHandler(handler)
+
+        handler = SimulatorLogHandler(self)
+        handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
+        self.logger.addHandler(handler)
 
         self.setStartDay(startday+timedelta(hours= 24))
 
@@ -63,21 +102,18 @@ class Simulator(object):
     def getMyLog(self):
         return self.MyLog
 
+    def setLogDisplay(self, callback):
+        self.LogDisplay = callback
+        return
+
     def saveLog(self,info):
-
-        
-        if not self.getTime() in self.MyLog:
-            self.MyLog[self.getTime()] = []
-        self.MyLog[self.getTime()].append(info)
-
-
-        if info.find("ERROR")> -1:
-            self.getErrors().append(str(self.getTime())+": "+info)
-            self.addError()
-
-        
-        if info.find("ERROR")> -1 or info.find("REPORT")> -1 : 
-            self.getController().getVisualManager().updateSimProgress(str(self.getTime())+"["+str(self.getRealTime())+"]: "+info)
+        """Compatibility wrapper for legacy logging; new code should use module loggers."""
+        if "ERROR" in info:
+            self.logger.error(info)
+        elif "REPORT" in info:
+            self.logger.info(info)
+        else:
+            self.logger.debug(info)
         return
         
     def saveTitleLog(self,title,info):

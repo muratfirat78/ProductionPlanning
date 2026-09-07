@@ -1,6 +1,10 @@
 from simulator import *
 from datetime import timedelta,date
+import logging
 
+
+
+logger = logging.getLogger("productionplanning.productionalgs")
 
 #################################################################################
 class ProductionAlgManager(AlgorithmManager): 
@@ -19,9 +23,7 @@ class ProductionAlgManager(AlgorithmManager):
         self.decisionalgs["Assign Resource"] = dict() 
         self.decisionalgs["Assign Resource"]["Straight Available"] = self.assignStraightResource
 
-        self.decisionalgs["Select Destination"] = dict() 
-        self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestionationMostDemanded
-
+        self.decisionalgs["Select Destination"] = dict()
         self.decisionalgs["Select Destination"]['Checkalternatives'] = self.selectDestinationEarliestAvailable
 
         self.decisionalgs["Assign Processor"] = dict() 
@@ -133,9 +135,10 @@ class ProductionAlgManager(AlgorithmManager):
         return  select_dict[orders[select_id]]
 ################################################################################################################################################### 
     def selectDestinationEarliestAvailable(self, event):
- 
-        self.getSimulator().saveLog(" >>> Algorithm: selectByConsideringAlternativeMachines function <<<")
-        self.getSimulator().saveLog(" >>> items in equip: " + str(len(event.getEquipment().getItems())))
+
+        logger.debug("Algorithm: selectByConsideringAlternativeMachines function")
+        logger.debug("Items in equipment: %d", len(event.getEquipment().getItems()))
+
 
         # 1. Collect all items being transported (from equipment or event)
         checkitems = event.getEquipment().getItems()
@@ -169,19 +172,26 @@ class ProductionAlgManager(AlgorithmManager):
 
         earliest_avail_time = selected_dest.getNextAvailableTime()
 
-        self.getSimulator().saveLog(
-            " >>> event " + event.getName() + "[" + str(event.getID()) + "] returning destination "
-            + (selected_dest.getName() if selected_dest is not None else "None")
-            + ", available time: " + str(earliest_avail_time)
-            + ", dict size " + str(len(select_dict)) + " items " + str(len(checkitems))
+        logger.debug(
+            "Event %s[%s] selected destination %s, available time: %s, candidates: %d, items: %d",
+            event.getName(),
+            event.getID(),
+            selected_dest.getName(),
+            earliest_avail_time,
+            len(select_dict),
+            len(checkitems),
         )
 
         return selected_dest
 
+###################################################################################################################################################
 
-    def selectDestionationMostDemanded(self,event):
-        self.getSimulator().saveLog(" >>> Algorithm: findTrailerDestinationMostDemanded function <<<")
-        self.getSimulator().saveLog(" >>> items in equip: "+str(len(event.getEquipment().getItems())))
+    @staticmethod
+    def selectDestionationMostDemanded(event: ExecEvent, central_inventory: Inventory):
+
+        logger.debug("Algorithm: findTrailerDestinationMostDemanded function")
+        logger.debug("Items in equipment: %d", len(event.getEquipment().getItems()))
+
         select_dict = dict()
 
         checkitems= event.getEquipment().getItems()
@@ -198,9 +208,9 @@ class ProductionAlgManager(AlgorithmManager):
                         select_dict[mach] = 0
                     select_dict[mach] += 1
             else:
-                if not self.getOperationsManager().getCentralInventory() in select_dict:
-                    select_dict[self.getOperationsManager().getCentralInventory()] = 0
-                select_dict[self.getOperationsManager().getCentralInventory()] += 1
+                if not central_inventory in select_dict:
+                    select_dict[central_inventory] = 0
+                select_dict[central_inventory] += 1
 
         mostdemanded = None; highestdemand = 0
 
@@ -212,8 +222,14 @@ class ProductionAlgManager(AlgorithmManager):
                 if highestdemand < demand:
                     mostdemanded = mymach
                     highestdemand = demand
-        self.getSimulator().saveLog(" >>> event "+event.getName()+"["+str(event.getID())+"] returning... None? "+str(mostdemanded == None)+", dict size "+str(len(select_dict))+" items "+str(len(event.getEquipment().getItems())))
-
+        logger.debug(
+            "Event %s[%s] selected destination %s, candidates: %d, items: %d",
+            event.getName(),
+            event.getID(),
+            mostdemanded.getName() if mostdemanded is not None else "None",
+            len(select_dict),
+            len(checkitems),
+        )
         
         return mostdemanded
 
