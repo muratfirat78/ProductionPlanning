@@ -11,10 +11,13 @@ import os
 import pandas as pd
 import warnings
 import sys
+import random
 import numpy as np
 from pathlib import Path
 from IPython.display import display, HTML
+from matplotlib import colormaps
 warnings.filterwarnings("ignore")
+
 
 
 class VisualManager():
@@ -67,11 +70,100 @@ class VisualManager():
         self.milporders = dict()
         self.MILPJobs = None
         self.MILPParamTxt = None
+        self.availablebutton  = None
+        self.ResourceSave = None
+        self.ResAlternatives = None
+        self.AlternativeRemove = None
+        self.AlternativeAdd = None
+        self.ResourceDrop2 = None
+        self.SelectedSchedule = None
+        self.ScheduleOutput = None
+        self.KPIArea = None
+        self.WeeksMenu = None
+      
 
+        
         self.MILPNoJobs = 20
+
+        self.Machines = []
+        self.DataSets = dict()
 
 
         self.ResourceBox = None
+
+    def setWeeksMenu(self,dp):
+        self.WeeksMenu = dp
+        return
+
+    def getWeeksMenu(self):
+        return self.WeeksMenu
+        
+    def getKPIArea(self):
+        return self.KPIArea
+
+    def setKPIArea(self,dt):
+        self.KPIArea = dt
+        return 
+
+    def setScheduleOutput(self,dt):
+        self.ScheduleOutput = dt
+        return
+    def getScheduleOutput(self):
+        return self.ScheduleOutput
+
+    def setSelectedSchedule(self,dt):
+        self.SelectedSchedule = dt
+        return
+    def getSelectedSchedule(self):
+        return self.SelectedSchedule
+
+
+    def setAlternativeAdd(self,bt):
+        self.AlternativeAdd = bt
+        return
+
+    def getAlternativeAdd(self):
+        return self.AlternativeAdd
+
+    def setAlternativeRemove(self,bt):
+        self.AlternativeRemove = bt
+        return
+
+    def getAlternativeRemove(self):
+        return self.AlternativeRemove
+
+    def setResAlternatives(self,bt):
+        self.ResAlternatives = bt
+        return
+
+    def getResAlternatives(self):
+        return self.ResAlternatives
+
+
+
+    def setResourceSave(self,bt):
+        self.ResourceSave = bt
+        return
+
+    def getResourceSave(self):
+        return self.ResourceSave
+
+        
+
+    def getAvailabilityCheck(self):
+        return self.availablebutton 
+
+    def setAvailabilityCheck(self,bttn):
+        self.availablebutton = bttn
+        return 
+
+    
+
+    def getMachines(self):
+        return self.Machines
+
+    def getDataSets(self):
+        return self.DataSets
 
     def setResourceDrop(self,dr):
         self.ResourceDrop = dr
@@ -79,6 +171,13 @@ class VisualManager():
 
     def getResourceDrop(self):
         return self.ResourceDrop
+
+    def setResourceDrop2(self,dr):
+        self.ResourceDrop2= dr
+        return
+
+    def getResourceDrop2(self):
+        return self.ResourceDrop2
         
 
     def getMILPJobs(self):
@@ -378,6 +477,16 @@ class VisualManager():
         self.getReadButton().disabled = True
         self.getOrders().disabled = True
 
+        
+            
+
+
+        self.getResourceDrop().options = [ res.getName() for res in self.getController().getWorkManager().getResources()]
+        self.getResourceDrop2().options = [ res.getName() for res in self.getController().getWorkManager().getResources() if res.getType() == "Machine"]
+
+        self.getResourceDrop().value = self.getResourceDrop().options[0]
+        self.getResourceDrop2().value = self.getResourceDrop2().options[0]
+
         return 
 
         
@@ -426,8 +535,18 @@ class VisualManager():
 
         menuitem = self.getMainmenu().value
 
+        self.getController().getSimulator().saveLog("REPORT: menu item "+menuitem+" in boxmatches? "+str(menuitem in self.BoxMatches))
+
         if menuitem in self.BoxMatches:
-             self.ViewBoxes(self.BoxMatches[menuitem])
+            self.ViewBoxes(self.BoxMatches[menuitem])
+            if menuitem == "Schedules":
+                if len(self.getController().getWorkManager().getMySchedules()) == 0:
+                    self.getController().getWorkManager().ReadSchedules()
+
+                    self.getResultText().options = [str(sch.getDataExportDate().date())+"_"+sch.getAlgorithmName()+"_"+str(sch.getConstuctionDate().date()) for sch in self.getController().getWorkManager().getMySchedules()]
+
+                
+            
 
         return
 
@@ -447,36 +566,160 @@ class VisualManager():
 
         #getRes_process_df(self):
         #getDemand_process_df(self):
-        result = self.getResultText().value
 
-        self.demandorderlist.clear()
-       
-        process_df = pd.read_csv(os.path.join("..", "data", "simulation", "ProcessData.csv"))
-
-
-       
-        demagrr = process_df.groupby(["DemandID","Product","NrItems"], dropna=True)[['OperationName']].agg(lambda x:list(x)).reset_index()
-
-
-        for i,r in demagrr.iterrows():
-            self.demandorderlist[len(self.demandorderlist)] = r["DemandID"]
         
-            
-        if result == 'Order Progress': 
-            self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
-        if result == 'Resource Operations': 
-            self.getFurtherText().options = [res for res in process_df["Resource"].unique()]
+        if self.getMainmenu().value == "Schedules":
+            for sch in self.getController().getWorkManager().getMySchedules():
+                if self.getResultText().value == str(sch.getDataExportDate().date())+"_"+sch.getAlgorithmName()+"_"+str(sch.getConstuctionDate().date()):
+                    self.setSelectedSchedule(sch)
+                    self.getController().getSimulator().saveLog("REPORT: selected schedule input date: "+str(sch.getDataExportDate().date())) 
+                    self.getController().getSimulator().saveLog("REPORT: selected schedule algorithm : "+sch.getAlgorithmName()) 
+                    self.getController().getSimulator().saveLog("REPORT: selected schedule construction date: "+str(sch.getConstuctionDate().date())) 
+                    break
+            if self.getSelectedSchedule()!=None:
+                
+                inpdate = str(self.getSelectedSchedule().getDataExportDate().date())
+                algname = self.getSelectedSchedule().getAlgorithmName()
+                consdate = str(self.getSelectedSchedule().getConstuctionDate().date())
+
+                self.getKPIArea().value = "Completed demands: "+str(self.getSelectedSchedule().getCompletedDemands())+"/ "+str(len(self.getSelectedSchedule().getDemands()))+ "\n"
+                self.getKPIArea().value += "Tardy demands: "+str(self.getSelectedSchedule().getTardyDemands())+"/ "+str(self.getSelectedSchedule().getCompletedDemands())+ "\n"
+
+                self.getWeeksMenu().options = [str(d.date()) for d in self.getSelectedSchedule().getMyDays()]
+                
+                #self.showMILPSchedule(self.getSelectedSchedule().getMinDate(),self.getSelectedSchedule().getMinDate()+timedelta(days =5))
                   
 
         return 
 
+####################################################################################################################################   
+    def showMILPSchedule(self,mindate,maxdate):
+        try: 
+
+            pncolors = dict() 
+            barcolors = ['tab:orange','tab:blue','tab:red','tab:green','tab:brown','tab:gray','tab:olive','tab:cyan','tab:purple']
+            colorid = 0
+            currentday = mindate; pncolors = dict()
+            currentday = currentday.replace(hour=0, minute=0, second=0, microsecond=0)
+
+         
+    
+            with self.getScheduleOutput():
+                clear_output()
+                self.getController().getSimulator().saveLog("REPORT: Output started, current day: "+str(currentday)) 
+
+
+                while currentday <= maxdate :
+
+                    if currentday.weekday() >= 5: 
+                        currentday = currentday+timedelta(minutes = 24*60)
+                        continue
+                        
+
+                    if not currentday in self.getSelectedSchedule().getShiftSchedules():
+                        self.getSelectedSchedule().findMachineShift(currentday,self.getController().getWorkManager())
+
+                    self.getController().getSimulator().saveLog("REPORT: current day: "+str(currentday)+" in shedules? "+str(currentday in self.getSelectedSchedule().getShiftSchedules())) 
+    
+
+                    if currentday in self.getSelectedSchedule().getShiftSchedules():
+                    
+                        for shftno,shfthours in self.getSelectedSchedule().getShiftsInfo().items():
+        
+                            fig, gantts = plt.subplots(figsize=(23, 12),tight_layout=True)
+                            gnt_no = 0; gantt_hrs = [x for x in shfthours]
+                                
+                            
+                            shiftstart = currentday+timedelta(minutes = shfthours[0]*60);
+                            shiftend = currentday+timedelta(minutes = shfthours[-1]*60+59);
+                            x_labels = [datetime.strptime(str(currentday+timedelta(minutes = hr*60)),"%Y-%m-%d %H:%M:%S") for hr in gantt_hrs]
+        
+                            machinejobs = dict() 
+
+                          
+                            for mach,mach_df in self.getSelectedSchedule().getShiftSchedules()[currentday][shftno].items():
+           
+                                if not mach in machinejobs:
+                                    machinejobs[mach] = []
+        
+                                for i,r in mach_df.iterrows():
+                                    if (r["Work Orders/Start"] < shiftstart) & (r["Work Orders/End"] > shiftend):
+                                        if shftno == 3:
+                                            if not mach.IsAutomated():
+                                                continue
+                                        
+                                    job_shft_start = max(r["Work Orders/Start"],shiftstart)
+                                    job_shft_end= min(r["Work Orders/End"],shiftend)
+                      
+                                    jobstart = (job_shft_start -  shiftstart).total_seconds() / 3600; 
+                                    jobend= (job_shft_end -  shiftstart).total_seconds() / 3600
+                                    jobstr = mach.getName()+": "+str(r["Product"])+", Pr.ID: "+str(r["Product/ID"])+", Q: "+str(r["Quantity To Produce"])+", Ref: "+str(r["Reference"])
+        
+                                    if not r["Product"] in pncolors:
+                                        pncolors[r["Product"]]  = barcolors[colorid]
+                                        colorid+=1; colorid = 0 if colorid > len(barcolors)-1 else colorid
+                                        
+                                    machinejobs[mach].append(((jobstr,r["Product"]),(jobstart,jobend)))
+        
+                            gantts.set_ylim(0,10*(len(machinejobs)+1))       
+                                    
+                                # Setting X-axis limits
+                            gantts.set_xlim(0,len(gantt_hrs))
+                    
+                                # Setting ticks on y-axis
+                            gantts.set_yticks([10*x for x in range(len(machinejobs)+1)])
+                            gantts.set_xticks([x for x in range(len(gantt_hrs))]) # hours per day
+        
+                                
+                                # Labelling tickes of y-axis
+                            y_labels = ['']
+                            for mach,jobs in machinejobs.items():
+                                y_labels.append(mach.getName())
+    
+                            self.getController().getSimulator().saveLog("REPORT: y_labels: "+str(y_labels)) 
+                            self.getController().getSimulator().saveLog("REPORT: x_labels: "+str(x_labels)) 
+                                
+                            gantts.set_yticklabels(y_labels)
+                            gantts.set_xticklabels(x_labels)
+        
+                                                
+                                # Setting labels for x-axis and y-axis
+                            gantts.set_xlabel('Time')
+                            gantts.set_ylabel('Jobs of machines in shift  ')
+                                # Setting graph attribute
+                            gantts.grid(True)
+        
+                            machord = 1
+        
+                            for mach,jobs in machinejobs.items():
+                                for jobtuple in jobs:
+                                    gantts.broken_barh([(jobtuple[1][0],(jobtuple[1][1]-jobtuple[1][0]))], (10*machord-2.5, 5), facecolors = pncolors[jobtuple[0][1]],label=jobtuple[0][0],)
+            
+                                machord+=1
+        
+                            gantts.legend( bbox_to_anchor=(0, 1),loc='lower left', fontsize='small')
+                            gantts.tick_params(rotation=45)
+                            plt.show()
+                                
+                    currentday = currentday+timedelta(minutes = 24*60)
+                
+                    self.getController().getSimulator().saveLog("REPORT: Output started, current day: "+str(currentday)) 
+ 
+        
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in showing schedule "+str(e))
+    
+
+
+        return 
+##################################################################################################################################################
     def ViewMILPResults(self,event):
 
         #getRes_process_df(self):
         #getDemand_process_df(self):
-        
-        result = self.getmilpresults().value
 
+
+        result = self.getmilpresults().value
         self.milporders.clear()
 
 
@@ -491,11 +734,19 @@ class VisualManager():
 
     
         if result == 'Machines':
+
             for res in self.getController().getWorkManager().getResources():
                 OrdList.append(res.getName())
+                try: 
+                    if res.getType() == "Machine":
+                        self.getMachines().append(res)
+                except Exception as e:
+                    self.getController().getSimulator().saveLog("ERROR: machine instance check "+res.getName()+" ... "+str(e))
+                             
 
             self.getmilpdetails().options = [x for x in OrdList]
-                
+            #self.showMILPSchedule()
+                              
         return 
 
     def ViewDetails(self,event):
@@ -544,74 +795,16 @@ class VisualManager():
         result_type = self.getmilpresults().value
         result_detail = self.getmilpdetails().value
 
+        shifts = {3: [x for x in range(8)],1:[x for x in range(8,17)],2:[x for x in range(18,24)]}
+        pncolors = dict() 
+       
+        
+
         try: 
 
             if result_type == 'Machines':
-                for res in self.getController().getWorkManager().getResources():
-                    if res.getName() == result_detail:
-                        if res in self.getController().getMILPManager().getMachineDict():
-                            milpmachine =  self.getController().getMILPManager().getMachineDict()[res]
-    
-                            max_date = milpmachine.getScheduleDF()["Work Orders/End"].max()+timedelta(days = 1)
-                            min_date = milpmachine.getScheduleDF()["Work Orders/Start"].min()-timedelta(days = 1)
-
-                            self.getController().getSimulator().saveLog("REPORT min_date: "+str(min_date)) 
-                            self.getController().getSimulator().saveLog("REPORT min_date: "+str(max_date)) 
-    
-                            figure_days = (max_date - min_date).days
-    
-                            x_day_freq = 3
-                            x_days = [x for x in range(figure_days)]
-                            self.getController().getSimulator().saveLog("REPORT x_days: "+str(x_days)) 
-                            x_labels = [str(min_date+timedelta(days = mday)) for mday in x_days]
-    
-                            barcolors = ['tab:orange','tab:blue','tab:red']
-
-                            
-                            self.getController().getSimulator().saveLog("REPORT x_labels: "+str(x_labels)) 
-                            
-                        
-                            with self.getMILPResultInfo():
-                                clear_output()
-                                display(milpmachine.getScheduleDF().head(50))
-    
-                                # Declaring a figure "gnt"
-                                fig, gnt = plt.subplots()
-    
-                                # Setting Y-axis limits
-                                gnt.set_ylim(0, 50)
-    
-                                # Setting X-axis limits
-                                gnt.set_xlim(0, figure_days+1)
-    
-                                 # Setting ticks on y-axis
-                                gnt.set_yticks([25])
-                                gnt.set_xticks(x_days)
-                                # Labelling tickes of y-axis
-                                gnt.set_yticklabels(['Job'])
-                                gnt.set_xticklabels(x_labels)
-    
-                                
-                                # Setting labels for x-axis and y-axis
-                                gnt.set_xlabel('Date')
-                                gnt.set_ylabel('Jobs of machine '+str(res.getName()))
-                                # Setting graph attribute
-                                gnt.grid(True)
-    
-    
-                                rowno = 0
-                                for i,r in milpmachine.getScheduleDF().iterrows():
-                                    # Declaring a bar in schedule
-                                    jobstartday = (r["Work Orders/Start"] - min_date).days ; jobendday = (r["Work Orders/End"]- min_date).days
-                                    color = barcolors[rowno%3]
-                                    
-                                    gnt.broken_barh([(jobstartday,(jobendday-jobstartday))], (20, 9), facecolors = color)
-                                    rowno+=1
-
-                                plt.xticks(rotation=45)
-                                plt.show(fig)
-
-                    
+                pass
+              
             if result_type == 'Orders':
                 selectid = 0
                 for x in self.getmilpdetails().options:
@@ -645,11 +838,158 @@ class VisualManager():
         self.getRunProgress().value+=str(info)+ "\n"
         
         return
+        
+    def showResource(self,event):
+
+        resname = self.getResourceDrop().value
+
+        for res in self.getController().getWorkManager().getResources():
+            if res.getName() == resname:
+                av_str = ''
+                for avshift in res.getAvailableShifts():
+                    av_str+= ("," if len(av_str) > 0 else "")+str(avshift)
+                self.getAvailabilityCheck().value = av_str
+
+                if res.getType() == "Machine":
+                    self.getResAlternatives().options = [alt for alt in res.getAlternatives()]
+                else:
+                    self.getResAlternatives().options = []
+                
+                
+
+        return 
+
+    def removeAlternative(self,event):
+
+        altname = self.getResAlternatives().value
+
+        self.getController().getSimulator().saveLog("REPORT: alt to remove: "+str(altname))  
+        selected_res = None
+            
+        resname = self.getResourceDrop().value
+        self.getController().getSimulator().saveLog("REPORT: resource name"+resname)    
+        for res in self.getController().getWorkManager().getResources():
+            if res.getName() == resname:
+                selected_res = res
+                self.getController().getSimulator().saveLog("REPORT: resource found!")    
+                break
+
+        if altname in selected_res.getAlternatives():
+            self.getController().getSimulator().saveLog("REPORT: alt found in alts to remove: "+str(altname))
+            selected_res.getAlternatives().remove(altname)
+
+        self.getResAlternatives().options = [alt for alt in selected_res.getAlternatives()]
+        
+
+        return 
+
+    def addAlternative(self,event):
+
+        if self.getResourceDrop2().layout.visibility == 'hidden':
+            self.getResourceDrop2().layout.visibility = 'visible'
+            self.getAlternativeAdd().layout.width= "170px"
+            self.getAlternativeAdd().description = "Add Selected"
+        else:
+
+            resname = self.getResourceDrop().value
+            altname = self.getResourceDrop2().value
+
+
+            selected_res = None
+            for res in self.getController().getWorkManager().getResources():
+                if res.getName() == resname:
+                    selected_res = res; break
+
+            if altname != resname:
+                if not altname in selected_res.getAlternatives():
+                    selected_res.getAlternatives().append(altname)
+                    
+                    self.getResAlternatives().options = [alt for alt in selected_res.getAlternatives()]
+              
+            
+            self.getResourceDrop2().layout.visibility = 'hidden'
+            self.getAlternativeAdd().layout.width= "80px"
+            self.getAlternativeAdd().description = "Add"
+            
+ 
+
+        return 
+
+    def showWeekSchedule(self,event):
+
+        showweek = self.getWeeksMenu().value
+
+        weekfirstday = pd.to_datetime(showweek, format='%Y-%m-%d')
+  
+        lastday = weekfirstday+timedelta(days = 6)
+
+        self.getController().getSimulator().saveLog("REPORT: weekfirstday "+str(weekfirstday)+" lastday "+str(lastday))         
+
+
+        self.showMILPSchedule(weekfirstday,lastday)
+
+        #self.showSchedule(weekfirstday,lastday)
+
+        return
+
+
+    def showDaySchedule(self,event):
+
+        showday = self.getWeeksMenu().value
+
+        daydatetime = pd.to_datetime(showday, format='%Y-%m-%d')
+  
+       
+
+        #self.getController().getSimulator().saveLog("REPORT: weekfirstday "+str(weekfirstday)+" lastday "+str(lastday))         
+
+
+        self.showMILPSchedule(daydatetime,daydatetime)
+
+        #self.showSchedule(weekfirstday,lastday)
+
+        return
+
+
+
+    
+    def saveResources(self,event):
+
+        self.getController().getSimulator().saveLog("REPORT: in saving resources...")         
+        try: 
+            selected_res = None
+            
+            resname = self.getResourceDrop().value
+            self.getController().getSimulator().saveLog("REPORT: resource name"+resname)    
+            for res in self.getController().getWorkManager().getResources():
+                if res.getName() == resname:
+                    selected_res = res
+                    self.getController().getSimulator().saveLog("REPORT: resource found!")    
+                    break
+                    
+    
+            if selected_res!= None:
+                res_avail = self.getAvailabilityCheck().value
+                self.getController().getSimulator().saveLog("REPORT: in availability of resource "+selected_res.getName()+" "+": "+res_avail)    
+                try: 
+                    avail_shifts = res_avail.split(',')
+    
+                    selected_res.getAvailableShifts().clear()
+                    for shft in avail_shifts:
+                        selected_res.getAvailableShifts().append(shft)
+                    
+                    self.getController().getWorkManager().saveResources()
+                except Exception as e:
+                    self.getController().getSimulator().saveLog("ERROR: in availability format of resource "+str(e)+": "+selected_res.getName())    
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in saving resources "+str(e))    
+        
+     
+        return 
 
     def RunMILP(self,event):
 
         self.getController().getMILPManager().constructSchedule()
-
         
         return 
 
@@ -662,10 +1002,37 @@ class VisualManager():
 
         self.setWeeksDrop(widgets.Dropdown(options = [w for w in range(1,12)],value = 10,description = 'Weeks:'))
         self.setResourceDrop(widgets.Dropdown(options = [],description = 'Resources:'))
+        self.getResourceDrop().observe(self.showResource,'value')
         self.getWeeksDrop().observe(self.setDropSimWeeks,'value')
         self.getWeeksDrop().layout.width = '300px'
         self.getResourceDrop().layout.width = '300px'
         self.getWeeksDrop().layout.height = '25px'
+
+        self.setResourceDrop2(widgets.Dropdown(options = [],description = ''))
+
+
+        self.getResourceDrop2().layout.visibility = 'hidden'
+        self.getResourceDrop2().layout.width= '150px'
+
+        self.setResourceSave(widgets.Button(description="Apply"))
+        self.getResourceSave().on_click(self.saveResources)
+
+        self.setResAlternatives(widgets.Select(options=[],description='Alternatives:',disabled=False))
+
+        self.getResAlternatives().layout.width = '200px'
+
+        self.setAlternativeRemove(widgets.Button(description="Remove"))
+        self.getAlternativeRemove().layout.width = '80px'
+        self.getAlternativeRemove().on_click(self.removeAlternative)
+
+        self.setAlternativeAdd(widgets.Button(description="Add"))
+        self.getAlternativeAdd().layout.width = '80px'
+        self.getAlternativeAdd().on_click(self.addAlternative)
+
+
+
+        self.setAvailabilityCheck(widgets.Text(value='',description='Availability:',disabled=False))
+ 
         
         self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
   
@@ -676,7 +1043,7 @@ class VisualManager():
         # Single Select
         select = widgets.Select(options=['Orders','Main Settings','Run','Log Information'
                                          #'Define Event Type','Event Type Precedence'
-                                         ,'Results','Resources','Diagnostics'],value='Main Settings',description='Select:',disabled=False)
+                                         ,'Schedules','Resources','Diagnostics'],value='Main Settings',description='Select:',disabled=False)
 
         select.observe(self.menu_click,'value')
         self.setMainmenu(select)
@@ -686,7 +1053,11 @@ class VisualManager():
         
         
 
-        mainbox = VBox(children=[self.getWeeksDrop(),HBox(children=[self.getResourceDrop()])])
+        mainbox = VBox(children=[self.getWeeksDrop(),self.getResourceDrop(),
+                                 HBox(children=[self.getAvailabilityCheck(), VBox(children=[self.getResAlternatives(),
+                                                                                            HBox(children=[self.getAlternativeRemove(),self.getAlternativeAdd()]),self.getResourceDrop2()
+                                                                                           ])]),
+                                 self.getResourceSave()])
         self.setMainBox(mainbox)
 
         self.getMainBox().layout.width = '50%'
@@ -755,8 +1126,9 @@ class VisualManager():
         self.setLogBox(logbox)
 
 
-        self.setResultText(widgets.Select(options=['Order Progress','Resource Operations'],description='',disabled=False))
-        self.getResultText().layout.width = '150px'
+        
+        self.setResultText(widgets.Select(options=[],description='',disabled=False))
+        self.getResultText().layout.width = '350px'
         self.getResultText().layout.height = '120px'
          
 
@@ -764,18 +1136,28 @@ class VisualManager():
         self.getResultInfoText().layout.width = '750px'
         self.getResultInfoText().layout.height = '250px'
 
+        self.setKPIArea(widgets.Textarea(value='', placeholder='', description='KPIs:', disabled=True))
+
         self.setFurtherText(widgets.Select(options=[],description='',disabled=False))
-        self.getFurtherText().layout.width = '300px'
+        self.getFurtherText().layout.width = '150px'
         self.getFurtherText().layout.height = '120px'
 
+        self.setWeeksMenu(widgets.Dropdown(options = [],description = 'Day:'))
+        self.getWeeksMenu().observe(self.showDaySchedule,'value')
+
+
+        self.getKPIArea().layout.width = '400px'
+        self.getKPIArea().layout.height = '100px'
  
         self.getResultText().observe(self.ViewResults,'value')
 
         self.getFurtherText().observe(self.ViewDetails,'value')
+        self.setScheduleOutput(widgets.Output())
+        self.getScheduleOutput().layout.height = '2000px'
 
-        resultbox = VBox(children=[HBox(children=[self.getResultText(),self.getFurtherText()]),self.getResultInfoText()])
+        resultbox = VBox(children=[HBox(children=[self.getResultText(),self.getKPIArea()]),self.getWeeksMenu(),self.getScheduleOutput()])
+        
         self.setResultBox(resultbox)
-
 
         self.setShowDiagButton(widgets.Button(description="Show Diagnostics") )
         self.getShowDiagButton().on_click(self.ShowDiag)
@@ -800,13 +1182,16 @@ class VisualManager():
         self.getAllBoxes().append(self.getResultBox())
         self.getAllBoxes().append(self.getDiagBox())
 
+        
+
 
         self.BoxMatches['Run'] =  self.getRunBox()
         self.BoxMatches['Orders'] =  self.getOrderBox()
         self.BoxMatches['Main Settings'] =  self.getMainBox()
         self.BoxMatches['Log Information'] = self.getLogBox()
-        self.BoxMatches['Results'] = self.getResultBox()
+        self.BoxMatches['Schedules'] = self.getResultBox()
         self.BoxMatches['Diagnostics'] = self.getDiagBox()
+      
 
         for box in self.getAllBoxes():
             box.layout.visibility = 'hidden'
@@ -814,7 +1199,8 @@ class VisualManager():
        
             
 
-        tab = VBox(children = [self.getTitle(),
+        tab = VBox(children = [
+                              self.getTitle(),
                                HBox(children = [self.getMainmenu(),self.getMainBox(),self.getEventTypeBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox()])]
                   )    
         return tab 

@@ -7,7 +7,7 @@ from productionChecker import *
 class Inventory(Resource):
     
     def __init__(self,mycap,myloc,sim,workmngr):
-        super().__init__("Central_Inventory","Inventory",mycap,sim,workmngr)
+        super().__init__("Central_Inventory","Inventory",mycap,sim,workmngr,None)
         self.InputBuffer = Buffer("Input",None,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",None,1000000,sim,workmngr)
         self.setLocation(myloc)
@@ -24,7 +24,7 @@ class Inventory(Resource):
 class Buffer(Resource):
     def __init__(self,buftype,mach,mycap,sim,workmngr):
        
-        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,"Buffer",mycap,sim,workmngr)
+        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,"Buffer",mycap,sim,workmngr,None)
         self.BufferType = buftype
         self.machine = mach
 
@@ -85,12 +85,213 @@ class Buffer(Resource):
               
         return
 ############################################################################################################        
+class Schedule(object):
+    def __init__(self,datadate,constructiondate,algname,data_df,workmgr):
+
+        self.DataExportDate = datadate
+        self.ConstuctionDate = constructiondate
+        self.AlgorithmName = algname
+        self.DataFrame = data_df
+       
+        if "Work Orders/Start" in self.DataFrame.columns: 
+            workmgr.getSimulator().saveLog("REPORT: Work Orders/Start column made datetime ")
+            self.DataFrame["Work Orders/Start"] = pd.to_datetime(self.DataFrame["Work Orders/Start"], format="%Y-%m-%d %H:%M:%S")
+        if "Work Orders/End" in self.DataFrame.columns:        
+            workmgr.getSimulator().saveLog("REPORT: Work Orders/End column made datetime ")
+            self.DataFrame["Work Orders/End"] = pd.to_datetime(self.DataFrame["Work Orders/End"], format="%Y-%m-%d %H:%M:%S")
+        if "Deadline" in self.DataFrame.columns:     
+            workmgr.getSimulator().saveLog("REPORT: Deadline column made datetime ")
+            self.DataFrame["Deadline"] = pd.to_datetime(self.DataFrame["Deadline"], format="%Y-%m-%d %H:%M:%S")
+
+        
+        self.KPIDict = dict()
+        self.Demands = dict() # demandid, demand obj
+        self.DemandOperations = dict() #demandid, (operation,(res,(start,end))))
+        self.ShiftSchedules = dict() #key: day, val: dict: key: shiftno, val: dict: key: machine, val: dataframe
+
+        self.shiftsinfo = {3: [x for x in range(8)],1:[x for x in range(8,17)],2:[x for x in range(18,24)]}
+
+        self.KPIDict["Tardiness"] = dict()  # key: demandid, val: TRUE/FALSE
+        self.KPIDict["Completion"] = dict()  # key: demandid, val: TRUE/FALSE
+        self.MinDate = None
+        self.MaxDate = None
+        self.MyWeeks = []
+        self.MyDays = []
+
+        machines_df = self.DataFrame[(self.DataFrame["Processing Machine"] != "-") & (self.DataFrame["Processing Machine"] != "OUT - Outsourced activity_(OUT - Outsourced)")]
+
+        self.MaxDate =machines_df["Work Orders/End"].max()
+        self.MinDate =machines_df["Work Orders/Start"].min()
+
+        self.MinDate = self.MinDate.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        try:
+            currentday = self.MinDate
+            while currentday <= self.MaxDate:
+                if currentday.weekday() < 5:
+                    self.MyDays.append(currentday)
+                if currentday.weekday() == 0:
+                    self.MyWeeks.append(currentday)
+                currentday = currentday+timedelta(minutes = 24*60)
+        except Exception as e:
+            workmgr.getSimulator().saveLog("ERROR: In finding weeks "+str(e))
+
+            
+
+        try:
+            demands_df = self.DataFrame.groupby(["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference"])[['Work Orders/Work Center','Work Orders/Work Center/ID','Processing Machine','Work Orders/Operation','Operation Order','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status']].agg(lambda x:list(x)).reset_index()
     
+
+            
+            for i,r in demands_df.iterrows():
+            
+                if r['ID'] in workmgr.getProductionOrders(): 
+                    self.Demands[r['ID']] = workmgr.getProductionOrders()[r['ID']]
+                    
+                    opr_seq = self.Demands[r['ID']].getFinalProduct().getOperationSequences()[self.Demands[r['ID']].getID()]
+                    self.DemandOperations[r['ID']] = dict()
+                    curr_scheduled = False; order_comp = None
+                   
+                    for oprind in range(len(opr_seq)):
+                        if r['Work Orders/Status'][oprind] == "Scheduled":
+                            
+                            myopr = opr_seq[oprind]
+                            curr_scheduled = True 
+                            oprname = r['Work Orders/Operation'][oprind]
+                            opr_start = r['Work Orders/Start'][oprind]
+                            opr_completion = str(r['Work Orders/End'][oprind])
+                            opr_machine =  r['Processing Machine'][oprind]
+                            self.DemandOperations[r['ID']][myopr] = (opr_machine,(opr_start,opr_completion))
+                            order_comp = r['Work Orders/End'][oprind]
+                            
+                        else:
+                            order_comp = None; curr_scheduled = False
+
+                    if curr_scheduled:
+                        self.KPIDict["Tardiness"][r['ID']] = self.Demands[r['ID']].getDeadline() < order_comp
+                        self.KPIDict["Completion"][r['ID']] =  True
+                    else:
+                        self.KPIDict["Completion"][r['ID']] =  False
+ 
+                else:
+                    workmgr.getSimulator().saveLog("ERROR: demand not found for ID "+str(r['ID']))
+
+
+         
+        except Exception as e:
+            workmgr.getSimulator().saveLog("ERROR: In schedule reading.... "+str(e))
+
+###############################################################################################################
+    def getMyWeeks(self):
+        return self.MyWeeks
+    def getMyDays(self):
+        return self.MyDays
+    def findMachineShift(self,day,workmgr):
+
+        try: 
+            machines_df = self.DataFrame[(self.DataFrame["Processing Machine"] != "-") & (self.DataFrame["Processing Machine"] != "OUT - Outsourced activity_(OUT - Outsourced)")]
+    
+            currentday = day.replace(hour=0, minute=0, second=0, microsecond=0)
+
+            if currentday < self.getMinDate() or currentday > self.getMaxDate():
+                workmgr.getSimulator().saveLog("REPORT: schedule requested day "+str(currentday)+" not in schedule, min date: "+str(self.MinDate)+", max date: "+str(self.MaxDate)) 
+                return None
+
+            workmgr.getSimulator().saveLog("REPORT: schedule requested day "+str(currentday)+" in schedule? "+str(currentday in self.getShiftSchedules())) 
+            if not currentday in self.getShiftSchedules():
+    
+                self.getShiftSchedules()[currentday] = dict()
+    
+                machines = dict()  # name, obj
+                
+                for res in workmgr.getResources():
+                    if res.getType() == "Machine" and res.getProcessType() == "Metal forming":
+                        machines[res.getName()] = res
+    
+                for shftno,shfthours in self.getShiftsInfo().items():
+                    shiftstart = currentday+timedelta(minutes = shfthours[0]*60);
+                    shiftend = currentday+timedelta(minutes = shfthours[-1]*60+59)
+
+                    
+                    self.getShiftSchedules()[currentday][shftno] = dict()
+                    for machname,mach in machines.items():
+                        if shftno == 3:
+                            if not mach.IsAutomated():
+                                continue
+                        machine_df = machines_df[machines_df["Processing Machine"] == machname]
+                        mach_shift_df = machine_df[(machine_df["Work Orders/End"] >=  pd.Timestamp(shiftstart)) & (machine_df["Work Orders/Start"] <= pd.Timestamp(shiftend))]
+                        
+                        self.getShiftSchedules()[currentday][shftno][mach] = mach_shift_df
+
+            return self.getShiftSchedules()[currentday]
+                    
+        except Exception as e:
+            workmgr.getSimulator().saveLog("ERROR: In finding shift schedules of machines for day "+str(currentday)+" -> "+str(e))
+        
+       
+
+        return None
+################################################################################################################    
+
+##############################################################################################################
+
+    def getShiftsInfo(self):
+        return self.shiftsinfo
+        
+    def getShiftSchedules(self):
+        return self.ShiftSchedules
+
+    def getMinDate(self):
+        return self.MinDate
+       
+    def getMaxDate(self):
+        return self.MaxDate  
+        
+    def getTardyDemands(self):
+
+        return sum([int(tardy) for d,tardy in self.KPIDict["Tardiness"].items()])
+
+    def getCompletedDemands(self):
+
+        return sum([int(completed) for d,completed in self.KPIDict["Completion"].items()])
+       
+        
+    def calculateKPIs(self):
+
+        #no tardy orders
+        
+        
+
+
+        return 
+
+    def getDemands(self):
+        return self.Demands
+
+    def getDemandOperations(self):
+        return self.DemandOperations
+
+    def getKPIs(self):
+        return self.KPIDict
+            
+
+    def getDataExportDate(self):
+        return self.DataExportDate 
+    def getConstuctionDate(self):
+        return self.ConstuctionDate 
+
+    def getAlgorithmName(self):
+        return self.AlgorithmName
+    def getDataFrame(self):
+        return self.DataFrame
+
+
+        
 #_______________________________________________________________________  
 class Machine(Resource):
     
     def __init__(self,machcode,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
-        super().__init__(myname,"Machine",mycap,sim,workmngr)
+        super().__init__(myname,"Machine",mycap,sim,workmngr,OprtingShifts)
         self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
         self.setLocation(myloc)
@@ -99,7 +300,6 @@ class Machine(Resource):
         self.automated = automated
         self.ProcessType = processtype
         self.OperatingEffort = OprtingEffort
-        self.AvailableShifts = OprtingShifts
         self.Alternatives = Alternatives
         self.MachineCode = machcode
         self.setuptime = Setup
@@ -110,6 +310,7 @@ class Machine(Resource):
         self.suspendedEvent = None
         self.ProgressList = [] # [(event,(st,cp))]
         self.suspendedevents = dict() # key: event, val: processor
+        
    
 
     
@@ -161,8 +362,6 @@ class Machine(Resource):
     def IsAutomated(self):
         return self.automated
 
-    def getAvailableShifts(self):
-        return self.AvailableShifts
 
     def checkShiftChange(self,shift):
         self.Available = shift in self.getAvailableShifts()
@@ -201,14 +400,9 @@ class Machine(Resource):
 class Operator(Resource):
     
     def __init__(self,myname,avshifts,mycap,sim,workmngr):
-        super().__init__(myname,"Operator",mycap,sim,workmngr)
-        self.AvailableShifts = avshifts
+        super().__init__(myname,"Operator",mycap,sim,workmngr,avshifts)
+        
      
-
-
-    def getAvailableShifts(self):
-        return self.AvailableShifts
-
     def checkShiftChange(self,shift):
         if not shift in self.getAvailableShifts():
             self.Status = "Unavailable"
@@ -220,12 +414,11 @@ class Operator(Resource):
 #_________________________________________________________________________________________
 class Trailer(Resource):
     def __init__(self,mycap,sim,workmngr):
-        super().__init__(None,"Trailer",mycap,sim,workmngr)  
+        super().__init__(None,"Trailer",mycap,sim,workmngr,None)  
         self.location = None
         self.outputbuffers = []  
         self.destination = None
-
-        
+    
     def getOutputbuffers(self):
         return self.outputbuffers
     
@@ -237,11 +430,15 @@ class Trailer(Resource):
  
 #_______________________________________________________________________       
 class Operation(Process):
-    def __init__(self,demand,name,myid,proctime,processtimedist):
+    def __init__(self,demand,name,myid,proctime,processtimedist,order):
         super().__init__(demand,name,myid,processtimedist)
+        self.SequenceOrder = order
         
         self.getRandVar().getSampling().append(proctime) 
-        
+
+
+    def getSequenceOrder(self):
+        return self.SequenceOrder
 #_______________________________________________________________________          
 class Product(DemandType):
     def __init__(self,pn,myid,name):

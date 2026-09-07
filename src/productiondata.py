@@ -28,7 +28,7 @@ class ProductionDataManager(DataManager):
             self.getOperationsManager().getUseCase()
         )
 
-        
+
         
         self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
@@ -36,21 +36,28 @@ class ProductionDataManager(DataManager):
         filename = None
 
         for root, dirs, files in os.walk(abs_file_path):
+            self.getOperationsManager().getSimulator().saveLog("REPORT:  files: "+str(files))
             for file in files: 
                 self.getOperationsManager().getSimulator().saveLog(file)
                 if ".csv" in file:                  
                     try: 
-                        filedate = datetime.strptime(file[file.find("Resources_")+len("Resources_"):-5],"%Y-%m-%d")
-                        if latestfiledate == None:
-                            latestfiledate = filedate
-                            filename = file
-                        else:
-                            if latestfiledate < filedate:
-                                latestfilsedate = filedate
+                        if file.find("Resources_") > -1:
+                            self.getOperationsManager().getSimulator().saveLog("REPORT:  file name : "+str(file))
+                            self.getOperationsManager().getSimulator().saveLog("REPORT:  file name index: "+str(file.find("Resources_")))
+                            datestring = file[file.find("Resources_")+len("Resources_"):-4]
+                            self.getOperationsManager().getSimulator().saveLog("REPORT:  datestring: "+str(datestring))
+                            filedate = datetime.strptime(datestring,"%Y-%m-%d")
+                            self.getOperationsManager().getSimulator().saveLog("REPORT:  file date: "+str(filedate))
+                            if latestfiledate == None:
+                                latestfiledate = filedate
                                 filename = file
+                            else:
+                                if latestfiledate < filedate:
+                                    latestfilsedate = filedate
+                                    filename = file
                
                     except Exception as e:
-                        pass
+                        self.getOperationsManager().getSimulator().saveLog("ERROR: in reading file : "+str(e)+", file: "+str(file))
 
         if latestfiledate != None:
             self.getOperationsManager().getSimulator().saveLog("REPORT:  Latest Date resources file date: "+str(latestfiledate))
@@ -221,18 +228,25 @@ class ProductionDataManager(DataManager):
                             continue
 
                         oprduration = max(r['Work Orders/Expected Duration'][oprid],1)
-                        myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),oprduration,None) 
+                        myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),oprduration,None,oprid) 
                         oprmachs = [m for m in machines if m.getMachineCode() in opr]
                         myopr.setReferenceName(r['Work Orders/Operation'][oprid])
     
                         if len(oprmachs) > 0:
                             if oprmachs[0].getID() != r['Work Orders/Work Center/ID'][oprid]:
                                 oprmachs[0].setID(r['Work Orders/Work Center/ID'][oprid]) # set precise ID of the resource..
+
+                            
+                                
                             myopr.getAlternativeResources().append(oprmachs[0])
                             for mach_alternative in oprmachs[0].getAlternatives():
                                 altmachs = [m for m in machines if m.getMachineCode() == mach_alternative]
-                                if len(altmachs) > 0: 
+                              
+                                if len(altmachs) > 0:
                                     myopr.getAlternativeResources().append(altmachs[0])
+
+                            if prodorder.getID() == "__export__.mrp_production_7588_55eaba4e":
+                                        self.getOperationsManager().getSimulator().saveLog("REPORT: opr "+myopr.getReferenceName()+", opr: "+opr+", alt machs "+str([a.getName() for a in myopr.getAlternativeResources()]))
                         else:
                             self.getOperationsManager().getSimulator().saveLog("REPORT: Data Issue, Operation"+myopr.getName()+" has no machine, hence cancelled!")
                             self.getOperationsManager().getSimulator().saveLog("REPORT: All machines: "+str([m.getMachineCode() for m in machines]))
@@ -317,6 +331,7 @@ class ProductionDataManager(DataManager):
 
         return 
 
+ 
 
         #Eself.getSimulator().getController().getVisualManager().self.getFurtherText().options = [r for r in self.res_process_df["ResourceID"].unique()]
         
@@ -328,4 +343,4 @@ class ProductionDataManager(DataManager):
             
         #    display(sub_df.head(25))
 
-        
+   

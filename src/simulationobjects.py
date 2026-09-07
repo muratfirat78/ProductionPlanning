@@ -405,7 +405,7 @@ class ExecEvent(object):
 
 ##################################################################################################################################    
 class Resource(object):
-    def __init__(self,myname,mytype,mycap,sim,workmgr):
+    def __init__(self,myname,mytype,mycap,sim,workmgr,avshifts):
         self.Simulator = sim
         self.WorkMgr = workmgr
         self.Type = mytype
@@ -424,12 +424,16 @@ class Resource(object):
             self.Name = myname
         self.Itemcriteria = dict()
         self.processtype = None
+        self.AvailableShifts = avshifts
 
     def getProcessType(self):
         return self.processtype
     def setProcessType(self,mypr):
         self.processtype = mypr
         return
+
+    def getAvailableShifts(self):
+        return self.AvailableShifts
 
     def getLocationData(self):
         return self.LocationData

@@ -35,6 +35,7 @@ class ShopFloorManager(OperationsManager):
         self.AlgorithmSetting = dict() # key: event name, val: (Decision name, Algorithm name)
         self.ProcessTimes = dict()  #key: event type name, val: 
         self.EventStatuses = dict() # key: status change, val: (prev_status,next_status)
+        self.MySchedules = []
        
         # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
@@ -125,6 +126,9 @@ class ShopFloorManager(OperationsManager):
         self.DataManager.getObjectFeatures()["RawMaterial"].append(("ID","Components/Product/ID"))
 
     ###############################################################################
+
+    def getMySchedules(self):
+        return  self.MySchedules
 
     def getInputDate(self):
         return self.inputdate
@@ -782,11 +786,13 @@ class ShopFloorManager(OperationsManager):
 
         opname = "-"; demandid = '';eventprod = '';prodid = '';qunatity = ''
         deadline= '';reference = '';workcnt = '';workcntid = '';expduration = '';eventstrt = ''; tardy = '';lateness = ''
+        oprorder = '';processmach = ''
        
-        if event.getType() == "Processing":
+        if (event.getType() == "Processing"): #or (event.getType() == "Loading" and isinstance(event.getToLocation(),Machine)):
             if len(event.getItems()) > 0:
                 if event.getItems()[0].getActiveOperation()!= None: 
                     opname = event.getItems()[0].getActiveOperation().getReferenceName()
+                    oprorder = event.getItems()[0].getActiveOperation().getSequenceOrder()
                     demandid = event.getItems()[0].getActiveOperation().getDemand().getID()
                     eventprod = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getName()
                     prodid = event.getItems()[0].getActiveOperation().getDemand().getFinalProduct().getID()
@@ -796,11 +802,11 @@ class ShopFloorManager(OperationsManager):
                     workcnt = event.getItems()[0].getActiveOperation().getName()
                     workcntid = event.getItems()[0].getActiveOperation().getAlternativeResources()[0].getID()
                     expduration = event.getItems()[0].getActiveOperation().getProcessTime()
+                    processmach = event.getEquipment().getName()
                     
                     eventstrt =  self.getSimulator().checkRealTime(event.getProgressList()[0][1][0]).strftime("%Y-%m-%d %H:%M:%S")
 
-
-                    
+       
 
         eventdate =  self.getSimulator().getRealTime().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -819,7 +825,7 @@ class ShopFloorManager(OperationsManager):
                     lateness = str((self.getSimulator().getRealTime()-event.getItems()[0].getDemand().getDeadline()).days)
                     
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Product/ID":prodid,"Quantity To Produce":qunatity,"Deadline":deadline,"Reference":reference,"Work Orders/Work Center":workcnt,"Work Orders/Work Center/ID":workcntid,"Work Orders/Operation":opname,"Work Orders/Expected Duration":expduration,"Work Orders/Start(SIM)":eventstrt,"Work Orders/End(SIM)":eventdate,"Work Orders/Status(SIM)":"Sim-Scheduled","Tardy(SIM)":tardy,"Lateness (days)(SIM)":lateness,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
+        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Product/ID":prodid,"Quantity To Produce":qunatity,"Deadline":deadline,"Reference":reference,"Work Orders/Work Center":workcnt,"Work Orders/Work Center/ID":workcntid,"Processing Machine":processmach,"Work Orders/Operation":opname,"Operation Order": oprorder,"Work Orders/Expected Duration":expduration,"Work Orders/Start":eventstrt,"Work Orders/End":eventdate,"Work Orders/Status":"Sim-Scheduled","Tardy":tardy,"Lateness (days)":lateness,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}  
         self.getSimulator().getExecutionData().append(execution_data)
 
     
@@ -904,12 +910,25 @@ class ShopFloorManager(OperationsManager):
 #########################################################################################################################
     def writeData(self):
 
-        event_df = pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Work Orders/Operation","Work Orders/Expected Duration","Work Orders/Start(SIM)","Work Orders/End(SIM)","Work Orders/Status(SIM)","Tardy(SIM)","Lateness (days)(SIM)","EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
+
+        #TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
+
+        event_df = pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)","EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
 
         
       
         for eventdata in self.getSimulator().getExecutionData():
             event_df.loc[len(event_df)] = eventdata
+
+
+        inputdate = ""
+        if self.inputdate !=None:
+            inputdate = str(self.inputdate.date())
+
+        schedule_df = event_df[event_df["ID"] != '']
+        schedule_df = schedule_df[["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"]]
+
+        schedule_df.to_csv(os.path.join("..", "data", "simulation", "TBRM_Plan_"+inputdate+"_Simulation_"+str((datetime.now()).date())+".csv"), index=False)
 
         
         event_df.to_csv(os.path.join("..", "data", "simulation", "EventExecutionData.csv"), index=False)
@@ -1004,10 +1023,9 @@ class ShopFloorManager(OperationsManager):
     def writeDataTBRMOutPut(self,myround):
 
 
-        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
+        TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
 
         currentdate =  datetime.now()
-        currentdate = currentdate-timedelta(days = 2)
         startday = datetime(currentdate.year, currentdate.month, currentdate.day)
 
         try: 
@@ -1052,9 +1070,9 @@ class ShopFloorManager(OperationsManager):
                     # checlk material availability and set a release date for order. 
                     
                     if oprid == 0:
-                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Reference":prodorder.getReference(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Operation":myopr.getReferenceName(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Tardy":tardy,"Lateness (days)":lateness}
+                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Reference":prodorder.getReference(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Operation":myopr.getReferenceName(),"Operation Order": myopr.getSequenceOrder(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Tardy":tardy,"Lateness (days)":lateness}
                     else:
-                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Reference":prodorder.getReference(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Operation":myopr.getReferenceName(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders(),"Tardy":tardy,"Lateness (days)":lateness}
+                        myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Reference":prodorder.getReference(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":(myopr.getAlternativeResources()[0].getID() if len(myopr.getAlternativeResources()) > 0 else "-"),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Operation":myopr.getReferenceName(),"Operation Order": myopr.getSequenceOrder(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Scheduled":prodorder in self.getSelectedOrders(),"Tardy":tardy,"Lateness (days)":lateness}
 
                     TBRM_df.loc[len(TBRM_df)] = myorddata
                     oprid+=1
@@ -1066,7 +1084,7 @@ class ShopFloorManager(OperationsManager):
             TBRM_df["Work Orders/Start"] = pd.to_datetime(TBRM_df["Work Orders/Start"]).dt.floor('s')
             TBRM_df["Work Orders/End"] = pd.to_datetime(TBRM_df["Work Orders/End"]).dt.floor('s')
             
-            TBRM_df.to_csv("data/schedules/TBRM_Plan_"+inputdate+"_R"+str(myround)+"_"+str((datetime.now()).date())+".csv",index = False)
+            TBRM_df.to_csv(os.path.join("..", "data", "schedules","TBRM_Plan_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
         
@@ -1075,15 +1093,70 @@ class ShopFloorManager(OperationsManager):
 
 
 ##########################################################################################################################################
-    def writeSimulationMILPCommonfile(self,myround):
+    def saveResources(self):
+        
+        
+        res_df = pd.DataFrame(columns=["ResourceType","Name","ProcessType","Automated","Alternatives","SetupTime","OperatingEffort","AvailableShifts"])
+
+        for res in self.getResources():
+            try: 
+                avail_sfhts = ""
+                if res.getAvailableShifts()!= None:
+                    for shft in res.getAvailableShifts():
+                        avail_sfhts+= ("_" if len(avail_sfhts) > 0 else "")+str(shft)
+                    resdata = {"ResourceType":res.getType(),"Name":res.getName(),"ProcessType":res.getProcessType(),"Automated":res.IsAutomated() if isinstance(res,Machine) else None,"Alternatives":res.getAlternatives() if isinstance(res,Machine) else None,"SetupTime":res.getSetupTime() if isinstance(res,Machine) else None,"OperatingEffort":res.getOperatingEffort() if isinstance(res,Machine) else None,"AvailableShifts":avail_sfhts}
+
+                    res_df.loc[len(res_df)] = resdata
+            except Exception as e:
+                self.getSimulator().saveLog("ERROR: in making resource data "+str(e))    
+            
+
+        res_df.to_csv(os.path.join("..", "TBRM Machining BV","Resources_"+str((datetime.now()).date())+".csv"),index = False)
+
+        return 
+########################################################################################################################################
+    def ReadSchedules(self):
+
+        try: 
+            path = '../data\schedules'
+            for root, dirs, files in os.walk(path):
+                for name in files:
+                    if name.endswith((".csv")): 
+                        if name.find("TBRM_Plan_") > -1:
+                            self.getSimulator().saveLog("REPORT: "+name)
+                            filename = name
+                            filename = filename[filename.find("TBRM_Plan_")+len("TBRM_Plan_"):] 
+                            datadate = filename[:10] 
+                            try: 
+                                datadate = datetime.strptime(datadate,"%Y-%m-%d")
+                                self.getSimulator().saveLog("REPORT: datadate "+str(datadate.date()))
+                                filename = filename[10:]
+                                self.getSimulator().saveLog("REPORT: rest "+filename)
+                                if filename.find("_MILP_") > -1:
+                                    filename = filename[filename.find("_MILP_")+len("_MILP_"):] 
+                                    constructiontime = filename[:10] 
+                                    constructiondate = datetime.strptime(constructiontime,"%Y-%m-%d")
+                                    self.getSimulator().saveLog("REPORT: construction date "+str(constructiondate))
+                                    schedule_df =  pd.read_csv(os.path.join("..", "data", "schedules",name))
 
 
+                                    self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
+
+                                    myschedule = Schedule(datadate,constructiondate,"MILP",schedule_df,self)
+                                    self.getMySchedules().append(myschedule)
+
+                                   
+                            except Exception as e:
+                                self.getSimulator().saveLog("ERROR: in reading data date of schedule: "+str(e)+", "+name)    
+             
+                                
+                            
+        except Exception as e:
+                self.getSimulator().saveLog("ERROR: in reading schedules "+str(e))    
+        
 
 
+        return 
 
-
-
-
-        return
 
 
