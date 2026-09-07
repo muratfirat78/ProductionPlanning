@@ -150,7 +150,7 @@ class ProductionAlgManager(AlgorithmManager):
             myopr = item.getActiveOperation()
             if myopr is not None:
                 # Add all eligible alternative machines for this operation
-                self.getSimulator().saveLog(" >>> REPORT: alternatives "+str([mach.getName() for mach in myopr.getAlternativeResources()]))
+                #self.getSimulator().saveLog(" >>> REPORT: alternatives "+str([mach.getName() for mach in myopr.getAlternativeResources()]))
                 for mach in myopr.getAlternativeResources():
                     select_dict[mach] = select_dict.get(mach, 0) + 1
             else:
@@ -165,7 +165,7 @@ class ProductionAlgManager(AlgorithmManager):
             
             avail_time = machine.getNextAvailableTime()
             demand = select_dict[machine]
-            self.getSimulator().saveLog(" >>> REPORT:  machine available time "+str(avail_time)+", demand "+str(demand))
+            #self.getSimulator().saveLog(" >>> REPORT:  machine available time "+str(avail_time)+", demand "+str(demand))
             return (avail_time, -demand)
 
         selected_dest = min(select_dict.keys(), key=ranking_score)

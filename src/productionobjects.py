@@ -393,8 +393,13 @@ class Machine(Resource):
                     actual_progress+= progrtuple[1][1]-progrtuple[1][0]
                 else:
                     actual_progress+= self.getSimulator().getTime()-progrtuple[1][0]
+
+            if event.getProcessTime() != None: 
+                remaining_time = event.getProcessTime() - actual_progress
+            else:                
+                event.sampleProcessTime(self.getSimulator().getController().getWorkManager())
+                remaining_time =event.getProcessTime()
                 
-            remaining_time = event.getProcessTime() - actual_progress
             remaining_times.append(remaining_time)
 
    
