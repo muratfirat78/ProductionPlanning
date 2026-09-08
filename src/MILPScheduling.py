@@ -993,7 +993,7 @@ class ProductionMILPManager(MILPManager):
             progress.value+=">>> Tardy orders: "+str(tardyorders)+", total lateness: "+str(totallateness)+"\n"
             
             progress.value+="writing the output "+"\n"
-            self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut(self.MILPRound+1)
+            self.getSimulator().getController().getWorkManager().writeDataTBRMOutPut("MILP")
         except Exception as e:
                 progress.value+="ERROR: in writing the output "+str(e)+"\n"
         

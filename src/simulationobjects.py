@@ -121,7 +121,13 @@ class ExecEvent(object):
        # (OprMove)-> MS       --------        -------        Machine     Operator    Equip-loc    Integer       
        # (OprMove)-> ML       InputBuffer     Machine        Machine     Operator    Equip-loc    Integer     	
        #             MPROC      ------         -------       Machine     Machine     Equip-loc    Integer       
-       # (OprMove)-> MU        Machine      OutputBuffer     Machine     Operator    Equip-loc    Integer               
+       # (OprMove)-> MU        Machine      OutputBuffer     Machine     Operator    Equip-loc    Integer   
+
+    def setOperation(self,myopr):
+        self.Operation = myopr
+
+    def getOperation(self):
+        return self.Operation
 
     def setProcessor(self,pro):
         self.Processor = pro

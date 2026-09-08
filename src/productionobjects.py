@@ -297,6 +297,7 @@ class Machine(Resource):
         self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
         self.setLocation(myloc)
+        myloc.getResources().append(self)
         self.InputBuffer.setLocation(myloc)
         self.OutputBuffer.setLocation(myloc)
         self.automated = automated

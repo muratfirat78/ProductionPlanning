@@ -80,6 +80,10 @@ class VisualManager():
         self.ScheduleOutput = None
         self.KPIArea = None
         self.WeeksMenu = None
+
+        self.simbox = None
+        self.selectdestinationalg = None
+        
       
 
         
@@ -91,6 +95,20 @@ class VisualManager():
 
         self.ResourceBox = None
 
+    def setSimBox(self,bx):
+        self.simbox = bx
+        return
+    def getSimBox(self):
+        return self.simbox 
+
+    
+    def setSelectDestinationAlg(self,bx):
+        self.selectdestinationalg = bx
+        return
+    def getSelectDestinationAlg(self):
+        return self.selectdestinationalg 
+        
+        
     def setWeeksMenu(self,dp):
         self.WeeksMenu = dp
         return
@@ -932,6 +950,20 @@ class VisualManager():
 
         return
 
+        
+
+    def applySelectDestination(self,event):
+
+        for eventname,eventoj in self.getController().getWorkManager().getEventTypes().items():
+            if eventname in self.getController().getWorkManager().getAlgorithmSetting():
+                if "Select Destination" in self.getController().getWorkManager().getAlgorithmSetting()[eventname]:
+                    self.getController().getWorkManager().getAlgorithmSetting()[eventname]["Select Destination"] = self.getSelectDestinationAlg().value
+                    self.getController().getSimulator().saveLog("REPORT: select dest alg set to  "+self.getSelectDestinationAlg().value)  
+                
+       
+        return
+
+
 
     def showDaySchedule(self,event):
 
@@ -1041,13 +1073,13 @@ class VisualManager():
 
      
         # Single Select
-        select = widgets.Select(options=['Orders','Main Settings','Run','Log Information'
+        select = widgets.Select(options=['Orders','Resources','Simulation Settings','Simulation Run','Log Information'
                                          #'Define Event Type','Event Type Precedence'
-                                         ,'Schedules','Resources','Diagnostics'],value='Main Settings',description='Select:',disabled=False)
+                                         ,'Schedules','Diagnostics'],value='Resources',description='Select:',disabled=False)
 
         select.observe(self.menu_click,'value')
         self.setMainmenu(select)
-        self.getMainmenu().layout.width = '200px'
+        self.getMainmenu().layout.width = '250px'
         self.getMainmenu().layout.height = '200px'
 
         
@@ -1097,6 +1129,20 @@ class VisualManager():
         self.setOrderBox(orderbox)
 
         self.getOrderBox().layout.width = '75%'
+
+
+        selectalgs = [x for x in self.getController().getWorkManager().getProductionAlgManager().getDecisionAlgorithms()['Select Destination'].keys()]
+ 
+        self.setSelectDestinationAlg(widgets.Dropdown(options = selectalgs,description = ''))
+
+        selectdesttitle = widgets.Label(value="Select Destination:") 
+        self.getSelectDestinationAlg().observe(self.applySelectDestination,'value')
+
+        simbox = VBox(children=[HBox(children=[VBox(children=[selectdesttitle,self.getSelectDestinationAlg()])])])
+
+        self.setSimBox(simbox)
+     
+        
 
         # event type box
         eventtypename = widgets.Text(description ='Name: ',value='')
@@ -1181,16 +1227,18 @@ class VisualManager():
         self.getAllBoxes().append(self.getLogBox())
         self.getAllBoxes().append(self.getResultBox())
         self.getAllBoxes().append(self.getDiagBox())
+        self.getAllBoxes().append(self.getSimBox())
 
         
 
 
-        self.BoxMatches['Run'] =  self.getRunBox()
+        self.BoxMatches['Simulation Run'] =  self.getRunBox()
         self.BoxMatches['Orders'] =  self.getOrderBox()
-        self.BoxMatches['Main Settings'] =  self.getMainBox()
+        self.BoxMatches['Resources'] =  self.getMainBox()
         self.BoxMatches['Log Information'] = self.getLogBox()
         self.BoxMatches['Schedules'] = self.getResultBox()
         self.BoxMatches['Diagnostics'] = self.getDiagBox()
+        self.BoxMatches['Simulation Settings'] = self.getSimBox()
       
 
         for box in self.getAllBoxes():
@@ -1201,7 +1249,7 @@ class VisualManager():
 
         tab = VBox(children = [
                               self.getTitle(),
-                               HBox(children = [self.getMainmenu(),self.getMainBox(),self.getEventTypeBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox()])]
+                               HBox(children = [self.getMainmenu(),self.getMainBox(),self.getEventTypeBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox(), self.getSimBox()])]
                   )    
         return tab 
 

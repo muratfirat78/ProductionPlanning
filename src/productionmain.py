@@ -51,7 +51,7 @@ class ShopFloorManager(OperationsManager):
         TrailerLoading.getSuccessorDict()[TrailerTransport] = "Finish to Start"  # Precedence settings: TL -> TT
         TrailerLoading.getPrecendenceDict()[TrailerTransport.getName()] = ['FromLocation','Equipment','Resource','Items']
    
-        self.getAlgorithmSetting()[TrailerTransport.getName()] = {"Select Destination":'Checkalternatives' }
+        self.getAlgorithmSetting()[TrailerTransport.getName()] = {"Select Destination":'MostDemanded' }
         self.getEventTypes()[TrailerTransport.getName()]= TrailerTransport
         #-------------------------------------------
         TrailerUnloading= SimEvent(self.getSimulator(),"Trailer Unloading","Unloading","Operator","Trailer",False)
@@ -785,7 +785,10 @@ class ShopFloorManager(OperationsManager):
         ev_items = (str(event.getItems()[0].getID())+"~"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '-')
 
         if (event.getType() == "Unloading") and isinstance(event.getEquipment(),Machine):
-            event.getItems()[0].getDemand().getSimExecData()[-1]["Work Orders/End"] = self.getSimulator().getRealTime().strftime("%Y-%m-%d %H:%M:%S")
+            opr_completion = self.getSimulator().getRealTime()
+            if event.getFinishToStartPredecessor() != None: 
+                event.getFinishToStartPredecessor().getOperation().setCompletion(opr_completion) # COMPLETION
+            event.getItems()[0].getDemand().getSimExecData()[-1]["Work Orders/End"] = opr_completion.strftime("%Y-%m-%d %H:%M:%S")
             
 
         opname = "-"; demandid = '';eventprod = '';prodid = '';qunatity = ''
@@ -808,8 +811,14 @@ class ShopFloorManager(OperationsManager):
                     workcntid = event.getItems()[0].getActiveOperation().getAlternativeResources()[0].getID()
                     expduration = event.getItems()[0].getActiveOperation().getProcessTime()
                     processmach = event.getEquipment().getName()
+                    event.setOperation(event.getItems()[0].getActiveOperation())
+
+                    
 
                     eventstrt = event.getProgressList()[0][1][0] if event.getFinishToStartPredecessor()== None else event.getFinishToStartPredecessor().getProgressList()[0][1][0]
+
+                    event.getOperation().setStart(self.getSimulator().checkRealTime(eventstrt)) # START
+                    event.getOperation().setProcessMachine(event.getEquipment())
                     
                     eventstrt =  self.getSimulator().checkRealTime(eventstrt).strftime("%Y-%m-%d %H:%M:%S")
 
@@ -923,8 +932,6 @@ class ShopFloorManager(OperationsManager):
     def writeData(self):
 
 
-        #TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
-
         event_df = pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)","EventName","EventID","ProgressSteps","Items","Resource","Equipment","Location","SimTime","Date"])
 
         
@@ -937,12 +944,6 @@ class ShopFloorManager(OperationsManager):
         if self.inputdate !=None:
             inputdate = str(self.inputdate.date())
 
-        schedule_df = event_df[event_df["ID"] != '']
-        schedule_df = schedule_df[["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"]]
-
-        schedule_df.to_csv(os.path.join("..", "data", "simulation", "TBRM_Plan_"+inputdate+"_Simulation_"+str((datetime.now()).date())+".csv"), index=False)
-
-        
         event_df.to_csv(os.path.join("..", "data", "simulation", "EventExecutionData.csv"), index=False)
 
 
@@ -1032,7 +1033,7 @@ class ShopFloorManager(OperationsManager):
 
         return True
 #############################################################################################################
-    def writeDataTBRMOutPut(self,myround):
+    def writeDataTBRMOutPut(self,algorithm):
 
 
         TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
@@ -1045,17 +1046,8 @@ class ShopFloorManager(OperationsManager):
             
                 oprsequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
 
-                tardy = "-"
-                lateness = "-"
-
-                if prodorder.getMILPCompletion()!= None: 
-                    tardy = str(prodorder.getDeadline() < prodorder.getMILPCompletion())
-                    if prodorder.getDeadline() < prodorder.getMILPCompletion():
-                        lateness = str((prodorder.getMILPCompletion()-prodorder.getDeadline()).days)
-                    else:
-                        lateness = "0"
-
-               
+                tardy = "-";lateness = "0"
+              
 
                 oprid = 0
                 for myopr in oprsequence:
@@ -1063,6 +1055,7 @@ class ShopFloorManager(OperationsManager):
                     
                     mystrt = myopr.getStart()
                     mycomp = myopr.getCompletion()
+
                     status = ("Finished" if mycomp!= None else ("In Progress" if mystrt!= None else "To Do"))
 
                     if myopr.isCancelled():
@@ -1070,17 +1063,10 @@ class ShopFloorManager(OperationsManager):
 
                     status = ("Scheduled" if myopr.getProcessMachine()!= None else status)
 
-                    #self.getSimulator().saveLog("REPORT: mystrt "+str(mystrt)+", mycomp "+str(mycomp))
-                    
-                    if  isinstance(mystrt,int) and mystrt!= None :
-                        self.getSimulator().saveLog("REPORT: >>>>>>>>>>>>>>> operation start is in integer!! ")
+                    if status == "Scheduled" and oprid == len(oprsequence)-1:
+                        tardy = str(prodorder.getDeadline() < mycomp)
+                        lateness = str(max(0,(mycomp-prodorder.getDeadline()).days))
 
-                    if isinstance(mycomp,int) and mycomp!= None :
-                        mycomp = startday+timedelta(minutes = mycomp)
-                        self.getSimulator().saveLog("REPORT: >>>>>>>>>>>>>>> operation completion is in integer!! ")
-
-                    # repeat columns A-E for each operation!
-                    # checlk material availability and set a release date for order. 
                     
                     if oprid == 0:
                         myorddata = {"ID":prodorder.getID(),"Product":prodorder.getFinalProduct().getName(),"Product/ID":prodorder.getFinalProduct().getID(),"Quantity To Produce":prodorder.getQuantity(),"Deadline":prodorder.getDeadline(),"Reference":prodorder.getReference(),"Work Orders/Work Center":myopr.getName(),"Work Orders/Work Center/ID":myopr.getAlternativeResources()[0].getID(),"Processing Machine":(myopr.getProcessMachine().getName() if myopr.getProcessMachine()!= None else "-"),"Work Orders/Operation":myopr.getReferenceName(),"Operation Order": myopr.getSequenceOrder(),"Work Orders/Expected Duration":myopr.getRandVar().sampleValue(),"Work Orders/Start(ORG)":myopr.getOriginalStart(),"Work Orders/Start":mystrt,"Work Orders/End(ORG)":myopr.getOriginalCompletion(),"Work Orders/End":mycomp,"Work Orders/Status":status,"Tardy":tardy,"Lateness (days)":lateness}
@@ -1097,7 +1083,7 @@ class ShopFloorManager(OperationsManager):
             TBRM_df["Work Orders/Start"] = pd.to_datetime(TBRM_df["Work Orders/Start"]).dt.floor('s')
             TBRM_df["Work Orders/End"] = pd.to_datetime(TBRM_df["Work Orders/End"]).dt.floor('s')
             
-            TBRM_df.to_csv(os.path.join("..", "data", "schedules","TBRM_Plan_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
+            TBRM_df.to_csv(os.path.join("..", "data", "schedules","TBRM_Plan_"+inputdate+"_"+algorithm+"_"+str((datetime.now()).date())+".csv"),index = False)
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
         
@@ -1162,6 +1148,17 @@ class ShopFloorManager(OperationsManager):
                                     self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
 
                                     myschedule = Schedule(datadate,constructiondate,"MILP",schedule_df,self)
+                                    self.getMySchedules().append(myschedule)
+                                if  filename.find("_Simulation_") > -1:
+                                    filename = filename[filename.find("_Simulation_")+len("_Simulation_"):] 
+                                    constructiontime = filename[:10] 
+                                    constructiondate = datetime.strptime(constructiontime,"%Y-%m-%d")
+                                    self.getSimulator().saveLog("REPORT: construction date "+str(constructiondate))
+                                    schedule_df =  pd.read_csv(os.path.join("..", "data", "schedules",name))
+                                    
+                                    self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
+
+                                    myschedule = Schedule(datadate,constructiondate,"Simulation",schedule_df,self)
                                     self.getMySchedules().append(myschedule)
 
                                    
