@@ -553,7 +553,7 @@ class VisualManager():
 
         menuitem = self.getMainmenu().value
 
-        self.getController().getSimulator().saveLog("REPORT: menu item "+menuitem+" in boxmatches? "+str(menuitem in self.BoxMatches))
+        #self.getController().getSimulator().saveLog("REPORT: menu item "+menuitem+" in boxmatches? "+str(menuitem in self.BoxMatches))
 
         if menuitem in self.BoxMatches:
             self.ViewBoxes(self.BoxMatches[menuitem])
@@ -1073,9 +1073,9 @@ class VisualManager():
 
      
         # Single Select
-        select = widgets.Select(options=['Orders','Resources','Simulation Settings','Simulation Run','Log Information'
+        select = widgets.Select(options=['Orders','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
                                          #'Define Event Type','Event Type Precedence'
-                                         ,'Schedules','Diagnostics'],value='Resources',description='Select:',disabled=False)
+                                         ,'Schedules'],value='Resources',description='Select:',disabled=False)
 
         select.observe(self.menu_click,'value')
         self.setMainmenu(select)
@@ -1205,13 +1205,19 @@ class VisualManager():
         
         self.setResultBox(resultbox)
 
-        self.setShowDiagButton(widgets.Button(description="Show Diagnostics") )
-        self.getShowDiagButton().on_click(self.ShowDiag)
-        self.getShowDiagButton().layout.width = '750px'
+
+        self.setmilprunbutton(widgets.Button(description="Run MILP"))
+        self.getmilprunbutton().on_click(self.RunMILP)
+
+        self.setmilpprogress(widgets.Textarea(value='', placeholder='',description='',disabled=True))
+
+        self.getmilpprogress().layout.width = '750px'
+        self.getmilpprogress().layout.height = '300px'
+
         self.setDiagSelect(widgets.Select(options=[],description='',disabled=False))
         self.getDiagSelect().layout.width = '750px'
         self.getDiagSelect().layout.height = '300px'
-        diagbox = VBox(children=[self.getShowDiagButton(),self.getDiagSelect()])
+        diagbox = VBox(children=[self.getmilprunbutton(),self.getmilpprogress()])
 
         self.setDiagBox(diagbox)
 
@@ -1237,7 +1243,7 @@ class VisualManager():
         self.BoxMatches['Resources'] =  self.getMainBox()
         self.BoxMatches['Log Information'] = self.getLogBox()
         self.BoxMatches['Schedules'] = self.getResultBox()
-        self.BoxMatches['Diagnostics'] = self.getDiagBox()
+        self.BoxMatches['MILP Run'] = self.getDiagBox()
         self.BoxMatches['Simulation Settings'] = self.getSimBox()
       
 
@@ -1259,55 +1265,4 @@ class VisualManager():
 
         return
 
-    def GenerateMILPTab(self):
-
-
-        self.setmilprunbutton(widgets.Button(description="Run MILP"))
-
-        self.setMILPParamTxt(widgets.Text(description ='',value=''))
-      
-
-        self.setmilpprogress(widgets.Textarea(value='', placeholder='',description='',disabled=True))
-
-        self.setMILPJobs(widgets.Dropdown(options = ["Jobs","Successors","Successors(2)"],value = "Jobs",description = 'MILP size:'))
-
-        self.getMILPJobs().observe(self.ViewResults,'value')
-
-        self.getmilpprogress().layout.width = '850px'
-        self.getmilpprogress().layout.height = '300px'
-
-        self.setmilpmainbox(VBox(children=[self.getmilprunbutton(),
-                                           HBox(children = [self.getMILPJobs(),self.getMILPParamTxt()])
-                                          ]))
-
-  
-         # Single Select
-        self.setmilpresults(widgets.Select(options=['Orders','Machines'],value='Orders',description='',disabled=False))
-        self.setmilpdetails(widgets.Select(options=[],description='',disabled=False))
-
-        
-        
-        self.getmilpresults().layout.width = '350px'
-        self.getmilpresults().layout.height = '150px'
-        self.getmilpdetails().layout.width = '350px'
-        self.getmilpdetails().layout.height = '150px'
-
-       
-
-        self.getmilpresults().observe(self.ViewMILPResults,'value')
-        self.getmilpdetails().observe(self.ViewMILPDetails,'value')
-
-        self.setMILPResultInfo(widgets.Output())
-        self.getMILPResultInfo().layout.width = '950px'
-        self.getMILPResultInfo().layout.height = '250px'
-        
-        self.setmilpresultbox(VBox(children=[self.getmilpprogress()]))
-
-        self.getmilprunbutton().on_click(self.RunMILP)
-
-        
-        tab = VBox(children = [self.getmilpmainbox(),self.getmilpresultbox(),HBox(children= [self.getmilpresults(),self.getmilpdetails()]),
-                               self.getMILPResultInfo()])    
-
-        return tab
-
+ 

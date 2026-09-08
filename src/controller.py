@@ -30,10 +30,6 @@ class Controller:
         print("Controller: Generating dashboard")
         return self.VisualManager.GenerateMainTab()
 
-    def GenerateMILPTab(self):
-
-        return self.VisualManager.GenerateMILPTab()
-
     
     def ExecuteOperation(self,operation,numbers):
         result = 0

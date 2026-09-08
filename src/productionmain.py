@@ -1134,18 +1134,18 @@ class ShopFloorManager(OperationsManager):
                             datadate = filename[:10] 
                             try: 
                                 datadate = datetime.strptime(datadate,"%Y-%m-%d")
-                                self.getSimulator().saveLog("REPORT: datadate "+str(datadate.date()))
+                                #self.getSimulator().saveLog("REPORT: datadate "+str(datadate.date()))
                                 filename = filename[10:]
-                                self.getSimulator().saveLog("REPORT: rest "+filename)
+                                #self.getSimulator().saveLog("REPORT: rest "+filename)
                                 if filename.find("_MILP_") > -1:
                                     filename = filename[filename.find("_MILP_")+len("_MILP_"):] 
                                     constructiontime = filename[:10] 
                                     constructiondate = datetime.strptime(constructiontime,"%Y-%m-%d")
-                                    self.getSimulator().saveLog("REPORT: construction date "+str(constructiondate))
+                                    #self.getSimulator().saveLog("REPORT: construction date "+str(constructiondate))
                                     schedule_df =  pd.read_csv(os.path.join("..", "data", "schedules",name))
 
 
-                                    self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
+                                    #self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
 
                                     myschedule = Schedule(datadate,constructiondate,"MILP",schedule_df,self)
                                     self.getMySchedules().append(myschedule)
@@ -1153,10 +1153,10 @@ class ShopFloorManager(OperationsManager):
                                     filename = filename[filename.find("_Simulation_")+len("_Simulation_"):] 
                                     constructiontime = filename[:10] 
                                     constructiondate = datetime.strptime(constructiontime,"%Y-%m-%d")
-                                    self.getSimulator().saveLog("REPORT: construction date "+str(constructiondate))
+                                    #self.getSimulator().saveLog("REPORT: construction date "+str(constructiondate))
                                     schedule_df =  pd.read_csv(os.path.join("..", "data", "schedules",name))
                                     
-                                    self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
+                                    #self.getSimulator().saveLog("REPORT: data size "+str(len(schedule_df)))
 
                                     myschedule = Schedule(datadate,constructiondate,"Simulation",schedule_df,self)
                                     self.getMySchedules().append(myschedule)

@@ -36,18 +36,18 @@ class ProductionDataManager(DataManager):
         filename = None
 
         for root, dirs, files in os.walk(abs_file_path):
-            self.getOperationsManager().getSimulator().saveLog("REPORT:  files: "+str(files))
+            #self.getOperationsManager().getSimulator().saveLog("REPORT:  files: "+str(files))
             for file in files: 
                 self.getOperationsManager().getSimulator().saveLog(file)
                 if ".csv" in file:                  
                     try: 
                         if file.find("Resources_") > -1:
-                            self.getOperationsManager().getSimulator().saveLog("REPORT:  file name : "+str(file))
-                            self.getOperationsManager().getSimulator().saveLog("REPORT:  file name index: "+str(file.find("Resources_")))
+                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  file name : "+str(file))
+                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  file name index: "+str(file.find("Resources_")))
                             datestring = file[file.find("Resources_")+len("Resources_"):-4]
-                            self.getOperationsManager().getSimulator().saveLog("REPORT:  datestring: "+str(datestring))
+                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  datestring: "+str(datestring))
                             filedate = datetime.strptime(datestring,"%Y-%m-%d")
-                            self.getOperationsManager().getSimulator().saveLog("REPORT:  file date: "+str(filedate))
+                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  file date: "+str(filedate))
                             if latestfiledate == None:
                                 latestfiledate = filedate
                                 filename = file
@@ -60,7 +60,7 @@ class ProductionDataManager(DataManager):
                         self.getOperationsManager().getSimulator().saveLog("ERROR: in reading file : "+str(e)+", file: "+str(file))
 
         if latestfiledate != None:
-            self.getOperationsManager().getSimulator().saveLog("REPORT:  Latest Date resources file date: "+str(latestfiledate))
+            #self.getOperationsManager().getSimulator().saveLog("REPORT:  Latest Date resources file date: "+str(latestfiledate))
             TBRMResources_df = pd.read_csv(abs_file_path+'/'+filename)
 
             self.getOperationsManager().getSimulator().saveLog(str(TBRMResources_df.info()))
@@ -110,8 +110,8 @@ class ProductionDataManager(DataManager):
                     mach.setProcessType(r['ProcessType'])
                     self.getOperationsManager().getResources().append(mach)
 
-                    if r['Name'] == "OUT - Outsourced activity_(OUT - Outsourced)":
-                        self.getOperationsManager().getSimulator().saveLog("REPORT: OUTSource available shifts: : "+str(mach.getAvailableShifts())+", type: "+str(type(mach)))      
+                    #if r['Name'] == "OUT - Outsourced activity_(OUT - Outsourced)":
+                    #    self.getOperationsManager().getSimulator().saveLog("REPORT: OUTSource available shifts: : "+str(mach.getAvailableShifts())+", type: "+str(type(mach)))      
                     
             
             self.getOperationsManager().getSimulator().saveLog("REPORT: No resources: "+str(len(self.getOperationsManager().getResources())))      
@@ -245,8 +245,7 @@ class ProductionDataManager(DataManager):
                                 if len(altmachs) > 0:
                                     myopr.getAlternativeResources().append(altmachs[0])
 
-                            if prodorder.getID() == "__export__.mrp_production_7588_55eaba4e":
-                                        self.getOperationsManager().getSimulator().saveLog("REPORT: opr "+myopr.getReferenceName()+", opr: "+opr+", alt machs "+str([a.getName() for a in myopr.getAlternativeResources()]))
+                            
                         else:
                             self.getOperationsManager().getSimulator().saveLog("REPORT: Data Issue, Operation"+myopr.getName()+" has no machine, hence cancelled!")
                             self.getOperationsManager().getSimulator().saveLog("REPORT: All machines: "+str([m.getMachineCode() for m in machines]))
