@@ -570,6 +570,7 @@ class VisualManager():
                         for e in events:
                             self.getSuspendedEvents()[e.getName()+"("+str(e.getID())+") - "+"["+str(schtime)+"]"] = e
                 self.getEventIDs().options = [evstr for evstr,e in self.getSuspendedEvents().items()]
+                self.getSelectedEvents().options = []
                     
                 self.runbutton.description = "Run Simulation ("+str(self.getController().getSimulator().getTime())+")"
                 self.runbutton.disabled = False 
