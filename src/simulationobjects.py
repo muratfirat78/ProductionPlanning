@@ -150,7 +150,7 @@ class ExecEvent(object):
         return self.decisionwaitingtime
 
     def increaseDecisionWaitingTime(self):
-        self.decisionwaitingtime+=1
+        self.decisionwaitingtime+=1+60*int(self.getType() in ["Processing","Setup"] or self.getName() == "Machine Loading" )
         return
 
     def setSimCompletionSuccessor(self,succssr):

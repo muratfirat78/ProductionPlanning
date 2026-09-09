@@ -82,37 +82,7 @@ class ProductionAlgManager(AlgorithmManager):
           
         return selected_res
 
-################################################################################################################################################
-    def assignNoSoonTaskResource(self,event):
-        
-        selected_res = None
-    
-        avail_comp_res = [r for r in self.getOperationsManager().getResources() if r.isAvailable() and r.getType() == event.getEventType().getResourceType()] 
-       
-        idle_res = [r for r in avail_comp_res if r.isIdle()] 
 
-        
-        if len(idle_res) > 0:
-
-            onloc_res = [r for r in idle_res if r.getLocation() == event.getLocation()]
-
-            if len(onloc_res) == 0: 
-                for res in idle_res:
-                    if res.getLocation() == self.getOperationsManager().getCentralInventory().getLocation():
-                        selected_res = res
-                        break
-                    for resource in res.getLocation().getResources():
-                        if resource.getType() == "Machine":
-                            if not (resource.getProcessor() != None and len(resource.getInputBuffer().getItems()) > 0):
-                                selected_res = res
-                                break
-                    if selected_res != None:
-                        break
-            else:
-                selected_res = onloc_res[0]
-
-          
-        return selected_res
 ################################################################################################################################################    
     def selectItemsEDDOrder(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: selectItemsEDDOrder <<<")

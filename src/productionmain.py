@@ -309,7 +309,7 @@ class ShopFloorManager(OperationsManager):
      
         case = self.determineProgressCase(event)
 
-        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids:    
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())):    
             self.reportEvent(event,case,"Beginning")
       
         if case == "Handle":  
@@ -326,13 +326,15 @@ class ShopFloorManager(OperationsManager):
                     return ## >>>> R  E  T  U  R   N: non-preemtable event does not fit into current schedule!
      
         ######### MAKE NECESSARY DECISIONS  ########################################   
+        
         casesuccess,success_decisions = self.makeCaseDecisions(event,case,debugtimes,debugeventids)
   
         if not casesuccess: # backtrack the decisions
             if case == "Handle":
                 self.scheduleEvent(event,"Pending")
                
-            self.resetDecisions(event,success_decisions,debugtimes,debugeventids)            
+            self.resetDecisions(event,success_decisions,debugtimes,debugeventids)  
+            event.increaseDecisionWaitingTime()
             return  ## >>>> R  E  T  U  R   N: all required assignments could not be done!
     
         ##########################  H  A  N  D  L  E #########################
@@ -359,6 +361,7 @@ class ShopFloorManager(OperationsManager):
                 self.removeFromSchedule(event,"Pending")    
             else:
                 event.getLogisticalEvents().clear(); self.resetDecisions(event,success_decisions,debugtimes,debugeventids)
+                event.increaseDecisionWaitingTime()
                 self.scheduleEvent(event,"Pending");  return  ## >>>> R  E  T  U  R   N
         ##########################  H  A  N  D  L  E #########################
 
@@ -421,7 +424,7 @@ class ShopFloorManager(OperationsManager):
                     self.scheduleEvent(successor_event,successor_event.getProgressList()[-1][1][1])
         #################################### P  R  E  C  E  D  E  N  C  E ###############################
         
-        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or ((event.getID(),case) in eventdicases):
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or ((event.getID(),case) in eventdicases) or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())):
             self.reportEvent(event,case,"End")
             
 

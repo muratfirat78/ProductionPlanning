@@ -38,6 +38,12 @@ class Simulator(object):
         self.Controller = None
         self.RunErrors = 0
         self.Errors = []
+        self.displaymode = False
+        self.suspendmode = False
+        self.timeincrement = 540
+        self.timetostop = 0
+        self.displayevents = []
+   
 
         startday = startday+timedelta(hours= 24) # next day
 
@@ -47,6 +53,29 @@ class Simulator(object):
         self.setStartDay(startday) 
 
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
+
+    def getDisplayEvents(self):
+        return self.displayevents
+        
+    def setTimeIncrement(self,inc):
+        self.timeincrement = inc
+        return 
+    def getTimeIncrement(self):
+        return self.timeincrement
+
+    def setDisplayMode(self,dismode):
+        self.displaymode = dismode
+        return 
+
+    def isDisplayMode(self):
+        return self.displaymode
+
+    def setSuspendMode(self,dismode):
+        self.suspendmode = dismode
+        return 
+
+    def isSuspendMode(self):
+        return self.suspendmode
 
     def getErrors(self):
         return self.Errors 
@@ -163,6 +192,14 @@ class Simulator(object):
             self.getController().getVisualManager().updateSimProgress("------------ SIMULATION START --------------")
             start = timer()
             remaining_events = []
+
+
+         
+            
+            self.timetostop = self.getTime()+self.getTimeLimit()*int(not self.isSuspendMode())+self.getTimeIncrement()*int(self.isSuspendMode())
+
+            self.saveLog("REPORT: Suspend mode: "+str(self.isSuspendMode())+", Time-to-stop: "+str(self.timetostop))
+            
     
             # Main simulator time progress 
             while self.getTime() < self.getTimeLimit():
@@ -226,19 +263,25 @@ class Simulator(object):
 
                 try: 
 
-                  
-                    for event in self.getEventQueue()["Pending"]:
+
+                    pendingevents = [e for e in self.getEventQueue()["Pending"]]
+                    #pendingevents.sort(key=lambda x: x.getDecisionWaitingTime(), reverse=True)
+                    
+                    for event in pendingevents:
                         OperationsMgr.ProgressEvent(event)  
 
                     if self.getTime() in self.getEventQueue():
                         time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started event
+                       
                         execround = 1
                         
                         while len(time_events) > 0:
+                            #time_events.sort(key=lambda x: x.getDecisionWaitingTime(), reverse=True)
                             for event in time_events:
                                 OperationsMgr.ProgressEvent(event)
                             execround += 1
                             time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started events
+                            
                             if execround > 10:
                                 self.saveLog("REPORT: time "+str(self.getTime())+", time events "+str([e.getName()+"("+str(e.getID())+"), case: "+str(OperationsMgr.determineProgressCase(e)) for e in time_events]))
                              
@@ -253,77 +296,80 @@ class Simulator(object):
 
               
                 self.updateTime(1)
+                if self.timetostop <= self.getTime():
+                    break
 
          
-
-            self.getController().getVisualManager().updateSimProgress("------------ SIMULATION END --------------")
-
-
-
-
             totaldemand = 0
             incompletequantity = 0
 
-            for order in OperationsMgr.getSelectedOrders():
+            if self.getTime() == self.getTimeLimit():
 
-                totaldemand+=order.getQuantity()
-                
-                if order.getItems()[0].getActiveOperation() != None:
-                    incompletequantity+=order.getQuantity()
-                    #self.saveLog("REPORT: demand "+str(order.getFinalProduct().getPN())+", Q: "+str(order.getQuantity())+"["+(str(order.getItems()[0].getID()) if len(order.getItems())>0 else '')+"-"+(str(order.getItems()[-1].getID()) if len(order.getItems())>0 else 'no item')+"]"+" next opr: none?"+str(order.getItems()[0].getActiveOperation() == None))
+                self.getController().getVisualManager().updateSimProgress("------------ SIMULATION END --------------")
 
-            self.saveLog("REPORT: Returned items :"+str(len(OperationsMgr.getCentralInventory().getInputBuffer().getItems()))+", incomplete quantity: "+str(incompletequantity)+", sum "+str(len(OperationsMgr.getCentralInventory().getInputBuffer().getItems())+incompletequantity)+" <=> total demand: "+str(totaldemand))
-            
+                for order in OperationsMgr.getSelectedOrders():
+    
+                    totaldemand+=order.getQuantity()
                     
-
-            for schtime,events in self.getEventQueue().items():
-                if schtime == "Pending":
-                    for e in events:
-                        remaining_events.append(e)
-                    continue
-                if schtime >= int(self.getTimeLimit()-1):
-                    for e in events:
-                        remaining_events.append(e)
-                   
-
-            for res in OperationsMgr.getResources():    
-                if len(res.getItems()) > 0:
-                    self.saveLog("REPORT: "+str(res.getName())+" has "+str(len(res.getItems()))+ " items.")
-
-                if res.getType() == "Machine": 
-                    if len(res.getInputBuffer().getItems()) > 0:
-                        self.saveLog("REPORT: "+str(res.getInputBuffer().getName())+" has "+str(len(res.getInputBuffer().getItems()))+ " items. ["+(str(res.getInputBuffer().getItems()[0].getID())+"-"+str(res.getInputBuffer().getItems()[-1].getID()) if len(res.getInputBuffer().getItems())>0 else '')+"]")
-                    if len(res.getOutputBuffer().getItems()) > 0:
-                        self.saveLog("REPORT: "+str(res.getOutputBuffer().getName())+" has "+str(len(res.getOutputBuffer().getItems()))+ " items.["+(str(res.getOutputBuffer().getItems()[0].getID())+"-"+str(res.getOutputBuffer().getItems()[-1].getID()) if len(res.getOutputBuffer().getItems())>0 else '')+"]")
-
-                    
-           
-
-            if len(remaining_events) > 0:
-                self.saveLog("REPORT: In-complete events: "+str(len(remaining_events)))
-                #for event in remaining_events:
-                    #self.saveLog(" REPORT: >>>>>>>>>> event: "+str(event.getName())+"("+str(event.getID())+")"+", loc: "+(event.getLocation().getName() if event.getLocation()!=None else "No Location")+", prog: "+str(event.getTotalProgress())+"-> "+str(["["+str(pr[1][0])+"-"+str(pr[1][1])+"]" for pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+" items "+(str(len(event.getItems())) if len(event.getItems())>0 else "-")+" ["+(str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"], reserved: ["+(str(event.getReservedItems()[0].getID())+"-"+str(event.getReservedItems()[-1].getID()) if len(event.getReservedItems())>0 else '')+"]")
-
-                    #self.saveLog("REPORT:_____________________________________")
-            
-            end = timer()
-            
-            try:
-                self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
+                    if order.getItems()[0].getActiveOperation() != None:
+                        incompletequantity+=order.getQuantity()
+                        #self.saveLog("REPORT: demand "+str(order.getFinalProduct().getPN())+", Q: "+str(order.getQuantity())+"["+(str(order.getItems()[0].getID()) if len(order.getItems())>0 else '')+"-"+(str(order.getItems()[-1].getID()) if len(order.getItems())>0 else 'no item')+"]"+" next opr: none?"+str(order.getItems()[0].getActiveOperation() == None))
+    
+                self.saveLog("REPORT: Returned items :"+str(len(OperationsMgr.getCentralInventory().getInputBuffer().getItems()))+", incomplete quantity: "+str(incompletequantity)+", sum "+str(len(OperationsMgr.getCentralInventory().getInputBuffer().getItems())+incompletequantity)+" <=> total demand: "+str(totaldemand))
                 
-                self.getController().getVisualManager().updateSimProgress("Simulation errors: "+str(self.getNoErrors()))
-                for err in self.getErrors():
-                    self.getController().getVisualManager().updateSimProgress(err)
-            except Exception as e:
-                self.saveLog("ERROR in progress update: "+str(e))
-            start = timer()
-            self.getController().getVisualManager().updateSimProgress("Writing data")
-            OperationsMgr.writeDataTBRMOutPut("Simulation")
-            OperationsMgr.writeData()
-            #OperationsMgr.writeDataTBRMOutPut(1)
-            end = timer()
-            
-            self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
+                        
+    
+                for schtime,events in self.getEventQueue().items():
+                    if schtime == "Pending":
+                        for e in events:
+                            remaining_events.append(e)
+                        continue
+                    if schtime >= int(self.getTimeLimit()-1):
+                        for e in events:
+                            remaining_events.append(e)
+                       
+    
+                for res in OperationsMgr.getResources():    
+                    if len(res.getItems()) > 0:
+                        self.saveLog("REPORT: "+str(res.getName())+" has "+str(len(res.getItems()))+ " items.")
+    
+                    if res.getType() == "Machine": 
+                        if len(res.getInputBuffer().getItems()) > 0:
+                            self.saveLog("REPORT: "+str(res.getInputBuffer().getName())+" has "+str(len(res.getInputBuffer().getItems()))+ " items. ["+(str(res.getInputBuffer().getItems()[0].getID())+"-"+str(res.getInputBuffer().getItems()[-1].getID()) if len(res.getInputBuffer().getItems())>0 else '')+"]")
+                        if len(res.getOutputBuffer().getItems()) > 0:
+                            self.saveLog("REPORT: "+str(res.getOutputBuffer().getName())+" has "+str(len(res.getOutputBuffer().getItems()))+ " items.["+(str(res.getOutputBuffer().getItems()[0].getID())+"-"+str(res.getOutputBuffer().getItems()[-1].getID()) if len(res.getOutputBuffer().getItems())>0 else '')+"]")
+    
+                        
+               
+    
+                if len(remaining_events) > 0:
+                    self.saveLog("REPORT: In-complete events: "+str(len(remaining_events)))
+                    #for event in remaining_events:
+                        #self.saveLog(" REPORT: >>>>>>>>>> event: "+str(event.getName())+"("+str(event.getID())+")"+", loc: "+(event.getLocation().getName() if event.getLocation()!=None else "No Location")+", prog: "+str(event.getTotalProgress())+"-> "+str(["["+str(pr[1][0])+"-"+str(pr[1][1])+"]" for pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+" items "+(str(len(event.getItems())) if len(event.getItems())>0 else "-")+" ["+(str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"], reserved: ["+(str(event.getReservedItems()[0].getID())+"-"+str(event.getReservedItems()[-1].getID()) if len(event.getReservedItems())>0 else '')+"]")
+    
+                        #self.saveLog("REPORT:_____________________________________")
+                
+                end = timer()
+                
+                try:
+                    self.getController().getVisualManager().updateSimProgress("Simulation ended, run time "+str(round(end - start,2))+" seconds.")
+                    
+                    self.getController().getVisualManager().updateSimProgress("Simulation errors: "+str(self.getNoErrors()))
+                    for err in self.getErrors():
+                        self.getController().getVisualManager().updateSimProgress(err)
+                except Exception as e:
+                    self.saveLog("ERROR in progress update: "+str(e))
+                start = timer()
+                self.getController().getVisualManager().updateSimProgress("Writing data")
+                OperationsMgr.writeDataTBRMOutPut("Simulation")
+                OperationsMgr.writeData()
+                #OperationsMgr.writeDataTBRMOutPut(1)
+                end = timer()
+                
+                self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")
+
+            else:
+                self.saveLog("REPORT: ------------ SIMULATION SUSPENDED --------------")
 
         except Exception as e:
             self.saveLog("ERROR in sim run: "+str(e))

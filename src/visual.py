@@ -80,20 +80,91 @@ class VisualManager():
         self.ScheduleOutput = None
         self.KPIArea = None
         self.WeeksMenu = None
+        self.SuspendedEvents = dict()
+        self.SelectedEventsDict = dict()
 
         self.simbox = None
         self.selectdestinationalg = None
-        
-      
-
         
         self.MILPNoJobs = 20
 
         self.Machines = []
         self.DataSets = dict()
-
-
+        self.simdisplaycheck = None
+        self.simsuspendcheck = None
+        self.timestep = None
+        self.timeapply = None
+        self.EventIDs = None
         self.ResourceBox = None
+        self.EventsApply = None
+        self.selectevent = None
+        self.selectedevents = None
+
+
+    def setSelectedEvents(self,sl):
+        self.selectedevents = sl
+        return
+        
+    def getSelectedEvents(self):
+        return self.selectedevents
+        
+    def setSelectEvent(self,bt):
+        self.selectevent = bt
+        return
+
+    def getSelectEvent(self):
+        return self.selectevent
+        
+
+    def getSelectedEventsDict(self):
+        return self.SelectedEventsDict
+
+    def getSuspendedEvents(self):
+        return self.SuspendedEvents
+        
+    def setEventsApply(self,evid):
+        self.EventsApply = evid
+        return 
+
+    def getEventsApply(self):
+        return self.EventsApply 
+
+        
+
+    def setEventIDs(self,evid):
+        self.EventIDs = evid
+        return 
+
+    def getEventIDs(self):
+        return self.EventIDs 
+        
+
+    def setTimeApply(self,bt):
+        self.timeapply = bt
+        return
+
+    def getTimeApply(self):
+        return self.timeapply
+
+    def setSimDisplayCheck(self,chk):
+        self.simdisplaycheck = chk
+        return
+    def getSimDisplayCheck(self):
+        return self.simdisplaycheck
+
+    def setTimeStep(self,chk):
+        self.timestep = chk
+        return
+    def getTimeStep(self):
+        return self.timestep
+
+
+    def setSimSuspendCheck(self,chk):
+        self.simsuspendcheck = chk
+        return
+    def getSimSuspendCheck(self):
+        return self.simsuspendcheck
+    
 
     def setSimBox(self,bx):
         self.simbox = bx
@@ -466,19 +537,43 @@ class VisualManager():
 
 #############################################################################################################################################    
     def RunSim(self,event):
-        
-        self.runbutton.disabled = True
-        self.getController().getSimulator().RunSimulation(self.getController().getWorkManager())
 
-        self.demandorderlist.clear()
-   
-        self.demandorderlist = dict(
-           enumerate(
-              self.getController().getWorkManager().getProductionOrders().keys()
-           )
-        )
-      
-        self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
+
+        
+        self.runbutton.disabled = True #not self.getController().getSimulator().isDisplayMode()
+        
+        self.getController().getSimulator().RunSimulation(self.getController().getWorkManager())
+        
+
+        if self.getController().getSimulator().getTime() == self.getController().getSimulator().getTimeLimit():
+
+            self.demandorderlist.clear()
+            self.demandorderlist = dict(enumerate(self.getController().getWorkManager().getProductionOrders().keys()))
+          
+            self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
+        else:
+            self.getController().getSimulator().saveLog("REPORT: suspend mode: "+str(self.getController().getSimulator().isSuspendMode())) 
+            if self.getController().getSimulator().isSuspendMode():
+
+                self.getSuspendedEvents().clear()
+                self.getSelectedEventsDict().clear()
+              
+                for e in self.getController().getSimulator().getEventQueue()["Pending"]:
+                    self.getSuspendedEvents()[e.getName()+"("+str(e.getID())+") - "+"[Pending]"] = e
+
+                for schtime,events in self.getController().getSimulator().getEventQueue().items():
+                    if schtime == "Pending": 
+                        continue
+                    if schtime < self.getController().getSimulator().getTime():
+                        continue
+                    else:
+                        for e in events:
+                            self.getSuspendedEvents()[e.getName()+"("+str(e.getID())+") - "+"["+str(schtime)+"]"] = e
+                self.getEventIDs().options = [evstr for evstr,e in self.getSuspendedEvents().items()]
+                    
+                self.runbutton.description = "Run Simulation ("+str(self.getController().getSimulator().getTime())+")"
+                self.runbutton.disabled = False 
+
         return 
 #############################################################################################################################################    
     
@@ -877,6 +972,44 @@ class VisualManager():
 
         return 
 
+    def setSuspendMode(self,event):
+
+        self.getController().getSimulator().setSuspendMode(self.getSimSuspendCheck().value)
+
+        return 
+    def setDisplayMode(self,event):
+
+        self.getController().getSimulator().setDisplayMode(self.getSimDisplayCheck().value)
+
+        return 
+
+    def setSimTimeStep(self,event):
+
+        try: 
+            self.getController().getSimulator().setTimeIncrement(int(self.getTimeStep().value))
+        except: 
+            self.getController().getSimulator().saveLog("REPORT: time step is not proper integer!")  
+
+        return 
+
+    def addDebugEvent(self,event):
+
+        selectedeventstr = self.getEventIDs().value
+
+        if not selectedeventstr in self.getSelectedEventsDict():
+            self.getSelectedEventsDict()[selectedeventstr] = self.getSuspendedEvents()[selectedeventstr]
+
+            self.getController().getSimulator().getDisplayEvents().clear()
+
+            for evstr,ev in self.getSelectedEventsDict().items():
+                self.getController().getSimulator().getDisplayEvents().append(ev)
+
+            self.getSelectedEvents().options = [ evstr for evstr,ev in self.getSelectedEventsDict().items()]
+            
+
+
+        return 
+
     def removeAlternative(self,event):
 
         altname = self.getResAlternatives().value
@@ -1138,7 +1271,24 @@ class VisualManager():
         selectdesttitle = widgets.Label(value="Select Destination:") 
         self.getSelectDestinationAlg().observe(self.applySelectDestination,'value')
 
-        simbox = VBox(children=[HBox(children=[VBox(children=[selectdesttitle,self.getSelectDestinationAlg()])])])
+      
+        self.setSimSuspendCheck(widgets.Checkbox(value=False,description='Suspend Mode',disabled=False,indent=False))
+        self.setSimDisplayCheck(widgets.Checkbox(value=False,description='Display Mode',disabled=False,indent=False))
+        self.setTimeStep(widgets.Text(description ='Timestep: ',value=''))
+        self.setTimeApply(widgets.Button(description="Apply Timestep"))
+        self.setEventIDs(widgets.Select(options=[],description='Events:',disabled=False))
+        self.setSelectEvent(widgets.Button(description=">> Debug >>"))
+        self.setSelectedEvents(widgets.Select(options=[],description='',disabled=False))
+        self.getSelectEvent().on_click(self.addDebugEvent)
+      
+        
+
+        
+        self.getSimSuspendCheck().observe(self.setSuspendMode,'value')
+        self.getSimDisplayCheck().observe(self.setDisplayMode,'value')
+        self.getTimeApply().on_click(self.setSimTimeStep)
+
+        simbox = VBox(children=[HBox(children=[VBox(children=[selectdesttitle,self.getSelectDestinationAlg(),self.getSimSuspendCheck(),self.getSimDisplayCheck(),HBox(children=[self.getTimeStep(),self.getTimeApply()]),HBox(children=[self.getEventIDs(),self.getSelectEvent(),self.getSelectedEvents()])])])])
 
         self.setSimBox(simbox)
      
