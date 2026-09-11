@@ -5,6 +5,7 @@ from productionalgs import *
 from productionChecker import *
 from datetime import timedelta,date,datetime
 import numpy as np
+from os import walk
 
 class ProductionDataManager(DataManager): 
     def __init__(self,sim,workmgr):
@@ -329,6 +330,79 @@ class ProductionDataManager(DataManager):
         log_df.to_csv("data/logs/LogData.csv",index = False)
 
         return 
+
+    def checkUseCases(self):
+
+        self.getOperationsManager().getSimulator().saveLog("REPORT: check use cases: ")
+
+        try: 
+            for root, dirs, files in os.walk(os.getcwd()):
+                for name in files:
+                    if name.find("_EventTypes") > -1:
+                        usecasename = name[:len("_EventTypes")-1]
+                        self.getOperationsManager().getSimulator().saveLog("REPORT: use case detected: "+str(usecasename))
+                        self.getOperationsManager().getSimulator().getUseCases().append(usecasename)
+                    self.getOperationsManager().getSimulator().saveLog("REPORT: file: "+str(name))
+
+        except Exception as e:
+            self.getSimulator().saveLog("ERROR: in checking use cases "+str(e))    
+
+        return 
+
+    def ReadUseCase(self,usecase):
+
+        try: 
+            for root, dirs, files in os.walk(os.getcwd()):
+                for name in files:
+                    if name.find(usecase+"_EventTypes.csv") > -1:
+            
+                        events_df = pd.read_csv(os.path.join(usecase+"_EventTypes.csv"))
+
+                        for i,r in events_df.iterrows():
+                            eventtype = SimEvent(self.getOperationsManager().getSimulator(),r['Name'],r['Type'],r["ResourceType"],r["EquipmentType"],bool(r["Preemptable"]))
+                            self.getOperationsManager().getEventTypes()[eventtype.getName()]= eventtype
+                            self.getOperationsManager().getSimulator().saveLog("REPORT: eventtype defined: "+str(eventtype.getName()))
+
+                        decisions_df = pd.read_csv(os.path.join(usecase+"_Decisions.csv"))
+
+                        for eventtypename,eventtype in self.getOperationsManager().getEventTypes():
+                            event_df = decisions_df[decisions_df["EventType"] == eventtypename]
+                            if not (eventtypename in self.getOperationsManager().getAlgorithmSetting()):
+                                self.getOperationsManager().getAlgorithmSetting()[eventtypename] = dict()
+                            for i,r in event_df.iterrows():
+                                if not r['Case'] in eventtype.getDecisionsDict():
+                                    eventtype.getDecisionsDict()[r['Case']] = []
+                                self.getOperationsManager().getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+" decision "+r['DecisionType']+" defined")
+                                eventtype.getDecisionsDict()[r['Case']].append(r['DecisionType'])
+                                self.getOperationsManager().getAlgorithmSetting()[eventtypename][r['DecisionType']]= r['DecisionAlgorithm']
+
+                                
+                                
+                            
+                        
+                
+            
+        
+
+
+        except Exception as e:
+            self.getSimulator().saveLog("ERROR: in reading use cases "+str(e))  
+       
+
+
+        return
+
+    def ReadSimulationEventData(self,schedule):
+
+        inputdate =  schedule.getDataExportDate().date()
+        consdate =  schedule.getConstuctionDate().date()
+  
+        data_df = pd.read_csv(os.path.join("..", "data", "simulation", str(inputdate)+"_EventExecutionData_"+str(consdate)+".csv"))
+
+
+
+
+        return data_df
 
  
 

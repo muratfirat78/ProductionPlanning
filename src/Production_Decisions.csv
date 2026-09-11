@@ -1,0 +1,12 @@
+EventType,Case,DecisionOrder,DecisionType,DecisionAlgorithm
+Trailer Loading,Handle,1,Assign Resource,Straight Available
+Trailer Loading,Handle,2,Assign Equipment,Straight Available
+Trailer Loading,Handle,3,Select Items,EDDOrder
+Trailer Transport,,,Select Destination,MostDemanded
+Trailer Unloading,Start,1,Select Items,UnloadFeasible
+Machine Setup,Handle,1,Assign Processor,Straight Available
+Machine Setup,Handle,2,Assign Resource,Straight Available
+Machine Setup,Handle,3,Select Items,EDDOrder
+Machine Loading,Handle,1,Assign Resource,Straight Available
+Machine Processing,Handle,1,Assign Processor,Straight Available
+Machine Unloading,Handle,1,Assign Resource,Straight Available

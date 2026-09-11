@@ -39,8 +39,7 @@ class ShopFloorManager(OperationsManager):
        
         # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
-
-        
+   
         # Trailer Loading -> Trailer Transport -> Trailer Unloading
         TrailerLoading = SimEvent(self.getSimulator(),"Trailer Loading","Loading","Operator","Trailer",False)
         TrailerLoading.getDecisionsDict()['Handle'] = ['Assign Resource','Assign Equipment','Select Items']
@@ -947,7 +946,9 @@ class ShopFloorManager(OperationsManager):
         if self.inputdate !=None:
             inputdate = str(self.inputdate.date())
 
-        event_df.to_csv(os.path.join("..", "data", "simulation", "EventExecutionData.csv"), index=False)
+        consdate = (datetime.now()).date()
+
+        event_df.to_csv(os.path.join("..", "data", "simulation", str(inputdate)+"_EventExecutionData_"+str(consdate)+".csv"), index=False)
 
 
         location_df = pd.DataFrame(columns=["EntityName","EntityID","Time","LocationName","LocationID"])

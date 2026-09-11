@@ -100,6 +100,67 @@ class VisualManager():
         self.selectevent = None
         self.selectedevents = None
 
+        self.UseCaseMenu = None
+        self.EventTypes = None
+        self.EventCases = None
+        self.CaseDecisions = None
+        self.DecisionAlgs = None
+        self.UseCaseBox = None
+        self.ResourceMenu = None
+
+
+    def setResourceMenu(self,fg):
+        self.ResourceMenu =  fg
+        return
+    def getResourceMenu(self):
+        return self.ResourceMenu 
+
+
+    def setUseCaseMenu(self,df):
+        self.UseCaseMenu = df
+        return
+        
+    def setEventTypes(self,df):
+        self.EventTypes = df
+        return
+
+    def setEventCases(self,df):
+        self.EventCases = df
+        return
+        
+    def setCaseDecisions(self,df):
+        self.CaseDecisions = df
+        return
+    def setDecisionAlgs(self,df):
+        self.DecisionAlgs = df
+        return
+       
+    def setUseCaseBox(self,df):
+        self.UseCaseBox = df
+        return
+
+
+    def getUseCaseMenu(self):
+        return self.UseCaseMenu
+        
+        
+    def getEventTypes(self):
+        return self.EventTypes
+        
+
+    def getEventCases(self):
+        return self.EventCases
+        
+    def getCaseDecisions(self):
+        return self.CaseDecisions
+
+    def getDecisionAlgs(self):
+        return self.DecisionAlgs
+       
+    def getUseCaseBox(self):
+        return self.UseCaseBox
+        
+
 
     def setSelectedEvents(self,sl):
         self.selectedevents = sl
@@ -701,13 +762,13 @@ class VisualManager():
 
                 self.getWeeksMenu().options = [str(d.date()) for d in self.getSelectedSchedule().getMyDays()]
                 
-                #self.showMILPSchedule(self.getSelectedSchedule().getMinDate(),self.getSelectedSchedule().getMinDate()+timedelta(days =5))
+                #self.showMachineSchedule(self.getSelectedSchedule().getMinDate(),self.getSelectedSchedule().getMinDate()+timedelta(days =5))
                   
 
         return 
 
 ####################################################################################################################################   
-    def showMILPSchedule(self,mindate,maxdate):
+    def showMachineSchedule(self,mindate,maxdate):
         try: 
 
             pncolors = dict() 
@@ -826,6 +887,21 @@ class VisualManager():
 
 
         return 
+    def showOperatorSchedule(self,scheduleday):
+
+        # event_file name: inputdata_eventexecutiondata_consdate 
+        try: 
+
+            simevent_df = self.getController().getWorkManager().getDataManager().ReadSimulationEventData(self.getSelectedSchedule())
+            self.getController().getSimulator().saveLog("REPORT: sim event data size: "+str(len(simevent_df))) 
+            
+            with self.getScheduleOutput():
+                clear_output()
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in showing operator schedule "+str(e))
+
+
+        return 
 ##################################################################################################################################################
     def ViewMILPResults(self,event):
 
@@ -859,7 +935,7 @@ class VisualManager():
                              
 
             self.getmilpdetails().options = [x for x in OrdList]
-            #self.showMILPSchedule()
+            #self.showMachineSchedule()
                               
         return 
 
@@ -1078,7 +1154,7 @@ class VisualManager():
         self.getController().getSimulator().saveLog("REPORT: weekfirstday "+str(weekfirstday)+" lastday "+str(lastday))         
 
 
-        self.showMILPSchedule(weekfirstday,lastday)
+        self.showMachineSchedule(weekfirstday,lastday)
 
         #self.showSchedule(weekfirstday,lastday)
 
@@ -1105,18 +1181,29 @@ class VisualManager():
 
         daydatetime = pd.to_datetime(showday, format='%Y-%m-%d')
   
-       
-
         #self.getController().getSimulator().saveLog("REPORT: weekfirstday "+str(weekfirstday)+" lastday "+str(lastday))         
 
 
-        self.showMILPSchedule(daydatetime,daydatetime)
+        if self.getResourceMenu().value == "Machines":
+            self.showMachineSchedule(daydatetime,daydatetime)
+        if self.getResourceMenu().value == "Operators":
+            if self.getSelectedSchedule().getAlgorithmName() == "Simulation":
+                self.showOperatorSchedule(daydatetime)
+                self.getController().getSimulator().saveLog("REPORT: Operator schedules should be shown")
+            else:
+                self.getController().getSimulator().saveLog("REPORT: Algortihm "+str(self.getSelectedSchedule().getAlgorithmName())+" doesn ot have operator schedule.")
+            
 
         #self.showSchedule(weekfirstday,lastday)
 
         return
 
+    def resetSchedule(self,event):
 
+        with self.getScheduleOutput():
+            clear_output()
+
+        return
 
     
     def saveResources(self,event):
@@ -1157,6 +1244,11 @@ class VisualManager():
 
         self.getController().getMILPManager().constructSchedule()
         
+        return 
+
+    def applyUseCase(self,event):
+
+
         return 
 
     def GenerateMainTab(self):
@@ -1207,7 +1299,7 @@ class VisualManager():
 
      
         # Single Select
-        select = widgets.Select(options=['Orders','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
+        select = widgets.Select(options=['Use Cases','Orders','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
                                          #'Define Event Type','Event Type Precedence'
                                          ,'Schedules'],value='Resources',description='Select:',disabled=False)
 
@@ -1292,25 +1384,28 @@ class VisualManager():
         simbox = VBox(children=[HBox(children=[VBox(children=[selectdesttitle,self.getSelectDestinationAlg(),self.getSimSuspendCheck(),self.getSimDisplayCheck(),HBox(children=[self.getTimeStep(),self.getTimeApply()]),HBox(children=[self.getEventIDs(),self.getSelectEvent(),self.getSelectedEvents()])])])])
 
         self.setSimBox(simbox)
+
+
+        self.getController().getWorkManager().getDataManager().checkUseCases()
+
+
+        self.setUseCaseMenu(widgets.Dropdown(options =[x for x in self.getController().getWorkManager().getSimulator().getUseCases()],description = 'Use Cases'))
+
+        self.getUseCaseMenu().observe(self.applyUseCase,'value')
+
+        eventtypetitle = widgets.Label(value="Event Types:") 
+        self.setEventTypes(widgets.Select(options=[],description='',disabled=False))
+        self.setEventCases(widgets.Select(options=[],description='',disabled=False))
+        self.setCaseDecisions(widgets.Select(options=[],description='',disabled=False))
+        self.setDecisionAlgs(widgets.Select(options=[],description='',disabled=False))
+       
+      
+
+        casebox = VBox(children=[self.getUseCaseMenu(),eventtypetitle,HBox(children=[self.getEventTypes(),self.getEventCases(),self.getCaseDecisions(),self.getDecisionAlgs()])])
+
+        self.setUseCaseBox(casebox)
      
         
-
-        # event type box
-        eventtypename = widgets.Text(description ='Name: ',value='')
-        eventtyperes = widgets.Text(description ='Resource: ',value='')
-        eventtypeequip = widgets.Text(description ='Equipment: ',value='')
-
-        
-        eventtypestatic = widgets.RadioButtons(options=['Yes', 'No'],description='Static:',disabled=False)
-        eventtypeload = widgets.RadioButtons(options=['Yes', 'No'],description='Loading:',disabled=False)
-        eventtypeproc= widgets.RadioButtons(options=['Yes', 'No'],description='Process:',disabled=False)
-
-        eventtypebutton = widgets.Button(description="Save") 
-
-        eventtypebox = VBox(children=[eventtypename,eventtyperes,eventtypeequip,HBox(children = [eventtypestatic,eventtypeload,eventtypeproc]),eventtypebutton])
-
-        self.setEventTypeBox(eventtypebox)
-        self.getEventTypeBox().layout.width = '50%'
 
         self.setShowLogButton(widgets.Button(description="Show Log Information") )
         self.getShowLogButton().on_click(self.ShowLog)
@@ -1342,6 +1437,10 @@ class VisualManager():
         self.setWeeksMenu(widgets.Dropdown(options = [],description = 'Day:'))
         self.getWeeksMenu().observe(self.showDaySchedule,'value')
 
+        self.setResourceMenu(widgets.Dropdown(options = ["Machines","Operators"],description = 'Resource:'))
+        self.getResourceMenu().observe(self.resetSchedule,'value')
+
+
 
         self.getKPIArea().layout.width = '400px'
         self.getKPIArea().layout.height = '100px'
@@ -1352,7 +1451,7 @@ class VisualManager():
         self.setScheduleOutput(widgets.Output())
         self.getScheduleOutput().layout.height = '2000px'
 
-        resultbox = VBox(children=[HBox(children=[self.getResultText(),self.getKPIArea()]),self.getWeeksMenu(),self.getScheduleOutput()])
+        resultbox = VBox(children=[HBox(children=[self.getResultText(),self.getKPIArea()]),HBox(children=[self.getWeeksMenu(),self.getResourceMenu()]),self.getScheduleOutput()])
         
         self.setResultBox(resultbox)
 
@@ -1378,7 +1477,7 @@ class VisualManager():
         self.setTitle(widgets.Label(value='TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())))
 
         self.getAllBoxes().append(self.getMainBox())
-        self.getAllBoxes().append(self.getEventTypeBox())
+        self.getAllBoxes().append(self.getUseCaseBox())
         self.getAllBoxes().append(self.getRunBox())
         self.getAllBoxes().append(self.getOrderBox())
         self.getAllBoxes().append(self.getLogBox())
@@ -1389,6 +1488,7 @@ class VisualManager():
         
 
 
+        self.BoxMatches['Use Cases'] =  self.getUseCaseBox()
         self.BoxMatches['Simulation Run'] =  self.getRunBox()
         self.BoxMatches['Orders'] =  self.getOrderBox()
         self.BoxMatches['Resources'] =  self.getMainBox()
@@ -1406,7 +1506,7 @@ class VisualManager():
 
         tab = VBox(children = [
                               self.getTitle(),
-                               HBox(children = [self.getMainmenu(),self.getMainBox(),self.getEventTypeBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox(), self.getSimBox()])]
+                               HBox(children = [self.getMainmenu(),self.getMainBox(),self.getUseCaseBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox(), self.getSimBox()])]
                   )    
         return tab 
 

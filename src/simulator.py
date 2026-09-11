@@ -43,6 +43,7 @@ class Simulator(object):
         self.timeincrement = 540
         self.timetostop = 0
         self.displayevents = []
+        self.usecases = []
    
 
         startday = startday+timedelta(hours= 24) # next day
@@ -53,6 +54,9 @@ class Simulator(object):
         self.setStartDay(startday) 
 
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
+
+    def getUseCases(self):
+        return self.usecases\
 
     def getDisplayEvents(self):
         return self.displayevents
