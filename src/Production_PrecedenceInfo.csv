@@ -1,0 +1,31 @@
+Predecessor,Successor,PrecedenceInfo
+Trailer Loading,Trailer Transport,FromLocation
+Trailer Loading,Trailer Transport,Equipment
+Trailer Loading,Trailer Transport,Resource
+Trailer Loading,Trailer Transport,Items
+Trailer Transport,Trailer Unloading,Equipment->FromLocation
+Trailer Transport,Trailer Unloading,ToLocation
+Trailer Transport,Trailer Unloading,Equipment
+Trailer Transport,Trailer Unloading,Resource
+Machine Setup,Machine Loading,EquipmentInput->FromLocation
+Machine Setup,Machine Loading,Equipment->ToLocation
+Machine Setup,Machine Loading,Equipment
+Machine Setup,Machine Loading,Item Reservation
+Machine Setup,Machine Loading,Items
+Machine Setup,Machine Loading,Processor
+Machine Loading,Machine Processing,Equipment->Resource
+Machine Loading,Machine Processing,Equipment
+Machine Loading,Machine Processing,Items
+Machine Loading,Machine Processing,Processor
+Machine Processing,Machine Unloading,Equipment->FromLocation
+Machine Processing,Machine Unloading,EquipmentOutput->ToLocation
+Machine Processing,Machine Unloading,Equipment
+Machine Processing,Machine Unloading,Items
+Machine Processing,Machine Unloading,Processor
+
+
+
+
+
+
+

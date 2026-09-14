@@ -4,6 +4,8 @@ Trailer Loading,Handle,2,Assign Equipment,Straight Available
 Trailer Loading,Handle,3,Select Items,EDDOrder
 Trailer Transport,,,Select Destination,MostDemanded
 Trailer Unloading,Start,1,Select Items,UnloadFeasible
+Trailer Unloading,,,Assign Resource,Straight Available
+Trailer Unloading,,,Select Destination,MostDemanded
 Machine Setup,Handle,1,Assign Processor,Straight Available
 Machine Setup,Handle,2,Assign Resource,Straight Available
 Machine Setup,Handle,3,Select Items,EDDOrder

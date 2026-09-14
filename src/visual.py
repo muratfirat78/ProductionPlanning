@@ -2,7 +2,6 @@
 from IPython.display import clear_output
 from IPython import display
 from ipywidgets import *
-from ipytree import Tree, Node
 from datetime import timedelta,date,datetime
 import matplotlib.pyplot as plt
 import warnings
@@ -1387,9 +1386,9 @@ class VisualManager():
 
 
         self.getController().getWorkManager().getDataManager().checkUseCases()
-
-
         self.setUseCaseMenu(widgets.Dropdown(options =[x for x in self.getController().getWorkManager().getSimulator().getUseCases()],description = 'Use Cases'))
+
+        #self.getController().getWorkManager().getDataManager().ApplyUseCase(self.getUseCaseMenu().value)
 
         self.getUseCaseMenu().observe(self.applyUseCase,'value')
 

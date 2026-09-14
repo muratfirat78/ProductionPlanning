@@ -7,4 +7,4 @@ Machine Loading,Loading,Operator,Machine,True,Machine Setup,Machine Processing
 Machine Processing,Processing,,Machine,True,Machine Loading,Machine Unloading
 Machine Unloading,Unloading,Operator,Machine,True,Machine Processing,
 Operator Move,Logistical,Operator,,False,,
-Bring Equipment,Logistical,Operator,,False,,
+Bring Equipment,Logistical,Operator,Trailer,False,,

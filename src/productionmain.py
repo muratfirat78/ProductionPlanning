@@ -39,6 +39,8 @@ class ShopFloorManager(OperationsManager):
        
         # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
+
+        #self.DataManager.ApplyUseCase("Production")
    
         # Trailer Loading -> Trailer Transport -> Trailer Unloading
         TrailerLoading = SimEvent(self.getSimulator(),"Trailer Loading","Loading","Operator","Trailer",False)
@@ -59,7 +61,8 @@ class ShopFloorManager(OperationsManager):
         TrailerTransport.getPrecendenceDict()[TrailerUnloading.getName()] = ['Equipment->FromLocation','ToLocation','Equipment','Resource']
   
         TrailerUnloading.getDecisionsDict()['Start'] = ['Select Items']
-        self.getAlgorithmSetting()[TrailerUnloading.getName()] = {"Select Items":'UnloadFeasible','Assign Resource':"Straight Available","Select Destination":'MostDemanded' }  
+        #self.getAlgorithmSetting()[TrailerUnloading.getName()] = {"Select Items":'UnloadFeasible','Assign Resource':"Straight Available","Select Destination":'MostDemanded' }  
+        self.getAlgorithmSetting()[TrailerUnloading.getName()] = {"Select Items":'UnloadFeasible'}  
         self.getEventTypes()[TrailerUnloading.getName()]= TrailerUnloading
 
 
@@ -94,15 +97,15 @@ class ShopFloorManager(OperationsManager):
         self.getAlgorithmSetting()[MachineUnloading.getName()] = {'Assign Resource':"Straight Available"}
         self.getEventTypes()[MachineUnloading.getName()]= MachineUnloading
         #-------------------------------------------
-
+        
         
         SimOperatorMove = SimEvent(self.getSimulator(),"Operator Move","Logistical","Operator",None,False) 
         self.getEventTypes()[SimOperatorMove.getName()]= SimOperatorMove
 
         SimBringEquipment = SimEvent(self.getSimulator(),"Bring Equipment","Logistical","Operator","Trailer",False) 
         self.getEventTypes()[SimBringEquipment.getName()]= SimBringEquipment
-
-    
+        
+        
 
         self.DataManager.getObjectFeatures()["ProductionOrder"] = [("FinalProduct","Product")]
         self.DataManager.getObjectFeatures()["ProductionOrder"].append(("FinalProductID","Product/ID"))

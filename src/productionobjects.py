@@ -7,7 +7,7 @@ from productionChecker import *
 class Inventory(Resource):
     
     def __init__(self,mycap,myloc,sim,workmngr):
-        super().__init__("Central_Inventory","Inventory",mycap,sim,workmngr,None)
+        super().__init__("Central_Inventory",workmngr.giveResouceID(),"Inventory",mycap,sim,workmngr,None)
         self.InputBuffer = Buffer("Input",None,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",None,1000000,sim,workmngr)
         self.setLocation(myloc)
@@ -24,7 +24,7 @@ class Inventory(Resource):
 class Buffer(Resource):
     def __init__(self,buftype,mach,mycap,sim,workmngr):
        
-        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,"Buffer",mycap,sim,workmngr,None)
+        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,workmngr.giveResouceID(),"Buffer",mycap,sim,workmngr,None)
         self.BufferType = buftype
         self.machine = mach
 
@@ -292,8 +292,8 @@ class Schedule(object):
 #_______________________________________________________________________  
 class Machine(Resource):
     
-    def __init__(self,machcode,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
-        super().__init__(myname,"Machine",mycap,sim,workmngr,OprtingShifts)
+    def __init__(self,machcode,myid,nrprocessors,myloc,myname,OprtingShifts,processtype,automated,mycap,Alternatives,Setup,OprtingEffort,sim,workmngr):
+        super().__init__(myname,myid,"Machine",mycap,sim,workmngr,OprtingShifts)
         self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
         self.setLocation(myloc)
@@ -418,7 +418,7 @@ class Machine(Resource):
 class Operator(Resource):
     
     def __init__(self,myname,avshifts,mycap,sim,workmngr):
-        super().__init__(myname,"Operator",mycap,sim,workmngr,avshifts)
+        super().__init__(myname,workmngr.giveResouceID(),"Operator",mycap,sim,workmngr,avshifts)
         
      
     def checkShiftChange(self,shift):
@@ -432,7 +432,7 @@ class Operator(Resource):
 #_________________________________________________________________________________________
 class Trailer(Resource):
     def __init__(self,mycap,sim,workmngr):
-        super().__init__(None,"Trailer",mycap,sim,workmngr,None)  
+        super().__init__(None,workmngr.giveResouceID(),"Trailer",mycap,sim,workmngr,None)  
         self.location = None
         self.outputbuffers = []  
         self.destination = None

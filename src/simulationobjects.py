@@ -411,7 +411,7 @@ class ExecEvent(object):
 
 ##################################################################################################################################    
 class Resource(object):
-    def __init__(self,myname,mytype,mycap,sim,workmgr,avshifts):
+    def __init__(self,myname,myid,mytype,mycap,sim,workmgr,avshifts):
         self.Simulator = sim
         self.WorkMgr = workmgr
         self.Type = mytype
@@ -423,7 +423,7 @@ class Resource(object):
         self.Idle = False # changes with event executions
         self.MyEvents = []
         self.AssignedEvents = []
-        self.ID = workmgr.giveResouceID()
+        self.ID = myid
         if myname == None: 
             self.Name = mytype+"_"+str(self.ID)
         else:
