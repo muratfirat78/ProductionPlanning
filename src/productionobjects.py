@@ -92,6 +92,8 @@ class Schedule(object):
         self.ConstuctionDate = constructiondate
         self.AlgorithmName = algname
         self.DataFrame = data_df
+
+        workmgr.getSimulator().saveLog("REPORT: Constructing schedule: "+str(algname)+", cons date"+str(constructiondate))
        
         if "Work Orders/Start" in self.DataFrame.columns: 
             workmgr.getSimulator().saveLog("REPORT: Work Orders/Start column made datetime ")
@@ -142,6 +144,10 @@ class Schedule(object):
             demands_df = self.DataFrame.groupby(["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference"])[['Work Orders/Work Center','Work Orders/Work Center/ID','Processing Machine','Work Orders/Operation','Operation Order','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status']].agg(lambda x:list(x)).reset_index()
     
 
+            workmgr.getSimulator().saveLog("REPORT:  main df size: "+str(len(self.DataFrame)))
+
+            workmgr.getSimulator().saveLog("REPORT:  demands df size: "+str(len(demands_df)))
+
             
             for i,r in demands_df.iterrows():
             
@@ -175,7 +181,7 @@ class Schedule(object):
                         self.KPIDict["Completion"][r['ID']] =  False
  
                 else:
-                    workmgr.getSimulator().saveLog("ERROR: demand not found for ID "+str(r['ID']))
+                    workmgr.getSimulator().saveLog("ERROR: demand not found for ID "+str(r['ID'])+", in main dF?: "+str(r['ID'] in self.DataFrame["ID"])+", in orginial? "+str(r['ID'] in demands_df["ID"]))
 
 
          
@@ -434,11 +440,8 @@ class Trailer(Resource):
     def __init__(self,mycap,sim,workmngr):
         super().__init__(None,workmngr.giveResouceID(),"Trailer",mycap,sim,workmngr,None)  
         self.location = None
-        self.outputbuffers = []  
         self.destination = None
     
-    def getOutputbuffers(self):
-        return self.outputbuffers
     
     def setDestination(self,mydest):
         self.destination = mydest

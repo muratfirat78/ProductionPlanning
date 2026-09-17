@@ -1,0 +1,19 @@
+ResourceType,Name,ID,ProcessType,Automated,Alternatives,SetupTime,OperatingEffort,AvailableShifts
+Forklift,Forklift 1,1,Demand Arrival,,,,,1
+Forklift,Forklift 2,2,Demand Arrival,,,,,1
+Forklift,Forklift 3,3,Demand Arrival,,,,,2
+Forklift,Forklift 4,4,Demand Arrival,,,,,2
+Forklift,Forklift 5,5,Demand Arrival,,,,,3
+PalletJack,PalletJack 1,6,Demand Presorting,,,,,1_2_3
+PalletJack,PalletJack 2,7,Demand Presorting,,,,,1_2_3
+Operator,Operator 1,8,Demand Arrival,,,,,1
+Operator,Operator 2,9,Demand Arrival,,,,,1
+Operator,Operator 3,10,Demand Arrival,,,,,2
+Operator,Operator 4,11,Demand Arrival,,,,,2
+Operator,Operator 5,12,Demand Arrival,,,,,3
+Operator,Operator 6,13,Demand Presorting,,,,,1
+Operator,Operator 7,14,Demand Presorting,,,,,2
+Machine,Sorting_(EX1),15,Demand Sorting,False,,60,0.1,1_2
+Machine,Sorting_(EX2),16,Demand Sorting,False,,60,0.1,1_2
+
+

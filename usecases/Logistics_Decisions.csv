@@ -1,0 +1,6 @@
+EventType,Case,DecisionOrder,DecisionType,DecisionAlgorithm
+Forklift Loading,Handle,1,Assign Resource,Straight Available
+Forklift Loading,Handle,2,Assign Equipment,Straight Available
+Forklift Loading,Handle,3,Select Container,EDDOrder
+Forklift Transport,,,Select Destination,FirstFeasible
+

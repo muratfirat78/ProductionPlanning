@@ -23,14 +23,21 @@ class ProductionDataManager(DataManager):
 ###########################################################################################
     
     def ReadResources(self):
-     
+
+       
+        self.getOperationsManager().getSimulator().saveLog("REPORT: "+str(os.path.dirname(os.path.realpath(__file__))))
+
+        self.getOperationsManager().getSimulator().saveLog("REPORT: "+str(self.getOperationsManager().getSimulator().getController().getUseCase()))
+
+        usecase = self.getOperationsManager().getSimulator().getController().getUseCase()
+        simulator = self.getOperationsManager().getSimulator() 
+        
         abs_file_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
-            self.getOperationsManager().getUseCase()
+            usecase
         )
 
 
-        
         self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
         latestfiledate = None
@@ -121,9 +128,12 @@ class ProductionDataManager(DataManager):
         
 #####################################################################################################################################
     def ReadDemandFile(self):
+
+        usecase = self.getOperationsManager().getSimulator().getController().getUseCase()
+        
         abs_file_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
-            self.getOperationsManager().getUseCase()
+            usecase
         )
         
         self.getOperationsManager().getSimulator().saveLog(abs_file_path)
@@ -230,9 +240,7 @@ class ProductionDataManager(DataManager):
 
                         oprduration = max(r['Work Orders/Expected Duration'][oprid],1)
                         myopr = Operation(prodorder,(opr if not pd.isna(opr) else "Unknown"),self.getOperationsManager().giveProcessID(),oprduration,None,oprid) 
-                        if myopr.getName() == "UMC750-1":
-                            self.getOperationsManager().getSimulator().saveLog("REPORT: Data check, Operation "+myopr.getName()+", "+str(opr)+" -- "+str(r['Work Orders/Operation'][oprid]))
-                            
+
                         oprmachs = [m for m in machines if m.getID() ==  r['Work Orders/Work Center/ID'][oprid] ]
                         myopr.setReferenceName(r['Work Orders/Operation'][oprid])
     
@@ -289,7 +297,7 @@ class ProductionDataManager(DataManager):
                     self.getOperationsManager().getSimulator().saveLog("ERROR: In creating operations"+str(e))
 
                 
-            self.getOperationsManager().getSimulator().saveLog("Size of input file: "+str(len(TBRM_df)))
+            self.getOperationsManager().getSimulator().saveLog("REPORT: Size of input file: "+str(len(TBRM_df)))
   
         return latestfiledate
 ########################################################################################################################################
@@ -334,88 +342,9 @@ class ProductionDataManager(DataManager):
 
         return 
 
-    def checkUseCases(self):
-
-        self.getOperationsManager().getSimulator().saveLog("REPORT: check use cases: ")
-
-        try: 
-            for root, dirs, files in os.walk(os.getcwd()):
-                for name in files:
-                    if name.find("_EventTypes") > -1:
-                        usecasename = name[:len("_EventTypes")-1]
-                        self.getOperationsManager().getSimulator().saveLog("REPORT: use case detected: "+str(usecasename))
-                        if not usecasename in self.getOperationsManager().getSimulator().getUseCases():
-                            self.getOperationsManager().getSimulator().getUseCases().append(usecasename)
-                    self.getOperationsManager().getSimulator().saveLog("REPORT: file: "+str(name))
-
-        except Exception as e:
-            self.getOperationsManager().saveLog("ERROR: in checking use cases "+str(e))    
-
-        return 
-
-    def ApplyUseCase(self,usecase):
-
-        try: 
-            for root, dirs, files in os.walk(os.getcwd()):
-                for name in files:
-                    if name.find(usecase+"_EventTypes.csv") > -1:
-            
-                        events_df = pd.read_csv(os.path.join(usecase+"_EventTypes.csv"))
-
-                        for i,r in events_df.iterrows():
-                            eventtype = SimEvent(self.getOperationsManager().getSimulator(),r['Name'],r['Type'],r["ResourceType"],r["EquipmentType"],bool(r["Preemptable"]))
-                            self.getOperationsManager().getEventTypes()[eventtype.getName()]= eventtype
-                            self.getOperationsManager().getSimulator().saveLog("REPORT: eventtype defined: "+str(eventtype.getName()))
-
-                        for eventtypename,eventtype in self.getOperationsManager().getEventTypes().items():
-                            ev_df = events_df[events_df["Name"] == eventtypename]
-                            for i,r in ev_df.iterrows():
-                                if r['Successor'] in self.getOperationsManager().getEventTypes():
-                                    succ_event = self.getOperationsManager().getEventTypes()[r['Successor']]
-                                    if not succ_event in eventtype.getSuccessorDict():
-                                        eventtype.getSuccessorDict()[succ_event] = "Finish to Start"
-                                        self.getOperationsManager().getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+" has successor  "+r['Successor'])
-
-
-                        decisions_df = pd.read_csv(os.path.join(usecase+"_Decisions.csv"))
-
-                        for eventtypename,eventtype in self.getOperationsManager().getEventTypes().items():
-                            event_df = decisions_df[decisions_df["EventType"] == eventtypename]
-                            if not (eventtypename in self.getOperationsManager().getAlgorithmSetting()):
-                                self.getOperationsManager().getAlgorithmSetting()[eventtypename] = dict()
-                                
-                            for i,r in event_df.iterrows():
-
-                                self.getOperationsManager().getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+"  decisions case none? "+str(pd.isna(r['Case'])))
-                                if not pd.isna(r['Case']):
-                                    if not r['Case'] in eventtype.getDecisionsDict():
-                                        eventtype.getDecisionsDict()[r['Case']] = []
-                                 
-                                    eventtype.getDecisionsDict()[r['Case']].append(r['DecisionType'])
-                                self.getOperationsManager().getAlgorithmSetting()[eventtypename][r['DecisionType']]= r['DecisionAlgorithm']
-                               
-                        precedenceinfo_df = pd.read_csv(os.path.join(usecase+"_PrecedenceInfo.csv"))
-                        #self.getOperationsManager().getSimulator().saveLog("REPORT: precedenceinfo_df size "+str(len(precedenceinfo_df)))
-                        
-                        for eventtypename,eventtype in self.getOperationsManager().getEventTypes().items():
-                            event_df = precedenceinfo_df[precedenceinfo_df["Predecessor"] == eventtypename]
-
-                            for i,r in event_df.iterrows():
-                                if not r['Successor'] in eventtype.getPrecendenceDict():
-                                    eventtype.getPrecendenceDict()[r['Successor']] = []
-                                eventtype.getPrecendenceDict()[r['Successor']].append(r['PrecedenceInfo'])
-
-                        #self.getOperationsManager().getSimulator().saveLog("REPORT: precedenceinfo_df applied ")
-
-                            
-       
-        except Exception as e:
-            #self.getSimulator().saveLog("ERROR: in reading use cases "+str(e))  
-            display("ERROR: in reading use cases "+str(e))
-
-
-        return
-
+   
+#########################################################################################################################
+ 
     def ReadSimulationEventData(self,schedule):
 
         inputdate =  schedule.getDataExportDate().date()

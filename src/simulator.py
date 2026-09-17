@@ -56,7 +56,7 @@ class Simulator(object):
         print("Start day: ",self.getStartDay().date()," weekday: ",self.getStartDay().weekday(), " day: ",self.getStartDay().strftime("%A"),", TimeLimit: ",self.TimeLimit)
 
     def getUseCases(self):
-        return self.usecases\
+        return self.usecases
 
     def getDisplayEvents(self):
         return self.displayevents
@@ -208,7 +208,6 @@ class Simulator(object):
             # Main simulator time progress 
             while self.getTime() < self.getTimeLimit():
 
-              
                 self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
 
             
@@ -255,8 +254,11 @@ class Simulator(object):
                 self.setCurrentShift(self.getShift(self.getRealTime().hour))
 
                 try:
+                    
+                    
                     if self.getTime() % self.getShiftMinutes() == 0:
-                      
+                        #self.saveLog("REPORT: time "+str(self.getTime())+", getShiftMinutes: "+str(self.getShiftMinutes()))
+                        
                         self.saveLog(" >>>>>>>>>>>>>>>>>>  Shift start: "+str(self.getRealTime())+"<<<<<<<<<<<<<<<<<<<"+"hour: "+str(self.getRealTime().hour)+"shift: "+str(self.getShift(self.getRealTime().hour))+" sim time: "+str(self.getTime()))
                         self.saveLog(" >>>>>>>>>>>>>>>>>> Current day: "+str(self.getCurrentDay())+" shift: "+str(self.getCurrentShift()))
                         OperationsMgr.applyShiftChange()
@@ -406,6 +408,7 @@ class OperationsManager(object):
         self.DemandTypeName = None
         self.EventTypes = dict()
         self.AlgorithmManager = AlgorithmManager(sim,self)
+        self.DataManager = DataManager(sim,self)
         self.usecase = ''
         self.layout = Layout("UseCase")
 
@@ -418,7 +421,21 @@ class OperationsManager(object):
     
 
     def getAlgorithmManager(self):
-        self.AlgorithmManager
+        return self.AlgorithmManager
+        
+
+    def setAlgorithmManager(self,algmgr):
+        self.AlgorithmManager = algmgr
+        return
+
+    def setDataManager(self,algmgr):
+        self.DataManager = algmgr
+        return
+
+
+    def getDataManager(self):
+        return self.DataManager
+
 
     def setUseCase(self,mycase):
         self.usecase = mycase
@@ -504,6 +521,11 @@ class OperationsManager(object):
 
     def getDemandTypes(self):
         return self.DemandTypes
+
+    def createInstance(self):
+        # to be overwritten 
+        return 
+
 ############################################################################################################      
 class AlgorithmManager(object):
     def __init__(self,sim,oprmgr):
@@ -573,8 +595,6 @@ class DataManager(object):
         self.OperationsManager = oprmgr
 
    
-        
-
     def ReadData(self):
         #overwritten by subclassess
         return

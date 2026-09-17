@@ -1,9 +1,8 @@
 from simulator import *
 from datetime import timedelta,date
-from productionobjects import *
-from productionalgs import *
-from productionChecker import *
-from productiondata import *
+from logisticsobjects import *
+from logisticsalgs import *
+from logisticsdata import *
 from datetime import timedelta,date,datetime
 import numpy as np
 import pandas as pd
@@ -11,7 +10,7 @@ import pandas as pd
 
 
 #################################################################################
-class ShopFloorManager(OperationsManager): 
+class LogisticsManager(OperationsManager): 
     def __init__(self,sim):
         super().__init__(sim)
 
@@ -22,48 +21,21 @@ class ShopFloorManager(OperationsManager):
         
         self.CentralInventory = Inventory(10000,centralloc,sim,self) 
         self.all_pns = [str(x) for x in range(1000)]
-        self.setAlgorithmManager(ProductionAlgManager(sim,self))
-        self.setDataManager(ProductionDataManager(sim,self))
-      
-      
-        self.Checker = productionFeasibilityChecker(sim,self)
+        self.setAlgorithmManager(LogisticAlgManager(sim,self))
+        self.setDataManager(LogisticsDataManager(sim,self))
+
         self.Products = dict() # key: ID, val: object
         self.ProductionOrders = dict() # key: ID, val: object
         self.NoOrders = 5
-        self.SelectedOrders = []
+        self.ShipmentBatches = []
         self.PerformanceRun = True
         self.inputdate = None
         self.AlgorithmSetting = dict() # key: event name, val: (Decision name, Algorithm name)
         self.ProcessTimes = dict()  #key: event type name, val: 
         self.EventStatuses = dict() # key: status change, val: (prev_status,next_status)
         self.MySchedules = []
+      
        
-        # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
-
-        casefromfile = True
-
-        
-
-        self.getDataManager().getObjectFeatures()["ProductionOrder"] = [("FinalProduct","Product")]
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("FinalProductID","Product/ID"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("ID","ID"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("DF_Index","Index"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("Quantity","Quantity To Produce"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("ProductUnit","Unit"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("State","State"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("DeadLine","Deadline"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("RawMaterial","Components/Product"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("RawMaterialID","Components/Product/ID"))
-        self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("RawMaterialMultiplier","Components/Quantity To Consume"))
-
-
-
-        self.getDataManager().getObjectFeatures()["Product"] = [("ProductName","Product")]
-        self.getDataManager().getObjectFeatures()["Product"].append(("ID","Product/ID"))
-        
-        self.getDataManager().getObjectFeatures()["RawMaterial"] = [("ProductName","Components/Product")]
-        self.getDataManager().getObjectFeatures()["RawMaterial"].append(("ID","Components/Product/ID"))
-
     ###############################################################################
 
     def getMySchedules(self):
@@ -98,27 +70,31 @@ class ShopFloorManager(OperationsManager):
     def getCentralInventory(self):
         return self.CentralInventory
         #################################################################################################################################
-    def getProductionAlgManager(self):
-        return  self.getAlgorithmManager()
+    def getLogisticsAlgManager(self):
+        return self.getAlgorithmManager()
+
+    
 
     def getSelectedOrders(self):
-        return self.SelectedOrders
+        return self.ShipmentBatches
 
     def getLayout(self):
         return self.Layout
       
-
-    def getChecker(self):
-        return self.Checker
 
     def setNoOrders(self,orders):
         self.NoOrders = orders
         return
     def getNoOrders(self):
         return self.NoOrders 
+        
+    
 
     def getProducts(self):
         return self.Products
+
+    def getShipmentBatches(self):
+        return self.ShipmentBatches
      
     def getProductionOrders(self):
         return self.ProductionOrders
@@ -139,75 +115,37 @@ class ShopFloorManager(OperationsManager):
         except Exception as e:
             self.getSimulator().saveLog("ERROR: In read resources "+str(e)+".")
    
-        for trailer in range(5):
-            trlr = Trailer(5000,self.getSimulator(),self); 
-            trlr.setAvailable(True)
-            trlr.setLocation(self.getCentralInventory().getLocation())
-            self.getResources().append(trlr)
-   
-        for res in self.getResources():
-            if isinstance(res,Inventory):
-                self.getSimulator().saveLog("Resource "+res.getType()+', id: '+str(res.getID())+", code"+res.getMachineCode()+"automated"+str(res.IsAutomated())+","+("" if res.getInputBuffer() == None else res.getInputBuffer().getName())+","+("" if res.getOutputBuffer() == None else res.getOutputBuffer().getName())+" created.")
-            if isinstance(res,Machine) :
-                self.getSimulator().saveLog("Resource "+res.getType()+', id: '+str(res.getID())+", code"+res.getMachineCode()+"automated"+str(res.IsAutomated())+", setup: "+str(res.getSetupTime())+","+("" if res.getInputBuffer() == None else res.getInputBuffer().getName())+","+("" if res.getOutputBuffer() == None else res.getOutputBuffer().getName())+" created.")
-                 
-            else:
-                self.getSimulator().saveLog("Resource "+res.getType()+', id: '+str(res.getID())+" created.")
+        # creating forklifts and basic system equipment
 
+        shipmentbatches = []
+        
         try: 
-            self.inputdate = self.getDataManager().ReadDemandFile() # production orders created...
+            self.inputdate = self.getDataManager().ReadDemandFile() # demands created...
         except Exception as e: 
             self.getSimulator().saveLog("ERROR: In reading demand file "+str(e)+".")
 
+        for shipmentbatch in self.getShipmentBatches():
+            self.initializeShipments(shipmentbatch)
+
         
-
-        #now choose soonest production orders to simulate..
-        prodorders = []
-
-        for prodordid,prodorder in self.getProductionOrders().items():
-            prodorders.append((prodorder.getDeadline(),prodorder))
-            
-
-        prodorders.sort(key=lambda x: x[0], reverse=False)
-
-        selectedOrders = []
-
-        for prodorder in prodorders[:min(self.getNoOrders(),len(prodorders))]:     
-            #self.getSimulator().saveLog("__________________________________________________________")
-            #self.getSimulator().saveLog("REPORT: Selected production order release "+str(prodorder[1].getReleaseDate())+", deadline: "+str(prodorder[1].getDeadline()))
-
-            
-            try: 
-                self.getSimulator().saveLog("Item creation starts")
-                self.createDemandItems(prodorder[1],prodorder[1].getFinalProduct())
-                #self.getSimulator().saveLog("REPORT: >>>> items ["+(str(prodorder[1].getItems()[0].getID()) if len(prodorder[1].getItems())>0 else '')+"-"+(str(prodorder[1].getItems()[-1].getID()) if len(prodorder[1].getItems())>0 else 'no item')+"]")
-            except Exception as e:
-                self.getSimulator().saveLog("ERROR in item creation: "+str(e))
-
-            #self.getSimulator().saveLog("REPORT:  Selected "+prodorder[1].printOrder()+" items created.")
-            self.getSelectedOrders().append(prodorder[1])
-
-        self.getSimulator().saveLog("REPORT:  Selected orders:  "+str(len(self.getSelectedOrders()))+".")
-        self.getSimulator().saveLog("REPORT:>> Creating instance finished.. ")      
-   
-        return self.getSelectedOrders()
+        return shipmentbatches
 
 #_____________________________________________________________________
-    def createDemandItems(self,demand,product): # Physical products
-        self.getSimulator().saveLog("Item creation starts")
-        if len(product.getPredecessors()) == 0:
-            for itm in range(demand.getQuantity()):
-                
-                myitem = Item(demand,self.giveItemID())
-                self.getCentralInventory().getOutputBuffer().getItems().append(myitem) # generate trailer loading event.
-                demand.getItems().append(myitem)
-            self.getCentralInventory().getOutputBuffer().generateEvent(False)
-        else:
-            for preddemnd in demand.getDemandType().getPredecessors():
-                self.createDemandItems(demand,preddemnd)
+    def initializeShipments(self,shipmentbatch): # Physical products
+        
+        self.getSimulator().saveLog("REPORT: Shipment initilization starts")
+        
+        shipcontainer = Container(100000,self.getSimulator(),self)
+        for shipment in shipmentbatch.getShipments():
+            shipcontainer.getItems().append(shipment)
+    
+        self.getCentralInventory().getOutputBuffer().getItems().append(shipcontainer) # generate forklift loading event.
+            
+        self.getCentralInventory().getOutputBuffer().generateEvent(False)
+        
 
-        buffer_data = {"BufferName": self.getCentralInventory().getOutputBuffer().getName(),"Machine":  self.getCentralInventory().getOutputBuffer().getMachine().getName() if  self.getCentralInventory().getOutputBuffer().getMachine()!= None else "Central Inventory","Time":self.getSimulator().getTime(),"No.Items":len(self.getCentralInventory().getOutputBuffer().getItems())}  
-        self.getSimulator().getBufferData().append(buffer_data)
+        #buffer_data = {"BufferName": self.getCentralInventory().getOutputBuffer().getName(),"Machine":  self.getCentralInventory().getOutputBuffer().getMachine().getName() if  self.getCentralInventory().getOutputBuffer().getMachine()!= None else "Central Inventory","Time":self.getSimulator().getTime(),"No.Items":len(self.getCentralInventory().getOutputBuffer().getItems())}  
+        #self.getSimulator().getBufferData().append(buffer_data)
 
         return
 #______________________________________________________________________
@@ -215,13 +153,9 @@ class ShopFloorManager(OperationsManager):
     def applyShiftChange(self):
         avalable_res = [] 
         for res in self.getResources():  
-            #self.getSimulator().saveLog(" REPORT: resource "+res.getName()+".")
-            if isinstance(res,Trailer) or isinstance(res,Operator):
+            if isinstance(res,Operator):
                 if res.getLocation() != self.getCentralInventory().getLocation():
                     res.setLocation(self.getCentralInventory().getLocation())
-                    if isinstance(res,Operator):
-                        location_data = {"EntityName":res.getName(),"EntityID":res.getID(),"Time":self.getSimulator().getTime(),"LocationName":res.getLocation().getName(),"LocationID": (res.getLocation().getID() if res.getLocation()!= None else "-")}  
-                        self.getSimulator().getLocationData().append(location_data)
                     
             if isinstance(res,Machine) or isinstance(res,Operator):
                 res.setAvailable(self.getSimulator().getCurrentShift() in res.getAvailableShifts())
@@ -229,9 +163,9 @@ class ShopFloorManager(OperationsManager):
                 res.setIdle(True)
                 if res.isAvailable():
                     avalable_res.append(res.getName())
-                    #self.getSimulator().saveLog(" REPORT: resource "+res.getName()+" is avaiable in shift change!")
-                #else:
-                    #self.getSimulator().saveLog(" REPORT: resource "+res.getName()+" is unavailable in shift change!")
+                    self.getSimulator().saveLog(" REPORT: resource "+res.getName()+" is avaiable in shift change!")
+                else:
+                    self.getSimulator().saveLog(" REPORT: resource "+res.getName()+" is unavailable in shift change!")
                     
             else:
                 res.setAvailable(True)
@@ -421,15 +355,7 @@ class ShopFloorManager(OperationsManager):
                     self.scheduleEvent(successor_event,"Pending")
   
                 else: # now progress step can be determined
-                    if successor_event.getType() == "Transport": 
-                        if successor_event.getToLocation()== None:
-                            decision_type = "Select Destination"
-                            algname = self.getAlgorithmSetting()[successor_event.getName()][decision_type]
-                            algfunction = self.getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname]
-                            alg_return = algfunction(event)
-                            if alg_return!= None:
-                                successor_event.setToLocation(alg_return.getInputBuffer())
-     
+                    self.makeCaseDecisions(successor_event,"Create",debugtimes,debugeventids)
                     successor_event.sampleProcessTime(self); proctime = successor_event.getProcessTime() 
                     successor_start = self.getSimulator().getTime(); successor_end = successor_start+proctime
 

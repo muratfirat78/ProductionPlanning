@@ -3,7 +3,7 @@ from datetime import timedelta,date
 
 
 #################################################################################
-class ProductionAlgManager(AlgorithmManager): 
+class LogisticAlgManager(AlgorithmManager): 
     def __init__(self,sim,workmgr):
         super().__init__(sim,workmgr) 
 
@@ -21,6 +21,7 @@ class ProductionAlgManager(AlgorithmManager):
         
         self.decisionalgs["Select Destination"] = dict() 
         self.decisionalgs["Select Destination"]['MostDemanded'] = self.selectDestionationMostDemanded
+
         self.decisionalgs["Select Destination"]['Checkalternatives'] = self.selectDestinationEarliestAvailable
 
         self.decisionalgs["Assign Processor"] = dict() 
@@ -82,7 +83,46 @@ class ProductionAlgManager(AlgorithmManager):
         return selected_res
 
 
+################################################################################################################################################    
+    def selectItemsEDDOrder(self,event):
+        self.getSimulator().saveLog(" >>> Algorithm: selectItemsEDDOrder <<<")
 
+        select_dict = dict() #determine order items
+        orders = []
+        event_place = None
+
+        if event.getType() == "Loading":
+            event_place = event.getFromLocation()  
+        if event.getType() == "Setup":
+            event_place = event.getEquipment().getInputBuffer()
+           
+        for item in event_place.getItems():
+            if item.getReservedEvent()!= event:
+                continue
+            myorder = item.getDemand()
+            if not myorder in select_dict:
+                select_dict[myorder] = []
+                orders.append(myorder)
+            select_dict[myorder].append(item)
+
+        if len(orders) == 0:
+            self.getSimulator().saveLog(" REPORT: event order list is empty! >>> Algorithm: selectItemsEDDOrder <<<")
+            self.getSimulator().saveLog(" REPORT: items: "+str(len(event_place.getItems())))
+            self.getSimulator().saveLog(" REPORT: this event "+str(event.getName())+"-"+str(event.getID()))
+            
+            return None
+
+        
+        orders.sort(key=lambda x: x.getDeadline(), reverse= False)      
+
+        select_id = 0
+        while len(select_dict[orders[select_id]]) > event_place.getCapacity():
+            select_id+=1
+            if select_id >= len(orders):
+                return None
+                
+        return  select_dict[orders[select_id]]
+################################################################################################################################################### 
     def selectDestinationEarliestAvailable(self, event):
  
         self.getSimulator().saveLog(" >>> Algorithm: selectByConsideringAlternativeMachines function <<<")
@@ -170,48 +210,7 @@ class ProductionAlgManager(AlgorithmManager):
 
         
         return mostdemanded
-################################################################################################################################################    
-    def selectItemsEDDOrder(self,event):
-        self.getSimulator().saveLog(" >>> Algorithm: selectItemsEDDOrder <<<")
 
-        select_dict = dict() #determine order items
-        orders = []
-        event_place = None
-
-        if event.getType() == "Loading":
-            event_place = event.getFromLocation()  
-        if event.getType() == "Setup":
-            event_place = event.getEquipment().getInputBuffer()
-        if event.getType() == "Unloading":
-            event_place = event.getEquipment()
-           
-        for item in event_place.getItems():
-            if item.getReservedEvent()!= event:
-                continue
-            myorder = item.getDemand()
-            if not myorder in select_dict:
-                select_dict[myorder] = []
-                orders.append(myorder)
-            select_dict[myorder].append(item)
-
-        if len(orders) == 0:
-            self.getSimulator().saveLog(" REPORT: event order list is empty! >>> Algorithm: selectItemsEDDOrder <<<")
-            self.getSimulator().saveLog(" REPORT: items: "+str(len(event_place.getItems())))
-            self.getSimulator().saveLog(" REPORT: this event "+str(event.getName())+"-"+str(event.getID()))
-            
-            return None
-
-        
-        orders.sort(key=lambda x: x.getDeadline(), reverse= False)      
-
-        select_id = 0
-        while len(select_dict[orders[select_id]]) > event_place.getCapacity():
-            select_id+=1
-            if select_id >= len(orders):
-                return None
-                
-        return  select_dict[orders[select_id]]
-################################################################################################################################################### 
 #########################################################################################################################################################
     def selectItemsFeasibletoUnload(self,event):
         self.getSimulator().saveLog(" >>> Algorithm: findTrailerUnloadFeasible function <<<")

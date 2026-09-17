@@ -1,0 +1,9 @@
+Predecessor,Successor,PrecedenceInfo
+Container Loading,Container Transport,FromLocation
+Container Loading,Container Transport,Equipment
+Container Loading,Container Transport,Resource
+Container Loading,Container Transport,Items
+Container Transport,Container Unloading,Equipment->FromLocation
+Container Transport,Container Unloading,ToLocation
+Container Transport,Container Unloading,Equipment
+Container Transport,Container Unloading,Resource

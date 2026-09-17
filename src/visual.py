@@ -106,6 +106,13 @@ class VisualManager():
         self.DecisionAlgs = None
         self.UseCaseBox = None
         self.ResourceMenu = None
+        self.DecisionAlgorithms = None
+
+    def getDecisionAlgorithms(self):
+        return self.DecisionAlgorithms
+    def setDecisionAlgorithms(self,dg):
+        self.DecisionAlgorithms = dg
+        return
 
 
     def setResourceMenu(self,fg):
@@ -640,14 +647,18 @@ class VisualManager():
     
     def ReadInput(self,event):
 
-        selectedOrders = self.getController().getWorkManager().createInstance()
-
+        try: 
+            selectedOrders = self.getController().getWorkManager().createInstance()
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in reading input "+str(e))  
+           
+        
         orderopts = []
         for prodorder in selectedOrders:
             orderopts.append("PN: "+prodorder.getFinalProduct().getPN()+", Q: "+str(len(prodorder.getItems()))+", Deadline: "+str(prodorder.getDeadline()))
 
         self.getProdOrders().options = orderopts
-
+        
         self.getReadButton().disabled = True
         self.getOrders().disabled = True
 
@@ -665,16 +676,19 @@ class VisualManager():
 
         
     def setDropSimOrders(self,event):
-        
-        self.getController().getWorkManager().setNoOrders(self.getOrders().value)
 
-        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+        if self.getController().getWorkManager()!= None:
+            self.getController().getWorkManager().setNoOrders(self.getOrders().value)
+    
+            self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
         return  
 
     def setDropSimWeeks(self,event):
+
+        if self.getController().getWorkManager()!= None:
         
-        self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
-        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+            self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
+            self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
         
         return 
 
@@ -1245,8 +1259,87 @@ class VisualManager():
         
         return 
 
-    def applyUseCase(self,event):
+    def applyCases(self,event):
 
+        selected_eventtype = self.getEventTypes().value
+
+        self.getEventCases().options = []
+
+        if selected_eventtype in self.getController().getWorkManager().getEventTypes():
+            eventtype = self.getController().getWorkManager().getEventTypes()[selected_eventtype]
+            self.getEventCases().options = [c for c in eventtype.getDecisionsDict().keys()]
+      
+
+
+        return
+
+
+
+    def checkDecisions(self,event):
+        
+        selected_eventtype = self.getEventTypes().value
+        selected_case = self.getEventCases().value
+
+        self.getCaseDecisions().options = []
+
+        if selected_eventtype in self.getController().getWorkManager().getEventTypes():
+            eventtype = self.getController().getWorkManager().getEventTypes()[selected_eventtype]
+            if selected_case in eventtype.getDecisionsDict():
+                self.getCaseDecisions().options = [d for d in eventtype.getDecisionsDict()[selected_case]]
+       
+        return
+
+
+    def checkAlg(self,event):
+
+        try: 
+            selected_eventtype = self.getEventTypes().value
+            selected_decison = self.getCaseDecisions().value
+    
+            self.getDecisionAlgs().options = []
+    
+            self.getController().getSimulator().saveLog("REPORT: event type in algsetting")    
+    
+            if selected_eventtype in self.getController().getWorkManager().getAlgorithmSetting():
+                if selected_decison in self.getController().getWorkManager().getAlgorithmSetting()[selected_eventtype]:
+                    self.getDecisionAlgs().options = [self.getController().getWorkManager().getAlgorithmSetting()[selected_eventtype][selected_decison]]
+
+
+            if selected_decison in self.getController().getWorkManager().getAlgorithmManager().getDecisionAlgorithms():
+                algsdict = self.getController().getWorkManager().getAlgorithmManager().getDecisionAlgorithms()[selected_decison]
+            self.getDecisionAlgorithms().options =[x for x in algsdict.keys()]
+            
+
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in finding decision alg "+str(e))    
+
+        return 
+
+    def changeAlg(self,event):
+
+        selected_eventtype = self.getEventTypes().value
+        selected_case = self.getEventCases().value
+        selected_decison = self.getCaseDecisions().value
+
+
+        if selected_eventtype in self.getController().getWorkManager().getAlgorithmSetting():
+            self.getController().getWorkManager().getAlgorithmSetting()[selected_eventtype][selected_decison] = self.getDecisionAlgorithms().value
+            self.getDecisionAlgs().options = [self.getController().getWorkManager().getAlgorithmSetting()[selected_eventtype][selected_decison]]
+
+        
+
+        return
+  
+      
+
+    def applyUseCase(self,event):
+  
+        self.getController().setUseCase(self.getUseCaseMenu().value)
+        self.getController().getWorkManager().setNoOrders(self.getOrders().value)
+        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+
+        self.getEventTypes().options = [x for x in  self.getController().getWorkManager().getEventTypes().keys()]
+     
 
         return 
 
@@ -1299,7 +1392,6 @@ class VisualManager():
      
         # Single Select
         select = widgets.Select(options=['Use Cases','Orders','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
-                                         #'Define Event Type','Event Type Precedence'
                                          ,'Schedules'],value='Resources',description='Select:',disabled=False)
 
         select.observe(self.menu_click,'value')
@@ -1338,7 +1430,7 @@ class VisualManager():
         orders = widgets.Dropdown(options = [w for w in range(1,250)],value = 249,description = 'Orders:')
         self.setOrders(orders)
         self.getOrders().observe(self.setDropSimOrders,'value')
-        self.getController().getWorkManager().setNoOrders(self.getOrders().value)
+      
 
         orders = widgets.Select(options=[],description='Orders:',disabled=False)
         readbutton = widgets.Button(description="Read Input")
@@ -1356,9 +1448,9 @@ class VisualManager():
         self.getOrderBox().layout.width = '75%'
 
 
-        selectalgs = [x for x in self.getController().getWorkManager().getProductionAlgManager().getDecisionAlgorithms()['Select Destination'].keys()]
+        #selectalgs = [x for x in self.getController().getWorkManager().getProductionAlgManager().getDecisionAlgorithms()['Select Destination'].keys()]
  
-        self.setSelectDestinationAlg(widgets.Dropdown(options = selectalgs,description = ''))
+        self.setSelectDestinationAlg(widgets.Dropdown(options = [],description = ''))
 
         selectdesttitle = widgets.Label(value="Select Destination:") 
         self.getSelectDestinationAlg().observe(self.applySelectDestination,'value')
@@ -1384,23 +1476,44 @@ class VisualManager():
 
         self.setSimBox(simbox)
 
+        self.getController().getSimulator().saveLog("REPORT: checked.. use cases "+str(len(self.getController().getSimulator().getUseCases())))  
+        
+        self.setUseCaseMenu(widgets.Dropdown(options =[x for x in self.getController().getSimulator().getUseCases()],description = 'Use Cases'))
 
-        self.getController().getWorkManager().getDataManager().checkUseCases()
-        self.setUseCaseMenu(widgets.Dropdown(options =[x for x in self.getController().getWorkManager().getSimulator().getUseCases()],description = 'Use Cases'))
-
-        #self.getController().getWorkManager().getDataManager().ApplyUseCase(self.getUseCaseMenu().value)
+       
 
         self.getUseCaseMenu().observe(self.applyUseCase,'value')
 
+       
+
         eventtypetitle = widgets.Label(value="Event Types:") 
         self.setEventTypes(widgets.Select(options=[],description='',disabled=False))
+        casetitle = widgets.Label(value="Progress Cases:") 
+        decisiontitle = widgets.Label(value="Decisions:") 
+        algtitle = widgets.Label(value="Algorithm:") 
         self.setEventCases(widgets.Select(options=[],description='',disabled=False))
         self.setCaseDecisions(widgets.Select(options=[],description='',disabled=False))
         self.setDecisionAlgs(widgets.Select(options=[],description='',disabled=False))
-       
-      
+        self.setDecisionAlgorithms(widgets.Dropdown(options = [],description = ''))
 
-        casebox = VBox(children=[self.getUseCaseMenu(),eventtypetitle,HBox(children=[self.getEventTypes(),self.getEventCases(),self.getCaseDecisions(),self.getDecisionAlgs()])])
+        
+        self.getEventTypes().observe(self.applyCases,'value')
+        self.getEventCases().observe(self.checkDecisions,'value')
+        self.getCaseDecisions().observe(self.checkAlg,'value')
+        self.getDecisionAlgorithms().observe(self.changeAlg,'value')
+        
+
+        self.getEventTypes().layout.width = '150px'
+        self.getEventCases().layout.width = '125px'
+        self.getCaseDecisions().layout.width = '125px'
+        self.getDecisionAlgs().layout.width = '150px'
+        self.getDecisionAlgs().layout.height = '25px'
+
+        casebox = VBox(children=[self.getUseCaseMenu(),HBox(children=[
+            VBox(children=[eventtypetitle,self.getEventTypes()]),
+            VBox(children=[casetitle,self.getEventCases()]),
+            VBox(children=[decisiontitle,self.getCaseDecisions()]),
+            VBox(children=[algtitle,self.getDecisionAlgs(),self.getDecisionAlgorithms()])])])
 
         self.setUseCaseBox(casebox)
      
@@ -1473,7 +1586,9 @@ class VisualManager():
      
 
 
-        self.setTitle(widgets.Label(value='TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())))
+        #self.setTitle(widgets.Label(value='TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())))
+
+        self.setTitle(widgets.Label(value='TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(0)))
 
         self.getAllBoxes().append(self.getMainBox())
         self.getAllBoxes().append(self.getUseCaseBox())
@@ -1483,6 +1598,14 @@ class VisualManager():
         self.getAllBoxes().append(self.getResultBox())
         self.getAllBoxes().append(self.getDiagBox())
         self.getAllBoxes().append(self.getSimBox())
+
+
+         # for first time, if nothing is selected extra..
+        self.getController().setUseCase(self.getUseCaseMenu().value)
+        self.getController().getWorkManager().setNoOrders(self.getOrders().value)
+        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+
+        self.getEventTypes().options = [x for x in  self.getController().getWorkManager().getEventTypes().keys()]
 
         
 

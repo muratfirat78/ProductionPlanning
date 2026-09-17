@@ -1,0 +1,5 @@
+Name,Type,ResourceType,EquipmentType,Preemptable,Predecessor,Successor
+Container Loading,Loading,Operator,Forklift,False,,Container Transport
+Container Transport,Transport,Operator,Forklift,False,Container Loading,Container Unloading
+Container Unloading,Unloading,Operator,Forklift,False,Container Transport,
+
