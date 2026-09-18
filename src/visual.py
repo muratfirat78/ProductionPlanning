@@ -13,9 +13,11 @@ import warnings
 import sys
 import random
 import numpy as np
+import re
 from pathlib import Path
 from IPython.display import display, HTML
 from matplotlib import colormaps
+from matplotlib.patches import Patch
 warnings.filterwarnings("ignore")
 
 
@@ -43,6 +45,64 @@ class VisualManager():
         self.ResourceDrop = None
         self.title = None
         self.prodorders = None
+        self.AllBoxes = []
+        self.BoxMatches = dict()
+        self.readbutton = None
+        self.LogSelect = None
+        self.ShowLogButton = None
+        self.LogBox = None
+        self.ResultBox = None
+        self.runbutton = None
+        self.RunProgress = None
+        self.ResultInfoText = None
+        self.FurtherText = None
+        self.ShowDiagButton = None
+        self.DiagSelect = None
+        self.DiagBox = None
+        self.demandorderlist = dict()
+        self.milpmainbox = None
+        self.milpresultbox = None
+        self.milpprogress = None
+        self.milprunbutton = None
+        self.milpresults = None
+        self.milpresultinfo = None
+        self.milpdetails = None
+        self.milporders = dict()
+        self.MILPJobs = None
+        self.MILPParamTxt = None
+        self.availablebutton = None
+        self.ResourceSave = None
+        self.ResAlternatives = None
+        self.AlternativeRemove = None
+        self.AlternativeAdd = None
+        self.ResourceDrop2 = None
+        self.SelectedSchedule = None
+        self.ScheduleOutput = None
+        self.KPIArea = None
+        self.WeeksMenu = None
+        self.SuspendedEvents = dict()
+        self.SelectedEventsDict = dict()
+        self.simbox = None
+        self.selectdestinationalg = None
+        self.MILPNoJobs = 20
+        self.Machines = []
+        self.DataSets = dict()
+        self.simdisplaycheck = None
+        self.simsuspendcheck = None
+        self.timestep = None
+        self.timeapply = None
+        self.EventIDs = None
+        self.ResourceBox = None
+        self.EventsApply = None
+        self.selectevent = None
+        self.selectedevents = None
+        self.UseCaseMenu = None
+        self.EventTypes = None
+        self.EventCases = None
+        self.CaseDecisions = None
+        self.DecisionAlgs = None
+        self.UseCaseBox = None
+        self.ResourceMenu = None
         self.AllBoxes = []
         self.BoxMatches = dict()
         self.readbutton = None
@@ -774,7 +834,7 @@ class VisualManager():
             pncolors = dict() 
             barcolors = ['tab:orange','tab:blue','tab:red','tab:green','tab:brown','tab:gray','tab:olive','tab:cyan','tab:purple']
             colorid = 0
-            currentday = mindate; pncolors = dict()
+            currentday = mindate
             currentday = currentday.replace(hour=0, minute=0, second=0, microsecond=0)
 
          
@@ -889,19 +949,208 @@ class VisualManager():
         return 
     def showOperatorSchedule(self,scheduleday):
 
-        # event_file name: inputdata_eventexecutiondata_consdate 
-        try: 
-
+        # Read the simulation event file associated with the selected schedule.
+        try:
+            # Load all completed simulation events from the csv.
             simevent_df = self.getController().getWorkManager().getDataManager().ReadSimulationEventData(self.getSelectedSchedule())
-            self.getController().getSimulator().saveLog("REPORT: sim event data size: "+str(len(simevent_df))) 
+            # Normalize the requested day to midnight.
+            day_start = pd.Timestamp(scheduleday).normalize()
+            # Define the exclusive end of the requested day.
+            day_end = day_start + timedelta(days=1)
+            # Strip whitespace before identifying human resources.
+            resource_names = simevent_df["Resource"].astype(str).str.strip()
+            # Keep only operators and manual workers.
+            operator_df = simevent_df[
+                simevent_df["Resource"].notna()
+                & resource_names.str.contains(
+                    r"operator|manual worker",
+                    case=False,
+                    regex=True,
+                )
+            ].copy()
+
+            # Store one color for each event type.
+            event_colors = dict()
+            # Create a categorical palette for event types.
+            color_palette = list(sns.color_palette("tab10").as_hex())
+            # Store all intervals overlapping the selected day.
+            intervals = []
+
+            # Process each selected human-resource event.
+            for _, event_row in operator_df.iterrows():
+                # Read the event's serialized execution intervals.
+                event_steps = event_row.get("ProgressSteps")
+                # Prepare the parsed interval list.
+                parsed_steps = []
+
+                # Parse ProgressSteps when available.
+                if pd.notna(event_steps) and str(event_steps).strip():
+                    # Split multiple intervals at the '~' separator.
+                    for step in str(event_steps).split("~"):
+                        # Match complete start and end timestamps.
+                        step_match = re.match(
+                            r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})-"
+                            r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]$",
+                            step.strip(),
+                        )
+                        # Skip malformed intervals.
+                        if step_match is None:
+                            continue
+                        # Extract the timestamp strings.
+                        step_start, step_end = step_match.groups()
+                        # Convert timestamps to datetime values.
+                        parsed_steps.append(
+                            (pd.to_datetime(step_start), pd.to_datetime(step_end))
+                        )
+
+                # Fall back to the overall event timestamps if necessary.
+                if not parsed_steps:
+                    fallback_start = pd.to_datetime(
+                        event_row.get("Work Orders/Start"), errors="coerce"
+                    )
+                    fallback_end = pd.to_datetime(
+                        event_row.get("Work Orders/End"), errors="coerce"
+                    )
+                    if pd.notna(fallback_start) and pd.notna(fallback_end):
+                        parsed_steps.append((fallback_start, fallback_end))
+
+                # Use the event name as the visual category.
+                event_name = str(event_row.get("EventName", "Unknown event"))
+                if event_name not in event_colors:
+                    event_colors[event_name] = color_palette[
+                        len(event_colors) % len(color_palette)
+                    ]
+
+                # Add every valid event segment to the chart data.
+                for interval_start, interval_end in parsed_steps:
+                    if interval_end <= day_start or interval_start >= day_end:
+                        continue
+
+                    interval_start = max(interval_start, day_start)
+                    interval_end = min(interval_end, day_end)
+                    if interval_end <= interval_start:
+                        continue
+
+                    intervals.append({
+                        "Operator": str(event_row["Resource"]).strip(),
+                        "Event": event_name,
+                        "EventID": event_row.get("EventID", "-"),
+                        "Start": interval_start,
+                        "End": interval_end,
+                        "Equipment": event_row.get("Equipment", "-"),
+                        "Location": event_row.get("Location", "-"),
+                        "Product": event_row.get("Product", "-"),
+                        "Reference": event_row.get("Reference", "-"),
+                    })
             
+            # Render the result inside the notebook output widget.
             with self.getScheduleOutput():
+                # Clear the previously displayed schedule.
                 clear_output()
+
+                # Handle days without matching activity.
+                if not intervals:
+                    display("No operator activity found for "+str(day_start.date()))
+                    return
+
+                # Preserve the first-seen resource ordering.
+                operator_names = list(dict.fromkeys(
+                    interval["Operator"] for interval in intervals
+                ))
+                # Assign each resource a y-axis position.
+                operator_positions = {
+                    operator: position
+                    for position, operator in enumerate(operator_names)
+                }
+                # Scale the figure height with the number of resources.
+                figure_height = max(5, 1.2 * len(operator_names))
+                # Create the Gantt chart.
+                fig, axes = plt.subplots(
+                    figsize=(23, figure_height),
+                    tight_layout=True
+                )
+
+                # Draw each activity interval.
+                for interval in intervals:
+                    # Convert the interval start to hours after midnight.
+                    start_hour = (
+                        interval["Start"] - day_start
+                    ).total_seconds() / 3600
+                    # Convert the interval length to hours.
+                    duration_hours = (
+                        interval["End"] - interval["Start"]
+                    ).total_seconds() / 3600
+                    # Find the resource row for this activity.
+                    operator_position = operator_positions[interval["Operator"]]
+                    # Build the activity detail label.
+                    label = (
+                        interval["Event"]
+                        + " (ID: " + str(interval["EventID"])
+                        + ", equipment: " + str(interval["Equipment"])
+                        + ", location: " + str(interval["Location"])
+                        + ", product: " + str(interval["Product"])
+                        + ", ref: " + str(interval["Reference"])
+                        + ")"
+                    )
+                    # Draw the activity bar on the resource row.
+                    axes.broken_barh(
+                        [(start_hour, duration_hours)],
+                        (operator_position - 0.35, 0.7),
+                        facecolors=event_colors[interval["Event"]],
+                        edgecolors="black",
+                        linewidth=0.5,
+                        label=label,
+                    )
+
+                # Show the complete 24-hour day.
+                axes.set_xlim(0, 24)
+                # Keep the resource rows centered in the plot.
+                axes.set_ylim(-0.75, len(operator_names) - 0.25)
+                # Place one x-axis tick per hour.
+                axes.set_xticks(range(25))
+                # Format x-axis ticks as clock times.
+                axes.set_xticklabels([
+                    (day_start + timedelta(hours=hour)).strftime("%H:%M")
+                    for hour in range(25)
+                ])
+                # Place one y-axis tick per resource.
+                axes.set_yticks(range(len(operator_names)))
+                # Label rows with operator and manual-worker names.
+                axes.set_yticklabels(operator_names)
+                # Label the timeline axis.
+                axes.set_xlabel("Time")
+                # Label the human-resource axis.
+                axes.set_ylabel("Operators and manual workers")
+                # Add the selected day to the title.
+                axes.set_title("Operator schedule: " + str(day_start.date()))
+                # Add vertical guides for the timeline.
+                axes.grid(True, axis="x")
+
+                # Build one legend entry per event type.
+                legend_handles = [
+                    Patch(facecolor=color, edgecolor="black", label=event_name)
+                    for event_name, color in event_colors.items()
+                    if any(interval["Event"] == event_name for interval in intervals)
+                ]
+                # Place the legend beside the chart.
+                axes.legend(
+                    handles=legend_handles,
+                    bbox_to_anchor=(1.01, 1),
+                    loc="upper left",
+                    fontsize="small",
+                )
+                # Rotate clock labels for readability.
+                axes.tick_params(axis="x", rotation=45)
+                # Display the finished chart.
+                plt.show()
+
+            # Log visualization errors without breaking the dashboard.
         except Exception as e:
             self.getController().getSimulator().saveLog("ERROR: in showing operator schedule "+str(e))
 
 
-        return 
+        # This callback updates the output widget and returns no value.
+        return
 ##################################################################################################################################################
     def ViewMILPResults(self,event):
 
