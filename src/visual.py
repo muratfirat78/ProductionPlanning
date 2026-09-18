@@ -661,6 +661,7 @@ class VisualManager():
         
         self.getReadButton().disabled = True
         self.getOrders().disabled = True
+        self.getUseCaseMenu().disabled = True
 
         
             
@@ -688,7 +689,7 @@ class VisualManager():
         if self.getController().getWorkManager()!= None:
         
             self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
-            self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+            self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
         
         return 
 
@@ -728,10 +729,11 @@ class VisualManager():
         if menuitem in self.BoxMatches:
             self.ViewBoxes(self.BoxMatches[menuitem])
             if menuitem == "Schedules":
-                if len(self.getController().getWorkManager().getMySchedules()) == 0:
-                    self.getController().getWorkManager().ReadSchedules()
-
-                    self.getResultText().options = [str(sch.getDataExportDate().date())+"_"+sch.getAlgorithmName()+"_"+str(sch.getConstuctionDate().date()) for sch in self.getController().getWorkManager().getMySchedules()]
+                if len(self.getController().getWorkManager().getDemands()) > 0:
+                    if len(self.getController().getWorkManager().getMySchedules()) == 0:
+                        self.getController().getWorkManager().ReadSchedules()
+    
+                        self.getResultText().options = [str(sch.getDataExportDate().date())+"_"+sch.getAlgorithmName()+"_"+str(sch.getConstuctionDate().date()) for sch in self.getController().getWorkManager().getMySchedules()]
 
                 
             
@@ -1308,6 +1310,7 @@ class VisualManager():
             if selected_decison in self.getController().getWorkManager().getAlgorithmManager().getDecisionAlgorithms():
                 algsdict = self.getController().getWorkManager().getAlgorithmManager().getDecisionAlgorithms()[selected_decison]
             self.getDecisionAlgorithms().options =[x for x in algsdict.keys()]
+            self.getDecisionAlgorithms().value = self.getDecisionAlgorithms().options[0]
             
 
         except Exception as e:
@@ -1328,6 +1331,8 @@ class VisualManager():
 
         
 
+        
+
         return
   
       
@@ -1336,7 +1341,7 @@ class VisualManager():
   
         self.getController().setUseCase(self.getUseCaseMenu().value)
         self.getController().getWorkManager().setNoOrders(self.getOrders().value)
-        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
 
         self.getEventTypes().options = [x for x in  self.getController().getWorkManager().getEventTypes().keys()]
      
@@ -1389,10 +1394,14 @@ class VisualManager():
 
         self.ProcessOutput = widgets.Output()
 
-     
+
+
+       
+       
+
         # Single Select
         select = widgets.Select(options=['Use Cases','Orders','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
-                                         ,'Schedules'],value='Resources',description='Select:',disabled=False)
+                                         ,'Schedules'],value='Resources',description='',disabled=False)
 
         select.observe(self.menu_click,'value')
         self.setMainmenu(select)
@@ -1472,7 +1481,7 @@ class VisualManager():
         self.getSimDisplayCheck().observe(self.setDisplayMode,'value')
         self.getTimeApply().on_click(self.setSimTimeStep)
 
-        simbox = VBox(children=[HBox(children=[VBox(children=[selectdesttitle,self.getSelectDestinationAlg(),self.getSimSuspendCheck(),self.getSimDisplayCheck(),HBox(children=[self.getTimeStep(),self.getTimeApply()]),HBox(children=[self.getEventIDs(),self.getSelectEvent(),self.getSelectedEvents()])])])])
+        simbox = VBox(children=[HBox(children=[VBox(children=[self.getSimSuspendCheck(),self.getSimDisplayCheck(),HBox(children=[self.getTimeStep(),self.getTimeApply()]),HBox(children=[self.getEventIDs(),self.getSelectEvent(),self.getSelectedEvents()])])])])
 
         self.setSimBox(simbox)
 
@@ -1603,7 +1612,7 @@ class VisualManager():
          # for first time, if nothing is selected extra..
         self.getController().setUseCase(self.getUseCaseMenu().value)
         self.getController().getWorkManager().setNoOrders(self.getOrders().value)
-        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())
+        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
 
         self.getEventTypes().options = [x for x in  self.getController().getWorkManager().getEventTypes().keys()]
 
@@ -1624,11 +1633,15 @@ class VisualManager():
             box.layout.visibility = 'hidden'
             box.layout.display = 'none'
        
-            
 
+        separator = widgets.Box(layout=widgets.Layout(border='solid 1px lightblue', width='99%', height='1px', margin='5px 0px',style={'background': "#C7EFFF"}))
+
+        vseparator = widgets.Box(layout=widgets.Layout(border='solid 1px lightblue', width='1px', height='99%', margin='5px 0px',style={'background': "#C7EFFF"}))
+
+        
         tab = VBox(children = [
-                              self.getTitle(),
-                               HBox(children = [self.getMainmenu(),self.getMainBox(),self.getUseCaseBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox(), self.getSimBox()])]
+                              self.getTitle(),separator,
+                               HBox(children = [self.getMainmenu(),VBox(children = [vseparator]),self.getMainBox(),self.getUseCaseBox(),self.getRunBox(),self.getOrderBox(),self.getLogBox(),self.getResultBox(),self.getDiagBox(), self.getSimBox()])]
                   )    
         return tab 
 

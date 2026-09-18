@@ -200,7 +200,7 @@ class ProductionDataManager(DataManager):
         
                         
                     prodorder = ProductionOrder(r['Deadline'][0],r['ID'],myproduct,int(r['Quantity To Produce'][0])) #ddline,myid,demtype,quantity
-                    self.getOperationsManager().getProductionOrders()[r['ID']] = prodorder
+                    self.getOperationsManager().getDemands()[r['ID']] = prodorder
                     prodorder.setReference(r['Reference'][0])
 
                     if str(r['Component Status'][0]) == "Available":
@@ -291,7 +291,7 @@ class ProductionDataManager(DataManager):
                         oprsequence.append(myopr)        
                         oprid+=1
        
-                    self.getOperationsManager().getProductionOrders()[r['ID']].getFinalProduct().getOperationSequences()[r['ID']] = oprsequence
+                    self.getOperationsManager().getDemands()[r['ID']].getFinalProduct().getOperationSequences()[r['ID']] = oprsequence
 
                 except Exception as e:
                     self.getOperationsManager().getSimulator().saveLog("ERROR: In creating operations"+str(e))

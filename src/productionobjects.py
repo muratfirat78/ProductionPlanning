@@ -151,8 +151,8 @@ class Schedule(object):
             
             for i,r in demands_df.iterrows():
             
-                if r['ID'] in workmgr.getProductionOrders(): 
-                    self.Demands[r['ID']] = workmgr.getProductionOrders()[r['ID']]
+                if r['ID'] in workmgr.getDemands(): 
+                    self.Demands[r['ID']] = workmgr.getDemands()[r['ID']]
                     
                     opr_seq = self.Demands[r['ID']].getFinalProduct().getOperationSequences()[self.Demands[r['ID']].getID()]
                     self.DemandOperations[r['ID']] = dict()

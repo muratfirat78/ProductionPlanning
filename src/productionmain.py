@@ -120,11 +120,14 @@ class ShopFloorManager(OperationsManager):
     def getProducts(self):
         return self.Products
      
-    def getProductionOrders(self):
-        return self.ProductionOrders
+    #def getProductionOrders(self):
+    #    return self.ProductionOrders
 
     def getAlgorithmSetting(self):
         return self.AlgorithmSetting 
+
+    def getDemands(self):
+        return self.ProductionOrders
     
  
     
@@ -164,7 +167,7 @@ class ShopFloorManager(OperationsManager):
         #now choose soonest production orders to simulate..
         prodorders = []
 
-        for prodordid,prodorder in self.getProductionOrders().items():
+        for prodordid,prodorder in self.getDemands().items():
             prodorders.append((prodorder.getDeadline(),prodorder))
             
 
@@ -992,7 +995,7 @@ class ShopFloorManager(OperationsManager):
         startday = self.getSimulator().getStartDay()
 
         try: 
-            for prodordid,prodorder in self.getProductionOrders().items():
+            for prodordid,prodorder in self.getDemands().items():
             
                 oprsequence = prodorder.getFinalProduct().getOperationSequences()[prodorder.getID()]
 
