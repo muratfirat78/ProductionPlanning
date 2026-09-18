@@ -2,7 +2,6 @@ from simulator import *
 from datetime import timedelta,date
 from productionobjects import *
 from productionalgs import *
-from productionChecker import *
 from productiondata import *
 import numpy as np
 import pandas as pd
@@ -1281,7 +1280,7 @@ class ProductionMILPManager(MILPManager):
                         
                         proctime_coeff =(job.getProcessTime()-self.getMinProcessTime()) /(self.getMaxProcessTime() -self.getMinProcessTime())
 
-                        obj_coeff = 30*proctime_coeff
+                        obj_coeff += 30*proctime_coeff
                         
                         obj_coeff+=5*job.getProcessTime()/self.getTimeHorizon()
 

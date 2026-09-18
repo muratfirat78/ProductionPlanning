@@ -2,7 +2,6 @@ from simulator import *
 from datetime import timedelta,date
 from productionobjects import *
 from productionalgs import *
-from productionChecker import *
 from productiondata import *
 from datetime import timedelta,date,datetime
 import numpy as np
@@ -25,8 +24,7 @@ class ShopFloorManager(OperationsManager):
         self.setAlgorithmManager(ProductionAlgManager(sim,self))
         self.setDataManager(ProductionDataManager(sim,self))
       
-      
-        self.Checker = productionFeasibilityChecker(sim,self)
+
         self.Products = dict() # key: ID, val: object
         self.ProductionOrders = dict() # key: ID, val: object
         self.NoOrders = 5
