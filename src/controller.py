@@ -48,12 +48,21 @@ class Controller:
         print("path: ",abs_file_path)
 
         try: 
-            for root, dirs, files in os.walk(abs_file_path):
-                for name in files:
+            if not self.isOnline(): 
+                for root, dirs, files in os.walk(abs_file_path):
+                    for name in files:
+                        if name.find("_EventTypes.csv") > -1:
+                            usecasename = name[:name.index("_EventTypes.csv")]
+                            if not usecasename in self.getSimulator().getUseCases():
+                                self.getSimulator().getUseCases().append(usecasename)
+            else:
+                for filename in os.listdir(source_directory):
                     if name.find("_EventTypes.csv") > -1:
                         usecasename = name[:name.index("_EventTypes.csv")]
                         if not usecasename in self.getSimulator().getUseCases():
                             self.getSimulator().getUseCases().append(usecasename)
+
+            
         except Exception as e:
             print("ERROR: in checking use cases "+str(e))    
 
