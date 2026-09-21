@@ -24,6 +24,8 @@ class Controller:
     def getGitDir(self):
         return self.GitDir
 
+
+
     def setOnline(self,online):
         self.online = online
         return 
@@ -56,6 +58,7 @@ class Controller:
                             if not usecasename in self.getSimulator().getUseCases():
                                 self.getSimulator().getUseCases().append(usecasename)
             else:
+                source_directory = '/content/'
                 for filename in os.listdir(source_directory):
                     if name.find("_EventTypes.csv") > -1:
                         usecasename = name[:name.index("_EventTypes.csv")]
