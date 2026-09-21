@@ -6,8 +6,8 @@ from logisticsmain import *
 from MILPScheduling import * 
 
 class Controller:
-    def __init__(self):  
-        self.online = False
+    def __init__(self,gitdir,online):  
+        self.online = online
         self.VisualManager = VisualManager()
         self.VisualManager.setController(self)
         self.Simulator = Simulator()
@@ -15,7 +15,8 @@ class Controller:
         self.WorkManager = None     
         self.MILPManager = ProductionMILPManager(self.Simulator)
         self.UseCase = None
-        self.GitDir = ''
+        self.GitDir = gitdir
+        self.checkUseCases()
 
     def setGitDir(self,gitdir):
         self.GitDir = gitdir
