@@ -20,3 +20,7 @@ source_directory ='/content/'
 input_files =  ['Production_Decisions.csv','Production_EventTypes.csv','Production_PrecedenceInfo.csv']
 
 downloads = dict(); downloads[gitfolder+'src/'] =  module_files; downloads[gitfolder+'usecases/'] =  input_files
+for mydir,files in downloads.items():
+    for filename in files: 
+        if not filename in os.listdir(source_directory):
+            !wget "{mydir}{filename}"
