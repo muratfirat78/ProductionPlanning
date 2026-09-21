@@ -18,7 +18,7 @@ module_files =  ['stochastic.py','simulationobjects.py','simulator.py','visual.p
 
 source_directory ='/content/'
 usecase_files =  ['Production_Decisions.csv','Production_EventTypes.csv','Production_PrecedenceInfo.csv']
-input_files =  ['Resources_2026-09-14','Production Orders_2026-09-14']
+input_files =  ['Resources_2026-09-14.csv','Production Orders_2026-09-14.csv']
 
 downloads = dict(); downloads[gitfolder+'src/'] =  module_files; downloads[gitfolder+'usecases/'] =  usecase_files
 downloads[gitfolder+'Production/'] =  input_files
