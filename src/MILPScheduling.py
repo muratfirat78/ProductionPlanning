@@ -1021,36 +1021,52 @@ class ProductionMILPManager(MILPManager):
     
             joblisttomatch = []
 
+            progress.value+=" 1- EDDorder jobs: "+str(len(EDDordered))+"\n"
+            #count jobs
             for j in EDDordered:
                 for mach in j.getOperation().getAlternativeResources():
                     machinejobs[mach].append(j)
-                
+                    
+
+            # get outsourced and very first jobs in
+            initialjobs = []
+            for j in EDDordered:
+                if min([len(machinedict[mach]) for mach in j.getOperation().getAlternativeResources()]) == 0:
+                    initialjobs.append(j)
+                    for mach in j.getOperation().getAlternativeResources():
+                        machinedict[mach].append(j)
+                else:
+                    if "__export__.mrp_workcenter_68_8bff6631" in [mach.getID() for mach in j.getOperation().getAlternativeResources()]:
+                        initialjobs.append(j)
+                        for mach in j.getOperation().getAlternativeResources():
+                            machinedict[mach].append(j)
+
+            progress.value+=" >> initial jobs: "+str(len(initialjobs))+"\n"
+                        
+            for j in initialjobs:
+                joblisttomatch.append(j)
+                EDDordered.remove(j) 
+
+            progress.value+=" 2- EDDorder jobs: "+str(len(EDDordered))+"\n"
+               
+
+            for mach,joblist in machinedict.items():
+                progress.value+=" 1- machine "+str(mach.getName())+" - jobs "+str(len(joblist))+"/"+str(len(machinejobs[mach]))+"\n"
+            self.SchedulableJobs = [j for j in joblisttomatch]  
+
             
-            #count jobs
             jobsinlist = 0
             for j in EDDordered:
                 if jobsinlist < self.direct_jobs:
-                    joblisttomatch.append(j)
                     for mach in j.getOperation().getAlternativeResources():
                         machinedict[mach].append(j)
+                    joblisttomatch.append(j)
                     jobsinlist+=1
-                else:
-                    inserted = False
-                    for mach in j.getOperation().getAlternativeResources():
-                        if len(machinedict[mach]) == 0:
-                            if not inserted: 
-                                machinedict[mach].append(j)
-                                joblisttomatch.append(j)
-                                jobsinlist+=1
-                                inserted= True
-                            else:
-                                machinedict[mach].append(j)
 
-            
-            #for job in joblisttomatch:
-                #progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is schedulable"+"\n"
+            progress.value+=" > selected jobs: "+str(len(joblisttomatch))+"\n"
     
             succstartindex = len(joblisttomatch)  # now add some successors
+            jobstoadd = []
             for job in joblisttomatch:
                 if job.getSuccessortoSchedule()!= None:
                     succ = job.getSuccessortoSchedule()
@@ -1058,10 +1074,13 @@ class ProductionMILPManager(MILPManager):
                         for mach in succ.getOperation().getAlternativeResources():
                             machinedict[mach].append(succ)
                             machinejobs[mach].append(succ)
-                        joblisttomatch.append(succ)
+                        jobstoadd.append(succ)
                         jobsinlist+=1
 
-                    
+            for j in jobstoadd:
+                joblisttomatch.append(j)
+
+            progress.value+=" >> selected jobs: "+str(len(joblisttomatch))+"\n"
 
             if len(joblisttomatch) > succstartindex:
                 listsize = len(joblisttomatch)
@@ -1070,15 +1089,14 @@ class ProductionMILPManager(MILPManager):
                     if job.getSuccessortoSchedule()!= None:
                         succ = job.getSuccessortoSchedule()
                         if jobsinlist < self.direct_jobs+self.first_successors+self.second_successors:
-                            #progress.value+=" Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+"-"+str(job.getOperation().getDemand().getID())+"  is in model"+"\n"
-                            #progress.value+=" Sucessor-successor Operation "+str(succ.getProduct().getPN())+" - "+succ.getOperation().getName()+"-"+str(succ.getOperation().getDemand().getID())+"  is schedulable"+"\n"
                             for mach in succ.getOperation().getAlternativeResources():
                                 machinedict[mach].append(succ)
                                 machinejobs[mach].append(succ)
                             joblisttomatch.append(succ)
-                            
                             jobsinlist+=1  
 
+
+            progress.value+=" >>> selected jobs: "+str(len(joblisttomatch))+"\n"
 
             for mach,joblist in machinedict.items():
                 progress.value+=" machine "+str(mach.getName())+" - jobs "+str(len(joblist))+"/"+str(len(machinejobs[mach]))+"\n"
@@ -1162,7 +1180,7 @@ class ProductionMILPManager(MILPManager):
              
                     currentslotshifts = []
 
-                    if mach.getName() != "OUT - Outsourced activity_(OUT - Outsourced)":
+                    if mach.getID() != "__export__.mrp_workcenter_68_8bff6631":
                         for schid in range(len(mymach.getSchedule())):
                             
                             schtuple = mymach.getSchedule()[schid]
@@ -1271,16 +1289,18 @@ class ProductionMILPManager(MILPManager):
                         matchvar = self.MILPModel.IntVar(0.0,1,'x_'+str(mach.getMachineCode())+'_'+str(job.getID())+" "+str(job.getOperation().getDemand().getID())+" "+str(matchid))  # x_{m,j}
 
                         
-                        deadline_coeff =((self.getMaxDeadLine()-job.getDeadLine()).days) /((self.getMaxDeadLine() -self.getMinDeadLine()).days)
-                        obj_coeff = 50*deadline_coeff
+                        #deadline_coeff =((self.getMaxDeadLine()-job.getDeadLine()).days) /((self.getMaxDeadLine() -self.getMinDeadLine()).days)
+                        #obj_coeff = 50*deadline_coeff
 
-                        if self.convertSimTimeToDate(funcreturn[1]) > job.getDeadLine():
-                            obj_coeff+=100*(1-(funcreturn[1]/self.getTimeHorizon()))
+                        
                             
                         
                         proctime_coeff =(job.getProcessTime()-self.getMinProcessTime()) /(self.getMaxProcessTime() -self.getMinProcessTime())
 
-                        obj_coeff += 30*proctime_coeff
+                        obj_coeff = 30*proctime_coeff
+
+                        #if self.convertSimTimeToDate(funcreturn[1]) > job.getDeadLine():
+                        #    obj_coeff+=100*(1-(funcreturn[1]/self.getTimeHorizon()))
                         
                         obj_coeff+=5*job.getProcessTime()/self.getTimeHorizon()
 
@@ -1327,7 +1347,7 @@ class ProductionMILPManager(MILPManager):
                         #if mach.getName() == "M3-01_(FR3_01)":
                         #    progress.value+=">> Match: "+str(mymatch.printMatch())+", job: "+str(job.getProduct().getPN())+"\n"
 
-                        if mach.getName() == "OUT - Outsourced activity_(OUT - Outsourced)":
+                        if mach.getID() == "__export__.mrp_workcenter_68_8bff6631":
                             if not job.getPredecessortoSchedule() in self.getSchedulableJobs():
                                 return nrmatches,matchid
                        
@@ -1351,14 +1371,10 @@ class ProductionMILPManager(MILPManager):
                 completionordered = sorted(mach.getMatches(),key=lambda x: x.getCompletion(), reverse= False)
 
 
-                if mach.getMachine().getName() == "UMC400_(M5-06)":
-                    progress.value+=" mach "+str(mach.getMachine().getName())+" has "+str(len(mach.getMatches()))+" matches "+"\n"
-                    #for match in mach.getMatches():
-                        #progress.value+=">> Match: "+str(match.printMatch())+", job: "+str(match.getJob().getOperation().getDemand().getID())+", op"+match.getJob().getOperation().getReferenceName()+", start "+str(match.getStart())+" end "+str(match.getCompletion())+"\n"
-                         
+                
         
 
-                if mach.getMachine().getName() != "OUT - Outsourced activity_(OUT - Outsourced)":
+                if mach.getMachine().getID() != "__export__.mrp_workcenter_68_8bff6631":
                     for matchid in range(len(mach.getMatches())):
                         mymatch = mach.getMatches()[matchid]
                         confcons = None
