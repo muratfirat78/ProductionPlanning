@@ -24,7 +24,6 @@ class ProductionDataManager(DataManager):
     
     def ReadResources(self):
 
-       
         self.getOperationsManager().getSimulator().saveLog("REPORT: "+str(os.path.dirname(os.path.realpath(__file__))))
 
         self.getOperationsManager().getSimulator().saveLog("REPORT: "+str(self.getOperationsManager().getSimulator().getController().getUseCase()))
@@ -37,25 +36,42 @@ class ProductionDataManager(DataManager):
             usecase
         )
 
+        source_directory = '/content/'
 
-        self.getOperationsManager().getSimulator().saveLog(abs_file_path)
 
-        latestfiledate = None
-        filename = None
+        if not self.getOperationsManager().getSimulator().getController().isOnline(): 
 
-        for root, dirs, files in os.walk(abs_file_path):
-            #self.getOperationsManager().getSimulator().saveLog("REPORT:  files: "+str(files))
-            for file in files: 
-                self.getOperationsManager().getSimulator().saveLog(file)
-                if ".csv" in file:                  
+            self.getOperationsManager().getSimulator().saveLog(abs_file_path)
+    
+            latestfiledate = None
+            filename = None
+    
+            for root, dirs, files in os.walk(abs_file_path):
+                for file in files: 
+                    self.getOperationsManager().getSimulator().saveLog(file)
+                    if ".csv" in file:                  
+                        try: 
+                            if file.find("Resources_") > -1:
+                                datestring = file[file.find("Resources_")+len("Resources_"):-4]
+                                filedate = datetime.strptime(datestring,"%Y-%m-%d")
+                                if latestfiledate == None:
+                                    latestfiledate = filedate
+                                    filename = file
+                                else:
+                                    if latestfiledate < filedate:
+                                        latestfilsedate = filedate
+                                        filename = file
+                   
+                        except Exception as e:
+                            self.getOperationsManager().getSimulator().saveLog("ERROR: in reading file : "+str(e)+", file: "+str(file))
+
+        else:
+            for filename in os.listdir(source_directory):
+                if ".csv" in filename:  
                     try: 
                         if file.find("Resources_") > -1:
-                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  file name : "+str(file))
-                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  file name index: "+str(file.find("Resources_")))
                             datestring = file[file.find("Resources_")+len("Resources_"):-4]
-                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  datestring: "+str(datestring))
                             filedate = datetime.strptime(datestring,"%Y-%m-%d")
-                            #self.getOperationsManager().getSimulator().saveLog("REPORT:  file date: "+str(filedate))
                             if latestfiledate == None:
                                 latestfiledate = filedate
                                 filename = file
@@ -63,16 +79,19 @@ class ProductionDataManager(DataManager):
                                 if latestfiledate < filedate:
                                     latestfilsedate = filedate
                                     filename = file
-               
                     except Exception as e:
-                        self.getOperationsManager().getSimulator().saveLog("ERROR: in reading file : "+str(e)+", file: "+str(file))
+                            self.getOperationsManager().getSimulator().saveLog("ERROR: in online reading file : "+str(e)+", file: "+str(file))
 
+    
         if latestfiledate != None:
-            #self.getOperationsManager().getSimulator().saveLog("REPORT:  Latest Date resources file date: "+str(latestfiledate))
-            TBRMResources_df = pd.read_csv(abs_file_path+'/'+filename)
+            if not self.getOperationsManager().getSimulator().getController().isOnline(): 
+                Resources_df = pd.read_csv(abs_file_path+'/'+filename)
+            else:
+                Resources_df = pd.read_csv(source_directory+'/'+filename)
+           
 
-            self.getOperationsManager().getSimulator().saveLog(str(TBRMResources_df.info()))
-            for i,r in TBRMResources_df.iterrows():
+            self.getOperationsManager().getSimulator().saveLog(str(Resources_df.info()))
+            for i,r in Resources_df.iterrows():
                 if r['ResourceType'] == 'Operator':
                     AvlShifts = [1]  
                     try: 
