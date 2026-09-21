@@ -1598,7 +1598,7 @@ class VisualManager():
 
     def GenerateMainTab(self):
 
-        print("Visual Manager: Generating dashboard")
+        #print("Visual Manager: Generating dashboard")
 
         self.setInputText(widgets.Text(description ='Use Case: ',value=''))
      

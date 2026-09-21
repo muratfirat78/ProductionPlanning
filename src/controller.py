@@ -190,7 +190,7 @@ class Controller:
     
     def GetDashBoard(self):
 
-        print("Controller: Generating dashboard")
+        #print("Controller: Generating dashboard")
         return self.VisualManager.GenerateMainTab()
 
     
