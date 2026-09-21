@@ -185,10 +185,11 @@ class ProductionDataManager(DataManager):
                             
 
         else:
+            
             for file in os.listdir(source_directory):
                 if ".xlsx" in file:       
                     try: 
-                        if file.find("Resources_") > -1:
+                        if file.find("Production Orders_") > -1:
                             filedate = datetime.strptime(file[file.find("Production Orders_")+18:-5],"%Y-%m-%d")
                             
                             if latestfiledate == None:
