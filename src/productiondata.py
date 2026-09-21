@@ -38,13 +38,14 @@ class ProductionDataManager(DataManager):
 
         source_directory = '/content/'
 
+        latestfiledate = None
+        filename = None
 
         if not self.getOperationsManager().getSimulator().getController().isOnline(): 
 
             self.getOperationsManager().getSimulator().saveLog(abs_file_path)
     
-            latestfiledate = None
-            filename = None
+            
     
             for root, dirs, files in os.walk(abs_file_path):
                 for file in files: 
