@@ -62,7 +62,7 @@ class Controller:
             
         except Exception as e:
             print("ERROR: in checking use cases "+str(e))    
-
+        
         return 
 
     def setUseCase(self,usecase):

@@ -1738,8 +1738,6 @@ class VisualManager():
         
         self.setUseCaseMenu(widgets.Dropdown(options =[x for x in self.getController().getSimulator().getUseCases()],description = 'Use Cases'))
 
-       
-
         self.getUseCaseMenu().observe(self.applyUseCase,'value')
 
        
@@ -1862,6 +1860,9 @@ class VisualManager():
         display(self.getUseCaseMenu().value)
         self.getController().setUseCase(self.getUseCaseMenu().value)
         display(self.getController().getUseCase())
+
+        self.getController().getSimulator().saveLog("REPORT: controller workmanager none?" + str(self.getController().getWorkManager()== None))  
+        
         if self.getController().getWorkManager()!= None:
             self.getController().getWorkManager().setNoOrders(self.getOrders().value)
             self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
