@@ -16,6 +16,14 @@ class Controller:
         self.MILPManager = ProductionMILPManager(self.Simulator)
         self.UseCase = None
         self.checkUseCases()
+        self.GitDir = ''
+
+    def setGitDir(self,gitdir):
+        self.GitDir = gitdir
+        return
+        
+    def getGitDir(self):
+        return self.GitDir
 
     def setOnline(self,online):
         self.online = online
@@ -36,9 +44,12 @@ class Controller:
 
     def checkUseCases(self):
 
-        abs_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"usecases")
+        abs_file_path = self.getGitDir()+'usecases/' if self.isOnline() else os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"usecases")
 
-        print(abs_file_path)
+        print("path: ",abs_file_path)
+
+     
+          
     
         try: 
             for root, dirs, files in os.walk(abs_file_path):
