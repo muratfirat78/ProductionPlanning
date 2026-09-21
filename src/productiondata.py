@@ -92,7 +92,7 @@ class ProductionDataManager(DataManager):
                 Resources_df = pd.read_csv(source_directory+'/'+filename)
            
 
-            self.getOperationsManager().getSimulator().saveLog(str(Resources_df.info()))
+            #self.getOperationsManager().getSimulator().saveLog(str(Resources_df.info()))
             for i,r in Resources_df.iterrows():
                 if r['ResourceType'] == 'Operator':
                     AvlShifts = [1]  

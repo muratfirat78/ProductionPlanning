@@ -1856,9 +1856,9 @@ class VisualManager():
 
 
          # for first time, if nothing is selected extra..
-        display(self.getUseCaseMenu().value)
+        #display(self.getUseCaseMenu().value)
         self.getController().setUseCase(self.getUseCaseMenu().value)
-        display(self.getController().getUseCase())
+        #display(self.getController().getUseCase())
 
         self.getController().getSimulator().saveLog("REPORT: controller workmanager none?" + str(self.getController().getWorkManager()== None))  
         
