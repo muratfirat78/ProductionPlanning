@@ -60,8 +60,8 @@ class Controller:
             else:
                 source_directory = '/content/'
                 for filename in os.listdir(source_directory):
-                    if name.find("_EventTypes.csv") > -1:
-                        usecasename = name[:name.index("_EventTypes.csv")]
+                    if filename.find("_EventTypes.csv") > -1:
+                        usecasename = filename[:filename.index("_EventTypes.csv")]
                         if not usecasename in self.getSimulator().getUseCases():
                             self.getSimulator().getUseCases().append(usecasename)
 
