@@ -1859,7 +1859,9 @@ class VisualManager():
 
 
          # for first time, if nothing is selected extra..
+        display(self.getUseCaseMenu().value)
         self.getController().setUseCase(self.getUseCaseMenu().value)
+        display(self.getController().getUseCase())
         self.getController().getWorkManager().setNoOrders(self.getOrders().value)
         self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
 
