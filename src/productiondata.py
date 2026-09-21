@@ -152,59 +152,90 @@ class ProductionDataManager(DataManager):
 
         usecase = self.getOperationsManager().getSimulator().getController().getUseCase()
         
-        abs_file_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
-            usecase
-        )
-        
-        self.getOperationsManager().getSimulator().saveLog(abs_file_path)
+        source_directory = '/content/'
 
   
         latestfiledate = None
         filename = None
 
-        for root, dirs, files in os.walk(abs_file_path):
-            for file in files: 
-                self.getOperationsManager().getSimulator().saveLog(file)
-                if ".xlsx" in file:                  
-                    try: 
-                        #print("Length: ","Production Orders_",len("Production Orders_"))
-                        filedate = datetime.strptime(file[file.find("Production Orders_")+18:-5],"%Y-%m-%d")
-                        if latestfiledate == None:
-                            latestfiledate = filedate
-                            filename = file
-                        else:
-                            if latestfiledate < filedate:
+        if not self.getOperationsManager().getSimulator().getController().isOnline(): 
+            
+            abs_file_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
+            usecase
+            )
+
+            for root, dirs, files in os.walk(abs_file_path):
+                for file in files: 
+                    self.getOperationsManager().getSimulator().saveLog(file)
+                    if ".xlsx" in file:                  
+                        try: 
+                            #print("Length: ","Production Orders_",len("Production Orders_"))
+                            filedate = datetime.strptime(file[file.find("Production Orders_")+18:-5],"%Y-%m-%d")
+                            if latestfiledate == None:
                                 latestfiledate = filedate
                                 filename = file
-               
-                    except Exception as e:
-                        pass
+                            else:
+                                if latestfiledate < filedate:
+                                    latestfiledate = filedate
+                                    filename = file
+                   
+                        except Exception as e:
+                            self.getOperationsManager().getSimulator().saveLog("ERROR: in local reading resource file : "+str(e)+", file: "+str(file))
+                            
 
-        if latestfiledate != None:
-           
-            self.getOperationsManager().getSimulator().saveLog("REPORT: Latest Date input file date: "+str(latestfiledate))
-            TBRM_df = pd.read_excel(abs_file_path+'/'+filename)
+        else:
+            for file in os.listdir(source_directory):
+                if ".xlsx" in file:       
+                    try: 
+                        if file.find("Resources_") > -1:
+                            filedate = datetime.strptime(file[file.find("Production Orders_")+18:-5],"%Y-%m-%d")
+                            
+                            if latestfiledate == None:
+                                latestfiledate = filedate
+                                filename = file
+                            else:
+                                if latestfiledate < filedate:
+                                    latestfilsedate = filedate
+                                    filename = file
+                    except Exception as e:
+                        self.getOperationsManager().getSimulator().saveLog("ERROR: in online reading resource file : "+str(e)+", file: "+str(file))
+
+
+
             
-            TBRM_df["Deadline"] = TBRM_df["Deadline"].fillna(TBRM_df["Deadline"].max()+timedelta(days=7))
-            TBRM_df["Components/Product"] = TBRM_df["Components/Product"].fillna("UnknownRawMaterial")
-            TBRM_df["Components/Product/ID"] = TBRM_df["Components/Product/ID"].fillna("UnknownRawMaterialID")
-            TBRM_df["Components/Quantity To Consume"] = TBRM_df["Components/Quantity To Consume"].fillna("UnknownRawMaterialQ")
+        if latestfiledate != None:
+
+            demand_df = None
+
+            if not self.getOperationsManager().getSimulator().getController().isOnline(): 
+                self.getOperationsManager().getSimulator().saveLog("REPORT: Latest Date local input file date: "+str(latestfiledate))
+                demand_df = pd.read_excel(abs_file_path+'/'+filename)
+            else:
+                self.getOperationsManager().getSimulator().saveLog("REPORT: Latest Date online input file date: "+str(latestfiledate))
+                demand_df = pd.read_excel(source_directory+'/'+filename)
+           
+            
+            
+            demand_df["Deadline"] = demand_df["Deadline"].fillna(demand_df["Deadline"].max()+timedelta(days=7))
+            demand_df["Components/Product"] = demand_df["Components/Product"].fillna("UnknownRawMaterial")
+            demand_df["Components/Product/ID"] = demand_df["Components/Product/ID"].fillna("UnknownRawMaterialID")
+            demand_df["Components/Quantity To Consume"] = demand_df["Components/Quantity To Consume"].fillna("UnknownRawMaterialQ")
 
             try: 
                 lastdemandid = None
-                for i,r in TBRM_df.iterrows():
+                for i,r in demand_df.iterrows():
                     if not pd.isna(r["ID"]):
                         lastdemandid = r["ID"]
                     else:
-                        TBRM_df.iloc[i, TBRM_df.columns.get_loc('ID')] = lastdemandid
+                        demand_df.iloc[i, demand_df.columns.get_loc('ID')] = lastdemandid
             except Exception as e:
                 self.getOperationsManager().getSimulator().saveLog("ERROR: In filling order id "+str(e))
                 
 
             machines = [r for r in self.getOperationsManager().getResources() if isinstance(r,Machine)] 
             
-            MyOrders_df = TBRM_df.groupby(['ID'], dropna=True)[['Work Orders/Work Center','Work Orders/Work Center/ID','Work Orders/Operation','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status','Product/ID','Product','Deadline','Components/Product','Components/Product/ID','Components/Quantity To Consume','Quantity To Produce','Reference','Component Status']].agg(lambda x:list(x)).reset_index()
+            MyOrders_df = demand_df.groupby(['ID'], dropna=True)[['Work Orders/Work Center','Work Orders/Work Center/ID','Work Orders/Operation','Work Orders/Expected Duration','Work Orders/Start','Work Orders/End','Work Orders/Status','Product/ID','Product','Deadline','Components/Product','Components/Product/ID','Components/Quantity To Consume','Quantity To Produce','Reference','Component Status']].agg(lambda x:list(x)).reset_index()
 
             
 
@@ -318,7 +349,7 @@ class ProductionDataManager(DataManager):
                     self.getOperationsManager().getSimulator().saveLog("ERROR: In creating operations"+str(e))
 
                 
-            self.getOperationsManager().getSimulator().saveLog("REPORT: Size of input file: "+str(len(TBRM_df)))
+            self.getOperationsManager().getSimulator().saveLog("REPORT: Size of input file: "+str(len(demand_df)))
   
         return latestfiledate
 ########################################################################################################################################
