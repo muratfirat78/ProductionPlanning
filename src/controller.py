@@ -7,6 +7,7 @@ from MILPScheduling import *
 
 class Controller:
     def __init__(self):  
+        self.online = False
         self.VisualManager = VisualManager()
         self.VisualManager.setController(self)
         self.Simulator = Simulator()
@@ -15,6 +16,13 @@ class Controller:
         self.MILPManager = ProductionMILPManager(self.Simulator)
         self.UseCase = None
         self.checkUseCases()
+
+    def setOnline(self,online):
+        self.online = online
+        return 
+
+    def isOnline(self):
+        return self.online
 
     def getVisualManager(self):
         return self.VisualManager
@@ -27,7 +35,7 @@ class Controller:
         return self.MILPManager
 
     def checkUseCases(self):
-        
+
         abs_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"usecases")
 
         print(abs_file_path)
