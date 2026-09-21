@@ -1862,10 +1862,11 @@ class VisualManager():
         display(self.getUseCaseMenu().value)
         self.getController().setUseCase(self.getUseCaseMenu().value)
         display(self.getController().getUseCase())
-        self.getController().getWorkManager().setNoOrders(self.getOrders().value)
-        self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
+        if self.getController().getWorkManager()!= None:
+            self.getController().getWorkManager().setNoOrders(self.getOrders().value)
+            self.getTitle().value = 'TimeLimit: '+str(self.getController().getSimulator().getTimelimit())+", Orders: "+str(self.getController().getWorkManager().getNoOrders())+", Use Case: "+self.getController().getUseCase()
 
-        self.getEventTypes().options = [x for x in  self.getController().getWorkManager().getEventTypes().keys()]
+            self.getEventTypes().options = [x for x in  self.getController().getWorkManager().getEventTypes().keys()]
 
         
 
