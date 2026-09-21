@@ -16,11 +16,7 @@ gitfolder = 'https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/r
 module_files =  ['stochastic.py','simulationobjects.py','simulator.py','visual.py','controller.py', 'productionobjects.py','productionalgs.py','productiondata.py','productionmain.py','MILPScheduling.py'
                 , 'logisticsobjects.py','logisticsalgs.py','logisticsmain.py','logisticsdata.py']
 
-print(module_files)
-
-srcfolder = gitfolder+'src/'
-usecasefolder = gitfolder+'usecases/'
 source_directory ='/content/'
 input_files =  ['Production_Decisions.csv','Production_EventTypes.csv','Production_PrecedenceInfo.csv']
 
-
+downloads = dict(); downloads[gitfolder+'src/'] =  module_files; downloads[gitfolder+'usecases/'] =  input_files
