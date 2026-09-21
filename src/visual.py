@@ -665,8 +665,7 @@ class VisualManager():
 #############################################################################################################################################    
     def RunSim(self,event):
 
-
-        
+ 
         self.runbutton.disabled = True #not self.getController().getSimulator().isDisplayMode()
         
         self.getController().getSimulator().RunSimulation(self.getController().getWorkManager())
@@ -675,9 +674,9 @@ class VisualManager():
         if self.getController().getSimulator().getTime() == self.getController().getSimulator().getTimeLimit():
 
             self.demandorderlist.clear()
-            self.demandorderlist = dict(enumerate(self.getController().getWorkManager().getProductionOrders().keys()))
+            self.demandorderlist = dict(enumerate(self.getController().getWorkManager().getDemands().keys()))
           
-            self.getFurtherText().options = [self.getController().getWorkManager().getProductionOrders()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
+            self.getFurtherText().options = [self.getController().getWorkManager().getDemands()[x].getFinalProduct().getPN() for x in self.demandorderlist.values()]
         else:
             self.getController().getSimulator().saveLog("REPORT: suspend mode: "+str(self.getController().getSimulator().isSuspendMode())) 
             if self.getController().getSimulator().isSuspendMode():
