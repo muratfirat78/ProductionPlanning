@@ -23,4 +23,4 @@ downloads = dict(); downloads[gitfolder+'src/'] =  module_files; downloads[gitfo
 for mydir,files in downloads.items():
     for filename in files: 
         if not filename in os.listdir(source_directory):
-            wget "{mydir}{filename}"
+            !wget mydir+filename
