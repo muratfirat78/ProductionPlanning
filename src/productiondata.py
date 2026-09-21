@@ -66,8 +66,8 @@ class ProductionDataManager(DataManager):
                             self.getOperationsManager().getSimulator().saveLog("ERROR: in reading file : "+str(e)+", file: "+str(file))
 
         else:
-            for filename in os.listdir(source_directory):
-                if ".csv" in filename:  
+            for file in os.listdir(source_directory):
+                if ".csv" in file:  
                     try: 
                         if file.find("Resources_") > -1:
                             datestring = file[file.find("Resources_")+len("Resources_"):-4]
