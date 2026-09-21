@@ -45,12 +45,10 @@ class Controller:
 
     def checkUseCases(self):
 
-        abs_file_path = self.getGitDir()+'usecases/' if self.isOnline() else os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"usecases")
-
-        print("path: ",abs_file_path)
-
+      
         try: 
             if not self.isOnline(): 
+                abs_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))),"usecases")
                 for root, dirs, files in os.walk(abs_file_path):
                     for name in files:
                         if name.find("_EventTypes.csv") > -1:
