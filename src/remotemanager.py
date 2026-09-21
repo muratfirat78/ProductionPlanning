@@ -14,17 +14,8 @@ from google.auth import default as get_default_credentials
 from google_auth_httplib2 import AuthorizedHttp
 
 
-
 gitfolder = 'https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/refs/heads/main/usecases/'
 source_directory ='/content/'
-
-
-input_files =  ['Production_Decisions.csv','Production_EventTypes.csv','Production_PrecedenceInfo.csv']
-
-for filename in input_files:
-    if not filename in os.listdir(source_directory):
-      !wget "{gitfolder}{filename}"
-
 
 !wget https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/refs/heads/main/src/stochastic.py
 !wget https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/refs/heads/main/src/simulationobjects.py
@@ -40,3 +31,13 @@ for filename in input_files:
 !wget https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/refs/heads/main/src/simulator.py
 !wget https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/refs/heads/main/src/visual.py
 !wget https://raw.githubusercontent.com/muratfirat78/ProductionPlanning/refs/heads/main/src/controller.py
+
+
+input_files =  ['Production_Decisions.csv','Production_EventTypes.csv','Production_PrecedenceInfo.csv']
+
+for filename in input_files:
+    if not filename in os.listdir(source_directory):
+      !wget "{gitfolder}{filename}"
+
+
+
