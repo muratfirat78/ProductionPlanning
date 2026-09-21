@@ -187,6 +187,7 @@ class ProductionDataManager(DataManager):
         else:
             
             for file in os.listdir(source_directory):
+                self.getOperationsManager().getSimulator().saveLog("REPORT: online file: "+str(file))
                 if ".xlsx" in file:       
                     try: 
                         if file.find("Production Orders_") > -1:
