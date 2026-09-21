@@ -15,7 +15,6 @@ class Controller:
         self.WorkManager = None     
         self.MILPManager = ProductionMILPManager(self.Simulator)
         self.UseCase = None
-        self.checkUseCases()
         self.GitDir = ''
 
     def setGitDir(self,gitdir):
@@ -48,9 +47,6 @@ class Controller:
 
         print("path: ",abs_file_path)
 
-     
-          
-    
         try: 
             for root, dirs, files in os.walk(abs_file_path):
                 for name in files:
