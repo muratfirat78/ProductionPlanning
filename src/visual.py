@@ -1204,41 +1204,7 @@ class VisualManager():
 
     def ViewDetails(self,event):
 
-        #getRes_process_df(self):
-        #getDemand_process_df(self):
-        result_type = self.getResultText().value
-        result_detail = self.getFurtherText().value
-
-
-        selectid = 0
-        for x in self.getFurtherText().options:
-            if self.getFurtherText().options[selectid] == result_detail:
-                break
-            selectid+=1
-
-            process_df = pd.read_csv(os.path.join("..", "data", "simulation", "ProcessData.csv"))
-    
-        process_df=process_df.reset_index()
-
-        if result_type == 'Order Progress': 
-            prodord = self.demandorderlist[selectid]
-            sub_df = process_df[process_df["DemandID"] == prodord]
-            sub_df = sub_df[["OperationName","Resource","Start","Completion"]]
-            
-            sub_df['Start'] = pd.to_datetime(sub_df['Start'])
-            sub_df = sub_df.sort_values(by ="Start")
-            with self.getResultInfoText():
-                clear_output()
-                display(sub_df.head(50))
-           
-        if result_type == 'Resource Operations':  
-            sub_df = process_df[process_df["Resource"] == result_detail]
-            sub_df = sub_df[["Resource","Start","Completion","Product"]]
-            sub_df['Start'] = pd.to_datetime(sub_df['Start'])
-            sub_df = sub_df.sort_values(by ="Start")
-            with self.getResultInfoText():
-                clear_output()
-                display(sub_df.head(50))
+       
                   
 
         return 
