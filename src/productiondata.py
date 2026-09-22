@@ -88,7 +88,7 @@ class ProductionDataManager(DataManager):
             if not self.getOperationsManager().getSimulator().getController().isOnline(): 
                 Resources_df = pd.read_csv(abs_file_path+'/'+filename)
             else:
-                print("filename: "+filename)
+                #print("filename: "+filename)
                 Resources_df = pd.read_csv(source_directory+'/'+filename)
            
 
