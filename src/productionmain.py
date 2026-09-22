@@ -1035,6 +1035,8 @@ class ShopFloorManager(OperationsManager):
             TBRM_df["Work Orders/End"] = pd.to_datetime(TBRM_df["Work Orders/End"]).dt.floor('s')
 
 
+            source_directory = '/content/'
+            
             if not self.getSimulator().getController().isOnline(): 
                 TBRM_df.to_csv(os.path.join("..", "data", "schedules","TBRM_Plan_"+inputdate+"_"+algorithm+"_"+str((datetime.now()).date())+".csv"),index = False)
             else:
