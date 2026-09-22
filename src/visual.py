@@ -1557,9 +1557,11 @@ class VisualManager():
 
             if selected_decison in self.getController().getWorkManager().getAlgorithmManager().getDecisionAlgorithms():
                 algsdict = self.getController().getWorkManager().getAlgorithmManager().getDecisionAlgorithms()[selected_decison]
-            self.getDecisionAlgorithms().options =[x for x in algsdict.keys()]
-            self.getDecisionAlgorithms().value = self.getDecisionAlgorithms().options[0]
-            
+                self.getDecisionAlgorithms().options =[x for x in algsdict.keys()]
+                self.getDecisionAlgorithms().value = self.getDecisionAlgorithms().options[0]
+            else:
+                self.getDecisionAlgorithms().options =[]
+                self.getDecisionAlgorithms().value = ''
 
         except Exception as e:
             self.getController().getSimulator().saveLog("ERROR: in finding decision alg "+str(e))    
