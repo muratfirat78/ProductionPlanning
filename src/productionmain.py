@@ -912,7 +912,7 @@ class ShopFloorManager(OperationsManager):
         if not self.getSimulator().getController().isOnline(): 
             location_df.to_csv(os.path.join("..", "data", "simulation", "LocationData.csv"), index=False)
         else:
-            location_df.to_csvs(source_directory+'/'+"LocationData.csv"), index=False)
+            location_df.to_csvs(source_directory+'/'+"LocationData.csv")
 
 
         buffer_df = pd.DataFrame(columns=["BufferName","BufferID","Machine","Time","No.Items"])
@@ -925,7 +925,7 @@ class ShopFloorManager(OperationsManager):
         if not self.getSimulator().getController().isOnline(): 
             buffer_df.to_csv(os.path.join("..", "data", "simulation", "BufferData.csv"), index=False)
         else:
-            buffer_df.to_csv(source_directory+'/'+"BufferData.csv"), index=False)
+            buffer_df.to_csv(source_directory+'/'+"BufferData.csv")
 
         return
 #########################################################################################################################
