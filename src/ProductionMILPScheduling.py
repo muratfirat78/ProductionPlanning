@@ -944,7 +944,12 @@ class ProductionMILPManager(MILPManager):
                     machine.getScheduleDF()["Work Orders/Start"] = pd.to_datetime(machine.getScheduleDF()["Work Orders/Start"]).dt.floor('s')
                     machine.getScheduleDF()["Work Orders/End"] = pd.to_datetime(machine.getScheduleDF()["Work Orders/End"]).dt.floor('s')
 
-                    machine.getScheduleDF().to_csv(os.path.join("..", "data", "schedules",resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
+                    source_directory = '/content/'
+
+                    if not self.getSimulator().getController().isOnline():
+                        machine.getScheduleDF().to_csv(os.path.join("..", "data", "schedules",resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
+                    else:
+                        machine.getScheduleDF().to_csv(source_directory+'/'+resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv")
 
             # find and write the lateness, tardiness, and earliness. 
             for order in self.getSimulator().getController().getWorkManager().getSelectedOrders():
