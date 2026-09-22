@@ -895,15 +895,24 @@ class ShopFloorManager(OperationsManager):
 
         consdate = (datetime.now()).date()
 
-        event_df.to_csv(os.path.join("..", "data", "simulation", str(inputdate)+"_EventExecutionData_"+str(consdate)+".csv"), index=False)
+        source_directory = '/content/'
+            
+        if not self.getSimulator().getController().isOnline(): 
+            event_df.to_csv(os.path.join("..", "data", "simulation", str(inputdate)+"_EventExecutionData_"+str(consdate)+".csv"), index=False)
+        else:  
+            event_df.to_csv(source_directory+'/'+str(inputdate)+"_EventExecutionData_"+str(consdate)+".csv") 
 
 
         location_df = pd.DataFrame(columns=["EntityName","EntityID","Time","LocationName","LocationID"])
 
         for locdata in self.getSimulator().getLocationData():
             location_df.loc[len(location_df)] = locdata
+        
 
-        location_df.to_csv(os.path.join("..", "data", "simulation", "LocationData.csv"), index=False)
+        if not self.getSimulator().getController().isOnline(): 
+            location_df.to_csv(os.path.join("..", "data", "simulation", "LocationData.csv"), index=False)
+        else:
+            location_df.to_csvs(source_directory+'/'+"LocationData.csv"), index=False)
 
 
         buffer_df = pd.DataFrame(columns=["BufferName","BufferID","Machine","Time","No.Items"])
@@ -912,8 +921,11 @@ class ShopFloorManager(OperationsManager):
         for bufferdata in self.getSimulator().getBufferData():
             buffer_df.loc[len(buffer_df)] = bufferdata
 
-        
-        buffer_df.to_csv(os.path.join("..", "data", "simulation", "BufferData.csv"), index=False)
+
+        if not self.getSimulator().getController().isOnline(): 
+            buffer_df.to_csv(os.path.join("..", "data", "simulation", "BufferData.csv"), index=False)
+        else:
+            buffer_df.to_csv(source_directory+'/'+"BufferData.csv"), index=False)
 
         return
 #########################################################################################################################
