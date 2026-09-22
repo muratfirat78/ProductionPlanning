@@ -564,6 +564,28 @@ class MILPManager(object):
 
     def getSimulator(self):
         return self.simulator
+
+    def constructInstance(self):
+        # to be overwritten
+        return
+
+    def constructInstance(self):
+        # to be overwritten
+        return
+
+    def constructSchedule(self):
+        # to be overwritten
+        return
+
+    def solveProblem(self):
+        # to be overwritten
+        return
+
+    def readSolution(self):
+        # to be overwritten
+        return
+        
+    
 #######################################################################################################
 
         
