@@ -367,9 +367,9 @@ class Simulator(object):
                     self.saveLog("ERROR in progress update: "+str(e))
                 start = timer()
                 self.getController().getVisualManager().updateSimProgress("Writing data")
-                OperationsMgr.writeDataTBRMOutPut("Simulation")
+                OperationsMgr.writeDataOutPut("Simulation")
                 OperationsMgr.writeData()
-                #OperationsMgr.writeDataTBRMOutPut(1)
+            
                 end = timer()
                 
                 self.getController().getVisualManager().updateSimProgress("Data writing time "+str(round(end - start,2))+" seconds.")

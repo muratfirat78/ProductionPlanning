@@ -984,7 +984,7 @@ class ShopFloorManager(OperationsManager):
 
         return True
 #############################################################################################################
-    def writeDataTBRMOutPut(self,algorithm):
+    def writeDataOutPut(self,algorithm):
 
 
         TBRM_df= pd.DataFrame(columns=["ID","Product","Product/ID","Quantity To Produce","Deadline","Reference","Work Orders/Work Center","Work Orders/Work Center/ID","Processing Machine","Work Orders/Operation","Operation Order","Work Orders/Expected Duration","Work Orders/Start(ORG)","Work Orders/Start","Work Orders/End(ORG)","Work Orders/End","Work Orders/Status","Tardy","Lateness (days)"])
@@ -1033,8 +1033,12 @@ class ShopFloorManager(OperationsManager):
 
             TBRM_df["Work Orders/Start"] = pd.to_datetime(TBRM_df["Work Orders/Start"]).dt.floor('s')
             TBRM_df["Work Orders/End"] = pd.to_datetime(TBRM_df["Work Orders/End"]).dt.floor('s')
-            
-            TBRM_df.to_csv(os.path.join("..", "data", "schedules","TBRM_Plan_"+inputdate+"_"+algorithm+"_"+str((datetime.now()).date())+".csv"),index = False)
+
+
+            if not self.getSimulator().getController().isOnline(): 
+                TBRM_df.to_csv(os.path.join("..", "data", "schedules","TBRM_Plan_"+inputdate+"_"+algorithm+"_"+str((datetime.now()).date())+".csv"),index = False)
+            else:
+                TBRM_df.to_csv(source_directory+'/'+"TBRM_Plan_"+inputdate+"_"+algorithm+"_"+str((datetime.now()).date())+".csv")
         except Exception as e:
             self.getSimulator().saveLog("ERROR: in writing TBRM data "+str(e))
         
@@ -1067,6 +1071,7 @@ class ShopFloorManager(OperationsManager):
                 self.getSimulator().saveLog("ERROR: in making resource data "+str(e))    
             
 
+      
         res_df.to_csv(os.path.join("..", "TBRM Machining BV","Resources_"+str((datetime.now()).date())+".csv"),index = False)
 
         return 
