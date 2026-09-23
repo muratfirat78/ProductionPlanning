@@ -1254,6 +1254,7 @@ class VisualManager():
 
     def updateSimProgress(self,info):
 
+        
         self.getRunProgress().value+=str(info)+ "\n"
         
         return

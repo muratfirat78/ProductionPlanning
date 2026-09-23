@@ -74,7 +74,8 @@ class Controller:
         
         self.UseCase = usecase
         try: 
-            self.getSimulator().saveLog("REPORT: set use case  "+str(self.UseCase))
+           
+            #self.getSimulator().saveLog("REPORT: set use case  "+str(self.UseCase))
             if usecase == "Production":
                 self.setWorkManager(ShopFloorManager(self.Simulator))
                 self.getWorkManager().setDemandType("Product")
@@ -84,11 +85,11 @@ class Controller:
                 self.getWorkManager().setDemandType("Shipment")
     
 
-            self.getSimulator().saveLog("REPORT: applying use case "+str(self.UseCase))
+            #self.getSimulator().saveLog("REPORT: applying use case "+str(self.UseCase))
             self.applyUseCase()
 
         except Exception as e:
-            self.getSimulator().saveLog("ERROR: in setting use case "+str(e))  
+            #self.getSimulator().saveLog("ERROR: in setting use case "+str(e))  
       
 
 
