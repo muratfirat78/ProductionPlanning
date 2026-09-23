@@ -106,13 +106,13 @@ class Controller:
                 "usecases"
             )
 
-            self.getSimulator().saveLog("REPORT: path "+str(abs_file_path))
+            #self.getSimulator().saveLog("REPORT: path "+str(abs_file_path))
 
             myworkmgr = self.getWorkManager()
 
             
             for root, dirs, files in os.walk(abs_file_path):
-                self.getSimulator().saveLog("REPORT: files "+str(files))
+                #self.getSimulator().saveLog("REPORT: files "+str(files))
                      
                 for name in files:
                                     
@@ -125,28 +125,29 @@ class Controller:
                         for i,r in events_df.iterrows():
                             eventtype = SimEvent(self.getSimulator(),r['Name'],r['Type'],r["ResourceType"],r["EquipmentType"],bool(r["Preemptable"]))
                             myworkmgr.getEventTypes()[eventtype.getName()]= eventtype
-                            self.getSimulator().saveLog("REPORT: eventtype defined: "+str(eventtype.getName()))
+                            #self.getSimulator().saveLog("REPORT: eventtype defined: "+str(eventtype.getName()))
 
-                        self.getSimulator().saveLog("REPORT: eventtypes "+str(myworkmgr.getEventTypes().keys()))
+                        #self.getSimulator().saveLog("REPORT: eventtypes "+str(myworkmgr.getEventTypes().keys()))
                         for eventtypename,eventtype in myworkmgr.getEventTypes().items():
                             ev_df = events_df[events_df["Name"] == eventtypename]
-                            self.getSimulator().saveLog("REPORT: eventtype df "+str(len(ev_df)))
+                            #self.getSimulator().saveLog("REPORT: eventtype df "+str(len(ev_df)))
                             for i,r in ev_df.iterrows():
                                 if not pd.isna(r['Successor']):
                                     if r['Successor'] in myworkmgr.getEventTypes():
                                         succ_event = myworkmgr.getEventTypes()[r['Successor']]
                                         if not succ_event in eventtype.getSuccessorDict():
                                             eventtype.getSuccessorDict()[succ_event] = "Finish to Start"
-                                            self.getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+" has successor  "+r['Successor'])
+                                            #self.getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+" has successor  "+r['Successor'])
                                         else:
-                                            self.getSimulator().saveLog("REPORT: successor  "+r['Successor']+" is not found in successordict...")
+                                            pass
+                                            #self.getSimulator().saveLog("REPORT: successor  "+r['Successor']+" is not found in successordict...")
                                         
                                     else:
-                                        self.getSimulator().saveLog("ERROR: successor  "+r['Successor']+" is not found in eventtypes...")
+                                        #self.getSimulator().saveLog("ERROR: successor  "+r['Successor']+" is not found in eventtypes...")
                       
 
                         decisions_df = pd.read_csv(abs_file_path+'/'+self.UseCase+"_Decisions.csv")
-                        self.getSimulator().saveLog("REPORT: decisions_df "+str(len(decisions_df)))
+                        #self.getSimulator().saveLog("REPORT: decisions_df "+str(len(decisions_df)))
                         for eventtypename,eventtype in myworkmgr.getEventTypes().items():
                             event_df = decisions_df[decisions_df["EventType"] == eventtypename]
                             if not (eventtypename in myworkmgr.getAlgorithmSetting()):
@@ -154,14 +155,14 @@ class Controller:
                                 
                             for i,r in event_df.iterrows():
 
-                                self.getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+"  decisions case none? "+str(pd.isna(r['Case'])))
+                                #self.getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+"  decisions case none? "+str(pd.isna(r['Case'])))
                                 if not pd.isna(r['Case']):
                                     if not r['Case'] in eventtype.getDecisionsDict():
                                         eventtype.getDecisionsDict()[r['Case']] = []
 
-                                    self.getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+" case "+str(r['Case'])+" decision "+str(r['DecisionType']))
+                                    #self.getSimulator().saveLog("REPORT: eventtype "+str(eventtypename)+" case "+str(r['Case'])+" decision "+str(r['DecisionType']))
                                     eventtype.getDecisionsDict()[r['Case']].append(r['DecisionType'])
-                                self.getSimulator().saveLog("REPORT: decision type "+str(r['DecisionType'])+", alg: "+str(r['DecisionAlgorithm']))
+                                #self.getSimulator().saveLog("REPORT: decision type "+str(r['DecisionType'])+", alg: "+str(r['DecisionAlgorithm']))
                                 myworkmgr.getAlgorithmSetting()[eventtypename][r['DecisionType']]= r['DecisionAlgorithm']
                                
                         precedenceinfo_df = pd.read_csv(abs_file_path+'/'+self.UseCase+"_PrecedenceInfo.csv")
@@ -180,7 +181,7 @@ class Controller:
                             
        
         except Exception as e:
-            self.getSimulator().saveLog("ERROR: in reading use case "+str(e))  
+            display("ERROR: in reading use case "+str(e))  
      
         return
 
