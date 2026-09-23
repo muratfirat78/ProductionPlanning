@@ -62,7 +62,11 @@ class Controller:
 
             
         except Exception as e:
-            print("ERROR: in checking use cases "+str(e))    
+            print("ERROR: in checking use cases "+str(e))  
+
+        if len(self.getSimulator().getUseCases()) > 0: 
+            self.UseCase = self.getSimulator().getUseCases()[0]
+            self.setUseCase(self.UseCase)
 
         return 
 
