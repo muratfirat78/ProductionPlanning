@@ -16,6 +16,7 @@ class Controller:
         self.MILPManager = ProductionMILPManager(self.Simulator)
         self.UseCase = None
         self.GitDir = gitfolder
+        self.checkUseCases()
 
     def setGitDir(self,gitdir):
         self.GitDir = gitdir
