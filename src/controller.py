@@ -89,6 +89,7 @@ class Controller:
             self.applyUseCase()
 
         except Exception as e:
+            display("ERROR: in setting use case "+str(e))
             #self.getSimulator().saveLog("ERROR: in setting use case "+str(e))  
       
 
