@@ -1512,6 +1512,9 @@ class VisualManager():
         try: 
             selected_eventtype = self.getEventTypes().value
             selected_decison = self.getCaseDecisions().value
+
+            if selected_eventtype == None or selected_decison == None:
+                return
     
             self.getDecisionAlgs().options = []
     
