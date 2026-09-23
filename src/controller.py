@@ -181,7 +181,7 @@ class Controller:
                         #self.getOperationsManager().getSimulator().saveLog("REPORT: precedenceinfo_df size "+str(len(precedenceinfo_df)))
                         
                 for eventtypename,eventtype in myworkmgr.getEventTypes().items():
-                            event_df = precedenceinfo_df[precedenceinfo_df["Predecessor"] == eventtypename]
+                    event_df = precedenceinfo_df[precedenceinfo_df["Predecessor"] == eventtypename]
 
                     for i,r in event_df.iterrows():
                         if not r['Successor'] in eventtype.getPrecendenceDict():
