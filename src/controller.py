@@ -143,6 +143,7 @@ class Controller:
                                             #self.getSimulator().saveLog("REPORT: successor  "+r['Successor']+" is not found in successordict...")
                                         
                                     else:
+                                        pass
                                         #self.getSimulator().saveLog("ERROR: successor  "+r['Successor']+" is not found in eventtypes...")
                       
 
