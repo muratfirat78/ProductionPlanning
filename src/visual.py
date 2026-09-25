@@ -17,6 +17,8 @@ from pathlib import Path
 from IPython.display import display, HTML
 from matplotlib import colormaps
 from matplotlib.patches import Patch
+import plotly.graph_objects as go
+import plotly.express as px
 warnings.filterwarnings("ignore")
 
 
@@ -180,6 +182,36 @@ class VisualManager():
         return
     def getResourceMenu(self):
         return self.ResourceMenu 
+
+    def setCombinedLastDay(self,dt):
+        self.CombinedLastDay = dt
+        return
+    def getCombinedLastDay(self):
+        return self.CombinedLastDay
+
+    def setCombinedMachineFilter(self,dp):
+        self.CombinedMachineFilter = dp
+        return
+    def getCombinedMachineFilter(self):
+        return self.CombinedMachineFilter
+
+    def setCombinedOperatorFilter(self,dp):
+        self.CombinedOperatorFilter = dp
+        return
+    def getCombinedOperatorFilter(self):
+        return self.CombinedOperatorFilter
+
+    def setCombinedProductFilter(self,dp):
+        self.CombinedProductFilter = dp
+        return
+    def getCombinedProductFilter(self):
+        return self.CombinedProductFilter
+
+    def setCombinedFilterBox(self,bx):
+        self.CombinedFilterBox = bx
+        return
+    def getCombinedFilterBox(self):
+        return self.CombinedFilterBox
 
 
     def setUseCaseMenu(self,df):
@@ -1166,6 +1198,284 @@ class VisualManager():
 
         # This callback updates the output widget and returns no value.
         return
+
+    def _updateDropdownOptions(self,dropdown,options):
+        # Refresh a filter dropdown's options while keeping its selection when still valid.
+        current_value = dropdown.value
+        dropdown.options = options
+        dropdown.value = current_value if current_value in options else options[0]
+        return
+
+    def _parseEventIntervals(self,event_row):
+        """Return every valid execution interval recorded for one event."""
+        # An event may contain several disjoint execution intervals in ProgressSteps.
+        # Return every interval separately so gaps in an operator's work remain visible.
+        parsed_steps = []
+        event_steps = event_row.get("ProgressSteps")
+
+        if pd.notna(event_steps) and str(event_steps).strip():
+            for step in str(event_steps).split("~"):
+                # Each step has the form [start-end]. Invalid steps are ignored.
+                step_match = re.match(
+                    r"^\[(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})-"
+                    r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\]$",
+                    step.strip(),
+                )
+                if step_match is None:
+                    continue
+                step_start, step_end = step_match.groups()
+                parsed_steps.append((pd.to_datetime(step_start), pd.to_datetime(step_end)))
+
+        if not parsed_steps:
+            # Older or incomplete rows may not have ProgressSteps. Use their
+            # work-order timestamps as a single interval when both are valid.
+            fallback_start = pd.to_datetime(event_row.get("Work Orders/Start"), errors="coerce")
+            fallback_end = pd.to_datetime(event_row.get("Work Orders/End"), errors="coerce")
+            if pd.notna(fallback_start) and pd.notna(fallback_end):
+                parsed_steps.append((fallback_start, fallback_end))
+
+        return parsed_steps
+
+    def showCombinedSchedule(self,scheduleday):
+        """Display active machine jobs and operator activity for one calendar day."""
+
+        try:
+            selected_schedule = self.getSelectedSchedule()
+            # The plan controls machine bars; the event log controls operator activity.
+            simevent_df = self.getController().getWorkManager().getDataManager().ReadSimulationEventData(selected_schedule)
+            schedule_df = selected_schedule.DataFrame.copy()
+            day_start = pd.Timestamp(scheduleday).normalize()
+            day_end = day_start + timedelta(days=1)
+
+            # Normalize the schedule fields used by the filters and timeline.
+            schedule_df["Work Orders/Start"] = pd.to_datetime(schedule_df["Work Orders/Start"], errors="coerce")
+            schedule_df["Work Orders/End"] = pd.to_datetime(schedule_df["Work Orders/End"], errors="coerce")
+            schedule_df["Work Orders/Status"] = schedule_df["Work Orders/Status"].fillna("").astype(str).str.strip()
+            schedule_df["Processing Machine"] = schedule_df["Processing Machine"].fillna("").astype(str).str.strip()
+
+            # Only jobs that are currently planned or in progress belong in this view.
+            active_statuses = {"Scheduled", "In Progress"}
+            valid_machine = ~schedule_df["Processing Machine"].isin({"", "-", "nan", "None"})
+            active_job = schedule_df["Work Orders/Status"].isin(active_statuses)
+            overlaps_day = (schedule_df["Work Orders/End"] > day_start) & (schedule_df["Work Orders/Start"] < day_end)
+            machine_df = schedule_df[valid_machine & active_job & overlaps_day].copy()
+
+            with self.getScheduleOutput():
+                clear_output()
+
+                if machine_df.empty:
+                    display("No active machine jobs found for "+str(day_start.date()))
+                    return
+
+                # Clip jobs at the selected day's boundaries before converting to hours.
+                machine_df["Start"] = machine_df["Work Orders/Start"].clip(lower=day_start)
+                machine_df["End"] = machine_df["Work Orders/End"].clip(upper=day_end)
+                machine_df["StartHour"] = (machine_df["Start"] - day_start).dt.total_seconds()/3600
+                machine_df["DurationHours"] = (machine_df["End"] - machine_df["Start"]).dt.total_seconds()/3600
+                machine_df = machine_df[machine_df["DurationHours"] > 0].copy()
+
+                machine_names = sorted(machine_df["Processing Machine"].unique())
+                product_names = sorted(p for p in machine_df["Product"].unique() if pd.notna(p))
+
+                # Keep operator events separate from the machine plan. This data is
+                # later used to draw the human activity lines on the same timeline.
+                operator_resource_names = simevent_df["Resource"].astype(str).str.strip()
+                event_names = simevent_df["EventName"].fillna("").astype(str).str.strip()
+                operator_event_df = simevent_df[
+                    simevent_df["Resource"].notna()
+                    & operator_resource_names.str.contains(
+                        r"operator|manual worker",
+                        case=False,
+                        regex=True,
+                    )
+                    & event_names.ne("Trailer Transport")
+                ].copy()
+                self._updateDropdownOptions(self.getCombinedMachineFilter(), ["All"]+machine_names)
+                operator_names = sorted(operator_resource_names[operator_event_df.index].unique())
+                self._updateDropdownOptions(self.getCombinedOperatorFilter(), ["All"]+operator_names)
+                self._updateDropdownOptions(self.getCombinedProductFilter(), ["All"]+product_names)
+
+                # Apply the dashboard filters independently to machines and operators.
+                machine_sel = self.getCombinedMachineFilter().value
+                operator_sel = self.getCombinedOperatorFilter().value
+                product_sel = self.getCombinedProductFilter().value
+                if machine_sel != "All":
+                    machine_df = machine_df[machine_df["Processing Machine"] == machine_sel]
+                if operator_sel != "All":
+                    operator_event_df = operator_event_df[
+                        operator_resource_names[operator_event_df.index] == operator_sel
+                    ]
+                if product_sel != "All":
+                    machine_df = machine_df[machine_df["Product"] == product_sel]
+
+                if machine_df.empty:
+                    display("No active machine jobs match the selected filters for "+str(day_start.date()))
+                    return
+
+                # Events that do not map directly to a machine receive stable rows.
+                central_row = "Central Buffer / Inventory"
+                other_row = "Off-machine / Other"
+
+                def location_to_row(location):
+                    location = str(location).strip()
+                    if location.startswith("CentralBuffer"):
+                        return central_row
+                    if location.endswith("_Location"):
+                        location = location[:-len("_Location")]
+                    return location if location in machine_names else other_row
+
+                # Expand every ProgressSteps interval into one drawable action segment.
+                operator_intervals = []
+                for _, event_row in operator_event_df.iterrows():
+                    for interval_start, interval_end in self._parseEventIntervals(event_row):
+                        if interval_end <= day_start or interval_start >= day_end:
+                            continue
+                        interval_start = max(interval_start, day_start)
+                        interval_end = min(interval_end, day_end)
+                        if interval_end <= interval_start:
+                            continue
+                        operator_intervals.append({
+                            "Operator": str(event_row["Resource"]).strip(),
+                            "Event": str(event_row.get("EventName", "Unknown event")),
+                            "EventID": event_row.get("EventID", "-"),
+                            "Start": interval_start,
+                            "End": interval_end,
+                            "Row": location_to_row(event_row.get("Location", "-")),
+                            "Location": event_row.get("Location", "-"),
+                            "Equipment": event_row.get("Equipment", "-"),
+                            "Product": event_row.get("Product", "-"),
+                            "Reference": event_row.get("Reference", "-"),
+                        })
+                operator_intervals.sort(key=lambda interval: (interval["Operator"], interval["Start"]))
+
+                # Use one stable color per product so the same product is recognizable.
+                product_color_palette = px.colors.qualitative.Plotly
+                product_color_map = {}
+                for product in machine_df["Product"].unique():
+                    product_color_map[product] = product_color_palette[len(product_color_map) % len(product_color_palette)]
+
+                # Machine bars contain the requested planning information in their tooltips.
+                hover_texts = []
+                for _, row in machine_df.iterrows():
+                    hover_texts.append(
+                        "<b>"+str(row["Work Orders/Operation"])+"</b><br>"
+                        + "Machine: "+str(row["Processing Machine"])+"<br>"
+                        + "Product: "+str(row["Product"])+"<br>"
+                        + "Reference: "+str(row["Reference"])+"<br>"
+                        + "Operation order: "+str(row["Operation Order"])+"<br>"
+                        + "Status: "+str(row["Work Orders/Status"])+"<br>"
+                        + "Start: "+str(row["Start"])+"<br>"
+                        + "End: "+str(row["End"])+"<br>"
+                        + "Expected duration: "+str(row["Work Orders/Expected Duration"])
+                    )
+
+                # Build the combined Plotly figure: machine bars first, operator lines next.
+                fig = go.Figure()
+                fig.add_trace(go.Bar(
+                    x=machine_df["DurationHours"],
+                    y=machine_df["Processing Machine"],
+                    base=machine_df["StartHour"],
+                    orientation="h",
+                    marker=dict(color=[product_color_map[p] for p in machine_df["Product"]]),
+                    hovertext=hover_texts,
+                    hoverinfo="text",
+                    name="Active machine jobs",
+                    showlegend=False,
+                ))
+
+                # Each operator gets a separate line color across all of their actions.
+                operator_color_palette = px.colors.qualitative.Dark24
+                for operator_position, operator_name in enumerate(sorted({
+                    interval["Operator"] for interval in operator_intervals
+                })):
+                    operator_rows = [
+                        interval for interval in operator_intervals
+                        if interval["Operator"] == operator_name
+                    ]
+                    operator_hours = []
+                    operator_locations = []
+                    start_hover_texts = []
+                    for interval in operator_rows:
+                        operator_hours.extend([
+                            (interval["Start"] - day_start).total_seconds()/3600,
+                            (interval["End"] - day_start).total_seconds()/3600,
+                        ])
+                        operator_locations.extend([interval["Row"], interval["Row"]])
+                        event_details = (
+                            operator_name+"<br>"
+                            + "<b>"+interval["Event"]+"</b> (ID "+str(interval["EventID"])+")<br>"
+                            + "Location: "+str(interval["Location"])+"<br>"
+                            + "Equipment: "+str(interval["Equipment"])+"<br>"
+                            + "Product: "+str(interval["Product"])+"<br>"
+                            + "Reference: "+str(interval["Reference"])
+                        )
+                        start_hover_texts.append(event_details+"<br>Time: "+str(interval["Start"]))
+                    # Draw the activity path without hover behavior. Hover belongs only
+                    # to the start points, while end points remain quiet visual anchors.
+                    fig.add_trace(go.Scatter(
+                        x=operator_hours,
+                        y=operator_locations,
+                        mode="lines",
+                        name=operator_name+" activity",
+                        line=dict(
+                            color=operator_color_palette[operator_position % len(operator_color_palette)],
+                            width=3,
+                            shape="hv",
+                        ),
+                        hoverinfo="skip",
+                    ))
+                    operator_color = operator_color_palette[operator_position % len(operator_color_palette)]
+                    start_hours = operator_hours[::2]
+                    end_hours = operator_hours[1::2]
+                    start_locations = operator_locations[::2]
+                    end_locations = operator_locations[1::2]
+                    fig.add_trace(go.Scatter(
+                        x=start_hours,
+                        y=start_locations,
+                        mode="markers",
+                        name=operator_name+" action starts",
+                        marker=dict(color=operator_color, size=8, symbol="circle"),
+                        hovertext=start_hover_texts,
+                        hoverinfo="text",
+                        showlegend=False,
+                    ))
+                    fig.add_trace(go.Scatter(
+                        x=end_hours,
+                        y=end_locations,
+                        mode="markers",
+                        name=operator_name+" action ends",
+                        marker=dict(color=operator_color, size=4, symbol="circle"),
+                        hoverinfo="skip",
+                        showlegend=False,
+                    ))
+
+                fig.update_yaxes(
+                    title="Machines and operator activity locations",
+                    categoryorder="array",
+                    categoryarray=list(reversed(machine_names + [central_row, other_row])),
+                )
+                fig.update_xaxes(
+                    title="Planned time",
+                    range=[0, 24],
+                    tickmode="array",
+                    tickvals=list(range(25)),
+                    ticktext=[(day_start+timedelta(hours=h)).strftime("%H:%M") for h in range(25)],
+                    rangeslider=dict(visible=True, thickness=0.08),
+                )
+                fig.update_layout(
+                    title="Active planned machine jobs and operator activity: "+str(day_start.date()),
+                    height=max(500, 40*(len(machine_names)+2)+150)+120,
+                    width=1400,
+                    bargap=0.3,
+                    dragmode="zoom",
+                )
+
+                fig.show(config=dict(scrollZoom=True, displaylogo=False))
+
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in showing active machine jobs "+str(e))
+
+        return
 ##################################################################################################################################################
     def ViewMILPResults(self,event):
 
@@ -1456,6 +1766,13 @@ class VisualManager():
                 self.getController().getSimulator().saveLog("REPORT: Operator schedules should be shown")
             else:
                 self.getController().getSimulator().saveLog("REPORT: Algortihm "+str(self.getSelectedSchedule().getAlgorithmName())+" doesn ot have operator schedule.")
+        if self.getResourceMenu().value == "Combined":
+            if self.getSelectedSchedule().getAlgorithmName() == "Simulation":
+                self.setCombinedLastDay(daydatetime)
+                self.showCombinedSchedule(daydatetime)
+                self.getController().getSimulator().saveLog("REPORT: Combined schedule should be shown")
+            else:
+                self.getController().getSimulator().saveLog("REPORT: Algortihm "+str(self.getSelectedSchedule().getAlgorithmName())+" doesn ot have combined schedule.")
             
 
         #self.showSchedule(weekfirstday,lastday)
@@ -1464,8 +1781,18 @@ class VisualManager():
 
     def resetSchedule(self,event):
 
+        # Only expose the combined-view filters while that view is active.
+        self.getCombinedFilterBox().layout.display = 'flex' if self.getResourceMenu().value == "Combined" else 'none'
+
         with self.getScheduleOutput():
             clear_output()
+
+        return
+
+    def applyCombinedFilters(self,event):
+
+        if self.getResourceMenu().value == "Combined" and self.getCombinedLastDay() is not None:
+            self.showCombinedSchedule(self.getCombinedLastDay())
 
         return
 
@@ -1807,8 +2134,17 @@ class VisualManager():
         self.setWeeksMenu(widgets.Dropdown(options = [],description = 'Day:'))
         self.getWeeksMenu().observe(self.showDaySchedule,'value')
 
-        self.setResourceMenu(widgets.Dropdown(options = ["Machines","Operators"],description = 'Resource:'))
+        self.setResourceMenu(widgets.Dropdown(options = ["Machines","Operators","Combined"],description = 'Resource:'))
         self.getResourceMenu().observe(self.resetSchedule,'value')
+
+        self.setCombinedMachineFilter(widgets.Dropdown(options = ["All"],value = "All",description = 'Machine:'))
+        self.setCombinedOperatorFilter(widgets.Dropdown(options = ["All"],value = "All",description = 'Operator:'))
+        self.setCombinedProductFilter(widgets.Dropdown(options = ["All"],value = "All",description = 'Product:'))
+        self.getCombinedMachineFilter().observe(self.applyCombinedFilters,'value')
+        self.getCombinedOperatorFilter().observe(self.applyCombinedFilters,'value')
+        self.getCombinedProductFilter().observe(self.applyCombinedFilters,'value')
+        self.setCombinedFilterBox(HBox(children=[self.getCombinedMachineFilter(),self.getCombinedOperatorFilter(),self.getCombinedProductFilter()]))
+        self.getCombinedFilterBox().layout.display = 'none'
 
 
 
@@ -1821,7 +2157,7 @@ class VisualManager():
         self.setScheduleOutput(widgets.Output())
         self.getScheduleOutput().layout.height = '2000px'
 
-        resultbox = VBox(children=[HBox(children=[self.getResultText(),self.getKPIArea()]),HBox(children=[self.getWeeksMenu(),self.getResourceMenu()]),self.getScheduleOutput()])
+        resultbox = VBox(children=[HBox(children=[self.getResultText(),self.getKPIArea()]),HBox(children=[self.getWeeksMenu(),self.getResourceMenu()]),self.getCombinedFilterBox(),self.getScheduleOutput()])
         
         self.setResultBox(resultbox)
 
