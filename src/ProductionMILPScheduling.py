@@ -924,7 +924,8 @@ class ProductionMILPManager(MILPManager):
             inputdate = ""
             if self.getSimulator().getController().getWorkManager().getInputDate() !=None:
                 inputdate = str(self.getSimulator().getController().getWorkManager().getInputDate().date())
-                
+
+            allschedule_df = pd.DataFrame()
             for resource in self.getSimulator().getController().getWorkManager().getResources():
                 if resource in self.getMachineDict():
 
@@ -935,6 +936,14 @@ class ProductionMILPManager(MILPManager):
     
                         schedule_row = {"PN":starttuple[0].getProduct().getPN(),"Quantity":starttuple[0].getOperation().getDemand().getQuantity(),"Work Orders/Start":self.convertSimTimeToDate(schtuple[0][1]),"Work Orders/End":self.convertSimTimeToDate(schtuple[1][1]),"Work Orders/Work Center":machine.getMachine().getName(),"Work Orders/Expected Duration":starttuple[0].getOperation().getRandVar().sampleValue(),"Product/ID":starttuple[0].getOperation().getDemand().getFinalProduct().getID() ,"Quantity":starttuple[0].getOperation().getDemand().getQuantity(),"Product":starttuple[0].getOperation().getDemand().getFinalProduct().getName(),"Deadline":starttuple[0].getOperation().getDemand().getDeadline(),"Reference":starttuple[0].getOperation().getDemand().getReference()}
                         machine.getScheduleDF().loc[len(machine.getScheduleDF())] = schedule_row
+
+                    allschedule_df = pd.concat([allschedule_df,machine.getScheduleDF()], ignore_index=True)
+
+
+            if not self.getSimulator().getController().isOnline():
+                allschedule_df.to_csv(os.path.join("..", "data", "schedules",+"Machines_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
+            else:
+                allschedule_df.to_csv(source_directory+'/'+"Machines_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv
 
 
             for resource in self.getSimulator().getController().getWorkManager().getResources():
@@ -949,7 +958,7 @@ class ProductionMILPManager(MILPManager):
                     if not self.getSimulator().getController().isOnline():
                         machine.getScheduleDF().to_csv(os.path.join("..", "data", "schedules",resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
                     else:
-                        machine.getScheduleDF().to_csv(source_directory+'/Schedule/'+resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv")
+                        machine.getScheduleDF().to_csv(source_directory+'/Schedules/'+resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv")
                         
 
             # find and write the lateness, tardiness, and earliness. 
