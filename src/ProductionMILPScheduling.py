@@ -426,7 +426,7 @@ class ProductionMILPManager(MILPManager):
         self.bigM = 100000000
         self.epsilon = 0.001
         self.OperationJobDict = dict()
-        self.direct_jobs = 45; self.first_successors = 18; self.second_successors = 12; 
+        self.direct_jobs = 35; self.first_successors = 17; self.second_successors = 17; 
         self.time_slot_increment = 10
         
 
