@@ -958,7 +958,8 @@ class ProductionMILPManager(MILPManager):
                     if not self.getSimulator().getController().isOnline():
                         machine.getScheduleDF().to_csv(os.path.join("..", "data", "schedules",resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
                     else:
-                        machine.getScheduleDF().to_csv(source_directory+'/Schedules/'+resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv")
+                        pass
+                        #machine.getScheduleDF().to_csv(source_directory+'/Schedules/'+resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv")
                         
 
             # find and write the lateness, tardiness, and earliness. 
