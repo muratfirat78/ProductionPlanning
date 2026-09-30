@@ -956,7 +956,8 @@ class ProductionMILPManager(MILPManager):
                     source_directory = '/content/'
 
                     if not self.getSimulator().getController().isOnline():
-                        machine.getScheduleDF().to_csv(os.path.join("..", "data", "schedules",resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
+                        pass
+                        #machine.getScheduleDF().to_csv(os.path.join("..", "data", "schedules",resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv"),index = False)
                     else:
                         pass
                         #machine.getScheduleDF().to_csv(source_directory+'/Schedules/'+resource.getName()+"_"+inputdate+"_MILP_"+str((datetime.now()).date())+".csv")
