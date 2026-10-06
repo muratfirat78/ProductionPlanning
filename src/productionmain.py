@@ -40,8 +40,7 @@ class ShopFloorManager(OperationsManager):
         # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
         casefromfile = True
-
-        
+  
 
         self.getDataManager().getObjectFeatures()["ProductionOrder"] = [("FinalProduct","Product")]
         self.getDataManager().getObjectFeatures()["ProductionOrder"].append(("FinalProductID","Product/ID"))

@@ -196,9 +196,6 @@ class Simulator(object):
             self.getController().getVisualManager().updateSimProgress("------------ SIMULATION START --------------")
             start = timer()
             remaining_events = []
-
-
-         
             
             self.timetostop = self.getTime()+self.getTimeLimit()*int(not self.isSuspendMode())+self.getTimeIncrement()*int(self.isSuspendMode())
 
@@ -210,43 +207,21 @@ class Simulator(object):
 
                 self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
 
-            
-                
                 while self.getCurrentDay().weekday() >= self.weekdays:
-
-                  
 
                     time_events = []
                     if self.getTime() in self.getEventQueue():
+                        
                         time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started event
   
-                        consdered_ev_ids = []
                         for ev_id in range(len(time_events)):
-                            if ev_id in consdered_ev_ids:
-                                continue
-                            e = time_events[ev_id]
                             
-                            case = OperationsMgr.determineProgressCase(e)
-
-                            if case == "Suspend" or case == "Handle":
-                                if e.getSuspendedSuccessor() == None:
-                                    #self.saveLog(" REPORT: handle/suspend event "+e.getName()+"("+str(e.getID())+") moved from scheduled to pending")
-                                    if e in self.getEventQueue()[self.getTime()]:
-                                        self.getEventQueue()[self.getTime()].remove(e)
-                                    if not e in self.getEventQueue()["Pending"]:
-                                        self.getEventQueue()["Pending"].append(e)
-                                else:
-                                    successor = e.getSuspendedSuccessor()
-                                    case = OperationsMgr.determineProgressCase(successor)
-                                    if case == "Suspend" or case == "Handle":
-                                        if successor in self.getEventQueue()[self.getTime()]:
-                                            self.getEventQueue()[self.getTime()].remove(successor)
-                                    if successor in time_events:
-                                        consdered_ev_ids.append(time_events.index(successor))
-                                        
-                                    if not successor in self.getEventQueue()["Pending"]:
-                                        self.getEventQueue()["Pending"].append(successor)
-
+                            if OperationsMgr.determineProgressCase(time_events[ev_id]) in ["Suspend","Handle"]:
+                                if e in self.getEventQueue()[self.getTime()]:
+                                    self.getEventQueue()[self.getTime()].remove(e)
+                                if not e in self.getEventQueue()["Pending"]:
+                                    self.getEventQueue()["Pending"].append(e)
+                               
                     
                     self.updateTime(self.shiftsperday*self.shifthours*60)
                     self.setCurrentDay(datetime(self.getRealTime().year, self.getRealTime().month, self.getRealTime().day))
@@ -269,7 +244,6 @@ class Simulator(object):
 
                 try: 
 
-
                     pendingevents = [e for e in self.getEventQueue()["Pending"]]
                     #pendingevents.sort(key=lambda x: x.getDecisionWaitingTime(), reverse=True)
                     
@@ -287,16 +261,7 @@ class Simulator(object):
                                 OperationsMgr.ProgressEvent(event)
                             execround += 1
                             time_events =[e for e in self.getEventQueue()[self.getTime()]] # scheduled/started events
-                            
-                            if execround > 10:
-                                self.saveLog("REPORT: time "+str(self.getTime())+", time events "+str([e.getName()+"("+str(e.getID())+"), case: "+str(OperationsMgr.determineProgressCase(e)) for e in time_events]))
-                             
-                                for event in time_events:
-                                    self.saveLog("REPORT: event "+str(event.getName())+"-"+str(event.getID())+", loc "+str(event.getLocation().getName()))
-                                    for progress_id in range(len(event.getProgressList())):
-                                        self.saveLog("REPORT: progress step: "+str(event.getProgressList()[progress_id][1]))
-                                    self.saveLog("REPORT: TotalProgress: "+str(event.getTotalProgress())+", p: "+str(event.getProcessTime()))
-                        
+                
                 except Exception as e:
                     self.saveLog("ERROR in execute events: "+str(e))
 
@@ -319,8 +284,7 @@ class Simulator(object):
                     
                     if order.getItems()[0].getActiveOperation() != None:
                         incompletequantity+=order.getQuantity()
-                        #self.saveLog("REPORT: demand "+str(order.getFinalProduct().getPN())+", Q: "+str(order.getQuantity())+"["+(str(order.getItems()[0].getID()) if len(order.getItems())>0 else '')+"-"+(str(order.getItems()[-1].getID()) if len(order.getItems())>0 else 'no item')+"]"+" next opr: none?"+str(order.getItems()[0].getActiveOperation() == None))
-    
+                 
                 self.saveLog("REPORT: Returned items :"+str(len(OperationsMgr.getCentralInventory().getInputBuffer().getItems()))+", incomplete quantity: "+str(incompletequantity)+", sum "+str(len(OperationsMgr.getCentralInventory().getInputBuffer().getItems())+incompletequantity)+" <=> total demand: "+str(totaldemand))
                 
                         
@@ -350,11 +314,6 @@ class Simulator(object):
     
                 if len(remaining_events) > 0:
                     self.saveLog("REPORT: In-complete events: "+str(len(remaining_events)))
-                    #for event in remaining_events:
-                        #self.saveLog(" REPORT: >>>>>>>>>> event: "+str(event.getName())+"("+str(event.getID())+")"+", loc: "+(event.getLocation().getName() if event.getLocation()!=None else "No Location")+", prog: "+str(event.getTotalProgress())+"-> "+str(["["+str(pr[1][0])+"-"+str(pr[1][1])+"]" for pr in event.getProgressList()])+", p: "+str(event.getProcessTime())+" items "+(str(len(event.getItems())) if len(event.getItems())>0 else "-")+" ["+(str(event.getItems()[0].getID())+"-"+str(event.getItems()[-1].getID()) if len(event.getItems())>0 else '')+"], reserved: ["+(str(event.getReservedItems()[0].getID())+"-"+str(event.getReservedItems()[-1].getID()) if len(event.getReservedItems())>0 else '')+"]")
-    
-                        #self.saveLog("REPORT:_____________________________________")
-                
                 end = timer()
                 
                 try:
