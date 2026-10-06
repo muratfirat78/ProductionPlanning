@@ -24,7 +24,7 @@ class Inventory(Resource):
 class Buffer(Resource):
     def __init__(self,buftype,mach,mycap,sim,workmngr):
        
-        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,workmngr.giveResouceID(),"Buffer",mycap,sim,workmngr,None)
+        super().__init__((mach.getName() if mach != None else "Central")+"_"+buftype,workmngr.giveResouceID(),str(buftype)+"Buffer",mycap,sim,workmngr,None)
         self.BufferType = buftype
         self.machine = mach
 
@@ -55,6 +55,13 @@ class Buffer(Resource):
 ##########################################################################################################  
     def generateEvent(self,display):
 
+
+        if not self in self.getWorkMgr().getEventGenerationDict():
+            return
+
+        eventtype = self.getWorkMgr().getEventGenerationDict()[self]
+
+            
         unreserved_items = [i for i in self.getItems() if i.getReservedEvent() == None]
         if display: 
             self.getSimulator().saveLog("REPORT: event generation at "+self.getName()+", items: "+(("["+str(self.getItems()[0].getID()) if len(self.getItems()) >0 else '')+"-"+(str(self.getItems()[-1].getID())+"]" if len(self.getItems())>0 else ''))+", unreserved items: "+(("["+str(self.getUnreservedItems()[0].getID()) if len(self.getUnreservedItems()) >0 else '')+"-"+(str(self.getUnreservedItems()[-1].getID())+"]" if len(self.getUnreservedItems())>0 else 'No unreserved items!')))
@@ -69,9 +76,8 @@ class Buffer(Resource):
         if (self.isInputType() and self.getMachine() == None):
             return
 
-       
-        event_type = "Machine Setup" if self.isInputType() else "Trailer Loading"
-        generated_event = ExecEvent((None if self.isInputType() else self),None,self.getWorkMgr().getEventTypes()[event_type])        
+  
+        generated_event = ExecEvent((None if self.isInputType() else self),None,eventtype)        
         self.getSimulator().getEventQueue()["Pending"].append(generated_event)       
 
         if display: 
@@ -81,7 +87,7 @@ class Buffer(Resource):
         for item in unreserved_items:
             item.setReservedEvent(generated_event) 
         
-        generated_event.setEquipment(self.getMachine() if event_type == "Machine Setup" else None) 
+        generated_event.setEquipment(self.getMachine() if eventtype.getName() == "Machine Setup" else None) 
               
         return
 ############################################################################################################        

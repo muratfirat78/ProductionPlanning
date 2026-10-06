@@ -1,10 +1,10 @@
-Name,Type,ResourceType,EquipmentType,Preemptable,Predecessor,Successor
-Trailer Loading,Loading,Operator,Trailer,False,,Trailer Transport
-Trailer Transport,Transport,Operator,Trailer,False,Trailer Loading,Trailer Unloading
-Trailer Unloading,Unloading,Operator,Trailer,False,Trailer Transport,
-Machine Setup,Setup,Operator,Machine,False,,Machine Loading
-Machine Loading,Loading,Operator,Machine,True,Machine Setup,Machine Processing
-Machine Processing,Processing,,Machine,True,Machine Loading,Machine Unloading
-Machine Unloading,Unloading,Operator,Machine,True,Machine Processing,
-Operator Move,Logistical,Operator,,False,,
-Bring Equipment,Logistical,Operator,Trailer,False,,
+Name,Type,ResourceType,EquipmentType,Preemptable,Generation,Predecessor,Successor
+Trailer Loading,Loading,Operator,Trailer,False,OutputBuffer,,Trailer Transport
+Trailer Transport,Transport,Operator,Trailer,False,Precedence,Trailer Loading,Trailer Unloading
+Trailer Unloading,Unloading,Operator,Trailer,False,Precedence,Trailer Transport,
+Machine Setup,Setup,Operator,Machine,False,InputBuffer,,Machine Loading
+Machine Loading,Loading,Operator,Machine,True,Precendence,Machine Setup,Machine Processing
+Machine Processing,Processing,,Machine,True,Precedence,Machine Loading,Machine Unloading
+Machine Unloading,Unloading,Operator,Machine,True,Precedence,Machine Processing,
+Operator Move,Logistical,Operator,,False,Precedence,,
+Bring Equipment,Logistical,Operator,Trailer,False,Precedence,,

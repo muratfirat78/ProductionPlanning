@@ -119,8 +119,9 @@ class Controller:
             for i,r in events_df.iterrows():
                 eventtype = SimEvent(self.getSimulator(),r['Name'],r['Type'],r["ResourceType"],r["EquipmentType"],bool(r["Preemptable"]))
                 myworkmgr.getEventTypes()[eventtype.getName()]= eventtype
-
-                
+                if not pd.isna(r['Generation']):
+                    eventtype.setGenerationPlace(r['Generation'])
+              
             #self.getSimulator().saveLog("REPORT: eventtypes "+str(myworkmgr.getEventTypes().keys()))
             for eventtypename,eventtype in myworkmgr.getEventTypes().items():
                 ev_df = events_df[events_df["Name"] == eventtypename]
@@ -151,6 +152,7 @@ class Controller:
                 
                         #self.getSimulator().saveLog("REPORT: decisions_df "+str(len(decisions_df)))
             for eventtypename,eventtype in myworkmgr.getEventTypes().items():
+
                 event_df = decisions_df[decisions_df["EventType"] == eventtypename]
                 if not (eventtypename in myworkmgr.getAlgorithmSetting()):
                     myworkmgr.getAlgorithmSetting()[eventtypename] = dict()

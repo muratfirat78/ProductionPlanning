@@ -45,7 +45,15 @@ class SimEvent(object):
         self.predecessorDict = dict() #key: predecessor, val: preceence type, e.g. "Finish to Start" or "Simultaneous Start" or "Simultaneous Finish"   
         self.preemptable = preemptable
         self.Simulator = sim
+        self.generationPlace = None
+
         
+    def setGenerationPlace(self,plc):
+        self.generationPlace = plc
+        return 
+
+    def getGenerationPlace(self):
+        return self.generationPlace 
         
     def getSimulator(self):
         return self.Simulator

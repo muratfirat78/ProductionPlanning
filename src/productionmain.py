@@ -35,6 +35,7 @@ class ShopFloorManager(OperationsManager):
         self.ProcessTimes = dict()  #key: event type name, val: 
         self.EventStatuses = dict() # key: status change, val: (prev_status,next_status)
         self.MySchedules = []
+        self.EventGenerationDict = dict() # key: eventtype, val: [Resources]
        
         # SimEvent: sim,myname,mytype,restype,equiptype,preemptable
 
@@ -63,6 +64,10 @@ class ShopFloorManager(OperationsManager):
         self.getDataManager().getObjectFeatures()["RawMaterial"].append(("ID","Components/Product/ID"))
 
     ###############################################################################
+
+
+    def getEventGenerationDict(self):
+        return self.EventGenerationDict
 
     def getMySchedules(self):
         return  self.MySchedules
@@ -197,12 +202,15 @@ class ShopFloorManager(OperationsManager):
     def createDemandItems(self,demand,product): # Physical products
         self.getSimulator().saveLog("Item creation starts")
         if len(product.getPredecessors()) == 0:
+            
             for itm in range(demand.getQuantity()):
                 
                 myitem = Item(demand,self.giveItemID())
                 self.getCentralInventory().getOutputBuffer().getItems().append(myitem) # generate trailer loading event.
                 demand.getItems().append(myitem)
-            self.getCentralInventory().getOutputBuffer().generateEvent(False)
+                #########################################################################################################
+            self.getCentralInventory().getOutputBuffer().generateEvent(False) ############################################
+            ############################################################################################################
         else:
             for preddemnd in demand.getDemandType().getPredecessors():
                 self.createDemandItems(demand,preddemnd)
@@ -501,7 +509,7 @@ class ShopFloorManager(OperationsManager):
             for item in event.getItems():
                 successor_event.getItems().append(item)
                 
-        if 'Item Reservation' in precedenceinfo:
+        if 'Item Reservation' in precedenceinfo: # MS -> ML
             for item in event.getItems():
                 if item.getReservedEvent() == event:
                     item.setReservedEvent(successor_event)

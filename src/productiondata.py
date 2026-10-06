@@ -143,7 +143,44 @@ class ProductionDataManager(DataManager):
                     #    self.getOperationsManager().getSimulator().saveLog("REPORT: OUTSource available shifts: : "+str(mach.getAvailableShifts())+", type: "+str(type(mach)))      
                     
             
-            self.getOperationsManager().getSimulator().saveLog("REPORT: No resources: "+str(len(self.getOperationsManager().getResources())))      
+            self.getOperationsManager().getSimulator().saveLog("REPORT: No resources: "+str(len(self.getOperationsManager().getResources())))    
+
+            for eventtypename,eventtype in self.getOperationsManager().getEventTypes().items():
+                
+                if eventtype.getGenerationPlace() != None:
+                    self.getOperationsManager().getSimulator().saveLog("REPORT: event "+eventtypename+" has generation place "+eventtype.getGenerationPlace())    
+                    
+                    if self.getOperationsManager().getCentralInventory().getInputBuffer().getType() == eventtype.getGenerationPlace():
+
+                        self.getOperationsManager().getEventGenerationDict()[self.getOperationsManager().getCentralInventory().getInputBuffer()] = eventtype
+                        self.getOperationsManager().getSimulator().saveLog("REPORT: resource : "+str(self.getOperationsManager().getCentralInventory().getInputBuffer().getName())+" is added for generation of event "+eventtypename)  
+
+                        
+                    if self.getOperationsManager().getCentralInventory().getOutputBuffer().getType() == eventtype.getGenerationPlace():
+
+
+                        self.getOperationsManager().getEventGenerationDict()[self.getOperationsManager().getCentralInventory().getOutputBuffer()] = eventtype
+                        self.getOperationsManager().getSimulator().saveLog("REPORT: resource : "+str(self.getOperationsManager().getCentralInventory().getOutputBuffer().getName())+" is added for generation of event "+eventtypename)  
+                        
+                    
+                    for res in self.getOperationsManager().getResources():
+                        self.getOperationsManager().getSimulator().saveLog("REPORT: res type "+res.getType())    
+                        if res.getType() == eventtype.getGenerationPlace():
+                            
+
+                            self.getOperationsManager().getEventGenerationDict()[res] = eventtype
+                            self.getOperationsManager().getSimulator().saveLog("REPORT: resource : "+str(res.getName())+" is added for generation of event "+eventtypename)    
+                        else: 
+                            if res.getType() == "Machine":
+                                if res.getInputBuffer().getType() == eventtype.getGenerationPlace():
+              
+                                    self.getOperationsManager().getEventGenerationDict()[res.getInputBuffer()]= eventtype
+                                    self.getOperationsManager().getSimulator().saveLog("REPORT: resource : "+str(res.getInputBuffer().getName())+" is added for generation of event "+eventtypename)  
+                                if res.getOutputBuffer().getType() == eventtype.getGenerationPlace():
+
+                                    self.getOperationsManager().getEventGenerationDict()[res.getOutputBuffer()]= eventtype
+                                    self.getOperationsManager().getSimulator().saveLog("REPORT: resource : "+str(res.getOutputBuffer().getName())+" is added for generation of event "+eventtypename)   
+                
            
         return
         
