@@ -21,4 +21,5 @@ Machine,PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,Packaging,False,,1,0
 Machine,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,External,False,,1,0.0,1
 Machine,MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,Preparation,False,,1,0.0,1_2
 Machine,MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,Preparation,False,,1,0.0,1_2
-Operator,Operator_New,48,Tests,,,,,
+Operator,Operator_New,43,Tests,,,,,1
+Operator,Operator_New,49,None,,,,,

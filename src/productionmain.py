@@ -1105,7 +1105,7 @@ class ShopFloorManager(OperationsManager):
         if not self.getSimulator().getController().isOnline(): 
             res_df.to_csv(os.path.join("..", self.getSimulator().getController().getUseCase(),"Resources_"+str((datetime.now()).date())+".csv"),index = False)
         else:
-            TBRM_df.to_csv(source_directory+'/'+"Resources_"+str((datetime.now()).date())+".csv")
+            res_df.to_csv(source_directory+'/'+"Resources_"+str((datetime.now()).date())+".csv")
             
 
         return 

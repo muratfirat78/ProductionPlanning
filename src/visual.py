@@ -2019,8 +2019,7 @@ class VisualManager():
             self.getController().getWorkManager().getAlgorithmSetting()[selected_eventtype][selected_decison] = self.getDecisionAlgorithms().value
             self.getDecisionAlgs().options = [self.getController().getWorkManager().getAlgorithmSetting()[selected_eventtype][selected_decison]]
 
-        
-
+    
         
 
         return
