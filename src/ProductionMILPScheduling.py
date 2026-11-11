@@ -25,8 +25,18 @@ class Job(object):
         self.MILPConstraint = None # sum(x_jm) <= 1
         self.PrecedenceConstraint = None # sum(x_j'm) <= sum(x_jm) for j -> j'
         self.PrecedenceConstraint2 = None # sum(c_{jm}x_{jm}) <= sum(st_{j'm}x_{j'm})+M*(1-sum(x_j'm))  for j -> j'
+        self.PrecedenceConstraint3 = None  # sum(st_{j'm}x_{j'm}) - sum(c_{jm}x_{jm}) <= GapVar
         self.GCD = None
         self.Matches = []
+        self.StartVar = None
+
+    def setPredecessorGapVar(self,vr):
+        self.PredecessorGapVar = vr
+        return 
+
+    def getPredecessorGapVar(self):
+        return self.PredecessorGapVar
+         
         
 
     def setGCD(self,gcd):
@@ -43,6 +53,9 @@ class Job(object):
 
     def getPrecedenceConstraint2(self):
         return self.PrecedenceConstraint2
+    
+    def getPrecedenceConstraint3(self):
+        return self.PrecedenceConstraint3
 
     def setPrecedenceConstraint(self,mycons):
         self.PrecedenceConstraint = mycons
@@ -50,6 +63,10 @@ class Job(object):
 
     def setPrecedenceConstraint2(self,mycons):
         self.PrecedenceConstraint2 = mycons
+        return 
+
+    def setPrecedenceConstraint3(self,mycons):
+        self.PrecedenceConstraint3 = mycons
         return 
 
     def getMILPConstraint(self):
@@ -540,6 +557,47 @@ class ProductionMILPManager(MILPManager):
             #progress.value+=" > currenttime "+str(currenttime)+" proctime: "+str(processtime)+"\n"
 
         return currenttime
+##########################################################################################################
+    def checkRescheduleTolerance(self,job):
+
+        progress = self.getProgress()
+
+        proctime = job.getProcessTime()
+
+        latest_completion = job.getCompletion()
+
+        progress.value+=" Job "+str(job.getName())+" > latest_completion "+str(latest_completion)+"\n"
+
+        completion_date = self.convertSimTimeToDate(job.getCompletion())
+
+        progress.value+=" Job "+str(job.getName())+" > completion_date "+str(completion_date)+", deadline: "+str(job.getDeadLine())+"\n"
+    
+        
+        if job.getDeadLine() > completion_date:
+            latest_completion = (job.getDeadLine() - self.getSimulator().getStartDay()).total_seconds()/60
+
+
+        progress.value+=" > latest_completion "+str(latest_completion)+"\n"
+        
+        
+        earliest_start = job.getStart()
+
+        if job.getSuccessor() != None: 
+            if job.getSuccessor().isScheduled():
+                latest_completion = min(latest_completion,job.getSuccessor().getStart())
+
+        progress.value+=" > latest_completion "+str(latest_completion)+"\n"
+
+
+        if job.getPredecessor()!= None: 
+            if job.getPredecessor().isScheduled():
+                earliest_start = min(earliest_start,job.getPredecessor().getCompletion())
+
+     
+
+        progress.value+=" > latest_completion "+str(latest_completion)+", earliest_start "+str(earliest_start)+", p: "+str(proctime)+", tol: "+str((latest_completion-earliest_start)/proctime)+"\n"
+
+        return (latest_completion-earliest_start)/proctime
 ##############################################################################################################
     def checkFeasibility(self,machine,slotlength,slotshifts,shift,starttime,job):
 
@@ -1114,6 +1172,18 @@ class ProductionMILPManager(MILPManager):
             for mach,joblist in machinedict.items():
                 progress.value+=" machine "+str(mach.getName())+" - jobs "+str(len(joblist))+"/"+str(len(machinejobs[mach]))+"\n"
             self.SchedulableJobs = [j for j in joblisttomatch]  
+    
+            tolerances = []
+    
+            #for mach in self.getMachines():
+                #for jobtuple in mach.getJobStarts():
+                    #tolerances.append((jobtuple[0],self.checkRescheduleTolerance(jobtuple[0])))
+                    
+    
+            tolerances.sort(key=lambda x: x[1], reverse=True)
+    
+            
+            progress.value+=" >>> tolerances: "+str([(x[0].getName(),x[1]) for x in tolerances])+"\n"
             
         except Exception as e:
             progress.value+="ERROR: in finding jobstomatch "+str(e)+"\n" 
@@ -1159,19 +1229,29 @@ class ProductionMILPManager(MILPManager):
                 ### precedence constraints
                 if job.getSuccessortoSchedule()!= None:
                     if job.getSuccessortoSchedule() in self.getSchedulableJobs():
-                        #progress.value+="  Operation "+str(job.getProduct().getPN())+" - "+job.getOperation().getName()+" has successor "+job.getSuccessor().getOperation().getName()+" in matchmodel"+"\n"
-                        # sum(x_j'm) <= sum(x_jm)+eps for j -> j'
-                        job.setPrecedenceConstraint(self.MILPModel.Constraint(-1,self.epsilon,job.getProduct().getPN()+"_"+job.getOperation().getName()+"_"+str(jobid)+'_preccons1'))
+                        cons_str = job.getProduct().getPN()+"_"+job.getOperation().getName()+"_"+str(jobid)
+                      
+                        job.setPrecedenceConstraint(self.MILPModel.Constraint(-1,self.epsilon,cons_str+'_preccons1'))
                         # sum(c_{jm}x_{jm}) <= sum(st_{j'm}x_{j'm})+M*(1-sum(x_j'm)) for j -> j'
-                        job.setPrecedenceConstraint2(self.MILPModel.Constraint(0,self.bigM,job.getProduct().getPN()+"_"+job.getOperation().getName()+"_"+str(jobid)+'_preccons2'))
+                        varname = str(jobid)+'_'+str(job.getSuccessortoSchedule().getProduct().getPN())+"_gap"
+                        job.getSuccessortoSchedule().setPredecessorGapVar(self.MILPModel.NumVar(lb=0, ub=self.bigM, name=varname ))
+          
+                        job.setPrecedenceConstraint2(self.MILPModel.Constraint(0,self.bigM,cons_str+'_preccons2'))
+                        # sum(c_{jm}x_{jm}) <= sum(st_{j'm}x_{j'm})+M*(1-sum(x_j'm))  for j -> j'
+
+                               
+                        job.setPrecedenceConstraint3(self.MILPModel.Constraint(-self.bigM,self.bigM,cons_str+'_preccons3'))
+                        job.getPrecedenceConstraint3().SetCoefficient(job.getSuccessortoSchedule().getPredecessorGapVar(),-1) 
+                        # sum(st_{j'm}x_{j'm}) - sum(c_{jm}x_{jm}) <= GapVar
+
+                        job.getPrecedenceConstraint3().SetCoefficient(job.getSuccessortoSchedule().getPredecessorGapVar(),-1)  # sum(st_{j'm}x_{j'm}) - sum(c_{jm}x_{jm}) <= GapVar
+
+                        objective.SetCoefficient(job.getSuccessortoSchedule().getPredecessorGapVar(),-100)
                     
                 ### precedence constraints
-                
                 jobid+=1
                 matchid = 0
-               
-
-                
+              
                 if len(job.getOperation().getAlternativeResources()) == 0:
                     progress.value+=" CHECK: Operation "+job.getOperation().getName()+" has no alternative machine..."+"\n"
 
@@ -1305,8 +1385,8 @@ class ProductionMILPManager(MILPManager):
                         #deadline_coeff =((self.getMaxDeadLine()-job.getDeadLine()).days) /((self.getMaxDeadLine() -self.getMinDeadLine()).days)
                         #obj_coeff = 50*deadline_coeff
 
-                        
-                            
+                              
+
                         
                         proctime_coeff =(job.getProcessTime()-self.getMinProcessTime()) /(self.getMaxProcessTime() -self.getMinProcessTime())
 
@@ -1317,6 +1397,7 @@ class ProductionMILPManager(MILPManager):
                         
                         obj_coeff+=5*job.getProcessTime()/self.getTimeHorizon()
 
+      
                         obj_coeff+=(1-(funcreturn[1]/self.getTimeHorizon()))
                     
                         
@@ -1326,6 +1407,8 @@ class ProductionMILPManager(MILPManager):
                         if job.getPrecedenceConstraint() != None:
                             job.getPrecedenceConstraint().SetCoefficient(matchvar,-1) # sum(x_j'm) <= sum(x_jm)+eps for j -> j'
                             job.getPrecedenceConstraint2().SetCoefficient(matchvar,funcreturn[1]) # sum(c_{jm}x_{jm}) <= sum(st_{j'm}x_{j'm})+M*(1-sum(x_j'm))   for j -> j'
+                            job.getPrecedenceConstraint3().SetCoefficient(matchvar,-funcreturn[1])  # sum(st_{j'm}x_{j'm}) - sum(c_{jm}x_{jm}) <= GapVar
+                            
                         if job.getPredecessortoSchedule() != None:
                             #progress.value+="+++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessortoSchedule().getOperation().getName()+"\n"
                             if job.getPredecessortoSchedule() in self.getSchedulableJobs():
@@ -1333,7 +1416,8 @@ class ProductionMILPManager(MILPManager):
                                 if job.getPredecessortoSchedule().getPrecedenceConstraint() != None:
                                     #progress.value+="++++++ job  "+job.getOperation().getName()+" has predecessor "+job.getPredecessortoSchedule().getOperation().getName()+" has constraints \n"
                                     job.getPredecessortoSchedule().getPrecedenceConstraint().SetCoefficient(matchvar,1)
-                                    job.getPredecessortoSchedule().getPrecedenceConstraint2().SetCoefficient(matchvar,(self.bigM-currentstart)) 
+                                    job.getPredecessortoSchedule().getPrecedenceConstraint2().SetCoefficient(matchvar,(self.bigM-currentstart))
+                                    job.getPredecessortoSchedule().getPrecedenceConstraint3().SetCoefficient(matchvar,currentstart)  # sum(st_{j'm}x_{j'm}) - sum(c_{jm}x_{jm}) <= GapVar
                                     obj_coeff+=5*(1-(funcreturn[1]/self.getTimeHorizon()))
                                    
 

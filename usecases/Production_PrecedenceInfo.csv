@@ -3,6 +3,7 @@ Trailer Loading,Trailer Transport,FromLocation
 Trailer Loading,Trailer Transport,Equipment
 Trailer Loading,Trailer Transport,Resource
 Trailer Loading,Trailer Transport,Items
+Trailer Loading,Trailer Transport,Batch
 Trailer Transport,Trailer Unloading,Equipment->FromLocation
 Trailer Transport,Trailer Unloading,ToLocation
 Trailer Transport,Trailer Unloading,Equipment

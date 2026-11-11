@@ -101,6 +101,7 @@ class ExecEvent(object):
         self.Equipment = None
         self.Processor = None
         self.Items = []
+        self.Batch = None
         self.ReservedItems = []
         self.successor = None
         self.predecessor = None
@@ -114,11 +115,24 @@ class ExecEvent(object):
         self.finishtostartsuccessor = None
         self.finishtostarpredecessor = None
         
+        
         self.decisionwaitingtime = 0
         
 
         self.startdelay = 0
         self.logisticalevents = []
+        '''
+        if "Create" in self.getEventType().getDecisionsDict():
+            for decision_type in self.getEventType().getDecisionsDict()["Create"]:
+                algname = eventype.getSimulator().getController().getWorkManager().getAlgorithmSetting()[self.getName()][decision_type]
+                algfunction = eventype.getSimulator().getController().getWorkManager().getProductionAlgManager().getDecisionAlgorithms()[decision_type][algname]
+                alg_return = algfunction(event)
+                if alg_return!= None:
+                    if decision_type == 'Select Destination': 
+                        self.ToLocation = alg_return.getInputBuffer()
+                        
+                   
+       '''     
 
        #            Event  -   From       -     To           Equip       Resource    location     Processor    
        #(OprMove)-> TL       OutputBuffer    Trailer        Trailer     Operator     From-loc                    
@@ -181,6 +195,7 @@ class ExecEvent(object):
 
     def setSimStartPredecessor(self,pred):
         self.simstartpredecessor = pred
+        
         return
 
     def getSimStartPredecessor(self):
@@ -348,6 +363,13 @@ class ExecEvent(object):
     def getItems(self):
         return self.Items
 
+    def setBatch(self,bt):
+        self.Batch = bt
+        return 
+
+    def getBatch(self):
+        return self.Batch
+
     def getResource(self):
         return self.Resource
         
@@ -439,12 +461,16 @@ class Resource(object):
         self.Itemcriteria = dict()
         self.processtype = None
         self.AvailableShifts = avshifts
+        self.Batches = []
 
     def getProcessType(self):
         return self.processtype
     def setProcessType(self,mypr):
         self.processtype = mypr
         return
+
+    def getBatches(self):
+        return self.Batches
 
     def getAvailableShifts(self):
         return self.AvailableShifts
@@ -494,6 +520,11 @@ class Resource(object):
        
     def getName(self):
         return self.Name  
+
+    def setName(self,nm):
+        self.Name = nm
+        return 
+        
     def getType(self):
         return self.Type
     def print(self):
@@ -703,6 +734,16 @@ class Demand(object):
         self.MILPCompletion = None
         self.reference = None
         self.releaseDate = None
+        self.myBatches = dict() # key: batchid, val: batch obj
+
+    def getBatches(self): # initailly all items
+        return self.myBatches
+
+    def createBatch(self):
+        mybatch = Batch(len(self.getBatches()),self)
+        self.getBatches()[mybatch.getID()] = mybatch
+        mybatch.setOperations()
+        return mybatch
 
     def setReleaseDate(self,dt):
         self.releaseDate = dt
@@ -764,6 +805,7 @@ class Item(object):
         self.ID = myid
         self.Demand = demand
         self.reservedEvent = None
+        self.myBatch = None
        
 
     def setReservedEvent(self,ev):
@@ -797,6 +839,85 @@ class Item(object):
     def getID(self):
         return self.ID
 
-    
+               
+       
+
+
+    def setBatch(self,bt):
+        self.myBatch = bt
+        return 
         
+    def getBatch(self):
+        return self.myBatch
+
+
+    
+############################################################################################################     
+class Batch(object):
+    def __init__(self,myid,dem):
+        self.items = []
+        self.id = myid
+        self.OperationProgress = []  # key: operation, val: status (True/False): True: Not to do | False: To do
+        self.reservedEvent = None
+        self.MyDemand = dem
+
+    def getDemand(self):
+        return self.MyDemand
+
+    def setOperations(self):
+    
+        if len(self.getOperationProgress()) == 0:
+            oprseq = self.getDemand().getFinalProduct().getOperationSequences()[self.getDemand().getID()]
+            for opr in oprseq:
+                if opr.isCancelled() or opr.isFinished() or opr.getName() == "Unknown":
+                    self.getOperationProgress().append((opr,True))
+                else:
+                    self.getOperationProgress().append((opr,False))
+        else: 
+            pass # when this batch is created from a previous batch, then here will be active.
+
+        return
+
+
+    def addItem(self,item):
+        self.getItems().append(item)
+        item.setBatch(self)
+        return
+
+    def setReservedEvent(self,ev):
+        self.reservedEvent = ev
+        for item in self.getItems():
+            item.setReservedEvent(ev) 
+        return
+
+    def getReservedEvent(self):
+        return self.reservedEvent
+
+    def getID(self):
+        return self.id
+
+    def getItems(self):
+        return self.items
+
+
+    def setItems(self,itlst):
+        self.items = itlst
+        return 
+
+    def getOperationProgress(self):
+        return self.OperationProgress
+
+    def getActiveOperation(self):
+        
+        for oprtuple in self.getOperationProgress():
+            if not oprtuple[1]:
+                return oprtuple[0]
+
+        return None
+
+    def toString(self):
+        return "Batch demand "+str(self.getDemand().getFinalProduct().getPN())+":"+str(self.getID())+"("+str(len(self.getItems()))+")"
+        
+        
+
 

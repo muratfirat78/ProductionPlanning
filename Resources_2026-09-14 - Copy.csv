@@ -1,0 +1,23 @@
+ResourceType,Name,ID,ProcessType,Automated,Alternatives,SetupTime,OperatingEffort,AvailableShifts
+Operator,Operator 1,,Metal forming,,,,,1
+Operator,Operator 2,,Metal forming,,,,,1
+Operator,Operator 3,,Metal forming,,,,,2
+Operator,Manual worker 1,,Benchwork,,,,,1
+Operator,Manual worker 2,,Benchwork,,,,,1
+Machine,M3-01_(FR3_01),__export__.mrp_workcenter_54_3f0243e1,Metal forming,False,FR3_02,60,0.3,1_2
+Machine,M3-02_(FR3_02),__export__.mrp_workcenter_55_15609e22,Metal forming,False,FR3_01,60,0.3,1_2
+Machine,M4-01_(FR4_01),__export__.mrp_workcenter_56_d6637dea,Metal forming,True,,60,0.1,1_2_3
+Machine,M4-02_(FR4_02),__export__.mrp_workcenter_57_6faf5319,Metal forming,True,M4-01_(FR4_01),60,0.1,1_2_3
+Machine,VF2SS_(M3-03),__export__.mrp_workcenter_60_6593b576,Metal forming,False,M5-03~M5-04~M5-05~M3-01_(FR3_01)~M3-02_(FR3_02),30,0.3,1_2
+Machine,M5-01_(FR5_01),__export__.mrp_workcenter_59_d6deab7b,Metal forming,True,FR5_02,60,0.1,1_2_3
+Machine,M5-02_(FR5_02),__export__.mrp_workcenter_58_a525d5b9,Metal forming,True,FR5_01,60,0.1,1_2_3
+Machine,UMC750_(M5-03),__export__.mrp_workcenter_61_bcb50df3,Metal forming,False,M5-04~M5-05,30,0.3,1_2
+Machine,UMC750SS_(M5-04),__export__.mrp_workcenter_62_468a38e5,Metal forming,True,M5-03~M5-05,30,0.1,1_2_3
+Machine,UMC400_(M5-06),__export__.mrp_workcenter_84_05c538b3,Metal forming,False,M5-04~UMC750_(M5-03)~UMC750SS_(M5-05),30,0.1,1_2
+Machine,UMC750SS_(M5-05),__export__.mrp_workcenter_83_95c50e96,Metal forming,False,M5-03~M5-04,30,0.3,1_2
+Machine,MP2_(ZGN_02),__export__.mrp_workcenter_64_95992ef5,Preparation,False,,1,0.0,1_2
+Machine,BW_(BKW_01),__export__.mrp_workcenter_66_9f807a30,Benchwork,False,,1,0.0,1_2
+Machine,PACK_(VERP_P),__export__.mrp_workcenter_67_d1ac8ce6,Packaging,False,,1,0.0,1_2
+Machine,OUT - Outsourced activity_(OUT - Outsourced),__export__.mrp_workcenter_68_8bff6631,External,False,,1,0.0,1
+Machine,MP1 - Material preparation - automatic sawing (ZGN_01),__export__.mrp_workcenter_63_98a7a00b,Preparation,False,,1,0.0,1_2
+Machine,MP3_(UITG_M),__export__.mrp_workcenter_65_c1e1b939,Preparation,False,,1,0.0,1_2

@@ -641,111 +641,111 @@ BW_(BKW_01)_Input,,BW_(BKW_01),3808,535
 M5-01_(FR5_01)_Output,,M5-01_(FR5_01),3809,0
 M3-01_(FR3_01)_Input,,M3-01_(FR3_01),3811,1159
 PACK_(VERP_P)_Input,,PACK_(VERP_P),3813,0
-MP2_(ZGN_02)_Output,,MP2_(ZGN_02),7682,100
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),7685,6
-MP3_(UITG_M)_Output,,MP3_(UITG_M),7690,500
-BW_(BKW_01)_Output,,BW_(BKW_01),7693,200
-UMC750_(M5-03)_Input,,UMC750_(M5-03),7694,138
-MP2_(ZGN_02)_Output,,MP2_(ZGN_02),7699,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),7701,1259
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),7704,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),7706,288
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),7709,4822
-MP3_(UITG_M)_Output,,MP3_(UITG_M),7713,0
-VF2SS_(M3-03)_Input,,VF2SS_(M3-03),7715,1019
-BW_(BKW_01)_Output,,BW_(BKW_01),7718,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),7720,200
-BW_(BKW_01)_Input,,BW_(BKW_01),7723,115
-BW_(BKW_01)_Output,,BW_(BKW_01),7726,420
-BW_(BKW_01)_Output,,BW_(BKW_01),7732,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7734,420
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),7737,6
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),7738,212
-BW_(BKW_01)_Input,,BW_(BKW_01),7742,110
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),7748,0
-UMC750_(M5-03)_Input,,UMC750_(M5-03),7750,144
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),7753,0
-BW_(BKW_01)_Input,,BW_(BKW_01),7755,322
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),7758,3814
-BW_(BKW_01)_Output,,BW_(BKW_01),7761,5
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),7766,0
-BW_(BKW_01)_Output,,BW_(BKW_01),7769,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),7771,205
-BW_(BKW_01)_Input,,BW_(BKW_01),7774,272
-M5-01_(FR5_01)_Input,,M5-01_(FR5_01),7777,18
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),7809,714
-BW_(BKW_01)_Output,,BW_(BKW_01),7875,50
-PACK_(VERP_P)_Output,,PACK_(VERP_P),7876,700
-BW_(BKW_01)_Output,,BW_(BKW_01),7881,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),7882,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),7883,255
-Central_Input,,Central Inventory,7884,1328
-BW_(BKW_01)_Input,,BW_(BKW_01),7886,212
-PACK_(VERP_P)_Input,,PACK_(VERP_P),7887,55
-UMC750_(M5-03)_Output,,UMC750_(M5-03),7900,6
-UMC750_(M5-03)_Output,,UMC750_(M5-03),7904,0
-UMC750_(M5-03)_Input,,UMC750_(M5-03),7906,150
-UMC750_(M5-03)_Input,,UMC750_(M5-03),7959,144
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),7976,1008
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),7980,3796
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),7980,0
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),7982,1722
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),7996,35
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),7999,0
-BW_(BKW_01)_Input,,BW_(BKW_01),8001,247
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),8014,18
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),8020,0
-M5-01_(FR5_01)_Input,,M5-01_(FR5_01),8022,36
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),8025,3662
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),8109,26
-PACK_(VERP_P)_Output,,PACK_(VERP_P),8112,200
-UMC750_(M5-03)_Output,,UMC750_(M5-03),8143,6
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),8147,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),8149,4769
-PACK_(VERP_P)_Output,,PACK_(VERP_P),8152,0
-Central_Input,,Central Inventory,8154,1528
-PACK_(VERP_P)_Input,,PACK_(VERP_P),8157,50
-UMC750_(M5-03)_Output,,UMC750_(M5-03),8257,0
-UMC750_(M5-03)_Input,,UMC750_(M5-03),8259,150
-PACK_(VERP_P)_Output,,PACK_(VERP_P),8262,5
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),9122,134
-BW_(BKW_01)_Output,,BW_(BKW_01),9122,60
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),9139,4760
-UMC750_(M5-03)_Input,,UMC750_(M5-03),9195,144
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9199,0
-Central_Input,,Central Inventory,9201,1533
-PACK_(VERP_P)_Input,,PACK_(VERP_P),9204,0
-UMC400_(M5-06)_Output,,UMC400_(M5-06),9259,124
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),9310,1008
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),9314,0
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),9316,1142
-BW_(BKW_01)_Output,,BW_(BKW_01),9319,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),9321,60
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),9324,3647
-BW_(BKW_01)_Input,,BW_(BKW_01),9327,35
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9330,50
-UMC400_(M5-06)_Output,,UMC400_(M5-06),9333,0
-UMC400_(M5-06)_Input,,UMC400_(M5-06),9335,282
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),9340,50
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9347,0
-Central_Input,,Central Inventory,9349,1583
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),9352,0
-Central_Input,,Central Inventory,9354,1633
-PACK_(VERP_P)_Input,,PACK_(VERP_P),9357,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),9360,15
-UMC400_(M5-06)_Input,,UMC400_(M5-06),9531,202
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),9535,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),9537,4775
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),9540,3646
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),9555,9
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9558,60
-M5-01_(FR5_01)_Output,,M5-01_(FR5_01),9759,459
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),9823,1
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),9829,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),9831,9
-PACK_(VERP_P)_Output,,PACK_(VERP_P),9834,0
-Central_Input,,Central Inventory,9836,1693
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),9920,342
+MP2_(ZGN_02)_Output,,MP2_(ZGN_02),4802,100
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),4805,6
+MP3_(UITG_M)_Output,,MP3_(UITG_M),4810,500
+BW_(BKW_01)_Output,,BW_(BKW_01),4813,200
+UMC750_(M5-03)_Input,,UMC750_(M5-03),4814,138
+MP2_(ZGN_02)_Output,,MP2_(ZGN_02),4819,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),4821,1259
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),4824,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),4826,288
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),4829,4822
+MP3_(UITG_M)_Output,,MP3_(UITG_M),4833,0
+VF2SS_(M3-03)_Input,,VF2SS_(M3-03),4835,1019
+BW_(BKW_01)_Output,,BW_(BKW_01),4838,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),4840,200
+BW_(BKW_01)_Input,,BW_(BKW_01),4843,115
+BW_(BKW_01)_Output,,BW_(BKW_01),4846,420
+BW_(BKW_01)_Output,,BW_(BKW_01),4852,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),4854,420
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),4857,6
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),4858,212
+BW_(BKW_01)_Input,,BW_(BKW_01),4862,110
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),4868,0
+UMC750_(M5-03)_Input,,UMC750_(M5-03),4870,144
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),4873,0
+BW_(BKW_01)_Input,,BW_(BKW_01),4875,322
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),4878,3814
+BW_(BKW_01)_Output,,BW_(BKW_01),4881,5
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),4886,0
+BW_(BKW_01)_Output,,BW_(BKW_01),4889,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),4891,205
+BW_(BKW_01)_Input,,BW_(BKW_01),4894,272
+M5-01_(FR5_01)_Input,,M5-01_(FR5_01),4897,18
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),4929,714
+BW_(BKW_01)_Output,,BW_(BKW_01),4995,50
+PACK_(VERP_P)_Output,,PACK_(VERP_P),4996,700
+BW_(BKW_01)_Output,,BW_(BKW_01),5001,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),5002,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),5003,255
+Central_Input,,Central Inventory,5004,1328
+BW_(BKW_01)_Input,,BW_(BKW_01),5006,212
+PACK_(VERP_P)_Input,,PACK_(VERP_P),5007,55
+UMC750_(M5-03)_Output,,UMC750_(M5-03),5020,6
+UMC750_(M5-03)_Output,,UMC750_(M5-03),5024,0
+UMC750_(M5-03)_Input,,UMC750_(M5-03),5026,150
+UMC750_(M5-03)_Input,,UMC750_(M5-03),5079,144
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),5096,1008
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),5100,3796
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),5100,0
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),5102,1722
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),5116,35
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),5119,0
+BW_(BKW_01)_Input,,BW_(BKW_01),5121,247
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),5134,18
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),5140,0
+M5-01_(FR5_01)_Input,,M5-01_(FR5_01),5142,36
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),5145,3662
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),5229,26
+PACK_(VERP_P)_Output,,PACK_(VERP_P),5232,200
+UMC750_(M5-03)_Output,,UMC750_(M5-03),5263,6
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),5267,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),5269,4769
+PACK_(VERP_P)_Output,,PACK_(VERP_P),5272,0
+Central_Input,,Central Inventory,5274,1528
+PACK_(VERP_P)_Input,,PACK_(VERP_P),5277,50
+UMC750_(M5-03)_Output,,UMC750_(M5-03),5377,0
+UMC750_(M5-03)_Input,,UMC750_(M5-03),5379,150
+PACK_(VERP_P)_Output,,PACK_(VERP_P),5382,5
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),6242,134
+BW_(BKW_01)_Output,,BW_(BKW_01),6242,60
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),6259,4760
+UMC750_(M5-03)_Input,,UMC750_(M5-03),6315,144
+PACK_(VERP_P)_Output,,PACK_(VERP_P),6319,0
+Central_Input,,Central Inventory,6321,1533
+PACK_(VERP_P)_Input,,PACK_(VERP_P),6324,0
+UMC400_(M5-06)_Output,,UMC400_(M5-06),6379,124
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),6430,1008
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),6434,0
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),6436,1142
+BW_(BKW_01)_Output,,BW_(BKW_01),6439,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),6441,60
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),6444,3647
+BW_(BKW_01)_Input,,BW_(BKW_01),6447,35
+PACK_(VERP_P)_Output,,PACK_(VERP_P),6450,50
+UMC400_(M5-06)_Output,,UMC400_(M5-06),6453,0
+UMC400_(M5-06)_Input,,UMC400_(M5-06),6455,282
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),6460,50
+PACK_(VERP_P)_Output,,PACK_(VERP_P),6467,0
+Central_Input,,Central Inventory,6469,1583
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),6472,0
+Central_Input,,Central Inventory,6474,1633
+PACK_(VERP_P)_Input,,PACK_(VERP_P),6477,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),6480,15
+UMC400_(M5-06)_Input,,UMC400_(M5-06),6651,202
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),6655,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),6657,4775
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),6660,3646
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),6675,9
+PACK_(VERP_P)_Output,,PACK_(VERP_P),6678,60
+M5-01_(FR5_01)_Output,,M5-01_(FR5_01),6879,459
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),6943,1
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),6949,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),6951,9
+PACK_(VERP_P)_Output,,PACK_(VERP_P),6954,0
+Central_Input,,Central Inventory,6956,1693
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),7040,342
 BW_(BKW_01)_Output,,BW_(BKW_01),10562,212
 M5-01_(FR5_01)_Output,,M5-01_(FR5_01),10568,0
 Central_Input,,Central Inventory,10570,2152
@@ -882,140 +882,140 @@ M5-01_(FR5_01)_Input,,M5-01_(FR5_01),13937,0
 M4-02_(FR4_02)_Output,,M4-02_(FR4_02),13947,21
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),13950,420
 M3-01_(FR3_01)_Output,,M3-01_(FR3_01),13965,2
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),17762,40
-BW_(BKW_01)_Input,,BW_(BKW_01),17762,0
-M4-02_(FR4_02)_Output,,M4-02_(FR4_02),17766,0
-M3-02_(FR3_02)_Input,,M3-02_(FR3_02),17768,339
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),17771,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),17773,633
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),17776,0
-Central_Input,,Central Inventory,17778,2467
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),17851,833
-PACK_(VERP_P)_Output,,PACK_(VERP_P),17854,342
-M5-01_(FR5_01)_Output,,M5-01_(FR5_01),17874,64
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),17877,600
-UMC750_(M5-03)_Output,,UMC750_(M5-03),17894,16
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),18059,174
-VF2SS_(M3-03)_Input,,VF2SS_(M3-03),18086,519
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),18090,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),18092,40
-UMC750SS_(M5-05)_Input,,UMC750SS_(M5-05),18106,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),18110,0
-Central_Input,,Central Inventory,18112,2809
-PACK_(VERP_P)_Input,,PACK_(VERP_P),18115,420
-M5-01_(FR5_01)_Output,,M5-01_(FR5_01),18119,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),18121,897
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),18124,0
-M4-02_(FR4_02)_Input,,M4-02_(FR4_02),18126,600
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),18129,2779
-UMC750_(M5-03)_Output,,UMC750_(M5-03),18133,0
-UMC750_(M5-03)_Input,,UMC750_(M5-03),18135,144
-M3-02_(FR3_02)_Input,,M3-02_(FR3_02),18162,321
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),18217,714
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),18221,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),18223,1071
-UMC750_(M5-03)_Input,,UMC750_(M5-03),18235,114
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),18366,10
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),18441,96
-M4-01_(FR4_01)_Output,,M4-01_(FR4_01),18506,0
-M3-02_(FR3_02)_Input,,M3-02_(FR3_02),18508,1035
-BW_(BKW_01)_Output,,BW_(BKW_01),18511,473
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),18514,0
-UMC400_(M5-06)_Output,,UMC400_(M5-06),18566,80
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),18695,669
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),18704,282
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19202,213
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19202,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),19204,4242
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),19207,2649
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),19207,0
-BW_(BKW_01)_Input,,BW_(BKW_01),19209,96
-BW_(BKW_01)_Output,,BW_(BKW_01),19264,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19266,473
-UMC400_(M5-06)_Output,,UMC400_(M5-06),19269,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19271,553
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),19279,18
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),19287,1001
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),19291,0
-BW_(BKW_01)_Input,,BW_(BKW_01),19293,765
-UMC400_(M5-06)_Input,,UMC400_(M5-06),19344,134
-M4-01_(FR4_01)_Input,,M4-01_(FR4_01),19363,134
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),19367,6
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19367,0
-Central_Input,,Central Inventory,19369,3022
-PACK_(VERP_P)_Input,,PACK_(VERP_P),19372,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19378,130
-UMC750_(M5-03)_Output,,UMC750_(M5-03),19394,30
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),19407,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19409,571
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),19429,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),19431,288
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19434,420
-BW_(BKW_01)_Input,,BW_(BKW_01),19437,669
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19441,0
-M5-01_(FR5_01)_Input,,M5-01_(FR5_01),19443,130
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),19446,2593
-UMC750_(M5-03)_Output,,UMC750_(M5-03),19450,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),19452,30
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),19460,287
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19463,98
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19465,18
-UMC750_(M5-03)_Input,,UMC750_(M5-03),19479,84
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19482,0
-Central_Input,,Central Inventory,19484,3442
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19552,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19555,56
-UMC750_(M5-03)_Output,,UMC750_(M5-03),19569,30
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),19603,9
-M3-02_(FR3_02)_Input,,M3-02_(FR3_02),19604,735
-PACK_(VERP_P)_Input,,PACK_(VERP_P),19607,0
-M5-01_(FR5_01)_Input,,M5-01_(FR5_01),19611,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19611,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),19613,1057
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),19614,2592
-UMC750_(M5-03)_Output,,UMC750_(M5-03),19618,0
-Central_Input,,Central Inventory,19620,3472
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),19621,1
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),19636,3242
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),19640,0
-BW_(BKW_01)_Input,,BW_(BKW_01),19642,678
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),19645,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),19647,288
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),19650,9
-BW_(BKW_01)_Output,,BW_(BKW_01),19653,96
-M4-02_(FR4_02)_Input,,M4-02_(FR4_02),19655,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19655,1
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19658,30
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),19661,0
-BW_(BKW_01)_Input,,BW_(BKW_01),19663,687
-BW_(BKW_01)_Output,,BW_(BKW_01),19665,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),19666,287
-PACK_(VERP_P)_Input,,PACK_(VERP_P),19667,96
-BW_(BKW_01)_Input,,BW_(BKW_01),19669,18
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19670,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),19672,2587
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),19672,3243
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19675,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),19677,0
-Central_Input,,Central Inventory,19677,3502
-UMC750_(M5-03)_Input,,UMC750_(M5-03),19687,78
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),19743,70
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19807,5
-M5-01_(FR5_01)_Output,,M5-01_(FR5_01),19817,130
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),19821,0
-BW_(BKW_01)_Input,,BW_(BKW_01),19823,88
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19826,96
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),19834,1
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),19937,994
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),19941,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),19943,3248
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),19946,2567
-M5-01_(FR5_01)_Output,,M5-01_(FR5_01),19950,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),19952,1124
-PACK_(VERP_P)_Output,,PACK_(VERP_P),19955,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),19957,96
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),19960,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),19962,288
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),14882,40
+BW_(BKW_01)_Input,,BW_(BKW_01),14882,0
+M4-02_(FR4_02)_Output,,M4-02_(FR4_02),14886,0
+M3-02_(FR3_02)_Input,,M3-02_(FR3_02),14888,339
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),14891,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),14893,633
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),14896,0
+Central_Input,,Central Inventory,14898,2467
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),14971,833
+PACK_(VERP_P)_Output,,PACK_(VERP_P),14974,342
+M5-01_(FR5_01)_Output,,M5-01_(FR5_01),14994,64
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),14997,600
+UMC750_(M5-03)_Output,,UMC750_(M5-03),15014,16
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),15179,174
+VF2SS_(M3-03)_Input,,VF2SS_(M3-03),15206,519
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),15210,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),15212,40
+UMC750SS_(M5-05)_Input,,UMC750SS_(M5-05),15226,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),15230,0
+Central_Input,,Central Inventory,15232,2809
+PACK_(VERP_P)_Input,,PACK_(VERP_P),15235,420
+M5-01_(FR5_01)_Output,,M5-01_(FR5_01),15239,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),15241,897
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),15244,0
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),15246,600
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),15249,2779
+UMC750_(M5-03)_Output,,UMC750_(M5-03),15253,0
+UMC750_(M5-03)_Input,,UMC750_(M5-03),15255,144
+M3-02_(FR3_02)_Input,,M3-02_(FR3_02),15282,321
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),15337,714
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),15341,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),15343,1071
+UMC750_(M5-03)_Input,,UMC750_(M5-03),15355,114
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),15486,10
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),15561,96
+M4-01_(FR4_01)_Output,,M4-01_(FR4_01),15626,0
+M3-02_(FR3_02)_Input,,M3-02_(FR3_02),15628,1035
+BW_(BKW_01)_Output,,BW_(BKW_01),15631,473
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),15634,0
+UMC400_(M5-06)_Output,,UMC400_(M5-06),15686,80
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),15815,669
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),15824,282
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16322,213
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16322,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),16324,4242
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),16327,2649
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),16327,0
+BW_(BKW_01)_Input,,BW_(BKW_01),16329,96
+BW_(BKW_01)_Output,,BW_(BKW_01),16384,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),16386,473
+UMC400_(M5-06)_Output,,UMC400_(M5-06),16389,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),16391,553
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),16399,18
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),16407,1001
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),16411,0
+BW_(BKW_01)_Input,,BW_(BKW_01),16413,765
+UMC400_(M5-06)_Input,,UMC400_(M5-06),16464,134
+M4-01_(FR4_01)_Input,,M4-01_(FR4_01),16483,134
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),16487,6
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16487,0
+Central_Input,,Central Inventory,16489,3022
+PACK_(VERP_P)_Input,,PACK_(VERP_P),16492,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16498,130
+UMC750_(M5-03)_Output,,UMC750_(M5-03),16514,30
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),16527,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),16529,571
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),16549,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),16551,288
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16554,420
+BW_(BKW_01)_Input,,BW_(BKW_01),16557,669
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16561,0
+M5-01_(FR5_01)_Input,,M5-01_(FR5_01),16563,130
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),16566,2593
+UMC750_(M5-03)_Output,,UMC750_(M5-03),16570,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),16572,30
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),16580,287
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),16583,98
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),16585,18
+UMC750_(M5-03)_Input,,UMC750_(M5-03),16599,84
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16602,0
+Central_Input,,Central Inventory,16604,3442
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),16672,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16675,56
+UMC750_(M5-03)_Output,,UMC750_(M5-03),16689,30
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),16723,9
+M3-02_(FR3_02)_Input,,M3-02_(FR3_02),16724,735
+PACK_(VERP_P)_Input,,PACK_(VERP_P),16727,0
+M5-01_(FR5_01)_Input,,M5-01_(FR5_01),16731,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16731,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),16733,1057
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),16734,2592
+UMC750_(M5-03)_Output,,UMC750_(M5-03),16738,0
+Central_Input,,Central Inventory,16740,3472
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),16741,1
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),16756,3242
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),16760,0
+BW_(BKW_01)_Input,,BW_(BKW_01),16762,678
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),16765,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),16767,288
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),16770,9
+BW_(BKW_01)_Output,,BW_(BKW_01),16773,96
+M4-02_(FR4_02)_Input,,M4-02_(FR4_02),16775,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16775,1
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16778,30
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),16781,0
+BW_(BKW_01)_Input,,BW_(BKW_01),16783,687
+BW_(BKW_01)_Output,,BW_(BKW_01),16785,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),16786,287
+PACK_(VERP_P)_Input,,PACK_(VERP_P),16787,96
+BW_(BKW_01)_Input,,BW_(BKW_01),16789,18
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16790,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),16792,2587
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),16792,3243
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16795,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),16797,0
+Central_Input,,Central Inventory,16797,3502
+UMC750_(M5-03)_Input,,UMC750_(M5-03),16807,78
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),16863,70
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),16927,5
+M5-01_(FR5_01)_Output,,M5-01_(FR5_01),16937,130
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),16941,0
+BW_(BKW_01)_Input,,BW_(BKW_01),16943,88
+PACK_(VERP_P)_Output,,PACK_(VERP_P),16946,96
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),16954,1
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),17057,994
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),17061,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),17063,3248
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),17066,2567
+M5-01_(FR5_01)_Output,,M5-01_(FR5_01),17070,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),17072,1124
+PACK_(VERP_P)_Output,,PACK_(VERP_P),17075,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),17077,96
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),17080,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),17082,288
 MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),20642,20
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),20647,0
 MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),20651,0
@@ -1191,96 +1191,96 @@ M3-01_(FR3_01)_Input,,M3-01_(FR3_01),24284,4364
 PACK_(VERP_P)_Output,,PACK_(VERP_P),24288,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),24290,92
 BW_(BKW_01)_Output,,BW_(BKW_01),24293,180
-BW_(BKW_01)_Output,,BW_(BKW_01),27842,0
-BW_(BKW_01)_Input,,BW_(BKW_01),27842,87
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),27844,0
-Central_Input,,Central Inventory,27844,4500
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),27913,1000
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),27916,0
-BW_(BKW_01)_Input,,BW_(BKW_01),27918,1087
-BW_(BKW_01)_Output,,BW_(BKW_01),27942,20
-BW_(BKW_01)_Output,,BW_(BKW_01),27944,0
-BW_(BKW_01)_Input,,BW_(BKW_01),27946,1000
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),27946,20
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),27950,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),27969,40
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),27971,0
-Central_Input,,Central Inventory,27973,4540
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),27999,1729
-UMC750_(M5-03)_Output,,UMC750_(M5-03),28029,16
-UMC750_(M5-03)_Output,,UMC750_(M5-03),28032,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),28034,16
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),28038,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),28069,16
-MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),28071,0
-Central_Input,,Central Inventory,28073,4556
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),28081,70
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),28084,0
-BW_(BKW_01)_Input,,BW_(BKW_01),28086,1070
-UMC750_(M5-03)_Input,,UMC750_(M5-03),28106,90
-BW_(BKW_01)_Output,,BW_(BKW_01),28120,87
-BW_(BKW_01)_Output,,BW_(BKW_01),28123,0
-BW_(BKW_01)_Input,,BW_(BKW_01),28124,70
-PACK_(VERP_P)_Input,,PACK_(VERP_P),28125,87
-PACK_(VERP_P)_Input,,PACK_(VERP_P),28129,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),28161,4244
-PACK_(VERP_P)_Output,,PACK_(VERP_P),28216,87
-PACK_(VERP_P)_Output,,PACK_(VERP_P),28218,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),28220,87
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),28224,0
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),28266,120
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),28270,0
-BW_(BKW_01)_Input,,BW_(BKW_01),28272,190
-UMC750_(M5-03)_Output,,UMC750_(M5-03),28427,16
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),28563,4144
-UMC750_(M5-03)_Output,,UMC750_(M5-03),28567,0
-Central_Input,,Central Inventory,28569,4572
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),28595,1519
-UMC750_(M5-03)_Input,,UMC750_(M5-03),28703,74
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),29282,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),29284,1519
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),29288,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),29305,210
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29399,473
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29401,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),29403,473
-PACK_(VERP_P)_Input,,PACK_(VERP_P),29407,0
-UMC750_(M5-03)_Output,,UMC750_(M5-03),29441,16
-UMC750_(M5-03)_Output,,UMC750_(M5-03),29444,0
-Central_Input,,Central Inventory,29446,4588
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29472,141
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29476,0
-Central_Input,,Central Inventory,29478,4729
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29488,18
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29492,0
-Central_Input,,Central Inventory,29494,4747
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),29584,100
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),29619,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),29621,288
-BW_(BKW_01)_Output,,BW_(BKW_01),29624,1000
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),29628,714
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),29633,100
-BW_(BKW_01)_Output,,BW_(BKW_01),29693,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),29695,1000
-BW_(BKW_01)_Input,,BW_(BKW_01),29697,120
-M3-02_(FR3_02)_Output,,M3-02_(FR3_02),29698,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29700,19
-BW_(BKW_01)_Input,,BW_(BKW_01),29700,834
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),29704,0
-BW_(BKW_01)_Input,,BW_(BKW_01),29706,934
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),29721,4143
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29725,0
-Central_Input,,Central Inventory,29727,4766
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29730,6
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),29734,0
-Central_Input,,Central Inventory,29736,4772
-M3-02_(FR3_02)_Input,,M3-02_(FR3_02),29755,0
-UMC750_(M5-03)_Input,,UMC750_(M5-03),29810,6
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),30044,128
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),30051,1519
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),30127,1
-BW_(BKW_01)_Output,,BW_(BKW_01),30191,70
-PACK_(VERP_P)_Output,,PACK_(VERP_P),30196,473
+BW_(BKW_01)_Output,,BW_(BKW_01),24962,0
+BW_(BKW_01)_Input,,BW_(BKW_01),24962,87
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),24964,0
+Central_Input,,Central Inventory,24964,4500
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),25033,1000
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),25036,0
+BW_(BKW_01)_Input,,BW_(BKW_01),25038,1087
+BW_(BKW_01)_Output,,BW_(BKW_01),25062,20
+BW_(BKW_01)_Output,,BW_(BKW_01),25064,0
+BW_(BKW_01)_Input,,BW_(BKW_01),25066,1000
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),25066,20
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),25070,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),25089,40
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),25091,0
+Central_Input,,Central Inventory,25093,4540
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),25119,1729
+UMC750_(M5-03)_Output,,UMC750_(M5-03),25149,16
+UMC750_(M5-03)_Output,,UMC750_(M5-03),25152,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),25154,16
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),25158,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),25189,16
+MP1 - Material preparation - automatic sawing (ZGN_01)_Output,,MP1 - Material preparation - automatic sawing (ZGN_01),25191,0
+Central_Input,,Central Inventory,25193,4556
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),25201,70
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),25204,0
+BW_(BKW_01)_Input,,BW_(BKW_01),25206,1070
+UMC750_(M5-03)_Input,,UMC750_(M5-03),25226,90
+BW_(BKW_01)_Output,,BW_(BKW_01),25240,87
+BW_(BKW_01)_Output,,BW_(BKW_01),25243,0
+BW_(BKW_01)_Input,,BW_(BKW_01),25244,70
+PACK_(VERP_P)_Input,,PACK_(VERP_P),25245,87
+PACK_(VERP_P)_Input,,PACK_(VERP_P),25249,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),25281,4244
+PACK_(VERP_P)_Output,,PACK_(VERP_P),25336,87
+PACK_(VERP_P)_Output,,PACK_(VERP_P),25338,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),25340,87
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),25344,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),25386,120
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),25390,0
+BW_(BKW_01)_Input,,BW_(BKW_01),25392,190
+UMC750_(M5-03)_Output,,UMC750_(M5-03),25547,16
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),25683,4144
+UMC750_(M5-03)_Output,,UMC750_(M5-03),25687,0
+Central_Input,,Central Inventory,25689,4572
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),25715,1519
+UMC750_(M5-03)_Input,,UMC750_(M5-03),25823,74
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),26402,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),26404,1519
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),26408,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),26425,210
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26519,473
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26521,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),26523,473
+PACK_(VERP_P)_Input,,PACK_(VERP_P),26527,0
+UMC750_(M5-03)_Output,,UMC750_(M5-03),26561,16
+UMC750_(M5-03)_Output,,UMC750_(M5-03),26564,0
+Central_Input,,Central Inventory,26566,4588
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26592,141
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26596,0
+Central_Input,,Central Inventory,26598,4729
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26608,18
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26612,0
+Central_Input,,Central Inventory,26614,4747
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),26704,100
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),26739,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),26741,288
+BW_(BKW_01)_Output,,BW_(BKW_01),26744,1000
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),26748,714
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),26753,100
+BW_(BKW_01)_Output,,BW_(BKW_01),26813,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),26815,1000
+BW_(BKW_01)_Input,,BW_(BKW_01),26817,120
+M3-02_(FR3_02)_Output,,M3-02_(FR3_02),26818,0
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26820,19
+BW_(BKW_01)_Input,,BW_(BKW_01),26820,834
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),26824,0
+BW_(BKW_01)_Input,,BW_(BKW_01),26826,934
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),26841,4143
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26845,0
+Central_Input,,Central Inventory,26847,4766
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26850,6
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),26854,0
+Central_Input,,Central Inventory,26856,4772
+M3-02_(FR3_02)_Input,,M3-02_(FR3_02),26875,0
+UMC750_(M5-03)_Input,,UMC750_(M5-03),26930,6
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),27164,128
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),27171,1519
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),27247,1
+BW_(BKW_01)_Output,,BW_(BKW_01),27311,70
+PACK_(VERP_P)_Output,,PACK_(VERP_P),27316,473
 M5-02_(FR5_02)_Output,,M5-02_(FR5_02),30722,0
 M3-01_(FR3_01)_Output,,M3-01_(FR3_01),30722,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),30724,1519
@@ -1416,95 +1416,95 @@ PACK_(VERP_P)_Input,,PACK_(VERP_P),34055,0
 PACK_(VERP_P)_Output,,PACK_(VERP_P),34075,20
 PACK_(VERP_P)_Output,,PACK_(VERP_P),34077,0
 Central_Input,,Central Inventory,34079,6589
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),37959,15
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),37962,0
-Central_Input,,Central Inventory,37964,6604
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38060,56
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38063,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),38065,4361
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),38136,4231
-BW_(BKW_01)_Output,,BW_(BKW_01),38141,174
-BW_(BKW_01)_Output,,BW_(BKW_01),38145,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),38147,174
-PACK_(VERP_P)_Input,,PACK_(VERP_P),38151,0
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38218,130
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38221,0
-BW_(BKW_01)_Input,,BW_(BKW_01),38223,130
-BW_(BKW_01)_Input,,BW_(BKW_01),38227,0
-BW_(BKW_01)_Output,,BW_(BKW_01),38232,130
-BW_(BKW_01)_Output,,BW_(BKW_01),38234,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),38236,130
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38263,1519
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38267,0
-Central_Input,,Central Inventory,38269,8123
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),38316,64
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),38323,3223
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38326,174
-PACK_(VERP_P)_Input,,PACK_(VERP_P),38330,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38330,0
-Central_Input,,Central Inventory,38332,8297
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38333,130
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38337,0
-Central_Input,,Central Inventory,38339,8427
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38375,80
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),38379,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),38381,80
-PACK_(VERP_P)_Input,,PACK_(VERP_P),38385,0
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),38701,500
-PACK_(VERP_P)_Output,,PACK_(VERP_P),38735,80
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),38780,1008
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),38845,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),38847,500
-PACK_(VERP_P)_Output,,PACK_(VERP_P),39362,0
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),39362,0
-Central_Input,,Central Inventory,39364,8507
-BW_(BKW_01)_Input,,BW_(BKW_01),39364,1008
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),39367,0
-BW_(BKW_01)_Input,,BW_(BKW_01),39368,0
-VF2SS_(M3-03)_Input,,VF2SS_(M3-03),39397,513
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),39462,661
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39557,96
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39561,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39563,96
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39567,0
-BW_(BKW_01)_Output,,BW_(BKW_01),39571,1008
-BW_(BKW_01)_Output,,BW_(BKW_01),39573,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),39575,1008
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),39579,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),39664,96
-PACK_(VERP_P)_Output,,PACK_(VERP_P),39666,0
-Central_Input,,Central Inventory,39668,8603
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39713,1519
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39715,0
-Central_Input,,Central Inventory,39717,10122
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39733,134
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),39737,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39739,134
-PACK_(VERP_P)_Input,,PACK_(VERP_P),39743,0
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),39755,6
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),39758,0
-VF2SS_(M3-03)_Input,,VF2SS_(M3-03),39760,519
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),39837,160
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),39875,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),39877,821
-VF2SS_(M3-03)_Input,,VF2SS_(M3-03),39890,513
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),39899,126
-PACK_(VERP_P)_Output,,PACK_(VERP_P),39902,134
-PACK_(VERP_P)_Output,,PACK_(VERP_P),39906,0
-Central_Input,,Central Inventory,39908,10256
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),40039,2562
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),40109,2
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),40144,0
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),40146,2562
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),40161,817
-UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),40165,0
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),40167,128
-UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),40189,122
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),40257,6
-MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),40291,0
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),40306,4
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),40310,0
-UMC750_(M5-03)_Input,,UMC750_(M5-03),40312,6
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),35079,15
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),35082,0
+Central_Input,,Central Inventory,35084,6604
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),35180,56
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),35183,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),35185,4361
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),35256,4231
+BW_(BKW_01)_Output,,BW_(BKW_01),35261,174
+BW_(BKW_01)_Output,,BW_(BKW_01),35265,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),35267,174
+PACK_(VERP_P)_Input,,PACK_(VERP_P),35271,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),35338,130
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),35341,0
+BW_(BKW_01)_Input,,BW_(BKW_01),35343,130
+BW_(BKW_01)_Input,,BW_(BKW_01),35347,0
+BW_(BKW_01)_Output,,BW_(BKW_01),35352,130
+BW_(BKW_01)_Output,,BW_(BKW_01),35354,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),35356,130
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),35383,1519
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),35387,0
+Central_Input,,Central Inventory,35389,8123
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),35436,64
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),35443,3223
+PACK_(VERP_P)_Output,,PACK_(VERP_P),35446,174
+PACK_(VERP_P)_Input,,PACK_(VERP_P),35450,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),35450,0
+Central_Input,,Central Inventory,35452,8297
+PACK_(VERP_P)_Output,,PACK_(VERP_P),35453,130
+PACK_(VERP_P)_Output,,PACK_(VERP_P),35457,0
+Central_Input,,Central Inventory,35459,8427
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),35495,80
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),35499,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),35501,80
+PACK_(VERP_P)_Input,,PACK_(VERP_P),35505,0
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),35821,500
+PACK_(VERP_P)_Output,,PACK_(VERP_P),35855,80
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),35900,1008
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),35965,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),35967,500
+PACK_(VERP_P)_Output,,PACK_(VERP_P),36482,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),36482,0
+Central_Input,,Central Inventory,36484,8507
+BW_(BKW_01)_Input,,BW_(BKW_01),36484,1008
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),36487,0
+BW_(BKW_01)_Input,,BW_(BKW_01),36488,0
+VF2SS_(M3-03)_Input,,VF2SS_(M3-03),36517,513
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),36582,661
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),36677,96
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),36681,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),36683,96
+PACK_(VERP_P)_Input,,PACK_(VERP_P),36687,0
+BW_(BKW_01)_Output,,BW_(BKW_01),36691,1008
+BW_(BKW_01)_Output,,BW_(BKW_01),36693,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),36695,1008
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),36699,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),36784,96
+PACK_(VERP_P)_Output,,PACK_(VERP_P),36786,0
+Central_Input,,Central Inventory,36788,8603
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),36833,1519
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),36835,0
+Central_Input,,Central Inventory,36837,10122
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),36853,134
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),36857,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),36859,134
+PACK_(VERP_P)_Input,,PACK_(VERP_P),36863,0
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),36875,6
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),36878,0
+VF2SS_(M3-03)_Input,,VF2SS_(M3-03),36880,519
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),36957,160
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),36995,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),36997,821
+VF2SS_(M3-03)_Input,,VF2SS_(M3-03),37010,513
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),37019,126
+PACK_(VERP_P)_Output,,PACK_(VERP_P),37022,134
+PACK_(VERP_P)_Output,,PACK_(VERP_P),37026,0
+Central_Input,,Central Inventory,37028,10256
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),37159,2562
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),37229,2
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),37264,0
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),37266,2562
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),37281,817
+UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),37285,0
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),37287,128
+UMC750SS_(M5-04)_Input,,UMC750SS_(M5-04),37309,122
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),37377,6
+MP1 - Material preparation - automatic sawing (ZGN_01)_Input,,MP1 - Material preparation - automatic sawing (ZGN_01),37411,0
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),37426,4
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),37430,0
+UMC750_(M5-03)_Input,,UMC750_(M5-03),37432,6
 M3-01_(FR3_01)_Output,,M3-01_(FR3_01),40802,0
 Central_Input,,Central Inventory,40804,10260
 VF2SS_(M3-03)_Input,,VF2SS_(M3-03),40814,507
@@ -1621,53 +1621,53 @@ PACK_(VERP_P)_Input,,PACK_(VERP_P),44417,0
 PACK_(VERP_P)_Output,,PACK_(VERP_P),44509,92
 PACK_(VERP_P)_Output,,PACK_(VERP_P),44513,0
 Central_Input,,Central Inventory,44515,11413
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),48095,87
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),48099,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),48101,87
-PACK_(VERP_P)_Input,,PACK_(VERP_P),48105,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),48192,87
-PACK_(VERP_P)_Output,,PACK_(VERP_P),48194,0
-Central_Input,,Central Inventory,48196,11500
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),48436,600
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),48440,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),48442,600
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),48446,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),48597,160
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),48724,38
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),48789,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),48791,198
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),48817,2675
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),48914,56
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),48916,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),48918,56
-PACK_(VERP_P)_Input,,PACK_(VERP_P),48922,0
-PACK_(VERP_P)_Output,,PACK_(VERP_P),49460,56
-PACK_(VERP_P)_Output,,PACK_(VERP_P),49464,0
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),49465,10
-Central_Input,,Central Inventory,49466,11556
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),49468,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),49470,2685
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),49515,1008
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),49519,0
-PACK_(VERP_P)_Input,,PACK_(VERP_P),49521,1008
-PACK_(VERP_P)_Input,,PACK_(VERP_P),49525,0
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),49533,2684
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),49635,38
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),49663,1
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),49665,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),49667,39
-PACK_(VERP_P)_Output,,PACK_(VERP_P),49727,1008
-PACK_(VERP_P)_Output,,PACK_(VERP_P),49729,0
-Central_Input,,Central Inventory,49731,12564
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),49744,2679
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),49817,6
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),49821,0
-Central_Input,,Central Inventory,49823,12570
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),50118,5
-M5-02_(FR5_02)_Output,,M5-02_(FR5_02),50183,0
-M3-01_(FR3_01)_Input,,M3-01_(FR3_01),50185,44
-M5-02_(FR5_02)_Input,,M5-02_(FR5_02),50192,2678
-M3-01_(FR3_01)_Output,,M3-01_(FR3_01),50395,160
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),45215,87
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),45219,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),45221,87
+PACK_(VERP_P)_Input,,PACK_(VERP_P),45225,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),45312,87
+PACK_(VERP_P)_Output,,PACK_(VERP_P),45314,0
+Central_Input,,Central Inventory,45316,11500
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),45556,600
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),45560,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),45562,600
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),45566,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),45717,160
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),45844,38
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),45909,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),45911,198
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),45937,2675
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),46034,56
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),46036,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),46038,56
+PACK_(VERP_P)_Input,,PACK_(VERP_P),46042,0
+PACK_(VERP_P)_Output,,PACK_(VERP_P),46580,56
+PACK_(VERP_P)_Output,,PACK_(VERP_P),46584,0
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),46585,10
+Central_Input,,Central Inventory,46586,11556
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),46588,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),46590,2685
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),46635,1008
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),46639,0
+PACK_(VERP_P)_Input,,PACK_(VERP_P),46641,1008
+PACK_(VERP_P)_Input,,PACK_(VERP_P),46645,0
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),46653,2684
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),46755,38
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),46783,1
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),46785,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),46787,39
+PACK_(VERP_P)_Output,,PACK_(VERP_P),46847,1008
+PACK_(VERP_P)_Output,,PACK_(VERP_P),46849,0
+Central_Input,,Central Inventory,46851,12564
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),46864,2679
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),46937,6
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),46941,0
+Central_Input,,Central Inventory,46943,12570
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),47238,5
+M5-02_(FR5_02)_Output,,M5-02_(FR5_02),47303,0
+M3-01_(FR3_01)_Input,,M3-01_(FR3_01),47305,44
+M5-02_(FR5_02)_Input,,M5-02_(FR5_02),47312,2678
+M3-01_(FR3_01)_Output,,M3-01_(FR3_01),47515,160
 M3-01_(FR3_01)_Output,,M3-01_(FR3_01),50882,0
 M5-02_(FR5_02)_Output,,M5-02_(FR5_02),50884,1
 BW_(BKW_01)_Input,,BW_(BKW_01),50884,160
@@ -1770,9 +1770,9 @@ UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),54156,6
 UMC750SS_(M5-04)_Output,,UMC750SS_(M5-04),54160,0
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),54162,6
 OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),54166,0
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),58277,500
-OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),58281,0
-Central_Input,,Central Inventory,58283,13567
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),55397,500
+OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),55401,0
+Central_Input,,Central Inventory,55403,13567
 M5-02_(FR5_02)_Output,,M5-02_(FR5_02),61256,97
 M5-02_(FR5_02)_Output,,M5-02_(FR5_02),61259,0
 Central_Input,,Central Inventory,61261,13664
@@ -1799,16 +1799,16 @@ Central_Input,,Central Inventory,63984,16543
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),64102,6
 OUT - Outsourced activity_(OUT - Outsourced)_Output,,OUT - Outsourced activity_(OUT - Outsourced),64106,0
 Central_Input,,Central Inventory,64108,16549
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),68494,500
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),68497,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),68499,500
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),68503,0
-VF2SS_(M3-03)_Input,,VF2SS_(M3-03),68589,0
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),69664,6
-VF2SS_(M3-03)_Output,,VF2SS_(M3-03),69668,0
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),69670,6
-OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),69674,0
-UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),70059,60
-UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),70063,0
-UMC400_(M5-06)_Input,,UMC400_(M5-06),70065,60
-UMC400_(M5-06)_Input,,UMC400_(M5-06),70295,0
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),65614,500
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),65617,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),65619,500
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),65623,0
+VF2SS_(M3-03)_Input,,VF2SS_(M3-03),65709,0
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),66784,6
+VF2SS_(M3-03)_Output,,VF2SS_(M3-03),66788,0
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),66790,6
+OUT - Outsourced activity_(OUT - Outsourced)_Input,,OUT - Outsourced activity_(OUT - Outsourced),66794,0
+UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),67179,60
+UMC750SS_(M5-05)_Output,,UMC750SS_(M5-05),67183,0
+UMC400_(M5-06)_Input,,UMC400_(M5-06),67185,60
+UMC400_(M5-06)_Input,,UMC400_(M5-06),67415,0

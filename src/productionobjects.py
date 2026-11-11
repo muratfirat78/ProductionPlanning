@@ -63,6 +63,9 @@ class Buffer(Resource):
 
             
         unreserved_items = [i for i in self.getItems() if i.getReservedEvent() == None]
+
+        unreserved_batches = [i for i in self.getBatches() if i.getReservedEvent() == None]
+        
         if display: 
             self.getSimulator().saveLog("REPORT: event generation at "+self.getName()+", items: "+(("["+str(self.getItems()[0].getID()) if len(self.getItems()) >0 else '')+"-"+(str(self.getItems()[-1].getID())+"]" if len(self.getItems())>0 else ''))+", unreserved items: "+(("["+str(self.getUnreservedItems()[0].getID()) if len(self.getUnreservedItems()) >0 else '')+"-"+(str(self.getUnreservedItems()[-1].getID())+"]" if len(self.getUnreservedItems())>0 else 'No unreserved items!')))
         
@@ -84,8 +87,13 @@ class Buffer(Resource):
             self.getSimulator().saveLog("REPORT: In generating event "+self.getName()+"@"+self.getLocation().getName()+" output buffer? "+str(not self.isInputType())+", event: "+generated_event.getName()+"("+str(generated_event.getID())+"), unreserved items: "+str(len(unreserved_items)))
 
         # reserve items till selection
-        for item in unreserved_items:
-            item.setReservedEvent(generated_event) 
+
+        for b in unreserved_batches:
+            b.setReservedEvent(generated_event)
+          
+        if len(unreserved_batches) == 0:
+            for item in unreserved_items:
+                item.setReservedEvent(generated_event) 
         
         generated_event.setEquipment(self.getMachine() if eventtype.getName() == "Machine Setup" else None) 
               
@@ -309,7 +317,8 @@ class Machine(Resource):
         self.InputBuffer = Buffer("Input",self,1000000,sim,workmngr)
         self.OutputBuffer = Buffer("Output",self,1000000,sim,workmngr)
         self.setLocation(myloc)
-        myloc.getResources().append(self)
+        if myloc!= None:
+            myloc.getResources().append(self)
         self.InputBuffer.setLocation(myloc)
         self.OutputBuffer.setLocation(myloc)
         self.automated = automated
@@ -328,6 +337,7 @@ class Machine(Resource):
         
    
 
+    
     
     def getSuspendedEvents(self):
         return self.suspendedevents
@@ -363,9 +373,17 @@ class Machine(Resource):
     def getSetupTime(self):
         return self.setuptime
 
+    def setSetupTime(self,st):
+        self.setuptime = st
+        return 
+
 
     def getOperatingEffort(self):
         return self.OperatingEffort
+
+    def setOperatingEffort(self,opf):
+        self.OperatingEffort = opf
+        return
 
     def getMachineCode(self):
         return self.MachineCode
@@ -376,6 +394,10 @@ class Machine(Resource):
         return self.OutputBuffer 
     def IsAutomated(self):
         return self.automated
+
+    def setAutomated(self,at):
+        self.automated = at
+        return 
 
 
     def checkShiftChange(self,shift):

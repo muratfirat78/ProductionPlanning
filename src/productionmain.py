@@ -178,14 +178,9 @@ class ShopFloorManager(OperationsManager):
         selectedOrders = []
 
         for prodorder in prodorders[:min(self.getNoOrders(),len(prodorders))]:     
-            #self.getSimulator().saveLog("__________________________________________________________")
-            #self.getSimulator().saveLog("REPORT: Selected production order release "+str(prodorder[1].getReleaseDate())+", deadline: "+str(prodorder[1].getDeadline()))
-
-            
             try: 
                 self.getSimulator().saveLog("Item creation starts")
                 self.createDemandItems(prodorder[1],prodorder[1].getFinalProduct())
-                #self.getSimulator().saveLog("REPORT: >>>> items ["+(str(prodorder[1].getItems()[0].getID()) if len(prodorder[1].getItems())>0 else '')+"-"+(str(prodorder[1].getItems()[-1].getID()) if len(prodorder[1].getItems())>0 else 'no item')+"]")
             except Exception as e:
                 self.getSimulator().saveLog("ERROR in item creation: "+str(e))
 
@@ -200,19 +195,28 @@ class ShopFloorManager(OperationsManager):
 #_____________________________________________________________________
     def createDemandItems(self,demand,product): # Physical products
         self.getSimulator().saveLog("Item creation starts")
+        
         if len(product.getPredecessors()) == 0:
-            
-            for itm in range(demand.getQuantity()):
-                
+
+            mybatch = demand.createBatch() 
+           
+            for itm in range(demand.getQuantity()): 
                 myitem = Item(demand,self.giveItemID())
-                self.getCentralInventory().getOutputBuffer().getItems().append(myitem) # generate trailer loading event.
+                self.getCentralInventory().getOutputBuffer().getItems().append(myitem) 
                 demand.getItems().append(myitem)
+                mybatch.addItem(myitem)
                 #########################################################################################################
+
+            
+            self.getCentralInventory().getOutputBuffer().getBatches().append(mybatch)
             self.getCentralInventory().getOutputBuffer().generateEvent(False) ############################################
+            
+            
             ############################################################################################################
         else:
             for preddemnd in demand.getDemandType().getPredecessors():
                 self.createDemandItems(demand,preddemnd)
+                
 
         buffer_data = {"BufferName": self.getCentralInventory().getOutputBuffer().getName(),"Machine":  self.getCentralInventory().getOutputBuffer().getMachine().getName() if  self.getCentralInventory().getOutputBuffer().getMachine()!= None else "Central Inventory","Time":self.getSimulator().getTime(),"No.Items":len(self.getCentralInventory().getOutputBuffer().getItems())}  
         self.getSimulator().getBufferData().append(buffer_data)
@@ -252,7 +256,7 @@ class ShopFloorManager(OperationsManager):
      
         case = self.determineProgressCase(event)
 
-        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())) or self.getSimulator().isSuspendMode():    
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())):    
             self.reportEvent(event,case,"Beginning")
       
         if case == "Handle":  
@@ -261,7 +265,8 @@ class ShopFloorManager(OperationsManager):
                 self.scheduleEvent(event,"Pending")
                 return ## >>>> R  E  T  U  R   N: necessary conditions failed!
 
-            event.sampleProcessTime(self)
+            if event.getProcessTime() == None: 
+                event.sampleProcessTime(self)
   
             if not event.getEventType().isPreemptable(): 
                 if  self.getSimulator().getTime()+event.getProcessTime() > self.getCurrentShiftEnd() - 1:
@@ -272,7 +277,7 @@ class ShopFloorManager(OperationsManager):
         
         casesuccess,success_decisions = self.makeCaseDecisions(event,case,debugtimes,debugeventids)
 
-        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())) or self.getSimulator().isSuspendMode():    
+        if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())):    
             self.getSimulator().saveLog(" REPORT: "+str(event.getName())+str(event.getID())+", rcasesuccess: "+str(casesuccess)+", decs: "+str(success_decisions))       
   
         if not casesuccess: # backtrack the decisions
@@ -281,11 +286,13 @@ class ShopFloorManager(OperationsManager):
                
             self.resetDecisions(event,success_decisions,debugtimes,debugeventids)  
             event.increaseDecisionWaitingTime()
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())):
+                self.reportEvent(event,case,"Returning handle no success")
             return  ## >>>> R  E  T  U  R   N: all required assignments could not be done!
     
         ##########################  H  A  N  D  L  E #########################
         if case == "Handle": 
-            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())) or self.getSimulator().isSuspendMode():    
+            if self.getSimulator().getTime() in debugtimes or event.getID() in debugeventids or (self.getSimulator().isDisplayMode() and (event in self.getSimulator().getDisplayEvents())):    
                 self.reportEvent(event,case,"XXX")           
             feasible,operator_move,bring_equipment = self.checkLogisticalEvents(event,success_decisions,debugtimes,debugeventids)
 
@@ -507,6 +514,10 @@ class ShopFloorManager(OperationsManager):
         if 'Items' in precedenceinfo:
             for item in event.getItems():
                 successor_event.getItems().append(item)
+
+        if 'Batch' in precedenceinfo:
+            successor_event.setBatch(event.getBatch())
+           
                 
         if 'Item Reservation' in precedenceinfo: # MS -> ML
             for item in event.getItems():
@@ -583,7 +594,6 @@ class ShopFloorManager(OperationsManager):
         casesuccess = True; success_decisions = []       
 
        
-        
         if case in event.getEventType().getDecisionsDict():
            
             for decision_type in event.getEventType().getDecisionsDict()[case]:
@@ -654,8 +664,7 @@ class ShopFloorManager(OperationsManager):
                 event.setResource(None)
             if decision_type == "Select Items":
                 event.getItems().clear()
-
-         
+   
 
         return
 ############################################################################################################################
@@ -1071,7 +1080,7 @@ class ShopFloorManager(OperationsManager):
     def saveResources(self):
         
         
-        res_df = pd.DataFrame(columns=["ResourceType","Name","ProcessType","Automated","Alternatives","SetupTime","OperatingEffort","AvailableShifts"])
+        res_df = pd.DataFrame(columns=["ResourceType","Name","ID","ProcessType","Automated","Alternatives","SetupTime","OperatingEffort","AvailableShifts"])
 
         for res in self.getResources():
             try: 
@@ -1085,15 +1094,19 @@ class ShopFloorManager(OperationsManager):
                         for altmach in res.getAlternatives():
                             alt_machs+=("~" if len(alt_machs) > 0 else "")+str(altmach)
                         
-                    resdata = {"ResourceType":res.getType(),"Name":res.getName(),"ProcessType":res.getProcessType(),"Automated":res.IsAutomated() if isinstance(res,Machine) else None,"Alternatives":alt_machs,"SetupTime":res.getSetupTime() if isinstance(res,Machine) else None,"OperatingEffort":res.getOperatingEffort() if isinstance(res,Machine) else None,"AvailableShifts":avail_sfhts}
+                    resdata = {"ResourceType":res.getType(),"Name":res.getName(),"ID":res.getID(),"ProcessType":res.getProcessType(),"Automated":res.IsAutomated() if isinstance(res,Machine) else None,"Alternatives":alt_machs,"SetupTime":res.getSetupTime() if isinstance(res,Machine) else None,"OperatingEffort":res.getOperatingEffort() if isinstance(res,Machine) else None,"AvailableShifts":avail_sfhts}
 
                     res_df.loc[len(res_df)] = resdata
             except Exception as e:
                 self.getSimulator().saveLog("ERROR: in making resource data "+str(e))    
             
 
-      
-        res_df.to_csv(os.path.join("..", "TBRM Machining BV","Resources_"+str((datetime.now()).date())+".csv"),index = False)
+        source_directory = '/content/'
+        if not self.getSimulator().getController().isOnline(): 
+            res_df.to_csv(os.path.join("..", self.getSimulator().getController().getUseCase(),"Resources_"+str((datetime.now()).date())+".csv"),index = False)
+        else:
+            TBRM_df.to_csv(source_directory+'/'+"Resources_"+str((datetime.now()).date())+".csv")
+            
 
         return 
 ########################################################################################################################################

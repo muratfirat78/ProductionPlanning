@@ -19,6 +19,7 @@ from matplotlib import colormaps
 from matplotlib.patches import Patch
 import plotly.graph_objects as go
 import plotly.express as px
+from productionobjects import *
 warnings.filterwarnings("ignore")
 
 
@@ -143,6 +144,8 @@ class VisualManager():
         self.WeeksMenu = None
         self.SuspendedEvents = dict()
         self.SelectedEventsDict = dict()
+        self.newResourceBttn = None
+        self.ResourceType = None
 
         self.simbox = None
         self.selectdestinationalg = None
@@ -169,6 +172,87 @@ class VisualManager():
         self.UseCaseBox = None
         self.ResourceMenu = None
         self.DecisionAlgorithms = None
+        self.capabilities = None
+
+        self.OperatingEffort = None
+        self.Automated = None
+        self.Setup = None
+        self.cancelbutton = None
+        self.ResourceName = None
+        self.IDTxt = None
+
+
+    def setIDTxt(self,btn):
+        self.IDTxt = btn
+        return
+
+
+    def getIDTxt(self):
+        return self.IDTxt 
+    
+
+    def setResourceName(self,btn):
+        self.ResourceName = btn
+        return
+
+
+    def getResourceName(self):
+        return self.ResourceName 
+    
+
+    def setCancelButton(self,btn):
+        self.cancelbutton = btn
+        return
+
+
+    def getCancelButton(self):
+        return self.cancelbutton 
+
+
+    def setSetup(self,dpd):
+        self.Setup = dpd
+        return 
+        
+    def getSetup(self):
+        return self.Setup
+    
+    def setAutomated(self,dpd):
+        self.Automated = dpd
+        return 
+        
+    def getAutomated(self):
+        return self.Automated
+
+
+    def setOperatingEffort(self,dpd):
+        self.OperatingEffort = dpd
+        return 
+        
+    def getOperatingEffort(self):
+        return self.OperatingEffort
+
+
+    def setResourceType(self,dpd):
+        self.ResourceType = dpd
+        return 
+        
+    def getResourceType(self):
+        return self.ResourceType
+
+    def setResButton(self,bt):
+        self.newResourceBttn = bt
+        return 
+
+    def getResButton(self):
+        return self.newResourceBttn 
+        
+
+    def setCapabilities(self,dt):
+        self.capabilities = dt
+        return
+
+    def getCapabilities(self):
+        return self.capabilities 
 
     def getDecisionAlgorithms(self):
         return self.DecisionAlgorithms
@@ -1569,25 +1653,7 @@ class VisualManager():
         
         return
         
-    def showResource(self,event):
 
-        resname = self.getResourceDrop().value
-
-        for res in self.getController().getWorkManager().getResources():
-            if res.getName() == resname:
-                av_str = ''
-                for avshift in res.getAvailableShifts():
-                    av_str+= ("," if len(av_str) > 0 else "")+str(avshift)
-                self.getAvailabilityCheck().value = av_str
-
-                if res.getType() == "Machine":
-                    self.getResAlternatives().options = [alt for alt in res.getAlternatives()]
-                else:
-                    self.getResAlternatives().options = []
-                
-                
-
-        return 
 
     def setSuspendMode(self,event):
 
@@ -1761,8 +1827,59 @@ class VisualManager():
             self.showCombinedSchedule(self.getCombinedLastDay())
 
         return
+###############################################################################################################################
+    def showResource(self,event):
 
+        resname = self.getResourceDrop().value
+
+
+        try: 
+
+            for res in self.getController().getWorkManager().getResources():
+                if res.getName() == resname:
+                    self.getResourceName().value =  str(res.getName())
+                    av_str = ''
+                    if res.getAvailableShifts()!= None: 
+                        for avshift in res.getAvailableShifts():
+                            av_str+= ("," if len(av_str) > 0 else "")+str(avshift)
+                        self.getAvailabilityCheck().value = av_str
+                    else:
+                        self.getAvailabilityCheck().value = ''
     
+                    if res.getType() == "Machine":
+                        self.getResAlternatives().options = [alt for alt in res.getAlternatives()]
+                    else:
+                        self.getResAlternatives().options = []
+    
+                    if res.getType() == "Machine":
+                        self.getAutomated().disabled = False
+                        self.getOperatingEffort().disabled = False
+                        self.getSetup().disabled =False
+                        self.getOperatingEffort().value = str(res.getOperatingEffort())
+                        self.getSetup().value = str(res.getSetupTime())
+                        
+                        self.getAutomated().value = self.getAutomated().options[0] if res.IsAutomated() else self.getAutomated().options[1]
+                        
+                    else: 
+                        
+                        self.getAutomated().disabled = True
+                        self.getOperatingEffort().value = ''
+                        self.getOperatingEffort().disabled = True
+                        self.getSetup().value = ''
+                        self.getSetup().disabled = True
+                        
+    
+                    if res.getID() != None:
+                        self.getIDTxt().value = str(res.getID())
+                    else:
+                        self.getIDTxt().value = ''
+                    self.getCapabilities().value = str(res.getProcessType())
+
+        except Exception as e:
+            self.getController().getSimulator().saveLog("ERROR: in showing resource "+str(e))    
+                        
+        return   
+################################################################################################################################
     def saveResources(self,event):
 
         self.getController().getSimulator().saveLog("REPORT: in saving resources...")         
@@ -1779,16 +1896,40 @@ class VisualManager():
                     
     
             if selected_res!= None:
+                
+                selected_res.setName(str(self.getResourceName().value))
                 res_avail = self.getAvailabilityCheck().value
                 self.getController().getSimulator().saveLog("REPORT: in availability of resource "+selected_res.getName()+" "+": "+res_avail)    
                 try: 
                     avail_shifts = res_avail.split(',')
-    
-                    selected_res.getAvailableShifts().clear()
-                    for shft in avail_shifts:
-                        selected_res.getAvailableShifts().append(shft)
+
+                    # save shifts
+                    if selected_res.getAvailableShifts()!= None: 
+                        selected_res.getAvailableShifts().clear()
+                        for shft in avail_shifts:
+                            selected_res.getAvailableShifts().append(shft)
                     
+                    # save type 
+                    if res.getType() == "Machine":
+                        res.setAutomated(self.getAutomated().value == self.getAutomated().options[0])
+
+                        try:
+                            res.setSetupTime(int(self.getSetup().value))
+                        except:
+                            self.getController().getSimulator().saveLog("ERROR: No integer entry for resource "+res.getName()+" setup time")   
+
+                    
+                        try:
+                            res.setOperatingEffort(float(self.getOperatingEffort().value))
+                        except:
+                            self.getController().getSimulator().saveLog("ERROR: No integer entry for resource "+res.getName()+" operating effort")   
+
+                    res.setProcessType(self.getCapabilities().value)
                     self.getController().getWorkManager().saveResources()
+
+                    self.getResourceDrop().options= [myres.getName() for myres in self.getController().getWorkManager().getResources()]    
+
+                    
                 except Exception as e:
                     self.getController().getSimulator().saveLog("ERROR: in availability format of resource "+str(e)+": "+selected_res.getName())    
         except Exception as e:
@@ -1796,7 +1937,9 @@ class VisualManager():
         
      
         return 
+##############################################################################################################################################
 
+    
     def RunMILP(self,event):
 
         self.getController().getMILPManager().constructSchedule()
@@ -1895,6 +2038,70 @@ class VisualManager():
 
         return 
 
+    def cancelResource(self,b):
+
+        self.getCancelButton().layout.visibility = 'hidden'
+        self.getCancelButton().layout.display = 'none'
+        self.getResourceType().layout.visibility = 'hidden'
+        self.getResourceType().layout.display = 'none'
+
+        self.getResButton().description = 'New'
+        self.getResourceDrop().disabled = False
+
+        return 
+
+    def defineResource(self,b):
+
+      
+        if self.getResButton().description == 'New':     
+
+            self.getResourceDrop().disabled = True
+            self.getResourceType().layout.display = 'block'
+            self.getResourceType().layout.visibility = 'visible'
+            self.getResourceType().layout.width ='150px'
+            self.getResButton().description = 'Add'
+            self.getCancelButton().layout.height = '25px'
+            self.getCancelButton().layout.width = '100px'
+            self.getCancelButton().layout.display = 'block'
+            self.getCancelButton().layout.visibility = 'visible'
+            
+            
+                
+        else:
+            nores = len(self.getController().getWorkManager().getResources())
+            self.getController().getSimulator().saveLog("REPORT: no. resources "+str(nores))
+ 
+            if self.getResourceType().value == 'Machine':
+                try: 
+                    mach = Machine("MACHXX_"+str(nores),'Mach_'+str(nores),1,None,"Machine_"+str(nores),[],"Metal Forming",False,50000,[],60,0.3,self.getController().getSimulator(),self.getController().getWorkManager())
+                    self.getController().getSimulator().saveLog("REPORT:  resources created ")
+                    self.getController().getWorkManager().getResources().append(mach)
+                    self.getResourceDrop().options= [myres.getName() for myres in self.getController().getWorkManager().getResources()]    
+                    self.getController().getSimulator().saveLog("REPORT:  options filled ")
+                    self.getResourceDrop().value = mach.getName()
+                except Exception as e:
+                    self.getController().getSimulator().saveLog("ERROR: error in saving resource "+str(e))  
+            else:
+                operator =  Operator("Operator_"+str(nores),[],1,self.getController().getSimulator(),self.getController().getWorkManager())
+                self.getController().getSimulator().saveLog("REPORT:  operator created ")
+                self.getController().getWorkManager().getResources().append(operator)
+                self.getResourceDrop().options= [myres.getName() for myres in self.getController().getWorkManager().getResources()]    
+                self.getController().getSimulator().saveLog("REPORT:  options filled ")
+                self.getResourceDrop().value = operator.getName()
+                    
+            
+            self.getResButton().description = 'New'
+            self.getResourceDrop().disabled = False
+            self.getResourceType().layout.visibility = 'hidden'
+            self.getResourceType().layout.display = 'none'
+            self.getCancelButton().layout.visibility = 'hidden'
+            self.getCancelButton().layout.display = 'none'
+                
+
+           
+
+        return 
+
     def GenerateMainTab(self):
 
         #print("Visual Manager: Generating dashboard")
@@ -1912,7 +2119,12 @@ class VisualManager():
 
         self.setResourceDrop2(widgets.Dropdown(options = [],description = ''))
 
+        self.setResourceType(widgets.Dropdown(options = ['Operator','Machine'],description = ''))
 
+        self.getResourceType().layout.width ='150px'
+        self.getResourceType().layout.visibility = 'hidden'
+        self.getResourceType().layout.display = 'none'
+      
         self.getResourceDrop2().layout.visibility = 'hidden'
         self.getResourceDrop2().layout.width= '150px'
 
@@ -1926,14 +2138,16 @@ class VisualManager():
         self.setAlternativeRemove(widgets.Button(description="Remove"))
         self.getAlternativeRemove().layout.width = '80px'
         self.getAlternativeRemove().on_click(self.removeAlternative)
-
         self.setAlternativeAdd(widgets.Button(description="Add"))
         self.getAlternativeAdd().layout.width = '80px'
         self.getAlternativeAdd().on_click(self.addAlternative)
-
-
-
+        self.setAutomated(widgets.Dropdown(options = ['Automated','Manual'],description = 'Automation'))
         self.setAvailabilityCheck(widgets.Text(value='',description='Availability:',disabled=False))
+        self.setSetup(widgets.Text(value='',description='Setup:',disabled=False))
+        self.setOperatingEffort(widgets.Text(value='',description='Op. Effort:',disabled=False))
+        self.setResourceName(widgets.Text(value='',description='Name:',disabled=False))
+        self.setCapabilities(widgets.Text(options=[],description='Process type:',disabled=False))
+        self.setIDTxt(widgets.Text(value='',description='ID:',disabled=False))
  
         
         self.getController().getSimulator().setRunWeeks(self.getWeeksDrop().value)
@@ -1942,12 +2156,8 @@ class VisualManager():
         self.ProcessOutput = widgets.Output()
 
 
-
-       
-       
-
         # Single Select
-        select = widgets.Select(options=['Use Cases','Orders','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
+        select = widgets.Select(options=['Use Cases','Demand','Resources','Simulation Settings','Simulation Run','MILP Run','Log Information'
                                          ,'Schedules'],value='Resources',description='',disabled=False)
 
         select.observe(self.menu_click,'value')
@@ -1955,13 +2165,28 @@ class VisualManager():
         self.getMainmenu().layout.width = '250px'
         self.getMainmenu().layout.height = '200px'
 
+        self.setResButton(widgets.Button(description="New"))
+        self.getResButton().layout.height = '25px'
+        self.getResButton().layout.width = '60px'
+        self.getResButton().on_click(self.defineResource)
+        self.setCancelButton(widgets.Button(description="Cancel"))
+        self.getCancelButton().layout.height = '25px'
+        self.getCancelButton().layout.width = '60px'
+        self.getCancelButton().layout.display = 'none'
+        self.getCancelButton().on_click(self.cancelResource)
         
         
 
-        mainbox = VBox(children=[self.getWeeksDrop(),self.getResourceDrop(),
-                                 HBox(children=[self.getAvailabilityCheck(), VBox(children=[self.getResAlternatives(),
-                                                                                            HBox(children=[self.getAlternativeRemove(),self.getAlternativeAdd()]),self.getResourceDrop2()
-                                                                                           ])]),
+        mainbox = VBox(children=[
+                                 HBox(children=[self.getResourceDrop(),self.getResButton(),self.getResourceType(),self.getCancelButton()]),
+                                 HBox(children=[
+                                     VBox(children=[self.getResourceName(),self.getIDTxt(),self.getAutomated(),self.getOperatingEffort(),self.getSetup(),self.getAvailabilityCheck(),self.getCapabilities()]), 
+                                     VBox(children=[self.getResAlternatives(),
+                                                                 HBox(children=[self.getAlternativeRemove(),self.getAlternativeAdd()])
+                                                    ,self.getResourceDrop2()
+                                                   ])
+                                               ]),
+                                 
                                  self.getResourceSave()])
         self.setMainBox(mainbox)
 
@@ -2028,7 +2253,7 @@ class VisualManager():
         self.getSimDisplayCheck().observe(self.setDisplayMode,'value')
         self.getTimeApply().on_click(self.setSimTimeStep)
 
-        simbox = VBox(children=[HBox(children=[VBox(children=[self.getSimSuspendCheck(),self.getSimDisplayCheck(),HBox(children=[self.getTimeStep(),self.getTimeApply()]),HBox(children=[self.getEventIDs(),self.getSelectEvent(),self.getSelectedEvents()])])])])
+        simbox = VBox(children=[self.getWeeksDrop(),HBox(children=[VBox(children=[self.getSimSuspendCheck(),self.getSimDisplayCheck(),HBox(children=[self.getTimeStep(),self.getTimeApply()]),HBox(children=[self.getEventIDs(),self.getSelectEvent(),self.getSelectedEvents()])])])])
 
         self.setSimBox(simbox)
 
@@ -2181,7 +2406,7 @@ class VisualManager():
 
         self.BoxMatches['Use Cases'] =  self.getUseCaseBox()
         self.BoxMatches['Simulation Run'] =  self.getRunBox()
-        self.BoxMatches['Orders'] =  self.getOrderBox()
+        self.BoxMatches['Demand'] =  self.getOrderBox()
         self.BoxMatches['Resources'] =  self.getMainBox()
         self.BoxMatches['Log Information'] = self.getLogBox()
         self.BoxMatches['Schedules'] = self.getResultBox()
