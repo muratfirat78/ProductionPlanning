@@ -740,10 +740,13 @@ class ShopFloorManager(OperationsManager):
 
       # update execution data of event...
         progrss_steps = ""; step_id = 0
+        progress_step_resources = []
         for res,prstep in event.getProgressList():
             stp_strt = self.getSimulator().checkRealTime(prstep[0]).strftime("%Y-%m-%d %H:%M:%S")
             stp_end = self.getSimulator().checkRealTime(prstep[1]).strftime("%Y-%m-%d %H:%M:%S")
-            progrss_steps+=("" if step_id == 0 else "~")+"["+str(stp_strt)+"-"+str(stp_end)+"]"
+            step = "["+str(stp_strt)+"-"+str(stp_end)+"]"
+            progrss_steps+=("" if step_id == 0 else "~")+step
+            progress_step_resources.append((step, "-" if res is None else res.getName()))
             step_id+=1
                 
     
@@ -806,7 +809,33 @@ class ShopFloorManager(OperationsManager):
                     lateness = str((self.getSimulator().getRealTime()-event.getItems()[0].getDemand().getDeadline()).days)
                     
           
-        execution_data = {"EventName":event.getName(),"EventID":event.getID(),"ProgressSteps":progrss_steps,"ID":demandid,"Product":eventprod,"Product/ID":prodid,"Quantity To Produce":qunatity,"Deadline":deadline,"Reference":reference,"Work Orders/Work Center":workcnt,"Work Orders/Work Center/ID":workcntid,"Processing Machine":processmach,"Work Orders/Operation":opname,"Operation Order": oprorder,"Work Orders/Expected Duration":expduration,"Work Orders/Start":eventstrt,"Work Orders/End":eventdate,"Work Orders/Status":"Sim-Scheduled","Tardy":tardy,"Lateness (days)":lateness,"Items":ev_items,"Resource":("-" if event.getResource() == None else event.getResource().getName()),"Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),"Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate}
+        execution_data = {
+            "EventName":event.getName(),
+            "EventID":event.getID(),
+            "ProgressSteps":progrss_steps,
+            "_ProgressStepResources":progress_step_resources,
+            "ID":demandid,
+            "Product":eventprod,
+            "Product/ID":prodid,
+            "Quantity To Produce":qunatity,
+            "Deadline":deadline,
+            "Reference":reference,
+            "Work Orders/Work Center":workcnt,
+            "Work Orders/Work Center/ID":workcntid,
+            "Processing Machine":processmach,
+            "Work Orders/Operation":opname,
+            "Operation Order": oprorder,
+            "Work Orders/Expected Duration":expduration,
+            "Work Orders/Start":eventstrt,
+            "Work Orders/End":eventdate,
+            "Work Orders/Status":"Sim-Scheduled",
+            "Tardy":tardy,
+            "Lateness (days)":lateness,
+            "Items":ev_items,
+            "Resource":("-" if event.getResource() == None else event.getResource().getName()),
+            "Equipment":("-" if event.getEquipment() == None else event.getEquipment().getName()),
+            "Location":event.getLocation().getName(),"SimTime":self.getSimulator().getTime(),"Date":eventdate
+        }
 
 
         if len(event.getItems()) > 0:
@@ -902,7 +931,15 @@ class ShopFloorManager(OperationsManager):
         
       
         for eventdata in self.getSimulator().getExecutionData():
-            event_df.loc[len(event_df)] = eventdata
+            step_resources = eventdata["_ProgressStepResources"]
+            if not step_resources:
+                event_df.loc[len(event_df)] = eventdata
+            else:
+                for step,resource in step_resources:
+                    step_data = eventdata.copy()
+                    step_data["ProgressSteps"] = step
+                    step_data["Resource"] = resource
+                    event_df.loc[len(event_df)] = step_data
 
 
         inputdate = ""
